@@ -24,8 +24,7 @@ export const EnterZip: React.FC = () => {
     const resp = await client.fetchState(zip)
     if (resp.type === 'error') {
       toast(
-`Something wrong happened while querying for your ZIP Code.
-We're sorry this happened, if you try again and the error persists try contacting us.`,
+        'Error finding the ZIP Code',
         {type: 'error'},
       )
     } else {
