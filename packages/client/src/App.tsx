@@ -22,6 +22,7 @@ import { StyleContainer } from './comp/util/Container'
 import { Pardon } from './comp/Pardon'
 import { PrivacyPolicy } from './comp/PrivacyPolicy'
 import { Navbar } from './comp/Navbar'
+import { HowItWorks } from './comp/HowItWorks'
 
 const TallStyleContainer = styled(StyleContainer)`
   min-height: 100vh;
@@ -56,6 +57,9 @@ const Layout = () => {
       <Route exact path={pathData['start'].path}>
         <ScrollHook pathEnum='start'>
           <Blurb/>
+        </ScrollHook>
+        <ScrollHook pathEnum='howItWorks'>
+          <HowItWorks/>
         </ScrollHook>
         <StyleContainer>
           <WarningMsg/>
