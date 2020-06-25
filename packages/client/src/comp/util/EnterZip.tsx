@@ -44,11 +44,11 @@ export const EnterZip: React.FC = () => {
   return <InputButton
     onSubmit={handleSubmit}
     buttonLabel='Enter'
-
+    buttonTestId='start-submit'
     type='number'
     placeholder='ZIP Code'
     id='start-zip'
-    data-testid='start-zip'
+    dataTestId='start-zip'
     pattern='[0-9]{5}'
     defaultValue={defaultValue()}
     ref={zipRef}
