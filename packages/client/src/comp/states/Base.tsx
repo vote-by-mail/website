@@ -8,7 +8,7 @@ import { useControlRef } from '../util/ControlRef'
 import { BaseInput, PhoneInput, EmailInput, NameInput, BirthdateInput } from '../util/Input'
 import { Togglable } from '../util/Togglable'
 import { useAppHistory } from '../../lib/path'
-import { Signature } from '../util/Signature'
+import { Signature, SignatureType } from '../util/Signature'
 import { AddressContainer, VoterContainer, ContactContainer, FetchingDataContainer } from '../../lib/unstated'
 import { ContactInfo } from '../contact/ContactInfo'
 import { AppForm } from '../util/Form'
@@ -142,6 +142,7 @@ export const SignatureBase = <Info extends StateInfo>(
   {enrichValues, children}: Props<NoSignature<Info>>
 ) => {
   const [signature, setSignature] = React.useState<string | null>()
+  const [signatureType, setSignatureType] = React.useState<SignatureType>('upload')
 
   const enrichValuesWithSignature = (baseInfo: StatelessInfo): Info | null => {
     const values = enrichValues(baseInfo)
@@ -157,6 +158,7 @@ export const SignatureBase = <Info extends StateInfo>(
       ...baseInfo,
       ...values,
       signature,
+      signatureType,
     } as Info  // hack b/c it cannot understand how to distribute over types
   }
 
@@ -164,6 +166,6 @@ export const SignatureBase = <Info extends StateInfo>(
     enrichValues={enrichValuesWithSignature}
   >
     { children }
-    <Signature setSignature={setSignature}/>
+    <Signature setSignature={setSignature} setSignatureType={setSignatureType} signatureType={signatureType}/>
   </Base>
 }
