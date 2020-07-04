@@ -232,7 +232,7 @@ export const Navbar = () => {
 
   return <Wrapper expanded={expanded} visible={visible}>
     <Logo to="#" onClick={() => pushAndClose('start')}>
-        <img src={logo} alt="Mail My Ballot"/>
+        <img src={logo} alt="VoteByMail"/>
     </Logo>
     <NavToggle onClick={toggleExpanded} expanded={expanded} variant="flat">
       <i className={`fa ${expanded ? 'fa-close' : 'fa-navicon'}`}/>
