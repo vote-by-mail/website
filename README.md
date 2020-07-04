@@ -1,5 +1,5 @@
 # VoteByMail.io
-![](https://github.com/mail-my-ballot/mail-my-ballot/workflows/Node.js%20CI/badge.svg)
+![](https://github.com/vote-by-mail/website/workflows/Node.js%20CI/badge.svg)
 
 ## Getting Started
 
@@ -22,7 +22,7 @@ yarn client gulp start // client on localhost:3000
 These commands will likely fail until you have setup the configuration correctly (see below).
 
 ### Node version when developing on Linux
-On many Linux distros, running the above command may yield compile errors for about `Array.flatMap` and `Object.fromEntries` not being functions.  This issue has been observed [here](https://github.com/mail-my-ballot/mail-my-ballot/issues/11) and [here](https://github.com/mail-my-ballot/mail-my-ballot/pull/19).  The root problem ([documented here](https://github.com/mail-my-ballot/mail-my-ballot/pull/19#issuecomment-643043047)) is that Nodejs v10 (default on Unix) does not support `Object.fromEntries` and `Array.flatMap`.  The solution is to use a more recent version of Node (^v12).  The easiest way for me was to [use nvm](https://github.com/nvm-sh/nvm).  This error does not arise in OSX.
+On many Linux distros, running the above command may yield compile errors for about `Array.flatMap` and `Object.fromEntries` not being functions.  This issue has been observed [here](https://github.com/vote-by-mail/website/issues/11) and [here](https://github.com/vote-by-mail/website/pull/19).  The root problem ([documented here](https://github.com/vote-by-mail/website/pull/19#issuecomment-643043047)) is that Nodejs v10 (default on Unix) does not support `Object.fromEntries` and `Array.flatMap`.  The solution is to use a more recent version of Node (^v12).  The easiest way for me was to [use nvm](https://github.com/nvm-sh/nvm).  This error does not arise in OSX.
 
 ### Configuration
 Running the app requires some configuration setting.  All of those are exported in `env/env.js`.  It has two dependencies that are not checked into source control:
@@ -51,7 +51,7 @@ Then make sure `env.js` has `GOOGLE_APPLICATION_CREDENTIALS` set to `./secrets/[
 
   Download and save these credentials for dev, prod, and staging.  Thes eare the `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` fields.
 
-For more details, check out [here](https://github.com/mail-my-ballot/mail-my-ballot/issues/30).
+For more details, check out [here](https://github.com/vote-by-mail/website/issues/30).
 
 ### Testing Individual services
 To experiment with or verify an individual service, you can call the "prototype" files from the command line for the individual services, (e.g.):
@@ -94,15 +94,15 @@ Please do this before you submit a PR.
 
 ## Adding a State
 To add a new state, you will need to complete the following steps:
-1. Increment version number and publish a new version of the [elections official data](https://github.com/mail-my-ballot/elections-officials), if you need updated data.
+1. Increment version number and publish a new version of the [elections official data](https://github.com/vote-by-mail/elections-officials), if you need updated data.
 1. Match the version number in the environment variable `ELECTIONS_OFFICIALS_VERSION`, if you need updated data.
 1. Add the state to `availableStates` and `implementedStates` const arrays in `common`.  This should start generating type errors from incomplete switch statements when you run
     ```bash
     yarn build
     ```
-    Fixing those errors by pattern matching should get you a new state.  Becareful to follow the state-by-state regulations for VBM signup.  For reference, here are the core commits adding [Arizona](https://github.com/mail-my-ballot/mail-my-ballot/commit/arizona) and [New York](https://github.com/mail-my-ballot/mail-my-ballot/commit/new_york).
+    Fixing those errors by pattern matching should get you a new state.  Becareful to follow the state-by-state regulations for VBM signup.  For reference, here are the core commits adding [Arizona](https://github.com/vote-by-mail/website/commit/arizona) and [New York](https://github.com/vote-by-mail/website/commit/new_york).
 
-    Some states require us to fill out and submit their PDF form for the signup.  This means determining the `X/Y` coordinates for each input box.  Use the file `packages/server/src/service/pdfForm.proto.ts` as a test harness for laying out the application (see [New Hampshire](https://github.com/mail-my-ballot/mail-my-ballot/pull/33) for an example).
+    Some states require us to fill out and submit their PDF form for the signup.  This means determining the `X/Y` coordinates for each input box.  Use the file `packages/server/src/service/pdfForm.proto.ts` as a test harness for laying out the application (see [New Hampshire](https://github.com/vote-by-mail/website/pull/33) for an example).
 
 
 ## Notes on Submitting Code
@@ -135,31 +135,6 @@ yarn server gulp deploy --env staging [environment]
 ```
 
 Alternative (not used): follow this [SO answer](https://stackoverflow.com/a/54055525/8930600), put all secrets in a special file that is not stored in source control.
-
-## Web Data
-### Development
-- [Log Viewer](https://console.cloud.google.com/logs/viewer?project=vbm-dev-281821)
-- [Console](https://console.cloud.google.com/home/dashboard?project=vbm-dev-281821)
-- [Firestore Data Viewer](https://console.cloud.google.com/firestore/data?project=vbm-dev-281821)
-- [Storage Viewer](https://console.cloud.google.com/storage/browser?project=vbm-dev-281821)
-- [Firestore Permission Rules](https://console.firebase.google.com/u/0/project/vbm-dev-281821/database/firestore/rules)
-- [Quotas](https://console.cloud.google.com/iam-admin/quotas?project=vbm-dev-281821)
-
-### Staging
-- [Log Viewer](https://console.cloud.google.com/logs/viewer?project=vbm-staging)
-- [Console](https://console.cloud.google.com/home/dashboard?project=vbm-staging)
-- [Firestore Data Viewer](https://console.cloud.google.com/firestore/data?project=vbm-staging)
-- [Storage Viewer](https://console.cloud.google.com/storage/browser?project=vbm-staging)
-- [Firestore Permission Rules](https://console.firebase.google.com/u/0/project/vbm-staging/database/firestore/rules)
-- [Quotas](https://console.cloud.google.com/iam-admin/quotas?project=vbm-staging)
-
-### Production
-- [Log Viewer](https://console.cloud.google.com/logs/viewer?project=vbm-prod-281821)
-- [Console](https://console.cloud.google.com/home/dashboard?project=vbm-prod-281821)
-- [Firestore Data Viewer](https://console.cloud.google.com/firestore/data?project=vbm-prod-281821)
-- [Storage Viewer](https://console.cloud.google.com/storage/browser?project=vbm-prod-281821)
-- [Firestore Permission Rules](https://console.firebase.google.com/u/0/project/vbm-prod-281821/database/firestore/rules)
-- [Quotas](https://console.cloud.google.com/iam-admin/quotas?project=vbm-prod-281821)
 
 ## Resources
 ### Asthetics
