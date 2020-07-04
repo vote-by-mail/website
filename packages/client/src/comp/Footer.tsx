@@ -29,7 +29,7 @@ export const Footer = () => <FooterWrapper>
     Footer are subject to a redesign.
    */}
   <VBar/>
-  <a href='https://www.facebook.com/Mail-My-Ballot-103074334722159/' rel='noopener noreferrer' target='_blank'>
+  <a href='https://www.facebook.com/' rel='noopener noreferrer' target='_blank'>
     <i className='fa fa-facebook'/>
   </a>
   <VBar/>

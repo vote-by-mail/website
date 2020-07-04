@@ -9,7 +9,7 @@ const version = processEnvOrThrow('ELECTIONS_OFFICIALS_VERSION')
 
 const url = (state: State) => {
   const stateStr = state.toLowerCase().replace(' ', '_')
-  return `https://raw.githubusercontent.com/mail-my-ballot/elections-officials/${version}/public/${stateStr}.json`
+  return `https://raw.githubusercontent.com/vote-by-mail/elections-officials/${version}/public/${stateStr}.json`
 }
 
 export const loadState = async (state: AvailableState): Promise<[AvailableState, RawContact[]]> => {
