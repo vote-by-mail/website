@@ -6,8 +6,6 @@ import { cssQuery } from './util/cssQuery'
 import { InputButton } from './util/InputButton'
 import { Container, Button } from 'muicss/react'
 
-// Although not spanning the entire screen, we can benefit from the rules
-// set on FullscreenWrapper, and just tweak the min-height here
 const FooterWrapper  = styled.div`
   width: 100%;
   min-height: 35vh;
