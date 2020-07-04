@@ -1,6 +1,6 @@
 import React from 'react'
 import { useAppHistory } from '../../lib/path'
-import { AddressContainer } from '../../lib/unstated'
+import { AddressContainer, FetchingDataContainer } from '../../lib/unstated'
 import { client } from '../../lib/trpc'
 import { toast } from 'react-toastify'
 import { InputButton } from './InputButton'
@@ -13,6 +13,7 @@ import { InputButton } from './InputButton'
 export const EnterZip: React.FC = () => {
   const { path, pushAddress } = useAppHistory()
   const { address } = AddressContainer.useContainer()
+  const { setFetchingData } = FetchingDataContainer.useContainer()
   const zipRef = React.useRef<HTMLInputElement>(null)
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -21,16 +22,17 @@ export const EnterZip: React.FC = () => {
     event.preventDefault()
     const zip = zipRef?.current?.value
     if (!zip) return
+    setFetchingData(true)
     const resp = await client.fetchState(zip)
     if (resp.type === 'error') {
-      toast(
-        'Error finding the ZIP Code',
-        {type: 'error'},
+    toast(
+      'Error finding the ZIP Code',
+      {type: 'error'},
       )
     } else {
       pushAddress(resp.data, zip)
     }
-
+    setFetchingData(false)
   }
 
   const defaultValue = () => {
