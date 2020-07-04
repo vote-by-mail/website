@@ -124,7 +124,7 @@ export const Team: React.FC = () => {
     <Container>
       <h1>Who are we?</h1>
       <p>
-        MailMyBallot.org is a <a href="https://www.voteathome.org" target="_blank" rel="noopener noreferrer">National Vote at Home Institute project</a>. The National Vote at Home Institute is a non-partisan, 501(c)3 dedicated to promoting vote by mail.
+        VoteByMail.io is a <a href="https://www.voteathome.org" target="_blank" rel="noopener noreferrer">National Vote at Home Institute project</a>. The National Vote at Home Institute is a non-partisan, 501(c)3 dedicated to promoting vote by mail.
       </p>
       <p>The project is developed by a team of enthusiastic volunteer technologists.</p>
 
@@ -134,53 +134,53 @@ export const Team: React.FC = () => {
           name='John Doe'
           title='Title'
           description='Fusce hendrerit lacus nulla, eu accumsan lacus vestibulum sit amet. Curabitur lacinia lobortis sodales.'
-          twitter='mailmyballot'
-          email='contact@mailmyballot.org'
+          twitter='votebymail'
+          email='contact@votebymail.org'
         />
         <Person
           img=''
           name='John Doe'
           title='Title that is long'
           description='Fusce hendrerit lacus nulla, eu accumsan lacus vestibulum sit amet. Curabitur lacinia lobortis sodales.'
-          twitter='mailmyballot'
-          email='contact@mailmyballot.org'
+          twitter='votebymail'
+          email='contact@votebymail.org'
         />
         <Person
           img=''
           name='John Doe'
           title='Title'
           description='Fusce hendrerit lacus nulla, eu accumsan lacus vestibulum sit amet. Curabitur lacinia lobortis sodales.'
-          twitter='mailmyballot'
-          email='contact@mailmyballot.org'
+          twitter='votebymail'
+          email='contact@votebymail.org'
         />
         <Person
           img=''
           name='John Doe'
           title='Title'
           description='Fusce hendrerit lacus nulla, eu accumsan lacus vestibulum sit amet. Curabitur lacinia lobortis sodales.'
-          twitter='mailmyballot'
-          email='contact@mailmyballot.org'
+          twitter='votebymail'
+          email='contact@votebymail.org'
         />
         <Person
           img=''
           name='John Doe'
           title='Title'
           description='Fusce hendrerit lacus nulla, eu accumsan lacus vestibulum sit amet. Curabitur lacinia lobortis sodales.'
-          twitter='mailmyballot'
-          email='contact@mailmyballot.org'
+          twitter='votebymail'
+          email='contact@votebymail.org'
         />
         <Person
           img=''
           name='John Doe'
           title='Title'
           description='Fusce hendrerit lacus nulla, eu accumsan lacus vestibulum sit amet. Curabitur lacinia lobortis sodales.'
-          twitter='mailmyballot'
-          email='contact@mailmyballot.org'
+          twitter='votebymail'
+          email='contact@votebymail.org'
         />
       </PeopleWrapper>
 
       <h4>
-        Interested in volunteering with MailMyBallot? We&apos;d love to hear from you even if you&apos;re unsure how you could help!
+        Interested in volunteering with VoteByMail? We&apos;d love to hear from you even if you&apos;re unsure how you could help!
       </h4>
       <UnderlineAnchor href="#getInvolved" onClick={() => pushStartSection('contact')}>
         How to get involved
