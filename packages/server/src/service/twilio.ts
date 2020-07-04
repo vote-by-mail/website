@@ -6,7 +6,7 @@ const client = Twilio(
   processEnvOrThrow('TWILIO_TOKEN'),
 )
 const from = processEnvOrThrow('TWILIO_FAX_NUMBER')
-const receiveFax = processEnvOrThrow('RECEIVE_FAX_NUMBER')
+const receiveFax = process.env['RECEIVE_FAX_NUMBER']
 
 /** phone numbers must be E164 for Twilio: https://www.twilio.com/docs/glossary/what-e164 */
 const regex = /^\D*1?\D*(\d{3})\D*(\d{3})\D*(\d{4})\D*$/
@@ -17,7 +17,15 @@ export const e164 = (number: string): string => {
 }
 
 const tos = (faxes: string[], force: boolean): string[] => {
-  if (process.env.TWILIO_DIVERT) return [receiveFax]
+  if (process.env.TWILIO_DIVERT) {
+    if (!receiveFax) {
+      console.log("It seems you might be trying to test" +
+                  " faxing but haven't set RECEIVE_FAX_NUMBER.")
+      return []
+    } else {
+      return [receiveFax]
+    }    
+  }
   if (!!process.env.EMAIL_FAX_OFFICIALS || force) return faxes
   return []
 }
