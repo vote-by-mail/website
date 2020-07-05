@@ -40,14 +40,14 @@ Below are the settings that need to be set to get an environment to work.
 
 - **Incoming fax numbers**: To test Twilio, we setup an incoming fax number.  ([FaxBurner](https://www.faxburner.com/)) offers a free temporary one.  Set `RECEIVE_FAX_NUMBER` to this number.
 
-- **Dev Firestore Access**: Goto the [Firebase Console](https://console.firebase.google.com/u/0/project/vbm-dev-281821/settings/serviceaccounts/adminsdk) and generate a new key and place it in `packages/server/secrets/[...].json`.
+- **Dev Firestore Access**: Goto the [Firebase Console](https://console.firebase.google.com/u/0/project/vbm-dev-281822/settings/serviceaccounts/adminsdk) and generate a new key and place it in `packages/server/secrets/[...].json`.
 Then make sure `env.js` has `GOOGLE_APPLICATION_CREDENTIALS` set to `./secrets/[...].json` (override using `developmentRaw`).
 
 - **Google OAuth**: (development of organizer-facing pages only) Following the instructions [here](http://www.passportjs.org/docs/google/):
 
-  1. Enable [Google+ API from the Console](https://console.developers.google.com/apis/api/plus.googleapis.com/overview?project=vbm-staging)
-  2. Once you have done the above, you should be able to turn on the [OAuth Conset screen](https://console.developers.google.com/apis/credentials/consent?project=vbm-staging)
-  3. Once you have done the above, you should be able to create [OAuth Credentials](https://console.developers.google.com/apis/credentials?project=vbm-staging)
+  1. Enable [Google+ API from the Console](https://console.developers.google.com/apis/api/plus.googleapis.com/overview?project=vbm-staging-281822)
+  2. Once you have done the above, you should be able to turn on the [OAuth Conset screen](https://console.developers.google.com/apis/credentials/consent?project=vbm-staging-281822)
+  3. Once you have done the above, you should be able to create [OAuth Credentials](https://console.developers.google.com/apis/credentials?project=vbm-staging-281822)
 
   Download and save these credentials for dev, prod, and staging.  Thes eare the `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` fields.
 
@@ -116,7 +116,7 @@ The best way to showcase changes to your site is to host your own staging instan
 The client is hosted by [Vercel](https://vercel.com/), which is also called Zeit and Now.  If you create and deploy to your own zeit hosting instance and point it to the dev or staging backend instance, you should be able to experiment / show off your own front-end.
 
 ### App Engine (Server Hosting)
-To get started, goto [AppEngine Getting Started](https://console.cloud.google.com/appengine/start?project=vbm-staging&folder&organizationId) and follow the prompts.
+To get started, goto [AppEngine Getting Started](https://console.cloud.google.com/appengine/start?project=vbm-staging-281822&folder&organizationId) and follow the prompts.
 
 Don't forget to set indexes.  To do this, run the command resulting from
 ```bash

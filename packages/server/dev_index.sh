@@ -1,1 +1,1 @@
-firebase --project vbm-dev-281821 firestore:indexes > firestore.indexes.json
+firebase --project vbm-dev-281822 firestore:indexes > firestore.indexes.json
