@@ -19,8 +19,8 @@ export const e164 = (number: string): string => {
 const tos = (faxes: string[], force: boolean): string[] => {
   if (process.env.TWILIO_DIVERT) {
     if (!receiveFax) {
-      console.log("It seems you might be trying to test" +
-                  " faxing but haven't set RECEIVE_FAX_NUMBER.")
+      console.log('It seems you might be trying to test' +
+                  ' faxing but haven\'t set RECEIVE_FAX_NUMBER.')
       return []
     } else {
       return [receiveFax]
