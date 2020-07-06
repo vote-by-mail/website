@@ -29,15 +29,15 @@ export const Footer = () => <FooterWrapper>
     Footer are subject to a redesign.
    */}
   <VBar/>
-  <a href='https://www.facebook.com/' rel='noopener noreferrer' target='_blank'>
+  <a href='https://www.facebook.com/Votebymailio-109972600781831/' rel='noopener noreferrer' target='_blank'>
     <i className='fa fa-facebook'/>
   </a>
   <VBar/>
-  <a href='https://twitter.com/votebymail?ref_src=twsrc%5Etfw' rel='noopener noreferrer' target='_blank'>
+  <a href='https://twitter.com/votebymailio?ref_src=twsrc%5Etfw' rel='noopener noreferrer' target='_blank'>
     <i className='fa fa-twitter'/>
   </a>
   <VBar/>
-  <a href='https://www.instagram.com/votebymail'>
+  <a href='https://www.instagram.com/votebymail.io'>
     <i className='fa fa-instagram'/>
   </a>
 </FooterWrapper>
