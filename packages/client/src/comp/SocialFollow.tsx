@@ -3,7 +3,7 @@ import { SocialButtonWrapper, openInNewWindow } from './SocialShare'
 import { RoundedButton } from './util/Button'
 
 const FollowTwitter: React.FC = () => {
-  const href = 'https://twitter.com/intent/follow?screen_name=votebymail'
+  const href = 'https://twitter.com/intent/follow?screen_name=votebymailio'
   return <SocialButtonWrapper
     title="Follow @VoteByMail on Twitter"
     onClick={() => openInNewWindow(href)}
@@ -16,7 +16,7 @@ const FollowTwitter: React.FC = () => {
 }
 
 const FollowInstagram: React.FC = () => {
-  const href = 'https://www.instagram.com/votebymail'
+  const href = 'https://www.instagram.com/votebymail.io'
 
   return <SocialButtonWrapper
     title="Follow @VoteByMail on Instagram"
@@ -34,7 +34,7 @@ const FollowInstagram: React.FC = () => {
 }
 
 const FollowFacebook: React.FC = () => {
-  const href = 'https://'
+  const href = 'https://www.facebook.com/Votebymailio-109972600781831/'
   return <SocialButtonWrapper
     title="Follow @VoteByMail on Facebook"
     onClick={() => openInNewWindow(href, 1024)}
