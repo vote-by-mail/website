@@ -1,18 +1,19 @@
 import React from 'react'
+
 import { SmallButton } from './Button'
-import { SignatureType } from './Signature'
+import { SignatureType } from '../../common'
 
 
 interface Props {
   children: (usedCanvas: SignatureType) => React.ReactNode
-  visible: boolean
+  visibleSwitchButton: boolean
   signatureType: SignatureType
   setSignatureType: (_: SignatureType) => void
 }
 
-export const Switchable: React.FC<Props> = ({children, visible, signatureType, setSignatureType}) => {
+export const Switchable: React.FC<Props> = ({children, visibleSwitchButton, signatureType, setSignatureType}) => {
   return <>
-    <div style={{display: visible ? 'flex' : 'none' , justifyContent: 'center'}}>
+    <div style={{display: visibleSwitchButton ? 'flex' : 'none' , justifyContent: 'center'}}>
       <SmallButton
         style={{marginRight: '0', borderRadius: '4px 0 0 4px'}}
         color='primary'
@@ -30,6 +31,6 @@ export const Switchable: React.FC<Props> = ({children, visible, signatureType, s
         Pad
       </SmallButton>
     </div>
-    {(visible && children) && children(signatureType)}
+    {(children) && children(signatureType)}
   </>
 }

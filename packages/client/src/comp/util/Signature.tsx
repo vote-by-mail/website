@@ -1,12 +1,12 @@
 import React from 'react'
+import styled from 'styled-components'
 
 import { Switchable } from './Switchable'
 import { Upload } from './Upload'
 import { Canvas } from './Canvas'
 import { useAppHistory } from '../../lib/path'
-import styled from 'styled-components'
+import { SignatureType } from '../../common'
 
-export type SignatureType = 'canvas' | 'upload'
 
 const width = 300
 const height = width / 1.618
@@ -25,7 +25,7 @@ type Props = React.PropsWithChildren<{
 export const Signature: React.FC<Props> = ({ setSignature, setSignatureType, signatureType }) => {
   const { query } = useAppHistory()
   return <Margin>
-    <Switchable visible={query['case'] !== 'upload'} signatureType={signatureType} setSignatureType={setSignatureType}>
+    <Switchable visibleSwitchButton={query['case'] !== 'upload'} signatureType={signatureType} setSignatureType={setSignatureType}>
     {
       (signatureType) => {
         if (signatureType === 'canvas') {
