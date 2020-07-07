@@ -93,7 +93,7 @@ export const GetInvolved: React.FC = () => {
               More Info...
             </a>
           </p>
-          <UnderlineAnchor href="#contact" onClick={() => pushStartSection('contact')}>
+          <UnderlineAnchor onClick={() => pushStartSection('contact')}>
             Contact us
           </UnderlineAnchor>
         </Card>
@@ -109,7 +109,7 @@ export const GetInvolved: React.FC = () => {
               More Info...
             </a>
           </p>
-          <UnderlineAnchor href="#contact" onClick={() => pushStartSection('contact')}>
+          <UnderlineAnchor onClick={() => pushStartSection('contact')}>
             Contact us
           </UnderlineAnchor>
         </Card>
