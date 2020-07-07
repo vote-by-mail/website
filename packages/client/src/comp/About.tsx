@@ -106,7 +106,7 @@ export const About: React.FC = () => {
           COVID-19 has catalyzed interest in Vote by Mail. VoteByMail streamlines government vote-by-mail applications by digitizing the voter&apos;s signup process. VoteByMail drives voter turnout in key swing states by helping organizes sign up voters to be able to vote-by-mail.
         </p>
         <p>
-          <a href="https://votebymail.io" target="_blank" rel="noopener noreferrer">VoteByMail</a> is a <a href="https://www.voteathome.org" target="_blank" rel="noopener noreferrer">Vote at Home</a> project. We are a non-partisan non-profit {/* Organization? */} that empowers voters, letting them decide when, how and where they vote.
+          <a href="https://votebymail.io" target="_blank" rel="noopener noreferrer">VoteByMail</a> is a Civex Inc project. We are a non-partisan non-profit Organization that empowers voters, letting them decide when, how and where they vote.
         </p>
       </Headline>
       <Social>
