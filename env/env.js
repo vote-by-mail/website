@@ -106,7 +106,6 @@ const production = removeNullValues({
   GOOGLE_STORAGE_BUCKET: 'vbm-prod-281822.appspot.com',
   EMAIL_FAX_OFFICIALS: 1,
   TWILIO_DIVERT: undefined,
-  REACT_APP_PARDON: 1,
 })
 
 const test = removeNullValues({
