@@ -174,4 +174,8 @@ For every environment (e.g. development, staging, production),
 This repository is for VoteByMail.io.
 
 ## Contributors
-- [tianhuil](https://github.com/tianhuil/)
+- [Tianhui Michael Li](https://github.com/tianhuil/)
+- [Lukas Danin](https://github.com/ludanin/)
+- [Marco Carvalho](https://github.com/marcoacfilho/)
+- [Luca Loncar](https://github.com/Luca409/)
+- [Long Ton That](https://github.com/longtonthat/)
