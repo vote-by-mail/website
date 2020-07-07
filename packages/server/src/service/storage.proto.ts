@@ -2,7 +2,7 @@ import { StorageFile } from './storage'
 import fs from 'fs'
 
 const main = async () => {
-  const buffer = fs.readFileSync('test.pdf')
+  const buffer = fs.readFileSync(__dirname + '/test/test.pdf')
   const file = new StorageFile('test/test.pdf')
   const result = await file.upload(buffer)
   console.log(result)
