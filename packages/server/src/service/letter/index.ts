@@ -77,8 +77,8 @@ export class Letter {
     this.subject = customSubject ?? subject(info.state)
     this.method = method
     this.info = info,
-    this.signatureAttachment = this.makeAttachment('signature')
-    this.idPhotoAttachment = this.makeAttachment('identification')
+    this.signatureAttachment = this.makeAttachment(info.signature, 'signature')
+    this.idPhotoAttachment = this.makeAttachment(info.idPhoto, 'identification')
     this.form = pdfForm(info)
   }
 
@@ -120,19 +120,17 @@ export class Letter {
    * (i.e. invalid image) it also returns undefined but logs the incident
    * on the console.
    *
+   * @param image media metadata + Base64 encoded string
    * @param filename Will define the title of the filename
    */
-  private makeAttachment = (filename: 'signature' | 'identification') => {
-    const image = filename === 'signature' ? this.info.signature : this.info.idPhoto
-
+  private makeAttachment = (image: string | undefined, filename: 'signature' | 'identification') => {
     if (!image) {
       return undefined
     }
 
     const match = image.match(/data:image\/(.+);base64,(.+)/)
 
-    // this.isValid() will be able to identify this Letter has issues,
-    // being able to properly report errors later on.
+    // Log on the console about invalid image
     if (!match) {
       console.log(`Unable to read image ${filename} image to ${this.info.email}. Omitting attachment.`)
       return undefined
