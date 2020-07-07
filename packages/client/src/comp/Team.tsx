@@ -15,6 +15,7 @@ import lucaLoncar from './img/avatars/lucaLoncar.png'
 import maryPenckofer from './img/avatars/maryPenckofer.png'
 import sophieHodge from './img/avatars/sophieHodge.png'
 import tristanWagner from './img/avatars/tristanWagner.png'
+import leahTaubitz from './img/avatars/leahTaubitz.png'
 
 const Wrapper = styled(FullscreenWrapper)`
   .mui-container > p, .mui-container > h4 {
@@ -107,7 +108,6 @@ interface PersonProps {
    */
   img: string
   name: string
-  title?: string
   description: string
   /** Pass only the username and not full url through this prop */
   twitter?: string
@@ -115,21 +115,19 @@ interface PersonProps {
   github?: string
   /** Pass only the username and not full url through this prop */
   linkedin?: string
-  email?: string
 }
 const Person: React.FC<PersonProps> = ({
-  img, name, title, description,
-  twitter, github, linkedin, email,
+  img, name, description,
+  twitter, github, linkedin,
 }) => {
   return <PersonStyle>
     <img src={img} alt={name}/>
-    <div className="title">{name}{title && `, ${title}`}</div>
+    <div className="title">{name}</div>
     <p>{description}</p>
     <div className="social">
       {twitter && <a href={`https://twitter.com/${twitter}`} target="_blank" rel="noopener noreferrer"><i className="fa fa-twitter"/></a>}
       {linkedin && <a href={`https://www.linkedin.com/in/${linkedin}`} target="_blank" rel="noopener noreferrer"><i className="fa fa-linkedin"/></a>}
       {github && <a href={`https://github.com/${github}`} target="_blank" rel="noopener noreferrer"><i className="fa fa-github"/></a>}
-      {email && <a href={`mailto:${email}`} target="_blank" rel="noopener noreferrer"><i className="fa fa-envelope-o"/></a>}
     </div>
   </PersonStyle>
 }
@@ -141,105 +139,69 @@ export const Team: React.FC = () => {
     <Container>
       <h1>Who are we?</h1>
       <p>
-        VoteByMail.io is a <a href="https://www.voteathome.org" target="_blank" rel="noopener noreferrer">National Vote at Home Institute project</a>. The National Vote at Home Institute is a non-partisan, 501(c)3 dedicated to promoting vote by mail.
+        VoteByMail.io is a Civex Inc project developed by a team of enthusiastic volunteer technologists.
       </p>
-      <p>The project is developed by a team of enthusiastic volunteer technologists.</p>
 
       <PeopleWrapper>
         <Person
           img={michaelLi}
           name='Michael Li'
-          title='Title'
           description='I’m a data scientist, software engineer, and entrepreneur turned democracy advocate.'
           twitter='tianhuil'
           github='tianhuil'
           linkedin='tianhuil'
-          email='michael@votebymail.io'
         />
         <Person
           img={brettClarke}
           name='Brett Clarke'
-          title='Title'
           description='Finishing up my second year of Teach For America. I currently teach high school biology on the south side of chicago. '
           linkedin='brett-clarke-a89200198'
-          email='brettclarke72@gmail.com'
         />
         <Person
           img={lucaLoncar}
           name='Luca Loncar'
-          title='Title'
           description="I'm a software engineer with 2 years of experience, looking for the best way to use the skills I've developed for a cause I believe in!"
           github='Luca409'
           linkedin='luca-loncar'
-          email='lucaloncar@gmail.com'
         />
         <Person
-          img={""}
-          name='Nick Pellitta'
-          title='Title'
-          description='Currently finishing a international fellowship called Schwarzman Scholars, rising J.D. candidate at Yale Law.'
-          linkedin='nicholaspellitta'
-          email='nickpellitta@gmail.com'
-        />
-        <Person
-          img={''}
+          img={leahTaubitz}
           name='Leah Taubitz'
-          title='Title'
           description="I'm a second year special education teacher in a low-income community on the South Side of Chicago. I graduated from the University of Michigan in 2018 with a BA in Political Science, and just earned a MA in Teaching Exceptional Learners from Relay GSE last month."
           linkedin='leah-taubitz-614355117'
-          email='leahtaubitz@gmail.com'
         />
         <Person
           img={maryPenckofer}
           name='Mary Penckofer'
-          title='Title'
           description="I'm a Pre-K teacher in a CPS school. I graduated from Northwestern University in 2019 with a BA in Neuroscience. I am working on my MA in Early Childhood Educaiton from National Louis University."
-          email='marypenckofer@gmail.com'
         />
         <Person
           img={tristanWagner}
           name='Tristan Wagner'
-          title='Title'
           description="Data scientist with a background in operations research, electronics manufacturing, and engineering management. Due to Oregon's long vote-by-mail history, it's the only way I've ever voted!
           "
           github='twagner000'
           linkedin='tristanwagner'
-          email='tristan.wagner@gmail.com'
         />
         <Person
           img={longTonThat}
           name='Long Ton-That'
-          title='Title'
           description="I'm from Portland Oregon, where we've been voting by mail for a long time now, so I'm very excited to make it more accessible to people from other states!  I'm a Software Engineer that focuses on Java backends, but passionate about front-end technologies."
           github='longtonthat'
           linkedin='longtonthat'
-          email='long.d.tonthat@gmail.com'
         />
         <Person
           img={louisReid}
           name='Louis Reid'
-          title='Title'
           description="Louis has spent over a decade in development and design, including three years explicitly working on visual design across startups and agencies. He brings design thinking to product, brand and public services and is keenly interested and believes in the catalysing potential of business to drive positive social change."
           linkedin='louisreiduk'
           twitter='louisreid'
-          email='louis@round-table.co.uk'
-        />
-        <Person
-          img={''}
-          name='Jonas Horne'
-          title='Title'
-          description="Jonah is a graphic designer who specialises in typography and branding. His work is shaped by a research intensive methodology, resulting in thorough and well considered design. For years he has worked in a diverse range of settings, from large branding agencies to boutique-type foundries. Other interests include Liverpool FC, monastic communities and mid-century modern furniture."
-          linkedin='jonah-horne-661a9965'
-          twitter='jonah-horne'
-          email='jonah@round-table.co.uk'
         />
         <Person
           img={sophieHodge}
           name='Sophie Hodge'
-          title='Title'
           description="Sophie is a UX Designer in London, UK, with a background in psychology and mental health. She's motivated by affecting social good and helping her community at large. In her spare time she illustrates a webcomic about sharks."
           linkedin='sophie-hodge-ux'
-          email='sophie.hodge@gmail.com'
         />
       </PeopleWrapper>
 
