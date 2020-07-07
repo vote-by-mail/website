@@ -27,6 +27,8 @@ export const isImplementedState = (x: string): x is ImplementedState => implemen
 export type ImplementedStateField = {state: ImplementedState}
 export const isImplementedLocale = (l: Locale): l is Locale<ImplementedState> => implementedStates.some(state => state === l.state)
 
+export type SignatureType = 'canvas' | 'upload'
+
 export interface BaseInfo extends Locale {
   state: ImplementedState
   name: string
@@ -41,7 +43,7 @@ export interface BaseInfo extends Locale {
   userAgent?: string
   idPhoto?: string
   signature?: string
-  signatureType?: 'canvas' | 'upload'
+  signatureType?: SignatureType
   contact: ContactData
 }
 
