@@ -71,10 +71,9 @@ export class Letter {
     info: StateInfo,
     method: ContactMethod,
     confirmationId: string,
-    customSubject?: string,
   ) {
     this.confirmationId = confirmationId
-    this.subject = customSubject ?? subject(info.state)
+    this.subject = subject(info.state)
     this.method = method
     this.info = info,
     this.signatureAttachment = this.makeAttachment(info.signature, 'signature')
