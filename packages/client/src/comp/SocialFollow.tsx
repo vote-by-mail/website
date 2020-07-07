@@ -4,11 +4,12 @@ import { Button } from 'muicss/react'
 
 const FollowTwitter: React.FC = () => {
   const href = 'https://twitter.com/intent/follow?screen_name=votebymailio'
-  return <SocialButtonWrapper
-    title="Follow @VoteByMail on Twitter"
-    onClick={() => openInNewWindow(href)}
-  >
-    <Button color='primary' style={{ backgroundColor: '#00acee' }}>
+  return <SocialButtonWrapper title="Follow @VoteByMail on Twitter">
+    <Button
+      onClick={() => openInNewWindow(href)}
+      color='primary'
+      style={{backgroundColor: '#00acee'}}
+    >
       <i className="fa fa-twitter"/>
       <span>Follow</span>
     </Button>
@@ -17,7 +18,6 @@ const FollowTwitter: React.FC = () => {
 
 const FollowInstagram: React.FC = () => {
   const href = 'https://www.instagram.com/votebymail.io'
-
   return <SocialButtonWrapper title="Follow @VoteByMail on Instagram">
     <Button
       onClick={() => openInNewWindow(href)}
@@ -35,11 +35,12 @@ const FollowInstagram: React.FC = () => {
 
 const FollowFacebook: React.FC = () => {
   const href = 'https://www.facebook.com/Votebymailio-109972600781831/'
-  return <SocialButtonWrapper
-    title="Follow @VoteByMail on Facebook"
-    onClick={() => openInNewWindow(href, 1024)}
-  >
-    <Button color='primary' style={{ backgroundColor: '#3b5998' }}>
+  return <SocialButtonWrapper title="Follow @VoteByMail on Facebook">
+    <Button
+      onClick={() => openInNewWindow(href, 1024)}
+      color='primary'
+      style={{backgroundColor: '#3b5998'}}
+    >
       <i className="fa fa-facebook"/>
       <span>Follow</span>
     </Button>
