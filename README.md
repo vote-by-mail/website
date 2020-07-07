@@ -147,6 +147,29 @@ We're using [Marked](https://www.npmjs.com/package/marked), which has more depen
 ### Notifications
 We're using [Toast](https://www.npmjs.com/package/react-toastify) for notifications.  The general style is to not report success, occasionally report queries about loading, and always report errors.
 
+## Setting Up an Instance
+Setting up an instance requires rewiring the environment variables in `env.js`.  Below are a set of checks to ensure that your new instance is working.  These checks assume that tests are passing and only check that the environment variables are set correctly.
+
+Remember that if the client and server start up, there is already some confidence that the right variables are set (processEnvOrThrow would have thrown if no value were provided). However, it doesn't check that we have copied the correct API keys.
+
+For every environment (e.g. development, staging, production),
+
+- Make sure that the right environment variables are set for the right environment (e.g. staging `GCLOUD_PROJECT` and `GOOGLE_APPLICATION_CREDENTIALS` are set for staging and not production).
+- Sign up for `default` org landing page
+- Test email API using `mg.proto.ts`
+- Test fax using `twillio.proto.ts`.  You need to set a valid incoming fax number for testing
+- Test geocoding and Google Maps using `gm.proto.ts`.  Try an address in Michigan (for which there are separate rules) and
+- Test pdf generation using `pdf.proto.ts`
+- Test Google Storage using `storage.proto.ts`
+- Test firestore using `firestore.proto.ts` (**NB:** thsis needs to be created)
+- Make sure that the firestore permissions are not public (see `firestore.rules`)
+- Test Google OAuth for the organizer account by logging in with a Gmail account
+- Test that the right Google Analytics environment fired after you visited the site.
+- Test the [organizer workflow](https://docs.google.com/document/d/1341vB4gQin_dPyweDQc_rUSAzch85Q8ouQbAjokxBCo/edit#heading=h.gjdgxs) -- signing up as an organizer, creating a custom landing page, registering as a voter on the custom landing page, and observing the voter's record -- works.  Clearly, this cannot be done on production.
+- Test that submitting a voter from every state generates a confirmation email to the voter.  Check the corresponding firestore database and Google Storage for the environment (to ensure that the right project was added).  This cannot be done on production.  However, if this and all previous tests have worked in production, we should be highly confident that it will work in production as well.
+- Get a resident of a state to sign up in production.
+- Increase your billing quota in GCloud for production and staging.
+
 ## About Us
 This repository is for VoteByMail.io.
 
