@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { useAppHistory } from '../lib/path'
 import { cssQuery } from './util/cssQuery'
 import { FullscreenWrapper } from './util/FullscreenWrapper'
-import { UnderlineAnchor } from './util/UnderlineAnchor'
+import { UnderlineLink } from './util/UnderlineLink'
 import { Container } from 'muicss/react'
 
 import michaelLi from './img/avatars/michaelLi.png'
@@ -204,9 +204,9 @@ export const Team: React.FC = () => {
       <h4>
         Interested in volunteering with VoteByMail? We&apos;d love to hear from you even if you&apos;re unsure how you could help!
       </h4>
-      <UnderlineAnchor onClick={() => pushStartSection('contact')}>
+      <UnderlineLink to="#contact" onClick={() => pushStartSection('contact')}>
         How to get involved
-      </UnderlineAnchor>
+      </UnderlineLink>
     </Container>
   </Wrapper>
 }

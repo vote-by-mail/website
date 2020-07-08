@@ -250,26 +250,26 @@ export const Navbar = () => {
   }
 
   return <Wrapper expanded={linksExpanded} visible={visible}>
-    <Logo to="#" onClick={() => pushAndClose('start')}>
-        <img src={logo} alt="VoteByMail"/>
+    <Logo to='#' onClick={() => pushAndClose('start')}>
+        <img src={logo} alt='VoteByMail'/>
     </Logo>
-    <NavLinksToggle onClick={toggleLinksExpanded} expanded={linksExpanded} variant="flat">
+    <NavLinksToggle onClick={toggleLinksExpanded} expanded={linksExpanded} variant='flat'>
       <i className={`fa ${linksExpanded ? 'fa-close' : 'fa-navicon'}`}/>
     </NavLinksToggle>
     <NavLinks expanded={linksExpanded}>
-      <Link to="#howItWorks" onClick={() => pushAndClose('howItWorks')}>
+      <Link to='#howItWorks' onClick={() => pushAndClose('howItWorks')}>
         How does it work?
       </Link>
-      <Link to="#getInvolved" onClick={() => pushAndClose('getInvolved')}>
+      <Link to='#getInvolved' onClick={() => pushAndClose('getInvolved')}>
         Get Involved
       </Link>
-      <Link to="#team" onClick={() => pushAndClose('team')}>
+      <Link to='#team' onClick={() => pushAndClose('team')}>
         Team
       </Link>
-      <Link to="#contact" onClick={() => pushAndClose('contact')}>
+      <Link to='#contact' onClick={() => pushAndClose('contact')}>
         Contact Us
       </Link>
-      <a className="register" href="#register">
+      <a className='register' href='#register'>
         Register
       </a>
     </NavLinks>

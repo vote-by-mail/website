@@ -1,10 +1,11 @@
 import styled from 'styled-components'
+import { Link } from 'react-router-dom'
 
 /**
  * Creates an HTML Anchor element where its underline is padded by a few
  * pixels from the text.
  */
-export const UnderlineAnchor = styled.a`
+export const UnderlineLink = styled(Link)`
   text-transform: uppercase;
   font-weight: bold;
   font-size: 0.8em;

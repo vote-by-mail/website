@@ -8,7 +8,7 @@ import { useAppHistory } from '../lib/path'
 import { cssQuery } from './util/cssQuery'
 import { FullscreenWrapper } from './util/FullscreenWrapper'
 import { Container } from 'muicss/react'
-import { UnderlineAnchor } from './util/UnderlineAnchor'
+import { UnderlineLink } from './util/UnderlineLink'
 
 const bgGradient = 'linear-gradient(to left, rgba(0, 89, 186, 0.9), rgba(0, 89, 186, 0.9))'
 
@@ -93,9 +93,9 @@ export const GetInvolved: React.FC = () => {
               More Info...
             </a>
           </p>
-          <UnderlineAnchor onClick={() => pushStartSection('contact')}>
+          <UnderlineLink to='#contact' onClick={() => pushStartSection('contact')}>
             Contact us
-          </UnderlineAnchor>
+          </UnderlineLink>
         </Card>
         <Card>
           <div className="imgWrapper">
@@ -109,9 +109,9 @@ export const GetInvolved: React.FC = () => {
               More Info...
             </a>
           </p>
-          <UnderlineAnchor onClick={() => pushStartSection('contact')}>
+          <UnderlineLink to='#contact' onClick={() => pushStartSection('contact')}>
             Contact us
-          </UnderlineAnchor>
+          </UnderlineLink>
         </Card>
       </CardWrapper>
     </Container>
