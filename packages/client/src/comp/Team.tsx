@@ -141,7 +141,7 @@ export const Team: React.FC = () => {
         <Person
           img={michaelLi}
           name='Michael Li'
-          description='I’m a data scientist, software engineer, and entrepreneur turned democracy advocate.'
+          description="I’m a data scientist, software engineer, and entrepreneur turned democracy advocate. I grew up voting by mail and want to help support it in other states."
           twitter='tianhuil'
           github='tianhuil'
           linkedin='tianhuil'
@@ -155,20 +155,20 @@ export const Team: React.FC = () => {
         <Person
           img={lucaLoncar}
           name='Luca Loncar'
-          description="I'm a software engineer with 2 years of experience, looking for the best way to use the skills I've developed for a cause I believe in!"
+          description="I'm a Google software engineer with 2 years of experience, looking for the best way to use the skills I've developed for a cause I believe in!"
           github='Luca409'
           linkedin='luca-loncar'
         />
         <Person
           img={leahTaubitz}
           name='Leah Taubitz'
-          description="I'm a second year special education teacher in a low-income community on the South Side of Chicago. I graduated from the University of Michigan in 2018 with a BA in Political Science, and just earned a MA in Teaching Exceptional Learners from Relay GSE last month."
+          description="I'm a second year special education teacher in a low-income community on the South Side of Chicago. I graduated from the University of Michigan in 2018 with a BA in Political Science."
           linkedin='leah-taubitz-614355117'
         />
         <Person
           img={maryPenckofer}
           name='Mary Penckofer'
-          description="I'm a Pre-K teacher in a CPS school. I graduated from Northwestern University in 2019 with a BA in Neuroscience. I am working on my MA in Early Childhood Educaiton from National Louis University."
+          description="I'm a Pre-K teacher in a CPS school. I graduated from Northwestern University in 2019 with a BA in Neuroscience. I graduated from Northwestern University in 2019 with a BA in Neuroscience."
         />
         <Person
           img={tristanWagner}
@@ -181,21 +181,21 @@ export const Team: React.FC = () => {
         <Person
           img={longTonThat}
           name='Long Ton-That'
-          description="I'm from Portland Oregon, where we've been voting by mail for a long time now, so I'm very excited to make it more accessible to people from other states!  I'm a Software Engineer that focuses on Java backends, but passionate about front-end technologies."
+          description="I'm a lead software engineer at Nike.  I'm from Portland Oregon, where we've been voting by mail for a long time now, so I'm very excited to make it more accessible to people from other states!"
           github='longtonthat'
           linkedin='longtonthat'
         />
         <Person
           img={louisReid}
           name='Louis Reid'
-          description="Louis has spent over a decade in development and design, including three years explicitly working on visual design across startups and agencies. He brings design thinking to product, brand and public services and is keenly interested and believes in the catalysing potential of business to drive positive social change."
+          description="I've has spent over a decade in development and design, including three years explicitly working on visual design across startups and agencies."
           linkedin='louisreiduk'
           twitter='louisreid'
         />
         <Person
           img={sophieHodge}
           name='Sophie Hodge'
-          description="Sophie is a UX Designer in London, UK, with a background in psychology and mental health. She's motivated by affecting social good and helping her community at large. In her spare time she illustrates a webcomic about sharks."
+          description="I'm a UX Designer in London, UK, with a background in psychology and mental health. I'm motivated by affecting social good and helping my community at large."
           linkedin='sophie-hodge-ux'
         />
       </PeopleWrapper>
