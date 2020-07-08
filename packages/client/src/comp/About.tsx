@@ -82,8 +82,9 @@ const Social = styled.div`
   display: flex;
   flex-flow: row wrap;
   box-sizing: border-box;
-  padding: 0 30%;
+  padding: 0 15%;
   ${cssQuery.mobile.narrow} { padding: 0; }
+  ${cssQuery.desktop.all} { padding: 0 30%; }
   h5 {
     /* So it is not wrapped */
     width: 100%;
