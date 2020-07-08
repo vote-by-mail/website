@@ -96,7 +96,7 @@ export const Contact: React.FC = () => {
       <Headline>
         <h1>Contact us</h1>
         <p>
-          Questions about our process, our team or anything else? Get in touch!
+          Questions about our process, our team, or anything else? Get in touch!
         </p>
       </Headline>
 
