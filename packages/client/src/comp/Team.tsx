@@ -169,6 +169,7 @@ export const Team: React.FC = () => {
           img={maryPenckofer}
           name='Mary Penckofer'
           description="I'm a Pre-K teacher in a CPS school. I graduated from Northwestern University in 2019 with a BA in Neuroscience. I graduated from Northwestern University in 2019 with a BA in Neuroscience."
+          linkedin='mary-penckofer-4b3472178'
         />
         <Person
           img={tristanWagner}
@@ -203,7 +204,7 @@ export const Team: React.FC = () => {
       <h4>
         Interested in volunteering with VoteByMail? We&apos;d love to hear from you even if you&apos;re unsure how you could help!
       </h4>
-      <UnderlineAnchor href="#getInvolved" onClick={() => pushStartSection('contact')}>
+      <UnderlineAnchor onClick={() => pushStartSection('contact')}>
         How to get involved
       </UnderlineAnchor>
     </Container>
