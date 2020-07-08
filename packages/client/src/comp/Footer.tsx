@@ -20,9 +20,7 @@ export const Footer = () => <FooterWrapper>
   <VBar/>
   <Link to='/about'>About Us</Link>
   <VBar/>
-  <a href='https://www.votebymail.io/site-terms/'>Privacy Policy</a>
-  <VBar/>
-  <a href='https://www.votebymail.io/site-terms/'>Terms of Service</a>
+  <Link to='/privacy-policy'>Privacy Policy</Link>
 
   {/*
     These are temporary social links, since the home page, including the
