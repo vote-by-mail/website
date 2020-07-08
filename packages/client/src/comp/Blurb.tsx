@@ -63,7 +63,7 @@ export const Blurb: React.FC = () => {
         VoteByMail streamlines state vote-by-mail applications by digitizing the voter’s signup process.
       </h3>
       <h5 style={{ fontWeight: 'normal', margin: '2em 0' }}>
-        Enter your ZIP Code to get started
+        Enter the ZIP code where you are registered to vote.
       </h5>
       <EnterZip/>
     </Container>

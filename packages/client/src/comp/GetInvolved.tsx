@@ -89,7 +89,7 @@ export const GetInvolved: React.FC = () => {
           <p>
             We collaborate closely with election officials to help streamline their workflows.
             {' '}
-            <a href='https://docs.google.com/document/d/1JK57T7QcBcF3-uaSo0bNbGahdRD6qpkvgtOh-4FFYfs/edit#bookmark=kix.97i44inhfzdp' rel='noopener noreferrer' target='_blank'>
+            <a href='https://docs.google.com/document/d/11twfdGrndTYE2l3xhNoUHHx4QZk0Q5iO5eLYrBdD3UA/edit?usp=sharing' rel='noopener noreferrer' target='_blank'>
               More Info...
             </a>
           </p>
@@ -105,7 +105,7 @@ export const GetInvolved: React.FC = () => {
           <p>
             We provide 100% free tools for organizers to mobilize voters to track signups through our platform.
             {'  '}
-            <a href='https://docs.google.com/document/d/1DHkjoFGPOXx9RaHYWgZ0Z2CJtF3_Fs5NwiA2z_Joz-Y/edit#heading=h.wz7ldwdgecc0' rel='noopener noreferrer' target='_blank'>
+            <a href='https://docs.google.com/document/d/1341vB4gQin_dPyweDQc_rUSAzch85Q8ouQbAjokxBCo/edit?usp=sharing' rel='noopener noreferrer' target='_blank'>
               More Info...
             </a>
           </p>

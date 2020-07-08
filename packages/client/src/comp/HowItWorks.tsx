@@ -84,6 +84,9 @@ export const HowItWorks: React.FC = () => {
         </p>
         <h5>Sign up before your state deadline</h5>
       </Headline>
+      <p>
+        Use the ZIP code of the state you are registered to vote.
+      </p>
       <EnterZip/>
       <Steps>
         <Col md={4} sm={12}>
