@@ -19,9 +19,9 @@ export const cssQuery = {
     /** Devices that are at least 992px wide, 520px tall, and on landscape */
     get all() { return `${media} ${minWidth(992)} and ${minHeight(520)} and ${landscape}` },
     /** Devices up to 1199px and landscape */
-    get narrow() { return `${media} ${maxWidth(1119)} and ${landscape}` },
+    get narrow() { return `${media} ${maxWidth(1119)} and ${minHeight(520)} and ${landscape}` },
     /** Devices at least 1200px wide */
-    get wide() { return `${media} ${minWidth(1200)} and ${landscape}` },
+    get wide() { return `${media} ${minWidth(1200)} and ${minHeight(520)} and ${landscape}` },
 
     /** Devices that have up to 769px available for height */
     get short() {
