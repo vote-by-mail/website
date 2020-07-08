@@ -132,9 +132,9 @@ export const Team: React.FC = () => {
 
   return <Wrapper columnChildContent={true} centerChildContent={true}>
     <Container>
-      <h1>Who are we?</h1>
+      <h1>Team</h1>
       <p>
-        VoteByMail.io is a Civex Inc project developed by a team of enthusiastic volunteer technologists.
+        <a href='https://votebymail.io'>VoteByMail.io</a> is a Civex Inc project developed by a team of enthusiastic volunteer technologists.
       </p>
 
       <PeopleWrapper>
