@@ -20,6 +20,7 @@ import { StateRedirect } from './comp/StateRedirect'
 import { MockPage } from './comp/MockPage'
 import { StyleContainer } from './comp/util/Container'
 import { Pardon } from './comp/Pardon'
+import { PrivacyPolicy } from './comp/PrivacyPolicy'
 
 const TallStyleContainer = styled(StyleContainer)`
   min-height: 100vh;
@@ -37,6 +38,11 @@ const Layout = () => {
       <Route path='/about'>
         <TallStyleContainer>
           <About/>
+        </TallStyleContainer>
+      </Route>
+      <Route path='/privacy-policy'>
+        <TallStyleContainer>
+          <PrivacyPolicy/>
         </TallStyleContainer>
       </Route>
       <Redirect exact from='/' to={defaultUrl}/>
