@@ -60,7 +60,7 @@ export const Blurb: React.FC = () => {
   return <Wrapper columnChildContent={true} centerChildContent={true}>
     <Container>
       <h3>
-        Online Sign up for Vote by Mail in 2 minutes
+        Sign up online for Vote by Mail in 2 minutes
       </h3>
       <h5 style={{ fontWeight: 'normal', margin: '2em 0' }}>
         Enter the ZIP code where you are registered to vote.

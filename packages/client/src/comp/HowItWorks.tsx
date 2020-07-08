@@ -80,9 +80,12 @@ export const HowItWorks: React.FC = () => {
       <Headline>
         <h4>How does it work?</h4>
         <p>
-        VoteByMail streamlines state vote-by-mail applications by digitizing the voter’s signup process.
+          VoteByMail.io streamlines state vote-by-mail applications by digitizing the voter signup process.
         </p>
-        <h5>Sign up before your state deadline</h5>
+        <h5>Sign up before your state deadline expires</h5>
+        <p>
+          <i className="fa fa-clock-o"/> Takes 2 minutes.
+        </p>
       </Headline>
       <p>
         Use the ZIP code of the state you are registered to vote.
@@ -94,21 +97,21 @@ export const HowItWorks: React.FC = () => {
             <img src={iconPen} alt="Sign Up"/>
           </div>
           <h5>1. Sign up</h5>
-          <p>Fill out your vote by mail signup information on our website</p>
+          <p>Fill out your vote-by-mail signup in 2 minutes at <a href='https://votebymail.io'>VoteByMail.io</a></p>
         </Col>
         <Col md={4} sm={12}>
           <div className="imgWrapper">
-            <img src={iconBallot} alt="Wait for your ballot"/>
+            <img src={iconBallot} alt="We do the work"/>
           </div>
-          <h5>2. Wait for your ballot</h5>
-          <p>Relax. We immediately send you and your local election official your request</p>
+          <h5>2. We do the work</h5>
+          <p>We send your application to your election official (and a copy to you)</p>
         </Col>
         <Col md={4} sm={12}>
           <div className="imgWrapper">
             <img src={iconPlane} alt="Vote"/>
           </div>
           <h5>3. Vote</h5>
-          <p>Fill out your ballot from the comfort of your own home and mail it back</p>
+          <p>Your ballot arrives in the mail.  Fill it out at home and mail it back.</p>
         </Col>
       </Steps>
     </Container>
