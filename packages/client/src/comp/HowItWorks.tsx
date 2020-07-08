@@ -11,13 +11,11 @@ import { FullscreenWrapper } from './util/FullscreenWrapper'
 
 const Wrapper = styled(FullscreenWrapper)`
   background-color: #fafafa;
-
-  form { margin: 1.5em 0; }
 `
 
 const Headline = styled.div`
   text-align: center;
-  p { margin: 1em 0 2em; }
+  p { margin: 1em 0; }
   ${cssQuery.desktop.all} {
     width: 55%;
   }
@@ -61,46 +59,64 @@ const Steps = styled(Row)`
   }
 `
 
+const CallToAction = styled.div`
+  h5 {
+    font-weight: normal;
+    margin: 2em 0 1em;
+  }
+
+  form {
+    margin: 1.5em 0;
+  }
+`
+
 export const HowItWorks: React.FC = () => {
   return <Wrapper centerChildContent={true} columnChildContent={true}>
     <Container>
       <Headline>
         <h4>How does it work?</h4>
         <p>
-          VoteByMail.io streamlines state vote-by-mail applications by digitizing the voter signup process.
-        </p>
-        <h5>Sign up before your state deadline expires</h5>
-        <p>
-          <i className="fa fa-clock-o"/> Takes 2 minutes.
+          VoteByMail.io simplifies the state vote-by-mail signup process.
         </p>
       </Headline>
-      <p>
-        Use the ZIP code of the state you are registered to vote.
-      </p>
-      <EnterZip/>
+
+
       <Steps>
         <Col md={4} sm={12}>
           <div className="imgWrapper">
             <img src={iconPen} alt="Sign Up"/>
           </div>
-          <h5>1. Sign up</h5>
-          <p>Fill out your vote-by-mail signup in 2 minutes at <a href='https://votebymail.io'>VoteByMail.io</a></p>
+          <h5>1. You sign up</h5>
+          <p>Sign up below for vote by mail.  The aplication is sent to your election official.</p>
         </Col>
         <Col md={4} sm={12}>
           <div className="imgWrapper">
             <img src={iconBallot} alt="We do the work"/>
           </div>
-          <h5>2. We do the work</h5>
-          <p>We send your application to your election official (and a copy to you)</p>
+          <h5>2. Relax</h5>
+          <p>Sit back.  Your ballot arrives in the mail a few weeks before election day.</p>
         </Col>
         <Col md={4} sm={12}>
           <div className="imgWrapper">
             <img src={iconPlane} alt="Vote"/>
           </div>
           <h5>3. Vote</h5>
-          <p>Your ballot arrives in the mail.  Fill it out at home and mail it back.</p>
+          <p>Fill out your ballot from the comfort of your home and mail it back.</p>
         </Col>
       </Steps>
+      <CallToAction>
+        <h5>
+          Enter your voter registration ZIP code to get started.
+        </h5>
+        <p><small>
+          <i style={{color:'rgb(220, 14, 82)'}} className="fa fa-clock-o"/> Takes 2 minutes
+        </small>
+        </p>
+        <p><small>
+          <i style={{color:'rgb(220, 14, 82)'}} className="fa fa-hourglass-half"/> State deadlines approaching
+        </small></p>
+      </CallToAction>
+      <EnterZip/>
     </Container>
   </Wrapper>
 }

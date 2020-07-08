@@ -51,6 +51,11 @@ const Wrapper = styled(FullscreenWrapper)`
   ${cssQuery.mobile.landscape.all} {
     h3 { width: 70%; }
   }
+
+  h5 {
+    font-weight: normal;
+    margin: 2em 0;
+  }
 `
 
 export const Blurb: React.FC = () => {
@@ -62,8 +67,8 @@ export const Blurb: React.FC = () => {
       <h3>
         Sign up online for Vote by Mail in 2 minutes
       </h3>
-      <h5 style={{ fontWeight: 'normal', margin: '2em 0' }}>
-        Enter the ZIP code where you are registered to vote.
+      <h5>
+        Enter your voter registration ZIP code to get started.
       </h5>
       <EnterZip/>
     </Container>
