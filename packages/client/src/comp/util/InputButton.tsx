@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Button } from 'muicss/react'
-import { cssQuery } from './cssQuery'
 
 interface Props {
   // Form Submit & button label
@@ -32,11 +31,7 @@ interface StyleProps {
 
 const Wrapper = styled.form<StyleProps>`
   --inputButton__width: 230px;
-  --inputButton__height: 2.5em;
-
-  ${cssQuery.desktop.all} {
-    --inputButton__height: 2.2em;
-  }
+  --inputButton__height: 2.2em;
 
   width: var(--inputButton__width);
   height: var(--inputButton__height);
@@ -68,6 +63,7 @@ const Wrapper = styled.form<StyleProps>`
     height: 100%;
     margin: 0;
     padding: 0.3em;
+    padding-left: 0.7em;
     box-sizing: border-box;
     font-size: 0.9em;
 
