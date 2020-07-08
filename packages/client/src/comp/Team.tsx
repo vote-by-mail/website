@@ -54,17 +54,14 @@ const PersonStyle = styled.div`
 
   img {
     display: block;
-    width: 25vw;
-    height: 25vw;
+    width: 60%;
     border-radius: 15vw;
     object-fit: contain;
     ${cssQuery.desktop.all} {
-      width: 10vw;
-      height: 10vw;
+      width: 60%;
     }
     ${cssQuery.mobile.wide} {
-      width: 15vw;
-      height: 15vw;
+      width: 60%;
     }
     background-color: #0002;
   }
