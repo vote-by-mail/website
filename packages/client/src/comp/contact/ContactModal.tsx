@@ -1,29 +1,13 @@
 import React from 'react'
 import Select from 'muicss/lib/react/select'
 import Option from 'muicss/lib/react/option'
-import Modal from 'styled-react-modal'
 import { ImplementedState } from '../../common'
 import { client } from '../../lib/trpc'
 import { RoundedButton } from '../util/Button'
 import { useControlRef } from '../util/ControlRef'
 import { ContactContainer } from '../../lib/unstated'
 import { AppForm } from '../util/Form'
-
-const StyledModal = Modal.styled`
-  top: 50%;
-  left: 50%;
-  right: auto;
-  bottom: auto;
-  marginRight: 50%;
-  width: 50%;
-  transform: 'translate(-50%, -50%)';
-  background-color: white;
-  padding: 40px;
-  @media only screen and (max-width: 544px) {
-    padding: 20px;
-    width: 80%;
-  }
-`
+import { StyledModal } from '../util/StyledModal'
 
 interface Props {
   open: boolean
