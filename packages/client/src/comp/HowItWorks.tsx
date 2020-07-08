@@ -80,7 +80,7 @@ export const HowItWorks: React.FC = () => {
       <Headline>
         <h4>How does it work?</h4>
         <p>
-          Sign up for Vote by Mail in <b>2 minutes</b> without leaving your screen. No printer, stamp, or envelope required.
+        VoteByMail streamlines state vote-by-mail applications by digitizing the voter’s signup process.
         </p>
         <h5>Sign up before your state deadline</h5>
       </Headline>

@@ -60,7 +60,7 @@ export const Blurb: React.FC = () => {
   return <Wrapper columnChildContent={true} centerChildContent={true}>
     <Container>
       <h3>
-        VoteByMail streamlines state vote-by-mail applications by digitizing the voter’s signup process.
+        Online Sign up for Vote by Mail in 2 minutes
       </h3>
       <h5 style={{ fontWeight: 'normal', margin: '2em 0' }}>
         Enter the ZIP code where you are registered to vote.
