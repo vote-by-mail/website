@@ -6,6 +6,7 @@ import { Button } from 'muicss/react'
 import { Link } from 'react-router-dom'
 import { useAppHistory, StartSectionPath } from '../lib/path'
 import { cssQuery } from './util/cssQuery'
+import { processEnvOrThrow } from '../common'
 
 
 interface NavExpanded {
@@ -143,6 +144,54 @@ const NavLinksToggle = styled(NavToggleButton)<NavExpanded>`
   ${cssQuery.large} { display: none; }
 `
 
+const LocaleToggle = styled.div<NavExpanded>`
+  --rowWidth: 170px;
+  --rowHeight: 50px;
+  overflow: visible;
+  position: relative;
+
+  /* Keeps as the last item on Navbar */
+  ${cssQuery.large} { order: 2; }
+
+  .picker {
+    width: var(--rowWidth);
+
+    position: fixed;
+    top: 0;
+    /* We use margin instead of top so the sliding animation works */
+    margin-top: calc(var(--height) * 1.15);
+    margin-left: calc(var(--rowWidth) / -2.78);
+    ${cssQuery.large} { margin-left: calc(var(--rowWidth) / -3); }
+
+    background-color: #fff;
+    border-radius: 4px;
+
+    animation: ${
+      p => p.expanded
+      ? css`${slideDown} ease .4s both`
+      : css`${slideUp} ease .2s both`
+    };
+    opacity: ${p => p.expanded ? '1' : '0'};
+    transition: opacity ease .2s;
+    pointer-events: ${p => p.expanded ? 'initial' : 'none'};
+
+    button {
+      width: 100%;
+      height: var(--rowHeight);
+      /* MuiCSS Buttons have predefined margins/paddings */
+      padding: 0; margin: 0;
+
+      font-weight: bold;
+
+      box-sizing: border-box;
+      border-bottom: 1px solid #0001;
+    }
+    a:nth-last-child(1) {
+      button { border-bottom: none; }
+    }
+  }
+`
+
 const NavLinks = styled.div<NavExpanded>`
   /* The parent has horizontal padding, this ensures NavLinks is full-width */
   width: 120%;
@@ -204,6 +253,7 @@ const NavLinks = styled.div<NavExpanded>`
 export const Navbar = () => {
   const { pushStartSection } = useAppHistory()
   const [linksExpanded, setLinksExpanded] = React.useState(false)
+  const [localesExpanded, setLocalesExpanded] = React.useState(false)
   const [visible, setVisibility] = React.useState(true)
   const [scrollY, setScrollY] = React.useState(window.pageYOffset)
 
@@ -216,30 +266,64 @@ export const Navbar = () => {
         }
       } else {
         if (window.pageYOffset > scrollY) {
-          if (linksExpanded === false) {
+          if ((localesExpanded || linksExpanded) === false) {
             setVisibility(false)
           }
         }
       }
       setScrollY(window.pageYOffset)
     }
-  }, [visible, scrollY, linksExpanded])
+  }, [visible, scrollY, localesExpanded, linksExpanded])
 
   const toggleLinksExpanded = () => {
+    setLocalesExpanded(false)
     setLinksExpanded(!linksExpanded)
   }
+  const toggleLocalesExpanded = () => {
+    setLinksExpanded(false)
+    setLocalesExpanded(!localesExpanded)
+  }
 
-  /** Pushes page section and closes the navbar */
+  // Collapses navbar links when users click on them
   const pushAndClose = (section: StartSectionPath['type']) => {
     pushStartSection(section)
     if (linksExpanded) toggleLinksExpanded()
   }
 
+  const url = encodeURI(processEnvOrThrow('REACT_APP_URL'))
+
+  // We use \u below instead of typing the raw characters so all editors
+  // can safely render the content of this file (some people on the team
+  // might not have the appropriate fonts for all these locales).
   return <Wrapper expanded={linksExpanded} visible={visible}>
     <Logo to='#' onClick={() => pushAndClose('start')}>
         <img src={logo} alt='VoteByMail'/>
     </Logo>
-    <NavLinksToggle onClick={toggleLinksExpanded} expanded={linksExpanded} variant='flat'>
+    <LocaleToggle expanded={localesExpanded}>
+      <NavToggleButton onClick={toggleLocalesExpanded} expanded={localesExpanded} variant="flat">
+      <i className={`fa ${localesExpanded ? 'fa-close' : 'fa-globe'}`}/>
+      </NavToggleButton>
+      <div className="picker mui--z3" onClick={toggleLocalesExpanded}>
+        <a href={`https://translate.google.com/translate?hl=&sl=en&tl=zh-CN&u=${url}`}>
+          <Button variant="flat">
+            {'\u0627\u0644\u0639\u0631\u0628\u064a\u0629'}
+          </Button>
+        </a>
+        <a href={`https://translate.google.com/translate?hl=&sl=en&tl=zh-CN&u=${url}`}>
+          <Button variant="flat">{'\u7b80\u4f53\u4e2d\u6587'}</Button>
+        </a>
+        <a href={`https://translate.google.com/translate?hl=&sl=en&tl=es&u=${url}`}>
+          <Button variant="flat">Espa&ntilde;ol</Button>
+        </a>
+        <a href={`https://translate.google.com/translate?hl=&sl=en&tl=tl&u=${url}`}>
+          <Button variant="flat">Filipino</Button>
+        </a>
+        <a href={`https://translate.google.com/translate?sl=en&tl=vi&u=${url}`}>
+          <Button variant="flat">Ti{'\u1ebf'}ng Vi{'\u1ec7'}t</Button>
+        </a>
+      </div>
+    </LocaleToggle>
+    <NavLinksToggle onClick={toggleLinksExpanded} expanded={linksExpanded} variant="flat">
       <i className={`fa ${linksExpanded ? 'fa-close' : 'fa-navicon'}`}/>
     </NavLinksToggle>
     <NavLinks expanded={linksExpanded}>
