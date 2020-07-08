@@ -6,6 +6,9 @@ import { ImplementedState, isImplementedState } from '../common'
 import { useAppHistory, Path } from '../lib/path'
 import { FeatureFlagsContainer } from '../lib/unstated'
 import { StateSelector, StateContainer } from './StateSelector'
+import styled from 'styled-components'
+import { Button } from 'muicss/react'
+import { StyledModal } from './util/StyledModal'
 
 const defaultState = (path: Path | null): ImplementedState => {
   switch(path?.type) {
@@ -21,10 +24,19 @@ const defaultState = (path: Path | null): ImplementedState => {
   }
 }
 
+const FloatingButton = styled(Button)`
+  position: fixed;
+  margin: 0;
+  bottom: 0;
+  right: 0;
+  border-radius: 0;
+  border-top-left-radius: 4px;
+`
+
 const RawWarningMsg = () => {
   const { path } = useAppHistory()
   const { state } = StateContainer.useContainer()
-  
+
   const addresses = sampleAddresses[state]
 
   const fillData = (address: string) => {
@@ -37,7 +49,7 @@ const RawWarningMsg = () => {
             input.value = match[1]
             document.getElementById('start-submit')?.click()
           }
-          
+
           break
         }
         case 'address': {
@@ -49,7 +61,7 @@ const RawWarningMsg = () => {
       }
     }
   }
-  
+
   return (<ul style={{marginTop: '1em'}}>
     {addresses
       .map((addrData, key) => <li key={key}>
@@ -68,21 +80,39 @@ const RawWarningMsg = () => {
 export const WarningMsg = () => {
   const { featureFlags } = FeatureFlagsContainer.useContainer()
   const { path } = useAppHistory()
+  const [ open, setOpen ] = React.useState(false)
+
   if (featureFlags?.emailFaxOfficials) return null
-  
-  return <RedOutline>
-    <h2>Warning: Not Production!</h2>
-    <p>This is <b>not</b> a production build.
-      In production, the application email is sent to both the local elections official and yourself.
-      Since this is not production, the email is only sent to you.
-      No email is sent to a local elections official so you can safely play with this demo.
-    </p>
-    <p>If you really want to submit a Vote by Mail signup do so on production: <a href='https://votebymail.io'>https://votebymail.io</a>.</p>
-    <h2>Filling out the form:</h2>
-    <p><b>Address:</b> You can fill this out with any address.  But to see it in action, you will want to use an address in a state we support.  Sample addresses are listed below.</p>
-    <p><b>Email:</b> When prompted, please use your own email (so as to not spam others!)</p>
-    <StateSelector initialState={defaultState(path)}>
-      <RawWarningMsg/>
-    </StateSelector>
-  </RedOutline>
+
+  return <>
+    {
+      !open && <FloatingButton color="danger" onClick={() => setOpen(true)}>
+        Not Production
+      </FloatingButton>
+    }
+    <StyledModal
+      isOpen={open}
+      onBackgroundClick={() => setOpen(false)}
+      onEscapeKeydown={() => setOpen(false)}
+    >
+      <FloatingButton color="danger" onClick={() => setOpen(false)}>
+        Close
+      </FloatingButton>
+      <RedOutline>
+        <h2>Warning: Not Production!</h2>
+        <p>This is <b>not</b> a production build.
+          In production, the application email is sent to both the local elections official and yourself.
+          Since this is not production, the email is only sent to you.
+          No email is sent to a local elections official so you can safely play with this demo.
+        </p>
+        <p>If you really want to submit a Vote by Mail signup do so on production: <a href='https://votebymail.io'>https://votebymail.io</a>.</p>
+        <h2>Filling out the form:</h2>
+        <p><b>Address:</b> You can fill this out with any address.  But to see it in action, you will want to use an address in a state we support.  Sample addresses are listed below.</p>
+        <p><b>Email:</b> When prompted, please use your own email (so as to not spam others!)</p>
+        <StateSelector initialState={defaultState(path)}>
+          <RawWarningMsg/>
+        </StateSelector>
+      </RedOutline>
+    </StyledModal>
+  </>
 }
