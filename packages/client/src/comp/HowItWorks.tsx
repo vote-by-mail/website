@@ -53,23 +53,10 @@ const Steps = styled(Row)`
     }
 
     img {
-      height: 55%;
+      width: 45%;
+      ${cssQuery.mobile.narrow} { width: 50%; }
+      ${cssQuery.mobile.landscape.all} { width: 25%; }
       object-fit: contain;
-    }
-
-    /* Centers the weight of the first icon */
-    :nth-child(1) {
-      img {
-        margin-left: 4%;
-        ${cssQuery.mobile.all} {
-          margin-left: 13%;
-        }
-      }
-    }
-
-    ${cssQuery.mobile.all} {
-      img { height: 45%; }
-      :nth-child(2) { img { height: 65%; } }
     }
   }
 `
