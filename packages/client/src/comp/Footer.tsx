@@ -9,8 +9,6 @@ import { Link } from 'react-router-dom'
 
 const FooterWrapper  = styled.div`
   width: 100%;
-  min-height: 35vh;
-  ${cssQuery.desktop.all} { min-height: 15vh; }
   box-shadow: 0 12px 14px -10px rgba(0, 0, 0, 0.15) inset;
 
   box-sizing: border-box;
@@ -23,7 +21,7 @@ const FooterWrapper  = styled.div`
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    ${cssQuery.mobile.narrow} {
+    ${cssQuery.mobile.all} {
       flex-direction: column;
     }
     ${cssQuery.mobile.landscape.all} {
@@ -35,7 +33,7 @@ const FooterWrapper  = styled.div`
 
 const Newsletter = styled.div`
   width: 30%;
-  ${cssQuery.mobile.narrow} {
+  ${cssQuery.mobile.all} {
     width: 60%;
     display: flex;
     flex-direction: column;
@@ -74,7 +72,7 @@ const SocialSection = styled(ParagraphStyling)`
   flex-direction: column;
 
   width: 25%;
-  ${cssQuery.mobile.narrow} { width: 70%; }
+  ${cssQuery.mobile.all} { width: 70%; }
   text-align: center;
   align-items: center;
 
