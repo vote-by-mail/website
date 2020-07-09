@@ -87,7 +87,7 @@ export const WarningMsg = () => {
   return <>
     {
       !open && <FloatingButton color="danger" onClick={() => setOpen(true)}>
-        Not Production
+        Not Production <i className="fa fa-chevron-up" aria-hidden="true"/>
       </FloatingButton>
     }
     <StyledModal
