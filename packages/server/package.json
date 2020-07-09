@@ -2,6 +2,10 @@
   "name": "@vbm/server",
   "version": "1.0.0",
   "description": "",
+  "private": true,
+  "engines": {
+    "node": "12.x.x"
+  },
   "main": "dist/index.js",
   "scripts": {
     "gulp": "gulp",
