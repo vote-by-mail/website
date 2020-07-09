@@ -86,6 +86,7 @@ const SocialSection = styled(ParagraphStyling)`
       height: 3em;
       box-sizing: border-box;
       padding: 0;
+      border-radius: 4px;
     }
 
     a {
