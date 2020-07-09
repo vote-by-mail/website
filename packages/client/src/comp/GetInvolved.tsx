@@ -94,7 +94,7 @@ export const GetInvolved: React.FC = () => {
           </div>
           <h5>I am a <em>civic <b>organizer</b></em></h5>
           <p>
-            We provide 100% free tools for organizers to mobilize voters to track signups through our platform.
+            We provide 100% free tools for organizers to mobilize voters and track signups through our platform.
             {'  '}
             <a href='https://docs.google.com/document/d/1341vB4gQin_dPyweDQc_rUSAzch85Q8ouQbAjokxBCo/edit?usp=sharing' rel='noopener noreferrer' target='_blank'>
               More Info...
