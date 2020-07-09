@@ -15,53 +15,44 @@ const bgGradient = 'linear-gradient(to left, rgba(0, 89, 186, 0.9), rgba(0, 89, 
 const Wrapper = styled(FullscreenWrapper)`
   background: ${bgGradient}, url(${bgImage});
   background-size: cover;
+  .mui-container {
+    justify-content: center;
+  }
 `
 
 const CardWrapper = styled.div`
   width: 100%;
+  ${cssQuery.desktop.wide} { width: 80%; }
   padding: 0;
   margin: 0;
   display: flex;
   flex-flow: row wrap;
+  align-items: stretch;
   justify-content: center;
-`
-
-const desktopAndTabletFix = `
-  width: 38%;
-  height: 18.8em;
-  margin: 0;
-  :nth-child(1) {
-    margin-right: 2em;
+  ${cssQuery.desktop.all} {
+    justify-content: space-between;
   }
 `
 
 const Card = styled.div`
   background-color: white;
-  height: 23em;
   width: 90%;
+  ${cssQuery.mobile.wide} { width: 65%; }
+  ${cssQuery.desktop.all} { width: 49%; }
   margin: 1em 0;
   padding: 2em;
   box-sizing: border-box;
-
-  ${cssQuery.mobile.wide} {
-    ${desktopAndTabletFix}
-    width: 46%;
-    height: 22em;
-  }
-
-  ${cssQuery.mobile.landscape.all} { height: 17.5em; }
-
-  ${cssQuery.desktop.all} { ${desktopAndTabletFix} }
-  ${cssQuery.desktop.tall} { height: 19em; }
-  ${cssQuery.desktop.narrow} { width: 45%; height: 20em; }
 
   img {
     height: 25%;
   }
 
-  p a {
-    text-decoration: underline;
-    color: #323232;
+  p {
+    margin: 2em 0;
+    a {
+      text-decoration: underline;
+      color: #323232;
+    }
   }
 
   b { color: #db002f; }
