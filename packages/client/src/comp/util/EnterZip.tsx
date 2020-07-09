@@ -18,7 +18,6 @@ export const EnterZip: React.FC = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.persist()  // allow async function call
-    console.log(InputButton.displayName)
     event.preventDefault()
     const zip = zipRef?.current?.value
     if (!zip) return
