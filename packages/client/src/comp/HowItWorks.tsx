@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { EnterZip } from './util/EnterZip'
 import { Row, Col, Container } from 'muicss/react'
 
-import iconPen from './img/hiw_icon_pen.svg'
+import iconDigital from './img/hiw_icon_digital.svg'
 import iconArmchair from './img/hiw_icon_armchair.svg'
 import iconBallot from './img/hiw_icon_ballot.svg'
 import { cssQuery } from './util/cssQuery'
@@ -79,7 +79,7 @@ export const HowItWorks: React.FC = () => {
       <Steps>
         <Col md={4} sm={12}>
           <div className="imgWrapper">
-            <img src={iconPen} alt="Sign Up"/>
+            <img src={iconDigital} alt="Sign Up"/>
           </div>
           <h5>1. You sign up</h5>
           <p>Sign up below for vote by mail.  The aplication is sent to your election official.</p>
