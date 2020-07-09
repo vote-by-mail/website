@@ -1,4 +1,6 @@
 // Based on https://www.npmjs.com/package/env-cmd
+if (process.env.IGNORE_ENV_FILE) { return; }
+
 const {
   MG_API_KEY,
   TWILIO_SID,
