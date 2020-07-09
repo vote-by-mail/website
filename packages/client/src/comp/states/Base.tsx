@@ -7,6 +7,7 @@ import { RoundedButton } from '../util/Button'
 import { useControlRef } from '../util/ControlRef'
 import { BaseInput, PhoneInput, EmailInput, NameInput, BirthdateInput } from '../util/Input'
 import { Togglable } from '../util/Togglable'
+import { AppCheckbox } from '../util/Checkbox'
 import { useAppHistory } from '../../lib/path'
 import { Signature } from '../util/Signature'
 import { AddressContainer, VoterContainer, ContactContainer, FetchingDataContainer } from '../../lib/unstated'
@@ -22,6 +23,8 @@ type EnrichValues<Info> = (base: StatelessInfo) => Info | null
 type Props<Info> = React.PropsWithChildren<{
   enrichValues: EnrichValues<Info>
 }>
+
+const privacyPolicyUrl = process.env.REACT_APP_URL + '/PrivacyPolicy.pdf'
 
 /**
  * this works with redirect urls of the form
@@ -128,6 +131,18 @@ export const Base = <Info extends StateInfo>({ enrichValues, children }: Props<I
       />
     }</Togglable>
     { children }
+    <AppCheckbox label={
+      <span>
+        I have&nbsp;
+          <a target="_blank" rel="noopener noreferrer" href='https://www.vote.org/am-i-registered-to-vote/'>
+            confirmed that I am registered&nbsp;
+          </a> 
+          to vote at this address and have read VoteByMail&apos;s&nbsp;
+          <a target="_blank" rel="noopener noreferrer" href={privacyPolicyUrl}>
+            privacy policy
+          </a>
+      </span>
+    } required={true}/>
     <Center>
       <RoundedButton color='primary' variant='raised' data-testid='submit' disabled={fetchingData}>
         Submit signup
