@@ -3,6 +3,9 @@ import styled from 'styled-components'
 import { cssQuery } from './util/cssQuery'
 import { FullscreenWrapper } from './util/FullscreenWrapper'
 import { Container, Button } from 'muicss/react'
+import { client } from '../lib/trpc'
+import { FetchingDataContainer } from '../lib/unstated'
+import { toast } from 'react-toastify'
 
 const Wrapper = styled(FullscreenWrapper)`
   /*
@@ -86,9 +89,34 @@ const Form = styled.form`
 `
 
 export const Contact: React.FC = () => {
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const { setFetchingData } = FetchingDataContainer.useContainer()
+  const emailRef = React.useRef<HTMLInputElement>(null)
+  const nameRef = React.useRef<HTMLInputElement>(null)
+  const textRef = React.useRef<HTMLTextAreaElement>(null)
+
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     // TODO send email
+    e.persist()  // allow async function call
     e.preventDefault()
+    setFetchingData(true)
+    try {
+      await client.supportEmail(
+        emailRef.current?.value ?? '',
+        nameRef.current?.value ?? '',
+        textRef.current?.value ?? '',
+      )
+
+      toast(
+        'Your email has successfully been sent to our support team. Expect to hear from us soon.',
+        {type: 'success'}
+      )
+    } catch(e) {
+      toast(
+        'Failed to send contact email',
+        {type: 'error'}
+      )
+    }
+    setFetchingData(false)
   }
 
   return <Wrapper centerContent={false}>
@@ -102,22 +130,18 @@ export const Contact: React.FC = () => {
 
       <Form action="contact_us" onSubmit={onSubmit}>
         <label htmlFor="name">Name</label>
-        <input
-          type="text"
-          name="name"
-        />
+        <input type="text" name="name" required={true} ref={nameRef}/>
 
         <label htmlFor="email">Email</label>
-        <input type="email" name="email"/>
-
-        <label htmlFor="phone">Phone Number</label>
-        <input type="tel" name="phone" pattern="\(?\d{3}\)?-? *\d{3}-? *-?\d{4}"/>
+        <input type="email" name="email" required={true} ref={emailRef}/>
 
         <label htmlFor="message">Your Message</label>
         <textarea
           name="message"
           cols={30}
           rows={10}
+          required={true}
+          ref={textRef}
         />
         <Button color='primary'>Submit</Button>
       </Form>
