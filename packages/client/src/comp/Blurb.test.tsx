@@ -4,11 +4,11 @@ import { UnstatedContainer } from './StateContainer'
 import { render } from '@testing-library/react'
 
 test('BlurbForm works', async() => {
-  const { getByText } = render(
+  const { getByTestId } = render(
     <Blurb/>,
     { wrapper: UnstatedContainer }
   )
 
-  const linkElement = getByText(/^Enter the ZIP code where you are registered to vote\.$/i)
+  const linkElement = getByTestId('blurb-call-to-action')
   expect(linkElement).toBeInTheDocument()
 })

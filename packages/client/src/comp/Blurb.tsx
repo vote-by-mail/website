@@ -67,7 +67,7 @@ export const Blurb: React.FC = () => {
       <h3>
         Sign up online for Vote by Mail in 2 minutes
       </h3>
-      <h5>
+      <h5 data-testid='blurb-call-to-action'>
         Enter your voter registration ZIP code to get started.
       </h5>
       <EnterZip/>
