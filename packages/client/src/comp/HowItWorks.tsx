@@ -38,11 +38,6 @@ const Steps = styled(Row)`
 
     & > .imgWrapper {
       width: 100%;
-      height: 30vh;
-      ${cssQuery.desktop.all} { height: 15vh; }
-      ${cssQuery.desktop.short} { height: 19vh; }
-      ${cssQuery.mobile.landscape.all} { height: 30vh; }
-      ${cssQuery.mobile.wide} { height: 16vh; }
       box-sizing: border-box;
 
       display: flex;
@@ -53,7 +48,7 @@ const Steps = styled(Row)`
     img {
       width: 45%;
       ${cssQuery.mobile.narrow} { width: 50%; }
-      ${cssQuery.mobile.landscape.all} { width: 25%; }
+      ${cssQuery.mobile.landscape.all} { width: 40%; }
       object-fit: contain;
     }
   }
