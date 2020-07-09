@@ -4,8 +4,8 @@ import { EnterZip } from './util/EnterZip'
 import { Row, Col, Container } from 'muicss/react'
 
 import iconPen from './img/hiw_icon_pen.svg'
+import iconArmchair from './img/hiw_icon_armchair.svg'
 import iconBallot from './img/hiw_icon_ballot.svg'
-import iconPlane from './img/hiw_icon_plane.svg'
 import { cssQuery } from './util/cssQuery'
 import { FullscreenWrapper } from './util/FullscreenWrapper'
 
@@ -86,14 +86,14 @@ export const HowItWorks: React.FC = () => {
         </Col>
         <Col md={4} sm={12}>
           <div className="imgWrapper">
-            <img src={iconBallot} alt="We do the work"/>
+            <img src={iconArmchair} alt="We do the work"/>
           </div>
           <h5>2. Relax</h5>
           <p>Sit back.  Your ballot arrives in the mail a few weeks before election day.</p>
         </Col>
         <Col md={4} sm={12}>
           <div className="imgWrapper">
-            <img src={iconPlane} alt="Vote"/>
+            <img src={iconBallot} alt="Vote"/>
           </div>
           <h5>3. Vote</h5>
           <p>Fill out your ballot from the comfort of your home and mail it back.</p>
