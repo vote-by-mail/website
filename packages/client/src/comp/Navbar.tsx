@@ -257,6 +257,9 @@ export const Navbar = () => {
       <i className={`fa ${linksExpanded ? 'fa-close' : 'fa-navicon'}`}/>
     </NavLinksToggle>
     <NavLinks expanded={linksExpanded}>
+      <Link to='#start' onClick={() => pushAndClose('start')}>
+        Sign Up
+      </Link>
       <Link to='#howItWorks' onClick={() => pushAndClose('howItWorks')}>
         How does it work?
       </Link>
@@ -269,9 +272,6 @@ export const Navbar = () => {
       <Link to='#contact' onClick={() => pushAndClose('contact')}>
         Contact Us
       </Link>
-      <a className='register' href='#register'>
-        Register
-      </a>
     </NavLinks>
   </Wrapper>
 }
