@@ -1,8 +1,8 @@
 import React from 'react'
-import Checkbox from 'muicss/lib/react/checkbox'
 import { CheckboxProps } from 'muicss/react'
 import { createContainer } from 'unstated-next'
 import styled from 'styled-components'
+import { FixedCheckbox } from './Checkbox'
 
 const useCheckbox = (init = false) => {
   const [checked, setCheck] = React.useState<boolean>(init)
@@ -25,7 +25,7 @@ const RawTogglable: React.FC<Props> = ({children, ...props}) => {
 
   // Matching style of input fields
   return <Wrapper>
-    <Checkbox
+    <FixedCheckbox
       {...props}
       checked={checked}
       onChange={toggleCheck}
