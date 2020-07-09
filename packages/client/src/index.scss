@@ -69,6 +69,13 @@ h5 {
   line-height: 30px;
 }
 
+@media only screen and (max-width: 544px) {
+  h4, h5 {
+    font-size: 18px;
+    line-height: 26px;
+  }
+}
+
 b {
   font-weight:  600;
 }
