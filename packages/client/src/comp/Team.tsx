@@ -33,7 +33,6 @@ const Wrapper = styled(FullscreenWrapper)`
 
 const PeopleWrapper = styled.div`
   width: 90%;
-  ${cssQuery.desktop.all} { width: 70%; }
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
@@ -41,9 +40,9 @@ const PeopleWrapper = styled.div`
 `
 
 const PersonStyle = styled.div`
-  width: 50%;
+  width: 40%;
+  ${cssQuery.mobile.narrow} { width: 50%; }
   ${cssQuery.desktop.all} { width: 33.33333%; }
-  ${cssQuery.mobile.wide} { width: 33.33333%; }
   padding: 0 2.5%;
   box-sizing: border-box;
   margin-bottom: 2em;
@@ -56,8 +55,7 @@ const PersonStyle = styled.div`
     display: block;
     width: 80%;
     ${cssQuery.desktop.all} { width: 60%; }
-    ${cssQuery.mobile.wide} { width: 60%; }
-    border-radius: 15vw;
+    border-radius: 1000px;
     object-fit: contain;
     background-color: #0002;
   }
