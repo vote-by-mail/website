@@ -27,7 +27,7 @@ Sincerely,
 
 Questions? Feedback? Email us at [{{feedbackEmail}}](mailto:{{feedbackEmail}}).
 
-**Elections Officials**: do you want direct, secure access to your VBM requests?  Email us at [{{electionsEmail}}](mailto:{{electionsEmail}}) to become an the Election Offical Beta User.
+**Elections Officials**: do you want direct, secure access to your VBM requests?  Email us at [{{electionsEmail}}](mailto:{{electionsEmail}}) to become an Election Offical Beta User.
 
 Confirmation id: {{confirmationId}}
 
