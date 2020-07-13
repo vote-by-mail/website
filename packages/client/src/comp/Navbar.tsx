@@ -10,7 +10,7 @@ import { processEnvOrThrow } from '../common'
 
 
 interface NavExpanded {
-  expanded: 'translation' | 'links' | ''
+  expanded: 'translation' | 'links' | null
 }
 
 const fadeIn = keyframes`
@@ -276,7 +276,7 @@ const NavLinks = styled.div<NavExpanded>`
 
 export const Navbar = () => {
   const { pushStartSection } = useAppHistory()
-  const [expanded, setExpanded] = React.useState<NavExpanded['expanded']>('')
+  const [expanded, setExpanded] = React.useState<NavExpanded['expanded']>(null)
   const [visible, setVisibility] = React.useState(true)
   const [scrollY, setScrollY] = React.useState(window.pageYOffset)
 
@@ -291,7 +291,7 @@ export const Navbar = () => {
         if (window.pageYOffset > scrollY) {
           setVisibility(false)
           if (expanded) {
-            setExpanded('')
+            setExpanded(null)
           }
         }
       }
@@ -301,7 +301,7 @@ export const Navbar = () => {
 
   const toggleExpanded = (target: 'links' | 'translation') => {
     if (expanded === target) {
-      setExpanded('')
+      setExpanded(null)
     } else {
       setExpanded(target)
     }
@@ -311,7 +311,7 @@ export const Navbar = () => {
   // clicks on a link
   const pushAndClose = (section: StartSectionPath['type']) => {
     pushStartSection(section)
-    if (expanded) setExpanded('')
+    if (expanded) setExpanded(null)
   }
 
   const url = encodeURI(processEnvOrThrow('REACT_APP_URL'))
@@ -325,7 +325,7 @@ export const Navbar = () => {
     </Logo>
     <DismissDropdown
       expanded={expanded}
-      onClick={() => setExpanded('')}
+      onClick={() => setExpanded(null)}
     />
     <LocaleToggle expanded={expanded}>
       <NavToggleButton
