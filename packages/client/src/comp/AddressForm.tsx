@@ -119,7 +119,7 @@ export const RawAddressForm: React.FC<{rawState: string, zip?: string}> = ({rawS
 
   return <StatusReport state={state}>
     <AppForm onSubmit={handleSubmit}>
-      <p><b>Enter Your Full Address</b> to find your local election official</p>
+      <p>Enter your <b>voter-registration address</b> to find your local election official</p>
       <FlexBox>
         <FlexGrow>
           <BaseInput
