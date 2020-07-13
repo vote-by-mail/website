@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "engines": {
-    "node": "12.x.x"
+    "node": "12.x.x || 14.x.x"
   },
   "devDependencies": {
     "@tianhuil/gulp-run-command": "^0.0.11",

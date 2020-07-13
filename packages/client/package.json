@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "engines": {
-    "node": "12.x.x"
+    "node": "12.x.x || 14.x.x"
   },
   "dependencies": {
     "@tianhuil/simple-trpc": "^1.8.0",
