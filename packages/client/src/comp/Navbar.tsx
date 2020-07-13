@@ -155,7 +155,14 @@ const LocaleToggle = styled.div<NavExpanded>`
   /* Clears Toggle animation */
   button i {
     color: #2196f3 !important;
-    transform: none !important;
+    margin-left: 2px;
+    &.static {
+      transform: none !important;
+    }
+    &.chevron {
+      font-size: 8px;
+      transform: rotate(${p => p.expanded ? '-180deg' : '0'});
+    }
   }
 
   .picker {
@@ -165,7 +172,7 @@ const LocaleToggle = styled.div<NavExpanded>`
     /* Creates the effect that the dropdown is touching/merged with the navbar */
     top: calc(var(--height) * 0.97);
     margin-left: calc(var(--rowWidth) / -2.78);
-    ${cssQuery.large} { margin-left: calc(var(--rowWidth) / -2.5); }
+    ${cssQuery.large} { margin-left: calc(var(--rowWidth) / -2.4); }
 
     background-color: #fff;
     box-shadow: 0 6px 7px rgba(0, 0, 0, 0.05);
@@ -313,12 +320,13 @@ export const Navbar = () => {
   // might not have the appropriate fonts for all these locales).
   return <Wrapper expanded={linksExpanded} visible={visible}>
     <Logo to='#' onClick={() => pushAndClose('start')}>
-        <img src={logo} alt='VoteByMail'/>
+      <img src={logo} alt='VoteByMail'/>
     </Logo>
     <LocaleToggle expanded={localesExpanded}>
       <DismissDropdown expanded={localesExpanded} onClick={toggleLocalesExpanded}/>
       <NavToggleButton onClick={toggleLocalesExpanded} expanded={localesExpanded} variant='flat'>
-        <i className='fa fa-globe'/>
+        <i className="fa fa-globe static"/>
+        <i className="fa fa-chevron-down chevron"/>
       </NavToggleButton>
       {/* Top 5 non-English languages, in order https://en.wikipedia.org/wiki/Languages_of_the_United_States#Most_common_languages */}
       <div className='picker mui--z0' onClick={toggleLocalesExpanded}>
