@@ -219,6 +219,7 @@ const NavLinks = styled.div<NavExpanded>`
   box-shadow: 0 4px 3px rgba(0, 0, 0, 0.05) inset;
   /* Makes the shadow (of the navlinks) ignore the Wrapper horizontal padding */
   margin: 0 -10%;
+  ${cssQuery.small} { margin-top: 4px; }
   animation: ${fadeIn} ease .5s .3s both;
 
   /* When animating, doesn't let the content be drawn on top of the logo/toggle button */
