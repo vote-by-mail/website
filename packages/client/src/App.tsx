@@ -71,6 +71,9 @@ const Layout = () => {
         <ScrollHook pathEnum='about'>
           <About/>
         </ScrollHook>
+        <StyleContainer>
+          <WarningMsg/>
+        </StyleContainer>
       </Route>
       <Route path={pathData['success'].path}>
         <ScrollHook pathEnum='success'>
