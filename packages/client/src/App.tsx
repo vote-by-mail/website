@@ -3,6 +3,7 @@ import styled from 'styled-components'
 
 import { Switch, Route, Redirect } from "react-router-dom"
 
+import { About } from './comp/About'
 import { Footer } from './comp/Footer'
 import { Initialize } from './comp/Initialize'
 import { AddressForm } from './comp/AddressForm'
@@ -66,6 +67,9 @@ const Layout = () => {
         </ScrollHook>
         <ScrollHook pathEnum='contact'>
           <Contact/>
+        </ScrollHook>
+        <ScrollHook pathEnum='about'>
+          <About/>
         </ScrollHook>
       </Route>
       <Route path={pathData['success'].path}>
