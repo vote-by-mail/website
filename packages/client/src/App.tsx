@@ -3,7 +3,6 @@ import styled from 'styled-components'
 
 import { Switch, Route, Redirect } from "react-router-dom"
 
-import { About } from './comp/About'
 import { Footer } from './comp/Footer'
 import { Initialize } from './comp/Initialize'
 import { AddressForm } from './comp/AddressForm'
@@ -35,11 +34,6 @@ const Layout = () => {
           <Status/>
         </StyleContainer>
       </Route>
-      <Route path='/about'>
-        <TallStyleContainer>
-          <About/>
-        </TallStyleContainer>
-      </Route>
       <Route path='/privacy-policy'>
         <TallStyleContainer>
           <PrivacyPolicy/>
@@ -55,9 +49,6 @@ const Layout = () => {
         <ScrollHook pathEnum='start'>
           <Blurb/>
         </ScrollHook>
-        <StyleContainer>
-          <WarningMsg/>
-        </StyleContainer>
       </Route>
       <Route path={pathData['success'].path}>
         <ScrollHook pathEnum='success'>

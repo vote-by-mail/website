@@ -1,141 +1,111 @@
 import React from 'react'
 import styled from 'styled-components'
-import { toast } from 'react-toastify'
-import { RoundedButton } from './util/Button'
-import { StyleContainer } from './util/Container'
-import { useAppHistory } from '../lib/path'
-import { client } from '../lib/trpc'
-import { AddressContainer, FetchingDataContainer } from '../lib/unstated'
-import { AppForm } from './util/Form'
+import { Container } from 'muicss/react'
+import { cssQuery } from './util/cssQuery'
 
+import img1k from './img/blurb_bg_max_width_1k.jpg'
+import img2k from './img/blurb_bg_max_width_2k.jpg'
+import img6k from './img/blurb_bg_max_width_6k.jpg'
+import { EnterZip } from './util/EnterZip'
+import { MarketingWrapper } from './util/MarketingWrapper'
 
-const Background = styled.div`
-  top: 0;
-  left: 0;
-  min-width: 100%;
-  background: rgb(144,202,249);
-  background: linear-gradient(-45deg, rgba(144,202,249,1) 0%, rgba(30,136,229,1) 25%, rgba(21,101,192,1) 100%);
-  color: #f1f1ff;
-`
+const bgGradient = 'linear-gradient(to bottom right, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6))'
 
-const Title = styled.h1`
-  font-weight: 100;
-  padding-top: 24px;
-  @media only screen and (max-width: 544px) {
-    padding-top: 8px;
+const Wrapper = styled(MarketingWrapper)`
+  position: relative;
+  min-height: 100vh;
+  z-index: 9;
+  box-shadow: 0 0 14px #0003;
+
+  /*
+    Loads the background image according to the device's screen dimensions
+    We use manual queries here since these are mostly based on the dimensions
+    of the pictures used as background.
+  */
+  @media screen and (max-width: 640px) {
+    background-image: ${bgGradient}, url(${img1k});
   }
-`
-
-const Text = styled.p`
-  margin-bottom: 16px;
-`
-
-const FlexBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-`
-
-const FlexContainer = styled.div`
-  margin-top: 24px;
-  display: flex;
-  flex-direction: row;
-  justify-contnet: flex-start;
-  align-content: center;
-`
-
-const ZipInput = styled.input`
-  padding: 14px 16px;
-  border: none;
-  box-shadow: none;
-  outline: none;
-  width: 84px;
-  border-radius: 4px;
-  margin-right: 1rem;
-`
-
-const SubmitButton = styled(RoundedButton)`
-  z-index: 0;
-  background: #4DB6AC;
-  color: #f1f1ff;
-  margin 0;
-  :hover {
-    background: #5DC6BC;
-    color: #f1f1ff;
+  @media screen and (min-width: 641px) {
+    background-image: ${bgGradient}, url(${img1k});
   }
-`
+  @media screen and (min-width: 1281px) {
+    background-image: ${bgGradient}, url(${img2k});
+  }
+  @media screen and (min-width: 1920px) {
+    background-image: ${bgGradient}, url(${img6k});
+  }
 
-export const Blurb: React.FC<{}> = () => {
-  const { path, pushAddress } = useAppHistory()
-  const { address } = AddressContainer.useContainer()
-  const zipRef = React.useRef<HTMLInputElement>(null)
-  const { fetchingData, setFetchingData } = FetchingDataContainer.useContainer()
-
-  // mobile browsers don't support 100vh, so use this trick instead
-  // https://chanind.github.io/javascript/2019/09/28/avoid-100vh-on-mobile-web.html
-  // Also, need to use a state variable instead of a simpler ts variable
-  // https://stackoverflow.com/a/56156394/8930600
-  const [height, setHeight] = React.useState('100vh')
-  React.useEffect(() => {
-    setHeight(`${window.innerHeight}px`)
-  }, [])
-
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.persist()  // allow async function call
-    event.preventDefault()
-    const zip = zipRef?.current?.value
-    if (!zip) return
-    setFetchingData(true)
-    const resp = await client.fetchState(zip)
-    if (resp.type === 'error') {
-      toast.error('Error finding the ZIP code')
-    } else {
-      pushAddress(resp.data, zip)
+  /* Device Adjustments */
+  background-size: 450%;
+  background-position: 55% 70%;
+  ${cssQuery.short} {
+    background-size: 170%;
+    background-position-y: 97%;
+  }
+  ${cssQuery.medium} {
+    background-size: 210%;
+    ${cssQuery.portrait} {
+      background-size: 255%;
     }
-    setFetchingData(false)
+    background-position-y: 89%;
   }
-
-  const defaultValue = () => {
-    if (path?.type === 'address' && path.zip) {
-      return path.zip
-    } else {
-      return address?.postcode ?? undefined
+  ${cssQuery.large} {
+    background-size: 140%;
+    background-position: 40% 84%;
+    ${cssQuery.xlarge} {
+      background-size: 125%;
+      background-position: 74% 95%;
+    }
+    ${cssQuery.portrait} {
+      background-size: 235%;
+      background-position: 26% 90%;
     }
   }
 
-  return <Background style={{height}}>
-    <StyleContainer>
-      <FlexBox style={{height}}>
-        <Title>Vote by Mail</Title>
-        <Text>
-          Voting by mail is a secure, time-tested, and easy way to vote.  Your ballot arrives safely in the mail weeks before the election and can be filled out and returned at your convenience.
-        </Text>
-        <Text>Sign up today in <b>2 minutes</b> before your state deadline expires.
-        </Text>
-        <AppForm onSubmit={handleSubmit}>
-          <Text><b>Enter your ZIP code</b> to get started</Text>
-          <FlexContainer>
-            {/* id is used by WarningMsg to fill out zipcode */}
-            <ZipInput
-              id='start-zip'
-              data-testid='start-zip'
-              type='text'
-              pattern='[0-9]{5}'
-              placeholder='ZIP code'
-              defaultValue={defaultValue()}
-              ref={zipRef} />
-            <SubmitButton
-              id='start-submit'
-              data-testid='start-submit'
-              variant='raised'
-              disabled={fetchingData}
-            >
-              Start
-            </SubmitButton>
-          </FlexContainer>
-        </AppForm>
-      </FlexBox>
-    </StyleContainer>
-  </Background>
+  /*
+    On CSS margin-top is always relative to the width of the parent,
+    since the image is resized according to the width of the screen
+    this feature is handy in positioning our text.
+  */
+  h4 {
+    margin-top: 60%;
+    ${cssQuery.medium} {
+      width: 60%;
+      margin-top: 25%;
+    }
+    ${cssQuery.short} {
+      width: 70%;
+      margin-top: 20%;
+    }
+    ${cssQuery.large} {
+      width: 55%;
+      font-size: 26px;
+      margin-top: 35%;
+      ${cssQuery.xlarge} {
+        margin-top: 25%;
+      }
+    }
+  }
+
+  h5 {
+    font-weight: normal;
+    margin: 40px 0;
+  }
+`
+
+export const Blurb: React.FC = () => {
+  // We don't directly return a Container here since setting the BG feels
+  // hacky (if we use Fluid Containers we'd need to tweak the max-width/padding
+  // manually).
+  return <Wrapper columnChildContent={true} centerChildContent={true}>
+    <Container>
+      <h4>
+        Sign up online for Vote by Mail in 2 minutes
+      </h4>
+      <h5 data-testid='blurb-call-to-action'>
+        Enter your voter registration ZIP code to get started.
+      </h5>
+      <EnterZip/>
+    </Container>
+  </Wrapper>
 }
