@@ -175,7 +175,7 @@ const LocaleToggle = styled.div<NavExpanded>`
     transform: scaleY(${p => p.expanded ? 1 : 0});
     transform-origin: top;
     opacity: ${p => p.expanded ? '1' : '0'};
-    transition: opacity ease .3s, transform ease .15s;
+    transition: opacity ease .15s, transform ease .2s;
     pointer-events: ${p => p.expanded ? 'initial' : 'none'};
 
     button {
