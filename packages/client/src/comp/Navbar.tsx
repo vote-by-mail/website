@@ -300,30 +300,31 @@ export const Navbar = () => {
         <img src={logo} alt='VoteByMail'/>
     </Logo>
     <LocaleToggle expanded={localesExpanded}>
-      <NavToggleButton onClick={toggleLocalesExpanded} expanded={localesExpanded} variant="flat">
+      <NavToggleButton onClick={toggleLocalesExpanded} expanded={localesExpanded} variant='flat'>
       <i className={`fa ${localesExpanded ? 'fa-close' : 'fa-globe'}`}/>
       </NavToggleButton>
-      <div className="picker mui--z3" onClick={toggleLocalesExpanded}>
+      {/* Top 5 non-English languages, in order https://en.wikipedia.org/wiki/Languages_of_the_United_States#Most_common_languages */}
+      <div className='picker mui--z3' onClick={toggleLocalesExpanded}>
+        <a href={`https://translate.google.com/translate?hl=&sl=en&tl=es&u=${url}`}>
+          <Button translate='no' variant='flat'>Espa&ntilde;ol</Button>
+        </a>
         <a href={`https://translate.google.com/translate?hl=&sl=en&tl=zh-CN&u=${url}`}>
-          <Button variant="flat">
+          <Button translate='no' variant='flat'>{'\u7b80\u4f53\u4e2d\u6587'}</Button>
+        </a>
+        <a href={`https://translate.google.com/translate?hl=&sl=en&tl=tl&u=${url}`}>
+          <Button translate='no' variant='flat'>Filipino</Button>
+        </a>
+        <a href={`https://translate.google.com/translate?sl=en&tl=vi&u=${url}`}>
+          <Button translate='no' variant='flat'>Ti{'\u1ebf'}ng Vi{'\u1ec7'}t</Button>
+        </a>
+        <a href={`https://translate.google.com/translate?hl=&sl=en&tl=ar&u=${url}`}>
+          <Button translate='no' variant='flat'>
             {'\u0627\u0644\u0639\u0631\u0628\u064a\u0629'}
           </Button>
         </a>
-        <a href={`https://translate.google.com/translate?hl=&sl=en&tl=zh-CN&u=${url}`}>
-          <Button variant="flat">{'\u7b80\u4f53\u4e2d\u6587'}</Button>
-        </a>
-        <a href={`https://translate.google.com/translate?hl=&sl=en&tl=es&u=${url}`}>
-          <Button variant="flat">Espa&ntilde;ol</Button>
-        </a>
-        <a href={`https://translate.google.com/translate?hl=&sl=en&tl=tl&u=${url}`}>
-          <Button variant="flat">Filipino</Button>
-        </a>
-        <a href={`https://translate.google.com/translate?sl=en&tl=vi&u=${url}`}>
-          <Button variant="flat">Ti{'\u1ebf'}ng Vi{'\u1ec7'}t</Button>
-        </a>
       </div>
     </LocaleToggle>
-    <NavLinksToggle onClick={toggleLinksExpanded} expanded={linksExpanded} variant="flat">
+    <NavLinksToggle onClick={toggleLinksExpanded} expanded={linksExpanded} variant='flat'>
       <i className={`fa ${linksExpanded ? 'fa-close' : 'fa-navicon'}`}/>
     </NavLinksToggle>
     <NavLinks expanded={linksExpanded}>
