@@ -114,8 +114,8 @@ const NavToggleButton = styled(Button)<Partial<NavExpanded>>`
   --wrapperSize: var(--contentHeight);
   --iconSize: calc(var(--wrapperSize) * 0.35);
   ${cssQuery.large} {
-    --wrapperSize: calc(var(--contentHeight) * 0.7);
-    --iconSize: calc(var(--wrapperSize) * 0.4);
+    --wrapperSize: 28px;
+    --iconSize: 16px;
   }
 
   /* In order to make the Material Ripple a perfect circle */
@@ -165,7 +165,7 @@ const LocaleToggle = styled.div<NavExpanded>`
     /* Creates the effect that the dropdown is touching/merged with the navbar */
     top: calc(var(--height) * 0.97);
     margin-left: calc(var(--rowWidth) / -2.78);
-    ${cssQuery.large} { margin-left: calc(var(--rowWidth) / -3); }
+    ${cssQuery.large} { margin-left: calc(var(--rowWidth) / -2.5); }
 
     background-color: #fff;
     box-shadow: 0 6px 7px rgba(0, 0, 0, 0.05);
@@ -229,8 +229,8 @@ const NavLinks = styled.div<NavExpanded>`
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
-  /* Without this 5px on top the links are going to be offsetted upwards */
-  padding-top: 5px;
+  /* Without this 2px on top the links are going to be offsetted upwards */
+  padding-top: 2px;
 
   /*
     These devices have enough space to show all the links in one single row.
