@@ -148,31 +148,34 @@ const LocaleToggle = styled.div<NavExpanded>`
   --rowWidth: 170px;
   --rowHeight: 50px;
   overflow: visible;
-  position: relative;
 
   /* Keeps as the last item on Navbar */
   ${cssQuery.large} { order: 2; }
+
+  /* Clears Toggle animation */
+  button i {
+    color: #2196f3 !important;
+    transform: none !important;
+  }
 
   .picker {
     width: var(--rowWidth);
 
     position: fixed;
-    top: 0;
-    /* We use margin instead of top so the sliding animation works */
-    margin-top: calc(var(--height) * 1.15);
+    /* Creates the effect that the dropdown is touching/merged with the navbar */
+    top: calc(var(--height) * 0.97);
     margin-left: calc(var(--rowWidth) / -2.78);
     ${cssQuery.large} { margin-left: calc(var(--rowWidth) / -3); }
 
     background-color: #fff;
-    border-radius: 4px;
+    box-shadow: 0 6px 7px rgba(0, 0, 0, 0.05);
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
 
-    animation: ${
-      p => p.expanded
-      ? css`${slideDown} ease .4s both`
-      : css`${slideUp} ease .2s both`
-    };
+    transform: scaleY(${p => p.expanded ? 1 : 0});
+    transform-origin: top;
     opacity: ${p => p.expanded ? '1' : '0'};
-    transition: opacity ease .2s;
+    transition: opacity ease .3s, transform ease .15s;
     pointer-events: ${p => p.expanded ? 'initial' : 'none'};
 
     button {
@@ -181,6 +184,7 @@ const LocaleToggle = styled.div<NavExpanded>`
       /* MuiCSS Buttons have predefined margins/paddings */
       padding: 0; margin: 0;
 
+      font-size: 12px;
       font-weight: bold;
 
       box-sizing: border-box;
@@ -190,6 +194,17 @@ const LocaleToggle = styled.div<NavExpanded>`
       button { border-bottom: none; }
     }
   }
+`
+
+const DismissDropdown = styled.div<NavExpanded>`
+  display: ${p => p.expanded ? 'block' : 'none'};
+  position: absolute;
+  width: 100%;
+  /* So users can still click on the navbar links */
+  height: calc(100vh - var(--height));
+  top: var(--height);
+  left: 0;
+  z-index: -2;
 `
 
 const NavLinks = styled.div<NavExpanded>`
@@ -300,11 +315,12 @@ export const Navbar = () => {
         <img src={logo} alt='VoteByMail'/>
     </Logo>
     <LocaleToggle expanded={localesExpanded}>
+      <DismissDropdown expanded={localesExpanded} onClick={toggleLocalesExpanded}/>
       <NavToggleButton onClick={toggleLocalesExpanded} expanded={localesExpanded} variant='flat'>
-      <i className={`fa ${localesExpanded ? 'fa-close' : 'fa-globe'}`}/>
+        <i className='fa fa-globe'/>
       </NavToggleButton>
       {/* Top 5 non-English languages, in order https://en.wikipedia.org/wiki/Languages_of_the_United_States#Most_common_languages */}
-      <div className='picker mui--z3' onClick={toggleLocalesExpanded}>
+      <div className='picker mui--z0' onClick={toggleLocalesExpanded}>
         <a href={`https://translate.google.com/translate?hl=&sl=en&tl=es&u=${url}`}>
           <Button translate='no' variant='flat'>Espa&ntilde;ol</Button>
         </a>
