@@ -10,7 +10,7 @@ import { processEnvOrThrow } from '../common'
 
 
 interface NavExpanded {
-  expanded: boolean
+  expanded: 'translation' | 'links' | ''
 }
 
 const fadeIn = keyframes`
@@ -56,7 +56,7 @@ const Wrapper = styled.div<NavExpanded & { visible: boolean }>`
   }
 
   width: 100%;
-  height: var(${p => p.expanded ? '--expandedHeight' : '--height'});
+  height: var(${p => p.expanded === 'links' ? '--expandedHeight' : '--height'});
   padding: var(--verticalPad) 5%;
   ${cssQuery.large} { padding: var(--verticalPad) 10%; }
   box-sizing: border-box;
@@ -109,8 +109,6 @@ const Logo = styled(Link)`
 `
 
 const NavToggleButton = styled(Button)<Partial<NavExpanded>>`
-  --color: ${p => p.expanded ? '#f44336' : '#2196f3'};
-  --iconRotation: ${p => p.expanded ? '-90deg' : '0'};
   --wrapperSize: var(--contentHeight);
   --iconSize: calc(var(--wrapperSize) * 0.35);
   ${cssQuery.large} {
@@ -134,14 +132,16 @@ const NavToggleButton = styled(Button)<Partial<NavExpanded>>`
   padding: 0; margin: 0;
   i {
     font-size: var(--iconSize);
-    color: var(--color);
-    transform: rotate(var(--iconRotation));
-    transition: color ease .3s, transform ease .15s;
+    color: inherit;
+    transition: color ease .3s;
   }
 `
 
 const NavLinksToggle = styled(NavToggleButton)<NavExpanded>`
   ${cssQuery.large} { display: none; }
+  i {
+    color: ${p => p.expanded === 'links' ? '#2196f3' : 'inherit'};
+  }
 `
 
 const LocaleToggle = styled.div<NavExpanded>`
@@ -152,16 +152,14 @@ const LocaleToggle = styled.div<NavExpanded>`
   /* Keeps as the last item on Navbar */
   ${cssQuery.large} { order: 2; }
 
-  /* Clears Toggle animation */
+  /* Decreases chevron size */
   button i {
-    color: #2196f3 !important;
-    margin-left: 2px;
-    &.static {
-      transform: none !important;
-    }
-    &.chevron {
+    color: ${p => p.expanded === 'translation' ? '#2196f3' : 'inherit'};
+    &.fa-chevron-down {
       font-size: 8px;
-      transform: rotate(${p => p.expanded ? '-180deg' : '0'});
+      margin-left: 2px;
+      transform: rotate(${p => p.expanded === 'translation' ? '-180deg' : '0'});
+      transition: color ease .3s, transform ease .2s;
     }
   }
 
@@ -179,11 +177,11 @@ const LocaleToggle = styled.div<NavExpanded>`
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
 
-    transform: scaleY(${p => p.expanded ? 1 : 0});
+    transform: scaleY(${p => p.expanded === 'translation' ? 1 : 0});
     transform-origin: top;
-    opacity: ${p => p.expanded ? '1' : '0'};
+    opacity: ${p => p.expanded === 'translation' ? '1' : '0'};
     transition: opacity ease .15s, transform ease .2s;
-    pointer-events: ${p => p.expanded ? 'initial' : 'none'};
+    pointer-events: ${p => p.expanded === 'translation' ? 'initial' : 'none'};
 
     button {
       width: 100%;
@@ -208,8 +206,10 @@ const DismissDropdown = styled.div<NavExpanded>`
   position: absolute;
   width: 100%;
   /* So users can still click on the navbar links */
-  height: calc(100vh - var(--height));
-  top: var(--height);
+  height: calc(100vh - ${
+    p => p.expanded === 'links' ? 'var(--expandedHeight)' : 'var(--height)'
+  });
+  top: ${p => p.expanded === 'links' ? 'var(--expandedHeight)' : 'var(--height)'};
   left: 0;
   z-index: -2;
 `
@@ -227,12 +227,13 @@ const NavLinks = styled.div<NavExpanded>`
   /* Makes the shadow (of the navlinks) ignore the Wrapper horizontal padding */
   margin: 0 -10%;
   ${cssQuery.small} { margin-top: 4px; }
+  ${cssQuery.onlyMedium} { margin-top: 4px; }
   animation: ${fadeIn} ease .5s .3s both;
 
   /* When animating, doesn't let the content be drawn on top of the logo/toggle button */
   z-index: -1;
 
-  display: ${p => p.expanded ? 'flex' : 'none'};
+  display: ${p => p.expanded === 'links' ? 'flex' : 'none'};
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
@@ -244,7 +245,7 @@ const NavLinks = styled.div<NavExpanded>`
   */
   ${cssQuery.medium} {
     flex-direction: row;
-    padding: 5px 10% 0;
+    padding: 2px 10% 0;
   }
 
   ${cssQuery.large} {
@@ -264,7 +265,7 @@ const NavLinks = styled.div<NavExpanded>`
       margin-right: 25px;
     }
 
-    &.register, :hover, :focus, :active {
+    :hover, :focus, :active {
       color: #2196f3;
       text-decoration: none;
     }
@@ -275,8 +276,7 @@ const NavLinks = styled.div<NavExpanded>`
 
 export const Navbar = () => {
   const { pushStartSection } = useAppHistory()
-  const [linksExpanded, setLinksExpanded] = React.useState(false)
-  const [localesExpanded, setLocalesExpanded] = React.useState(false)
+  const [expanded, setExpanded] = React.useState<NavExpanded['expanded']>('')
   const [visible, setVisibility] = React.useState(true)
   const [scrollY, setScrollY] = React.useState(window.pageYOffset)
 
@@ -289,28 +289,29 @@ export const Navbar = () => {
         }
       } else {
         if (window.pageYOffset > scrollY) {
-          if ((localesExpanded || linksExpanded) === false) {
-            setVisibility(false)
+          setVisibility(false)
+          if (expanded) {
+            setExpanded('')
           }
         }
       }
       setScrollY(window.pageYOffset)
     }
-  }, [visible, scrollY, localesExpanded, linksExpanded])
+  }, [visible, scrollY, expanded])
 
-  const toggleLinksExpanded = () => {
-    setLocalesExpanded(false)
-    setLinksExpanded(!linksExpanded)
-  }
-  const toggleLocalesExpanded = () => {
-    setLinksExpanded(false)
-    setLocalesExpanded(!localesExpanded)
+  const toggleExpanded = (target: 'links' | 'translation') => {
+    if (expanded === target) {
+      setExpanded('')
+    } else {
+      setExpanded(target)
+    }
   }
 
-  // Collapses navbar links when users click on them
+  // Pushes content to the top of the page and collapses navbar when users
+  // clicks on a link
   const pushAndClose = (section: StartSectionPath['type']) => {
     pushStartSection(section)
-    if (linksExpanded) toggleLinksExpanded()
+    if (expanded) setExpanded('')
   }
 
   const url = encodeURI(processEnvOrThrow('REACT_APP_URL'))
@@ -318,18 +319,25 @@ export const Navbar = () => {
   // We use \u below instead of typing the raw characters so all editors
   // can safely render the content of this file (some people on the team
   // might not have the appropriate fonts for all these locales).
-  return <Wrapper expanded={linksExpanded} visible={visible}>
+  return <Wrapper expanded={expanded} visible={visible}>
     <Logo to='#' onClick={() => pushAndClose('start')}>
       <img src={logo} alt='VoteByMail'/>
     </Logo>
-    <LocaleToggle expanded={localesExpanded}>
-      <DismissDropdown expanded={localesExpanded} onClick={toggleLocalesExpanded}/>
-      <NavToggleButton onClick={toggleLocalesExpanded} expanded={localesExpanded} variant='flat'>
-        <i className="fa fa-globe static"/>
-        <i className="fa fa-chevron-down chevron"/>
+    <DismissDropdown
+      expanded={expanded}
+      onClick={() => setExpanded('')}
+    />
+    <LocaleToggle expanded={expanded}>
+      <NavToggleButton
+        onClick={() => toggleExpanded('translation')}
+        expanded={expanded}
+        variant='flat'
+      >
+        <i className="fa fa-globe"/>
+        <i className="fa fa-chevron-down"/>
       </NavToggleButton>
       {/* Top 5 non-English languages, in order https://en.wikipedia.org/wiki/Languages_of_the_United_States#Most_common_languages */}
-      <div className='picker mui--z0' onClick={toggleLocalesExpanded}>
+      <div className='picker' onClick={() => toggleExpanded('translation')}>
         <a href={`https://translate.google.com/translate?hl=&sl=en&tl=es&u=${url}`}>
           <Button translate='no' variant='flat'>Espa&ntilde;ol</Button>
         </a>
@@ -349,10 +357,14 @@ export const Navbar = () => {
         </a>
       </div>
     </LocaleToggle>
-    <NavLinksToggle onClick={toggleLinksExpanded} expanded={linksExpanded} variant='flat'>
-      <i className={`fa ${linksExpanded ? 'fa-close' : 'fa-navicon'}`}/>
+    <NavLinksToggle
+      onClick={() => toggleExpanded('links')}
+      expanded={expanded}
+      variant='flat'
+    >
+      <i className={`fa fa-navicon`}/>
     </NavLinksToggle>
-    <NavLinks expanded={linksExpanded}>
+    <NavLinks expanded={expanded}>
       <Link to='#start' onClick={() => pushAndClose('start')}>
         Sign Up
       </Link>
