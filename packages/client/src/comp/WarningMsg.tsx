@@ -31,6 +31,7 @@ const FloatingButton = styled(Button)`
   right: 0;
   border-radius: 0;
   border-top-left-radius: 4px;
+  z-index: 9;
 `
 
 const RawWarningMsg = () => {
@@ -87,7 +88,7 @@ export const WarningMsg = () => {
   return <>
     {
       !open && <FloatingButton color="danger" onClick={() => setOpen(true)}>
-        Not Production <i className="fa fa-chevron-up" aria-hidden="true"/>
+         <i className="fa fa-chevron-up" aria-hidden="true"/> Not Production
       </FloatingButton>
     }
     <StyledModal
