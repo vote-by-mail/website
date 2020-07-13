@@ -210,7 +210,7 @@ export const Team: React.FC = () => {
       </PeopleWrapper>
 
       <h5>
-        Interested in volunteering with VoteByMail? We&apos;d love to hear from you even if you&apos;re unsure how you could help!
+        Interested in volunteering with VoteByMail.io?
       </h5>
       <UnderlineLink to="#contact" onClick={() => pushStartSection('contact')}>
         Get involved
