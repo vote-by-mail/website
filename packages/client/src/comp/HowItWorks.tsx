@@ -118,11 +118,10 @@ export const HowItWorks: React.FC = () => {
         </h5>
         <EnterZip/>
         <p><small>
-          <i style={{color:'rgb(220, 14, 82)'}} className="fa fa-clock-o"/> Takes 2 minutes
-        </small>
-        </p>
-        <p><small>
           <i style={{color:'rgb(220, 14, 82)'}} className="fa fa-hourglass-half"/> State deadlines approaching
+        </small></p>
+        <p><small>
+          <i style={{color:'rgb(220, 14, 82)'}} className="fa fa-clock-o"/> Takes 2 minutes
         </small></p>
       </CallToAction>
     </Container>
