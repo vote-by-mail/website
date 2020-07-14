@@ -60,7 +60,7 @@ const Card = styled.div`
     }
   }
 
-  b { color: #db002f; }
+  b { color: var(--danger); }
 
   /* Send "Contact US" to the bottom */
   position: relative;

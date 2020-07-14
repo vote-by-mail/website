@@ -12,7 +12,7 @@ import { cssQuery } from './util/cssQuery'
 import { Container } from 'muicss/react'
 
 const BlueH2 = styled.h2`
-  color: #2196F3;
+  color: var(--primary);
   margin-top: 0;
 `
 

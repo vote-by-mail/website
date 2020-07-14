@@ -98,7 +98,7 @@ const PersonStyle = styled.div`
       display: flex;
       justify-content: center;
       margin-right: 0.5em;
-      :hover, :focus { color: #2596f2; text-decoration: none; }
+      :hover, :focus { color: var(--primary); text-decoration: none; }
       &:nth-last-child(1) { margin-right: 0; }
     }
   }

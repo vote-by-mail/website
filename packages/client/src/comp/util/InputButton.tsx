@@ -50,7 +50,7 @@ const Wrapper = styled.form<StyleProps>`
     justify-content: center;
     font-weight: bold;
 
-    background-color: ${p => p.buttonBackground ?? '#2196f3'};
+    background-color: ${p => p.buttonBackground ?? 'var(--primary)'};
     color: ${p => p.buttonColor ?? '#fff'};
     border-radius: 0;
     border-top-right-radius: 4px;
@@ -96,7 +96,7 @@ const Wrapper = styled.form<StyleProps>`
 
     :focus {
       outline: none;
-      border-color: ${p => p.buttonBackground ?? '#2196f3'};
+      border-color: ${p => p.buttonBackground ?? 'var(--primary)'};
     }
   }
 `

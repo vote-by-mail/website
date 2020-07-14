@@ -7,5 +7,5 @@ export const Center = styled.div`
 `
 
 export const Red = styled.sup`
-  color: rgb(220, 14, 82);
+  color: var(--danger);
 `

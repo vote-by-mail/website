@@ -25,8 +25,8 @@ const OverlayStyle = styled.div`
 
   i {
     font-size: 32px;
-    color: #2592f6;
-    text-shadow: 0 0 6px #2592f677;
+    color: var(--primary);
+    text-shadow: 0 0 6px #2193f377;
   }
 `
 

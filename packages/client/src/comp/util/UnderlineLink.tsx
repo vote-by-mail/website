@@ -10,7 +10,7 @@ export const UnderlineLink = styled(Link)`
   font-weight: bold;
   font-size: 12px;
   padding-bottom: 0.2em;
-  border-bottom: 2px solid #2196F3;
+  border-bottom: 2px solid var(--primary);
   &:hover {
     text-decoration: none;
   }
