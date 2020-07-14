@@ -148,7 +148,6 @@ We're using [Marked](https://www.npmjs.com/package/marked), which has more depen
 We're using [Toast](https://www.npmjs.com/package/react-toastify) for notifications.  The general style is to not report success, occasionally report queries about loading, and always report errors.
 
 ## Setting Up an Instance
-
 Setting up an instance requires rewiring the environment variables in `env.js`.  Below are a set of checks to ensure that your new instance is working.  These checks assume that tests are passing and only check that the environment variables are set correctly.
 
 Remember that if the client and server start up, there is already some confidence that the right variables are set (processEnvOrThrow would have thrown if no value were provided). However, it doesn't check that we have copied the correct API keys.
