@@ -1,34 +1,33 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import fs from 'fs'
 import yaml from 'js-yaml'
 import gulp from 'gulp'
 import minimist from 'minimist'
 import { safeReadFileSync, uint8ToString } from './src/service/util'
-const envs = require('../../env/env.js')
+import envs from '../../env/env.js'
 const run = require('@tianhuil/gulp-run-command').default
 
 // Helper functions
 
 const options = minimist(process.argv.slice(2), {})
 
-const runEnv = (cmd: any, env=undefined) => run(
+const runEnv = (cmd: string, env?: Record<string, unknown>) => run(
   cmd,
   { env : env ? env : envs[options.env] }
 )
 
-const envRequired = async (cb: any) => {
-  if (!envs['hasOwnProperty'](options.env)) {
+const envRequired = async (cb: VoidFunction) => {
+  if (!options?.env || !envs[options?.env]) {
     throw Error('env is not set.  Must set valid env')
   }
   cb()
 }
 
 interface Data {
-  env_variables: any
+  env_variables: string
 }
 
-function setAppYaml(cb: any, env: any) {
+function setAppYaml(cb: VoidFunction, env: string) {
   // gcloud requires env vars to be written into app.yaml file directly
   const inputBuf = safeReadFileSync('app.tmpl.yaml')
   const data = yaml.safeLoad(uint8ToString(inputBuf)) as Data
