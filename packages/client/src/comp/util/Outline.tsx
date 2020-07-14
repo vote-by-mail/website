@@ -4,7 +4,7 @@ import styled from 'styled-components'
 const RawOutline = styled.div`
   border-width: 2px;
   border-style: dashed;
-  border-color: #2196F3;
+  border-color: var(--primary);
   width:        100%;
 `
 
@@ -21,12 +21,12 @@ export const GoldRatioOutline: React.FC<SizableChilren> = ({children}) => {
   const parentRef = React.useRef<HTMLDivElement>(null)
   const [size, setSize] = React.useState<Sizable | null>(null)
   let timer: number | null = null
-  
+
   const testDimension = () => {
     if (parentRef.current) {
       const width = parentRef.current.offsetWidth
       setSize({
-        width, height: width / 1.618, 
+        width, height: width / 1.618,
       })
     }
   }

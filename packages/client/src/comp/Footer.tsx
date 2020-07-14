@@ -54,7 +54,7 @@ const Logo = styled.div`
     margin-top: 0.5em;
     text-decoration: underline;
     &:hover {
-      color: #2196f3;
+      color: var(--primary);
     }
   }
 `
@@ -107,6 +107,9 @@ const Section = styled(ParagraphStyling)`
     a {
       margin-right: 10px;
       &:nth-last-child(1) { margin-right: 0; }
+      &:hover {
+        text-decoration: none;
+      }
     }
   }
 `

@@ -72,7 +72,7 @@ const Form = styled.form`
 
     &:focus {
       outline: none;
-      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1), 0 -2px #2196F3 inset;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1), 0 -2px var(--primary) inset;
     }
   }
 

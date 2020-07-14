@@ -140,7 +140,7 @@ const NavToggleButton = styled(Button)<Partial<NavExpanded>>`
 const NavLinksToggle = styled(NavToggleButton)<NavExpanded>`
   ${cssQuery.large} { display: none; }
   i {
-    color: ${p => p.expanded === 'links' ? '#2196f3' : 'inherit'};
+    color: ${p => p.expanded === 'links' ? 'var(--primary)' : 'inherit'};
   }
 `
 
@@ -154,7 +154,7 @@ const LocaleToggle = styled.div<NavExpanded>`
 
   /* Decreases chevron size */
   button i {
-    color: ${p => p.expanded === 'translation' ? '#2196f3' : 'inherit'};
+    color: ${p => p.expanded === 'translation' ? 'var(--primary)' : 'inherit'};
     &.fa-chevron-down {
       font-size: 8px;
       margin-left: 2px;
@@ -266,7 +266,7 @@ const NavLinks = styled.div<NavExpanded>`
     }
 
     :hover, :focus, :active {
-      color: #2196f3;
+      color: var(--primary);
       text-decoration: none;
     }
 

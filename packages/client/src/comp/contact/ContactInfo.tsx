@@ -26,7 +26,7 @@ const ContactFields: React.FC<{name: string, val?: string[]}> = ({name, val}) =>
 const MutedLink = styled.a`
   color: rgba(0, 0, 0, 0.54);
   &:hover {
-    color: #2196F3;
+    color: var(--primary);
   }
 `
 
@@ -44,7 +44,7 @@ export const ContactInfo: React.FC<Props> = ({
     <ContactFields name='Fax' val={contact.faxes}/>
     <ContactFields name='Phone' val={contact.phones}/>
     <p><MutedLink style={{color: ''}} onClick={() => setOpen(true)}>Wrong Election Official?</MutedLink></p>
-    
+
     <ContactModal
       open={open}
       setOpen={setOpen}
