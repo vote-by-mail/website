@@ -1,6 +1,3 @@
-// Based on https://www.npmjs.com/package/env-cmd
-if (process.env.IGNORE_ENV_FILE) { return; }
-
 const {
   MG_API_KEY,
   TWILIO_SID,
@@ -15,7 +12,7 @@ const {
 // These are kept separately to keep development configs out of git
 const { developmentRaw } = process.env.CI ? require('./env.dev.sample.js') : require('./env.dev.nogit.js')
 
-const removeNullValues = (obj) => {
+const removeNullValues = (obj: Record<string, unknown>) => {
   Object.keys(obj).forEach(
     key => (obj[key] === null || obj[key] === undefined) && delete obj[key]
   )
@@ -127,10 +124,12 @@ const ci = removeNullValues({
   CI: 'true',
 })
 
-module.exports = {
-  development,
-  staging,
-  production,
-  test,
-  ci,
-}
+export const envs = process.env.IGNORE_ENV_FILE
+  ? undefined
+  : {
+    development,
+    staging,
+    production,
+    test,
+    ci,
+  }
