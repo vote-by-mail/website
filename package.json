@@ -1,9 +1,6 @@
 {
   "name": "root",
   "private": true,
-  "engines": {
-    "node": "12.x.x || 14.x.x"
-  },
   "devDependencies": {
     "lerna": "^3.20.2"
   },

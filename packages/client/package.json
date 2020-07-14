@@ -2,9 +2,6 @@
   "name": "@vbm/client",
   "version": "0.1.0",
   "private": true,
-  "engines": {
-    "node": "12.x.x || 14.x.x"
-  },
   "dependencies": {
     "@tianhuil/simple-trpc": "^1.8.0",
     "muicss": "^0.10.1",
