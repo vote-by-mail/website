@@ -152,7 +152,7 @@ const Form: React.FC = () => {
   </>
 }
 
-const privacyPolicyUrl = process.env.REACT_APP_SERVER + '/PrivacyPolicy.pdf'
+const privacyPolicyUrl = process.env.REACT_APP_SERVER + 'PrivacyPolicy.pdf'
 
 export const Footer = () => {
 
