@@ -42,6 +42,12 @@ export const safeReadFileSync = (
   options?: { encoding?: null | undefined, flag?: string | undefined },
 ) => new Uint8Array(fs.readFileSync(path, options))
 
+/**
+ * Converts an Uint8Array to a 'utf-8' string.
+ * @param source An Uint8Array to be converted
+ */
+export const uint8ToString = (source: Uint8Array) => new TextDecoder().decode(source)
+
 export const cache = <A extends unknown[], R>(
   func: AsyncFunc<A, R>,
   namer: AsyncFunc<A, string>,
