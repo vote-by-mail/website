@@ -1,5 +1,4 @@
 import fs from 'fs'
-import util from 'util'
 
 
 interface Options{
@@ -22,10 +21,11 @@ type AsyncFunc<A extends unknown[], R> = (...args: A) => Promise<R>
 export const safeReadFile = async (
   path: fs.PathLike | number,
   options?: { encoding?: null | undefined, flag?: string | undefined },
-) => {
-  const asyncReadFile = util.promisify(fs.readFile)
-  return new Uint8Array(await asyncReadFile(path, options))
-}
+) => new Promise<Uint8Array>((resolve, reject) => {
+  fs.readFile(path, options, (err, data) => {
+    err ? reject(err) : resolve(new Uint8Array(data.buffer))
+  })
+})
 
 /**
  * Reads the entire contents of a file.
