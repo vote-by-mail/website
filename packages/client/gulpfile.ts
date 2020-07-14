@@ -1,21 +1,7 @@
-const gulp = require('gulp')
-const minimist = require('minimist')
-const run = require('@tianhuil/gulp-run-command').default
-const envs = require('../../env/env.js')
-
-const options = minimist(process.argv.slice(2), {})
-
-const runEnv = (cmd, env=undefined) => run(
-  cmd,
-  { env : env ? env : envs[options.env] }
-)
-
-const envRequired = async (cb) => {
-  if (!envs.hasOwnProperty(options.env)) {
-    throw Error('env is not set.  Must set valid env')
-  }
-  cb()
-}
+/* eslint-disable no-undef */
+import gulp from 'gulp'
+import { envs } from '../../env/env.js'
+import { options, runEnv, envRequired } from './src/common/gulpfile.js'
 
 // start
 gulp.task('start',
@@ -30,7 +16,7 @@ gulp.task('build', gulp.series(
   envRequired,
   runEnv('react-app-rewired build')
 ))
-  
+
 // test
 gulp.task('test', async () => {
   const watch = options.watch ? '' : '--watchAll=false'
