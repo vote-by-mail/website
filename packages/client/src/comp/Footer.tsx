@@ -5,7 +5,6 @@ import logo from './img/logo.png'
 import { cssQuery } from './util/cssQuery'
 import { InputButton } from './util/InputButton'
 import { Container, Button } from 'muicss/react'
-import { Link } from 'react-router-dom'
 import { MarketingWrapper } from './util/MarketingWrapper'
 
 const FooterWrapper  = styled(MarketingWrapper)`
@@ -150,21 +149,17 @@ const Form: React.FC = () => {
   </>
 }
 
+const privacyPolicyUrl = process.env.REACT_APP_SERVER + '/PrivacyPolicy.pdf'
+
 export const Footer = () => {
-  // Since there's no page reload when clicking on links, the user might
-  // think nothing really happened. A good way to indicate feedback is
-  // scrolling to the top of the page.
-  const scrollToTop = () => {
-    window.scrollTo({top: 0, behavior: 'smooth'})
-  }
 
   return <FooterWrapper centerContent={false}>
     <Container>
       <Logo>
         <img src={logo} alt="VoteByMail"/>
-        <Link to='/privacy-policy' onClick={scrollToTop}>
+        <a href={privacyPolicyUrl}>
           Privacy Policy
-        </Link>
+        </a>
       </Logo>
       <Section>
         <Form/>

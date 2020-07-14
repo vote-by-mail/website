@@ -20,7 +20,6 @@ import { StateRedirect } from './comp/StateRedirect'
 import { MockPage } from './comp/MockPage'
 import { StyleContainer } from './comp/util/Container'
 import { Pardon } from './comp/Pardon'
-import { PrivacyPolicy } from './comp/PrivacyPolicy'
 import { Navbar } from './comp/Navbar'
 import { HowItWorks } from './comp/HowItWorks'
 import { GetInvolved } from './comp/GetInvolved'
@@ -40,11 +39,6 @@ const Layout = () => {
         <StyleContainer>
           <Status/>
         </StyleContainer>
-      </Route>
-      <Route path='/privacy-policy'>
-        <TallStyleContainer>
-          <PrivacyPolicy/>
-        </TallStyleContainer>
       </Route>
       <Redirect exact from='/' to={defaultUrl}/>
       <Route exact path='/mock'>
