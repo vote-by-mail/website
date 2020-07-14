@@ -26,7 +26,7 @@ block content
               input(type='text' class='form-control' id='googleId' name='googleId' placeholder='UA-123456789-0' value=richOrg.googleId pattern='UA-\\d+-\\d+')
               small.form-text.text-muted(id='googleHelp').
                 Starts with "UA". Visit Google's #[a(href='https://support.google.com/analytics/answer/1008080') support page] for more information
-            
+
             .d-flex.justify-content-end
               button.btn.btn-primary(type='submit') Update
 
@@ -68,6 +68,6 @@ block content
             .d-flex.justify-content-start
               p.mr-2 #{info.name} (#{info.state})
               a(href= info.signedUrl target='_blank') (letter)
-              
+
             .d-flex.justify-content-start
-              small.text-muted #{new Date(info.created.seconds).toUTCString()}
+              small.text-muted #{new Date(info.created.seconds * 1000).toUTCString()}
