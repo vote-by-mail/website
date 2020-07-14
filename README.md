@@ -148,6 +148,7 @@ We're using [Marked](https://www.npmjs.com/package/marked), which has more depen
 We're using [Toast](https://www.npmjs.com/package/react-toastify) for notifications.  The general style is to not report success, occasionally report queries about loading, and always report errors.
 
 ## Setting Up an Instance
+
 Setting up an instance requires rewiring the environment variables in `env.js`.  Below are a set of checks to ensure that your new instance is working.  These checks assume that tests are passing and only check that the environment variables are set correctly.
 
 Remember that if the client and server start up, there is already some confidence that the right variables are set (processEnvOrThrow would have thrown if no value were provided). However, it doesn't check that we have copied the correct API keys.
@@ -169,6 +170,16 @@ For every environment (e.g. development, staging, production),
 - Test that submitting a voter from every state generates a confirmation email to the voter.  Check the corresponding firestore database and Google Storage for the environment (to ensure that the right project was added).  This cannot be done on production.  However, if this and all previous tests have worked in production, we should be highly confident that it will work in production as well.
 - Get a resident of a state to sign up in production.
 - Increase your billing quota in GCloud for production and staging.
+
+## Setting Up an ArcGIS server
+
+First you need to make sure you have a ArcGIS Developer Account with credits and the file with the layer you want to turn into a service (the layer can be in csv, shapefile or geojson formats)
+
+1. Log into your ArcGIS Developer Account and go to your Dashboard (https://developers.arcgis.com/dashboard)
+2. Scroll down and find the Layers section and click on the `+ Create New Layer` square
+3. Click on the `Select a file` button and upload the file that has your layer
+4. On the `Settings` step make sure you select who can have access to that layer service on the `Share Layer` section
+5. After your layer is created you will be prompted to its page where you can find the URL to access its service, you will be able to visualize your layer in different ways and further configure it if necessary
 
 ## About Us
 This repository is for VoteByMail.io.
