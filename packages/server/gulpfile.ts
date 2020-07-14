@@ -1,31 +1,38 @@
-const fs = require('fs')
-const yaml = require('js-yaml')
-const gulp = require('gulp')
-const minimist = require('minimist')
-const run = require('@tianhuil/gulp-run-command').default
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import fs from 'fs'
+import yaml from 'js-yaml'
+import gulp from 'gulp'
+import minimist from 'minimist'
+import { safeReadFileSync, uint8ToString } from './src/service/util'
 const envs = require('../../env/env.js')
+const run = require('@tianhuil/gulp-run-command').default
 
 // Helper functions
 
 const options = minimist(process.argv.slice(2), {})
 
-const runEnv = (cmd, env=undefined) => run(
+const runEnv = (cmd: any, env=undefined) => run(
   cmd,
   { env : env ? env : envs[options.env] }
 )
 
-const envRequired = async (cb) => {
-  if (!envs.hasOwnProperty(options.env)) {
+const envRequired = async (cb: any) => {
+  if (!envs['hasOwnProperty'](options.env)) {
     throw Error('env is not set.  Must set valid env')
   }
   cb()
 }
 
-function setAppYaml(cb, env) {
+interface Data {
+  env_variables: any
+}
+
+function setAppYaml(cb: any, env: any) {
   // gcloud requires env vars to be written into app.yaml file directly
-  const inputStr = fs.readFileSync('app.tmpl.yaml')
-  const data = yaml.safeLoad(inputStr)
-  data.env_variables = env
+  const inputBuf = safeReadFileSync('app.tmpl.yaml')
+  const data = yaml.safeLoad(uint8ToString(inputBuf)) as Data
+  data['env_variables'] = env
   const outputStr = yaml.safeDump(data)
   fs.writeFileSync('app.yaml', outputStr, 'utf8')
   cb()
