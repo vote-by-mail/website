@@ -71,9 +71,7 @@ const Wrapper = styled.div<NavExpanded & { visible: boolean }>`
 
   display: flex;
   flex-flow: row wrap;
-  align-items: flex-start;
-  align-content: flex-start;
-  justify-content: space-between;
+  justify-content: flex-end;
   ${cssQuery.large} {
     align-items: center;
     justify-content: flex-end;
@@ -91,11 +89,9 @@ const Wrapper = styled.div<NavExpanded & { visible: boolean }>`
 
 const Logo = styled(Link)`
   height: var(--contentHeight);
-  /* Total space - NavToggle size - LocaleToggle size */
-  width: calc(90% - var(--contentHeight) - var(--contentHeight));
+  position: absolute;
+  left: 5%;
   ${cssQuery.large} {
-    width: unset;
-    position: absolute;
     left: 10%;
   }
 
@@ -169,8 +165,8 @@ const LocaleToggle = styled.div<NavExpanded>`
     position: fixed;
     /* Creates the effect that the dropdown is touching/merged with the navbar */
     top: calc(var(--height) * 0.97);
-    margin-left: calc(var(--rowWidth) / -2.78);
-    ${cssQuery.large} { margin-left: calc(var(--rowWidth) / -2.4); }
+    margin-left: calc(var(--rowWidth) / -2.6);
+    ${cssQuery.large} { margin-left: calc(var(--rowWidth) / -2.35); }
 
     background-color: #fff;
     box-shadow: 0 6px 7px rgba(0, 0, 0, 0.05);
@@ -225,9 +221,6 @@ const NavLinks = styled.div<NavExpanded>`
   line-height: 16px;
   box-shadow: 0 4px 3px rgba(0, 0, 0, 0.05) inset;
   /* Makes the shadow (of the navlinks) ignore the Wrapper horizontal padding */
-  margin: 0 -10%;
-  ${cssQuery.small} { margin-top: 4px; }
-  ${cssQuery.onlyMedium} { margin-top: 4px; }
   animation: ${fadeIn} ease .5s .3s both;
 
   /* When animating, doesn't let the content be drawn on top of the logo/toggle button */
@@ -237,7 +230,10 @@ const NavLinks = styled.div<NavExpanded>`
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
-  /* Without this 2px on top the links are going to be offsetted upwards */
+
+  /* Fixes offsetted links */
+  margin: 6px -10% 0;
+  ${cssQuery.large} { margin-top: 0; }
   padding-top: 2px;
 
   /*
