@@ -1,5 +1,5 @@
 import { PDFDocument, StandardFonts, rgb, PDFPage, PDFPageDrawTextOptions } from 'pdf-lib'
-import fs from 'fs'
+import { safeReadFile } from '../util'
 
 export { fillNorthCarolina } from './northCarolina'
 export { fillNewHampshire } from './newHampshire'
@@ -14,23 +14,11 @@ interface FillFormArg {
   placeImage: (imageBuffer: Uint8Array, page: number, x: number, y: number) => Promise<void>
 }
 
-/**
- * Need to make Uint8Array right away because buffer is reused
- * https://github.com/nodejs/node/issues/11132#issuecomment-277157700
- * */
-export const readBinaryFile = (filename: string): Promise<Uint8Array> => {
-  return new Promise((resolve, reject) => {
-    fs.readFile(filename, (err, data) => {
-      err ? reject(err) : resolve(new Uint8Array(data.buffer))
-    })
-  })
-}
-
 export const fillFormWrapper = async (
   filename: string,
   fillForm: (arg: FillFormArg) => Promise<void>,
 ): Promise<Buffer> => {
-  const byteArray = await readBinaryFile(filename)
+  const byteArray = await safeReadFile(filename)
   const doc = await PDFDocument.load(byteArray)
   const options = {
     font: await doc.embedFont(StandardFonts.Helvetica),
