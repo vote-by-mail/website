@@ -119,7 +119,10 @@ export const RawAddressForm: React.FC<{rawState: string, zip?: string}> = ({rawS
 
   return <StatusReport state={state}>
     <AppForm onSubmit={handleSubmit}>
-      <p>Enter your <b>voter-registration address</b> to find your local election official</p>
+      <p>
+        Enter your <b>voter-registration address</b> to find your local election official.
+        (<a target='_blank' rel='noopener noreferrer' href='https://www.vote.org/am-i-registered-to-vote/'>Unsure if you are registered?</a>)
+      </p>
       <FlexBox>
         <FlexGrow>
           <BaseInput
@@ -129,8 +132,8 @@ export const RawAddressForm: React.FC<{rawState: string, zip?: string}> = ({rawS
             pattern={`(?!${partialAddr}$).*`}
             required
             defaultValue={ address?.queryAddr ?? defaultAddress() }
-            translate="no"
-            lang="en"
+            translate='no'
+            lang='en'
           />
         </FlexGrow>
         <FlexFixed>
