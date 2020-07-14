@@ -11,7 +11,7 @@ interface Response {
 
 const rawMichiganResponse = async (latLong: [number, number]): Promise<Response | null> => {
   const [lat, lng] = latLong
-  const url = `https://gisago.mcgi.state.mi.us/arcgis/rest/services/OpenData/michigan_geographic_framework/MapServer/2/query?where=1%3D1&geometry=${lng}%2C${lat}&geometryType=esriGeometryPoint&inSR=4326&spatialRel=esriSpatialRelIntersects&outFields=*&returnGeometry=true&returnTrueCurves=false&returnIdsOnly=false&returnCountOnly=false&returnZ=false&returnM=false&returnDistinctValues=false&returnExtentOnly=false&featureEncoding=esriDefault&f=pjson`
+  const url = `https://services5.arcgis.com/AbZVanP1q8d5OLCX/arcgis/rest/services/vbm_michigan/FeatureServer/0/query?where=1%3D1&geometry=${lng}%2C${lat}&geometryType=esriGeometryPoint&inSR=4326&spatialRel=esriSpatialRelIntersects&outFields=*&returnGeometry=true&returnTrueCurves=false&returnIdsOnly=false&returnCountOnly=false&returnZ=false&returnM=false&returnDistinctValues=false&returnExtentOnly=false&featureEncoding=esriDefault&f=pjson`
   try {
     return (await (await fetch(url)).json() as Response)
   } catch (error) {
