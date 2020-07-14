@@ -2,14 +2,14 @@ import { Router} from 'express'
 
 import { getContact, getFirstContact, getContactRecords } from '../contact'
 import { toContactMethod, StateInfo, ImplementedState, implementedStates, BaseInfo, ContactMethod, isImplementedState } from '../../common'
-import fs from 'fs'
 import { Letter } from '.'
+import { safeReadFileSync } from '../util'
 
 
 export const router = Router()
 
 const loadBase64 = (filename: string) => {
-  return fs.readFileSync(__dirname + '/' + filename).toString('base64')
+  return new Buffer(safeReadFileSync(__dirname + '/' + filename)).toString('base64')
 }
 
 const baseStateInfo: Omit<BaseInfo, 'contact'> = {
