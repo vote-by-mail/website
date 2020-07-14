@@ -1,4 +1,5 @@
 import fs from 'fs'
+import util from 'util'
 
 
 interface Options{
@@ -7,6 +8,39 @@ interface Options{
   encoding?: BufferEncoding
 }
 type AsyncFunc<A extends unknown[], R> = (...args: A) => Promise<R>
+
+/**
+ * Asynchronously reads the entire contents of a file.
+ *
+ * @param path A path to a file. If a URL is provided, it must use the
+ * file: protocol. If a file descriptor is provided, the underlying file
+ * will not be closed automatically.
+ *
+ * @param options An object that may contain an optional flag. If a flag
+ * is not provided, it defaults to 'r'.
+ */
+export const safeReadFile = async (
+  path: fs.PathLike | number,
+  options?: { encoding?: null | undefined, flag?: string | undefined },
+) => {
+  const asyncReadFile = util.promisify(fs.readFile)
+  return new Uint8Array(await asyncReadFile(path, options))
+}
+
+/**
+ * Reads the entire contents of a file.
+ *
+ * @param path A path to a file. If a URL is provided, it must use the
+ * file: protocol. If a file descriptor is provided, the underlying file
+ * will not be closed automatically.
+ *
+ * @param options An object that may contain an optional flag. If a flag
+ * is not provided, it defaults to 'r'.
+ */
+export const safeReadFileSync = (
+  path: fs.PathLike | number,
+  options?: { encoding?: null | undefined, flag?: string | undefined },
+) => new Uint8Array(fs.readFileSync(path, options))
 
 export const cache = <A extends unknown[], R>(
   func: AsyncFunc<A, R>,
