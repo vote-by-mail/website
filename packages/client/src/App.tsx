@@ -65,15 +65,11 @@ const Layout = () => {
         <ScrollHook pathEnum='about'>
           <About/>
         </ScrollHook>
-        <StyleContainer>
-          <WarningMsg/>
-        </StyleContainer>
       </Route>
       <Route path={pathData['success'].path}>
         <ScrollHook pathEnum='success'>
           <TallStyleContainer>
             <Success/>
-            <WarningMsg/>
           </TallStyleContainer>
         </ScrollHook>
       </Route>
@@ -83,7 +79,6 @@ const Layout = () => {
           <ScrollHook pathEnum='address' pageStart>
             <AddressForm/>
           </ScrollHook>
-          <WarningMsg/>
         </TallStyleContainer>
       </Route>
       <Route path={pathData['stateRedirect'].path} exact>
@@ -96,7 +91,6 @@ const Layout = () => {
           <ScrollHook pathEnum='state'>
             <StateForm/>
           </ScrollHook>
-          <WarningMsg/>
         </TallStyleContainer>
       </Route>
       <Redirect to={defaultUrl}/>
@@ -104,6 +98,7 @@ const Layout = () => {
     <StyleContainer>
       <DevInfo/>
     </StyleContainer>
+    <WarningMsg/>
     <Footer/>
   </>)
 }
