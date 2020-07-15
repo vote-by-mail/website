@@ -8,6 +8,46 @@ interface Options{
 }
 type AsyncFunc<A extends unknown[], R> = (...args: A) => Promise<R>
 
+/**
+ * Asynchronously reads the entire contents of a file.
+ *
+ * @param path A path to a file. If a URL is provided, it must use the
+ * file: protocol. If a file descriptor is provided, the underlying file
+ * will not be closed automatically.
+ *
+ * @param options An object that may contain an optional flag. If a flag
+ * is not provided, it defaults to 'r'.
+ */
+export const safeReadFile = async (
+  path: fs.PathLike | number,
+  options?: { encoding?: null | undefined, flag?: string | undefined },
+) => new Promise<Uint8Array>((resolve, reject) => {
+  fs.readFile(path, options, (err, data) => {
+    err ? reject(err) : resolve(new Uint8Array(data.buffer))
+  })
+})
+
+/**
+ * Reads the entire contents of a file.
+ *
+ * @param path A path to a file. If a URL is provided, it must use the
+ * file: protocol. If a file descriptor is provided, the underlying file
+ * will not be closed automatically.
+ *
+ * @param options An object that may contain an optional flag. If a flag
+ * is not provided, it defaults to 'r'.
+ */
+export const safeReadFileSync = (
+  path: fs.PathLike | number,
+  options?: { encoding?: null | undefined, flag?: string | undefined },
+) => new Uint8Array(fs.readFileSync(path, options))
+
+/**
+ * Converts an Uint8Array to a 'utf-8' string.
+ * @param source An Uint8Array to be converted
+ */
+export const uint8ToString = (source: Uint8Array) => new TextDecoder().decode(source)
+
 export const cache = <A extends unknown[], R>(
   func: AsyncFunc<A, R>,
   namer: AsyncFunc<A, string>,
