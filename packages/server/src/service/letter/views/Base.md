@@ -2,7 +2,7 @@
 
 {% if warning %}
 <p style='color:red;'>
-The request was not sent from production.  <b>No email or fax was sent to an election official.</b>  Had this been sent from production, you would have continued to receive this email <b>and</b> the election official would have also been contacted as outlined below.  If you want to send an official request, do so from <a href='https://VoteByMail.io'>VoteByMail.io.</a><p>
+The request was not sent from production.  <b>No email or fax was sent to an election official.</b>  Had this been sent from production, the election official would have also been contacted as outlined below.  You would also have received this email.  If you want to send an official request, do so from <a href='https://VoteByMail.io'>VoteByMail.io.</a><p>
 <p>
 
 {% endif %}
