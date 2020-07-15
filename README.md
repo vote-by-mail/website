@@ -174,11 +174,16 @@ For every environment (e.g. development, staging, production),
 
 First you need to make sure you have a ArcGIS Developer Account with credits and the file with the layer you want to turn into a service (the layer can be in csv, shapefile or geojson formats)
 
+The shapefile used to create the Michigan ArcGIS server can be found here: http://gis-michigan.opendata.arcgis.com/datasets/minor-civil-divisions-cities-townships-v17a
+
 1. Log into your ArcGIS Developer Account and go to your Dashboard (https://developers.arcgis.com/dashboard)
 2. Scroll down and find the Layers section and click on the `+ Create New Layer` square
 3. Click on the `Select a file` button and upload the file that has your layer
 4. On the `Settings` step make sure you select who can have access to that layer service on the `Share Layer` section
 5. After your layer is created you will be prompted to its page where you can find the URL to access its service, you will be able to visualize your layer in different ways and further configure it if necessary
+6. To figure out what endpoint and parameters to use navigate to the service layer page an click on the `View Service` button
+7. On the bottom of the page click on the `Query` link
+8. You will be prompted to a page where you can visually input your query parameters, after you are done inputing them you can click on the `Query (GET)` button on the bottom of the page and you will navigate to your endpoint
 
 ## About Us
 This repository is for VoteByMail.io.
