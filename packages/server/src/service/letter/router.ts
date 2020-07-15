@@ -9,7 +9,7 @@ import { safeReadFileSync } from '../util'
 export const router = Router()
 
 const loadBase64 = (filename: string) => {
-  return Buffer.from(safeReadFileSync(__dirname + '/' + filename)).toString('base64')
+  return safeReadFileSync(__dirname + '/' + filename).toString('base64')
 }
 
 const baseStateInfo: Omit<BaseInfo, 'contact'> = {
