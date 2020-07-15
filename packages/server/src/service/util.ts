@@ -18,8 +18,8 @@ type AsyncFunc<A extends unknown[], R> = (...args: A) => Promise<R>
  * @param options An object that may contain an optional flag. If a flag
  * is not provided, it defaults to 'r'.
  */
-export const safeReadFile = async (
-  path: fs.PathLike | number,
+export const safeReadFile = (
+  path: fs.PathLike,
   options?: { encoding?: null | undefined, flag?: string | undefined },
 ) => new Promise<Buffer>((resolve, reject) => {
   fs.readFile(path, options, (err, data) => {
