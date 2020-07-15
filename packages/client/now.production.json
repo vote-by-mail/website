@@ -1,5 +1,5 @@
 {
   "scope": "votebymail",
-  "alias": ["votebymail.io"],
+  "alias": ["votebymail.io", "www.votebymail.io"],
   "public": false
 }
