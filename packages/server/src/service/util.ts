@@ -21,9 +21,9 @@ type AsyncFunc<A extends unknown[], R> = (...args: A) => Promise<R>
 export const safeReadFile = async (
   path: fs.PathLike | number,
   options?: { encoding?: null | undefined, flag?: string | undefined },
-) => new Promise<Uint8Array>((resolve, reject) => {
+) => new Promise<Buffer>((resolve, reject) => {
   fs.readFile(path, options, (err, data) => {
-    err ? reject(err) : resolve(new Uint8Array(data.buffer))
+    err ? reject(err) : resolve(Buffer.from(new Uint8Array(data).buffer))
   })
 })
 
@@ -40,13 +40,7 @@ export const safeReadFile = async (
 export const safeReadFileSync = (
   path: fs.PathLike | number,
   options?: { encoding?: null | undefined, flag?: string | undefined },
-) => new Uint8Array(fs.readFileSync(path, options))
-
-/**
- * Converts an Uint8Array to a 'utf-8' string.
- * @param source An Uint8Array to be converted
- */
-export const uint8ToString = (source: Uint8Array) => new TextDecoder().decode(source)
+) => Buffer.from(new Uint8Array(fs.readFileSync(path, options)).buffer)
 
 export const cache = <A extends unknown[], R>(
   func: AsyncFunc<A, R>,
