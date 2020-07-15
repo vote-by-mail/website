@@ -94,7 +94,7 @@ export const Base = <Info extends StateInfo>({ enrichValues, children }: Props<I
     />
     <BaseInput
       id='registrationAddress'
-      label='Registration Address'
+      label='Voter Registration Address'
       defaultValue={address?.queryAddr}
       disabled
     />
@@ -118,7 +118,7 @@ export const Base = <Info extends StateInfo>({ enrichValues, children }: Props<I
     />
     <Togglable
       id='mailing'
-      label='Mail my ballot to a separate mailing address'
+      label='Mail my ballot to a different address than listed above'
     >{
       (checked) => <BaseInput
         id='mailing'
