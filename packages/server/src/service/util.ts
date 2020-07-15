@@ -9,6 +9,14 @@ interface Options{
 type AsyncFunc<A extends unknown[], R> = (...args: A) => Promise<R>
 
 /**
+ * Utility to copy buffer for shared ArrayBuffer issue
+ * https://github.com/nodejs/node/issues/11132#issuecomment-277157700
+ */
+const copyBuffer = (buffer: Buffer): Buffer => Buffer.from(
+  new Uint8Array(buffer).buffer
+)
+
+/**
  * Asynchronously reads the entire contents of a file.
  *
  * @param path A path to a file. If a URL is provided, it must use the
@@ -23,7 +31,7 @@ export const safeReadFile = (
   options?: { encoding?: null | undefined, flag?: string | undefined },
 ) => new Promise<Buffer>((resolve, reject) => {
   fs.readFile(path, options, (err, data) => {
-    err ? reject(err) : resolve(Buffer.from(new Uint8Array(data).buffer))
+    err ? reject(err) : resolve(copyBuffer(data))
   })
 })
 
@@ -40,7 +48,7 @@ export const safeReadFile = (
 export const safeReadFileSync = (
   path: fs.PathLike | number,
   options?: { encoding?: null | undefined, flag?: string | undefined },
-) => Buffer.from(new Uint8Array(fs.readFileSync(path, options)).buffer)
+) => copyBuffer(fs.readFileSync(path, options))
 
 export const cache = <A extends unknown[], R>(
   func: AsyncFunc<A, R>,
