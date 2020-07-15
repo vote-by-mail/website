@@ -47,8 +47,8 @@ const StateFormSwitch: React.FC<SwitchProps> = ({
 }
 
 const methodExplain = (method: ContactMethod): string => {
-  const email = 'email the vote-by-mail application to both you and the election official'
-  const fax = 'fax the vote-by-mail application to the election official and email you a copy'
+  const email = 'We will email the vote-by-mail signup to your local election official and to you.'
+  const fax = 'We will fax the vote-by-mail signup to your local election official and email a copy to you.'
   switch(method.stateMethod) {
     case 'email': return email
     case 'fax': return fax
@@ -95,8 +95,8 @@ export const StateForm: React.FC<Props> = ({ignoreError}) => {
   }
 
   return <>
-    <h1>{locale.state} Vote by Mail Form</h1>
-    <p><b>Fill out</b> the following form and we will {methodExplain(method)}</p>
+    <h1>{locale.state} Vote by Mail Signup Form</h1>
+    <p>Fill out the following form to sign up for vote by mail.  {methodExplain(method)}</p>
     <StyledPanel>
       <StateFormSwitch locale={locale}/>
     </StyledPanel>
