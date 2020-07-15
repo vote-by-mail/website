@@ -1,7 +1,6 @@
 /* eslint-disable no-undef */
 import gulp from 'gulp'
-import { envs } from '../../env/env.js'
-import { options, runEnv, envRequired } from './src/common/gulpfile.js'
+import { envs, options, runEnv, envRequired } from '../common/gulpfile'
 
 // start
 gulp.task('start',

@@ -124,12 +124,10 @@ const ci = removeNullValues({
   CI: 'true',
 })
 
-export const envs = process.env.IGNORE_ENV_FILE
-  ? undefined
-  : {
-    development,
-    staging,
-    production,
-    test,
-    ci,
-  }
+export const envs = {
+  development: process.env.IGNORE_ENV_FILE ? undefined : development,
+  staging: process.env.IGNORE_ENV_FILE ? undefined : staging,
+  production: process.env.IGNORE_ENV_FILE ? undefined : production,
+  test: process.env.IGNORE_ENV_FILE ? undefined : test,
+  ci: process.env.IGNORE_ENV_FILE ? undefined : ci,
+}

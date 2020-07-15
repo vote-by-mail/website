@@ -3,11 +3,13 @@ import fs from 'fs'
 import yaml from 'js-yaml'
 import gulp from 'gulp'
 import { safeReadFileSync, uint8ToString } from './src/service/util'
-import { envs } from '../../env/env.js'
-import { runEnv, envRequired, options } from '../client/src/common/gulpfile'
+import { envs, runEnv, envRequired, options } from '../common/gulpfile'
 const run = require('@tianhuil/gulp-run-command').default
 
-function setAppYaml(cb: VoidFunction, env: string) {
+function setAppYaml(
+  cb: VoidFunction,
+  env: string | Record<string, unknown> | undefined,
+) {
   // gcloud requires env vars to be written into app.yaml file directly
   const inputBuf = safeReadFileSync('app.tmpl.yaml')
   const data = yaml.safeLoad(uint8ToString(inputBuf)) as Record<string, unknown>
@@ -95,11 +97,11 @@ gulp.task('build',
 // deploy
 gulp.task('appsubst', gulp.series(
   envRequired,
-  (cb) => setAppYaml(cb, JSON.stringify(envs[options.env]))
+  (cb) => setAppYaml(cb, envs[options.env])
 ))
 gulp.task('gcloud', // --quiet disables interaction in gcloud
   async () => {
-    const project = envs[options.env].GCLOUD_PROJECT
+    const project = envs[options?.env]?.GCLOUD_PROJECT
     if(!project) throw Error(`GCLOUD_PROJECT is not defined for env "${options.env}"`)
     return run(`gcloud app deploy --quiet --verbosity=info --project ${project}`)()
   }
@@ -117,7 +119,7 @@ gulp.task('deploy', gulp.series(
 gulp.task('deploy-index', async (cb) => {
     console.log('The following must be run from the command line.  It inexplicably fails from gulp:')
     console.log('')
-    console.log(`  firebase --project ${envs[options.env].GCLOUD_PROJECT} deploy --only firestore:indexes`)
+    console.log(`  firebase --project ${envs[options?.env]?.GCLOUD_PROJECT} deploy --only firestore:indexes`)
     console.log('')
     cb()
   }

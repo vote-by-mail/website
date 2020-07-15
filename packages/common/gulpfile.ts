@@ -1,6 +1,7 @@
 import gulp from 'gulp'
 import minimist from 'minimist'
-import { envs } from '../../env/env.js'
+import { envs } from './env/env'
+export { envs } from './env/env'
 
 const run = require('@tianhuil/gulp-run-command').default
 
@@ -20,6 +21,7 @@ interface Options {
   watch?: boolean
   env: Envs
 }
+
 
 export const options = minimist(process.argv.slice(2), {}) as unknown as Options
 
