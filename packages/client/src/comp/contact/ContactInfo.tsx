@@ -17,6 +17,14 @@ const SmallSpacing = styled.div`
   margin-bottom: 4px;
 `
 
+const StyledP = styled.p`
+  color: var(--primary);
+  margin: 0;
+  &:hover {
+    text-decoration: underline;
+  }
+`
+
 const ContactField: React.FC<{name: string, val?: string}> = ({name, val}) => {
   if (!val) return null
   return <SmallSpacing><b>{name}:</b> {val}</SmallSpacing>
@@ -34,13 +42,15 @@ export const ContactInfo: React.FC<Props> = ({
 
   return <ContacStyle>
     <p><b>Local Election Official Details.</b></p>
-    <ContactField name={'Official'} val={contact.official}/>
+    <ContactField name='Official' val={contact.official}/>
     <ContactField name='City' val={contact.city}/>
     <ContactField name='County' val={contact.county}/>
     <ContactFields name='Email' val={contact.emails}/>
     <ContactFields name='Fax' val={contact.faxes}/>
     <ContactFields name='Phone' val={contact.phones}/>
-    <SmallSpacing><small><a onClick={() => setOpen(true)}>Wrong Election Official?</a></small></SmallSpacing>
+    <SmallSpacing><small>
+      <StyledP onClick={() => setOpen(true)}>Wrong Election Official?</StyledP>
+    </small></SmallSpacing>
 
     <ContactModal
       open={open}
