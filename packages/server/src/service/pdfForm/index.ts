@@ -19,7 +19,7 @@ export const fillFormWrapper = async (
   fillForm: (arg: FillFormArg) => Promise<void>,
 ): Promise<Buffer> => {
   const byteArray = await safeReadFile(filename)
-  const doc = await PDFDocument.load(byteArray)
+  const doc = await PDFDocument.load(byteArray.toString('base64'))
   const options = {
     font: await doc.embedFont(StandardFonts.Helvetica),
     size: 12,
