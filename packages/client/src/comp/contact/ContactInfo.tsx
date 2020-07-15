@@ -13,22 +13,19 @@ const ContacStyle = styled.div`
   margin-bottom: 20px;
 `
 
+const SmallSpacing = styled.div`
+  margin-bottom: 4px;
+`
+
 const ContactField: React.FC<{name: string, val?: string}> = ({name, val}) => {
   if (!val) return null
-  return <p><b>{name}:</b> {val}</p>
+  return <SmallSpacing><b>{name}:</b> {val}</SmallSpacing>
 }
 
 const ContactFields: React.FC<{name: string, val?: string[]}> = ({name, val}) => {
   if (!val || val.length === 0) return null
   return <ContactField name={name} val={val.join(', ')}/>
 }
-
-const MutedLink = styled.a`
-  color: rgba(0, 0, 0, 0.54);
-  &:hover {
-    color: var(--primary);
-  }
-`
 
 export const ContactInfo: React.FC<Props> = ({
   locale, contact
@@ -43,7 +40,7 @@ export const ContactInfo: React.FC<Props> = ({
     <ContactFields name='Email' val={contact.emails}/>
     <ContactFields name='Fax' val={contact.faxes}/>
     <ContactFields name='Phone' val={contact.phones}/>
-    <p><MutedLink style={{color: ''}} onClick={() => setOpen(true)}>Wrong Election Official?</MutedLink></p>
+    <SmallSpacing><small><a onClick={() => setOpen(true)}>Wrong Election Official?</a></small></SmallSpacing>
 
     <ContactModal
       open={open}
