@@ -31,10 +31,15 @@ const FloatingButton = styled(Button)`
   right: 0;
   border-radius: 0;
   border-top-left-radius: 4px;
-  z-index: 9;
+  /* One above the modal */
+  z-index: 31;
 `
 
-const RawWarningMsg = () => {
+interface RawWarningProps {
+  setOpen: (_: boolean) => void
+}
+
+const RawWarningMsg: React.FC<RawWarningProps> = ({ setOpen }) => {
   const { path } = useAppHistory()
   const { state } = StateContainer.useContainer()
 
@@ -60,6 +65,7 @@ const RawWarningMsg = () => {
           break
         }
       }
+      setOpen(false)
     }
   }
 
@@ -86,19 +92,18 @@ export const WarningMsg = () => {
   if (featureFlags?.emailFaxOfficials) return null
 
   return <>
-    {
-      !open && <FloatingButton color="danger" onClick={() => setOpen(true)}>
-         <i className="fa fa-chevron-up" aria-hidden="true"/> Not Production
-      </FloatingButton>
-    }
+    <FloatingButton color="danger" onClick={() => setOpen(!open)}>
+      {
+        open
+        ? <><i className="fa fa-close" aria-hidden="true"/> Close</>
+        : <><i className="fa fa-chevron-up" aria-hidden="true"/> Not Production</>
+      }
+    </FloatingButton>
     <StyledModal
       isOpen={open}
       onBackgroundClick={() => setOpen(false)}
       onEscapeKeydown={() => setOpen(false)}
     >
-      <FloatingButton color="danger" onClick={() => setOpen(false)}>
-        Close
-      </FloatingButton>
       <RedOutline>
         <h2>Warning: Not Production!</h2>
         <p>This is <b>not</b> a production build.
@@ -111,7 +116,7 @@ export const WarningMsg = () => {
         <p><b>Address:</b> You can fill this out with any address.  But to see it in action, you will want to use an address in a state we support.  Sample addresses are listed below.</p>
         <p><b>Email:</b> When prompted, please use your own email (so as to not spam others!)</p>
         <StateSelector initialState={defaultState(path)}>
-          <RawWarningMsg/>
+          <RawWarningMsg setOpen={setOpen}/>
         </StateSelector>
       </RedOutline>
     </StyledModal>
