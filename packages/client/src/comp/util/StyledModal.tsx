@@ -32,7 +32,7 @@ const hidingAnimation = keyframes`
 
 // We do this ugly hack here because Modal.style does not accept props,
 // also styled(Modal) doesn't seem to be of any effect too.
-const Styled = styled(Modal.styled``)<Props>`
+const RawStyledModal = styled(Modal.styled``)<Props>`
   top: 50%;
   left: 50%;
   right: auto;
@@ -72,5 +72,5 @@ export const StyledModal: React.FC<ModalProps> = (props) => {
     )
   })
 
-  return <Styled {...props} beforeClose={beforeClose} hiding={hiding}/>
+  return <RawStyledModal {...props} beforeClose={beforeClose} hiding={hiding}/>
 }
