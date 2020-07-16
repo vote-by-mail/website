@@ -8,6 +8,7 @@ import { useControlRef } from '../util/ControlRef'
 import { ContactContainer } from '../../lib/unstated'
 import { AppForm } from '../util/Form'
 import { StyledModal } from '../util/StyledModal'
+import styled from 'styled-components'
 
 interface Props {
   open: boolean
@@ -16,20 +17,23 @@ interface Props {
   contactKey: string
 }
 
-// from https://stackoverflow.com/a/196991/8930600
-const toTitleCase = (str: string) => {
-  return str.replace(
-    /\w*/g,
-    (word: string) => word.charAt(0).toUpperCase() + word.substr(1).toLowerCase()
-  )
-}
-
 const jurisdictionName = (contactKey: string) => {
-  const [city, county] = contactKey.split(':').map(toTitleCase)
+  const [city, county] = contactKey.split(':')
   if (city === '') return county
   if (county === '') return city
   return `${city} (${county})`
 }
+
+// Fixes MuiCSS Select from overflowing its boundaries
+const StyledSelect = styled(Select)`
+  select, .mui-select__menu {
+    text-transform: capitalize;
+  }
+  .mui-select__menu {
+    top: 0 !important;
+    max-height: 50vh;
+  }
+`
 
 export const ContactModal: React.FC<Props> = ({
   state,
@@ -68,7 +72,7 @@ export const ContactModal: React.FC<Props> = ({
   >
     <h4>Select Election Jurisdiction</h4>
     <AppForm>
-      <Select ref={contactRef} label='Select Jurisdiction' defaultValue={contactKey}>
+      <StyledSelect ref={contactRef} label='Select Jurisdiction' defaultValue={contactKey}>
         {contactKeys.sort().map((contactKey, idx) => {
           return <Option
             value={contactKey}
@@ -76,7 +80,7 @@ export const ContactModal: React.FC<Props> = ({
             label={jurisdictionName(contactKey)}
           />
         })}
-      </Select>
+      </StyledSelect>
       <RoundedButton onClick={handleSubmit} color='primary'>Select</RoundedButton>
     </AppForm>
   </StyledModal>
