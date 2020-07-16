@@ -32,8 +32,7 @@ const hidingAnimation = keyframes`
 
 // We do this ugly hack here because Modal.style does not accept props,
 // also styled(Modal) doesn't seem to be of any effect too.
-// eslint-disable-next-line
-const StyledModal_ = styled(Modal.styled``)<Props>`
+const Styled = styled(Modal.styled``)<Props>`
   top: 50%;
   left: 50%;
   right: auto;
@@ -73,5 +72,5 @@ export const StyledModal: React.FC<ModalProps> = (props) => {
     )
   })
 
-  return <StyledModal_ {...props} beforeClose={beforeClose} hiding={hiding}/>
+  return <Styled {...props} beforeClose={beforeClose} hiding={hiding}/>
 }
