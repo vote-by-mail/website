@@ -161,7 +161,7 @@ export const InputButton = React.forwardRef<HTMLInputElement, Props & StyleProps
       defaultValue={defaultValue}
       ref={ref}
     />
-    <Button color='primary' data-testid={buttonTestId}>
+    <Button color='primary' data-testid={buttonTestId} id={buttonTestId}>
       {buttonLabel}
     </Button>
   </Wrapper>
