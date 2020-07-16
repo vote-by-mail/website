@@ -1,6 +1,5 @@
 import { contactRecords, michiganRecords } from './loader'
 import { availableStates } from '../../common'
-import { testRoutine } from '../utilTests'
 
 describe('Contact loader', () => {
   test.each(availableStates)(
@@ -10,7 +9,7 @@ describe('Contact loader', () => {
     }
   )
 
-  testRoutine('Michigan Fipsrecords work', async () => {
+  test('Michigan Fipsrecords work', async () => {
     expect(Object.keys(await michiganRecords).length).toBeGreaterThan(10)
   })
 })

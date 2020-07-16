@@ -1,6 +1,5 @@
 import { getMichiganContact } from './contact'
 import { cacheGeocode, toAddress } from './gm'
-import { testEach } from './utilTests'
 
 // from: https://en.wikipedia.org/wiki/List_of_municipalities_in_Michigan
 const addresses: [string, string][] = [
@@ -68,7 +67,7 @@ const addresses: [string, string][] = [
   ['954 Baldwin St, Traverse City, MI 49686, USA', 'Traverse City City:Grand Traverse County'],
 ]
 
-testEach(addresses)(
+test.each(addresses)(
   'Checking Michigan Geocoding %s',
   async (addr, locality) => {
     // This function breaks up geocoding into it's parts so that we can cache and get errMsg
