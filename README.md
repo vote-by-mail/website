@@ -136,6 +136,12 @@ yarn server gulp deploy --env staging [environment]
 
 Alternative (not used): follow this [SO answer](https://stackoverflow.com/a/54055525/8930600), put all secrets in a special file that is not stored in source control.
 
+## Utility Scripts
+You can fetch a VBM signup letter for an application via their signup confirmation id.  Run the following script:
+```
+yarn server gulp script --env production --script src/script/fetchLetter.ts --id [confirmation id]
+```
+
 ## Resources
 ### Asthetics
 - [MUI CSS Colors](https://www.muicss.com/docs/v1/getting-started/colors)
