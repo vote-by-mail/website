@@ -28,7 +28,7 @@ const base = removeNullValues({
   TWILIO_TOKEN,
   TWILIO_FAX_NUMBER,
   RECEIVE_FAX_NUMBER,
-  USER_MAX_ORGS: 8,
+  USER_MAX_ORGS: 15,
   REACT_APP_BRAND_NAME: 'VoteByMail.io',
   REACT_APP_URL: 'https://votebymail.io/',
   REACT_APP_ELECTION_AND_DATE: 'the General Election on Tuesday, November 3rd, 2020',
