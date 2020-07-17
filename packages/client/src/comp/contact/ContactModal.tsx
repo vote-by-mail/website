@@ -69,11 +69,10 @@ export const ContactModal: React.FC<Props> = ({
     setTimeout(
       () => {
         if (node !== null) {
-          const all = node.getBoundingClientRect()
-          console.log(all)
-          setTop(node.getBoundingClientRect().top)
-          setLeft(node.getBoundingClientRect().x)
-          setWidth(node.getBoundingClientRect().width)
+          const { top, x, width} = node.getBoundingClientRect()
+          setTop(top)
+          setLeft(x)
+          setWidth(width)
         }
       },
       // A bit after the animation duration to ensure getBoundingClientRect
