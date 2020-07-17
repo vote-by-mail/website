@@ -7,8 +7,8 @@ import { RoundedButton } from '../util/Button'
 import { useControlRef } from '../util/ControlRef'
 import { ContactContainer } from '../../lib/unstated'
 import { AppForm } from '../util/Form'
-import { StyledModal } from '../util/StyledModal'
-import styled from 'styled-components'
+import { StyledModal as RawStyledModal } from '../util/StyledModal'
+import styled, { keyframes } from 'styled-components'
 
 interface Props {
   open: boolean
@@ -35,6 +35,19 @@ const StyledSelect = styled(Select)`
   }
 `
 
+const StyledModal = styled(RawStyledModal)`
+  min-height: 200px;
+`
+
+const fadeIn = keyframes`
+  from { opacity: 0; }
+  to { opacity: 1; }
+`
+// Delays displaying content until the modal is in its appropriate position
+const AfterSlideAnimation = styled.div`
+  animation: ${fadeIn} ease .2s 550ms both;
+`
+
 export const ContactModal: React.FC<Props> = ({
   state,
   open,
@@ -44,6 +57,30 @@ export const ContactModal: React.FC<Props> = ({
   const [contactKeys, setLocaleKeys] = React.useState<string[]>([])
   const contactRef = useControlRef<Select>()
   const { setContact } = ContactContainer.useContainer()
+  const [top, setTop] = React.useState(0)
+  const [left, setLeft] = React.useState(0)
+  const [width, setWidth] = React.useState(0)
+
+  // Due to CSS/HTML limitation we can't have styled Select/Options that
+  // displays their content outside their boundaries. We render StyledSelect
+  // on a separate div from the Modal and uses this ref to assign its position
+  // https://reactjs.org/docs/hooks-faq.html#how-can-i-measure-a-dom-node
+  const positionRef = React.useCallback((node: HTMLDivElement) => {
+    setTimeout(
+      () => {
+        if (node !== null) {
+          const all = node.getBoundingClientRect()
+          console.log(all)
+          setTop(node.getBoundingClientRect().top)
+          setLeft(node.getBoundingClientRect().x)
+          setWidth(node.getBoundingClientRect().width)
+        }
+      },
+      // A bit after the animation duration to ensure getBoundingClientRect
+      // gets everything correctly
+      515,
+    )
+  }, [open])
 
   React.useEffect(() => {
     (async() => {
@@ -65,14 +102,29 @@ export const ContactModal: React.FC<Props> = ({
     }
   }
 
-  return <StyledModal
-    isOpen={open}
-    onBackgroundClick={() => setOpen(false)}
-    onEscapeKeydown={() => setOpen(false)}
-  >
-    <h4>Select Election Jurisdiction</h4>
-    <AppForm>
-      <StyledSelect ref={contactRef} label='Select Jurisdiction' defaultValue={contactKey}>
+  return <>
+    <StyledModal
+      isOpen={open}
+      onBackgroundClick={() => setOpen(false)}
+      onEscapeKeydown={() => setOpen(false)}
+    >
+      <AfterSlideAnimation>
+        <h4>Select Election Jurisdiction</h4>
+      </AfterSlideAnimation>
+      <AppForm>
+        <div ref={positionRef} style={{ width: '100%' }}/>
+      </AppForm>
+    </StyledModal>
+    {open && <AfterSlideAnimation style={{
+      position: 'fixed',
+      zIndex: 33,
+      top, left, width,
+    }}>
+      <StyledSelect
+        ref={contactRef}
+        label='Select Jurisdiction'
+        defaultValue={contactKey}
+      >
         {contactKeys.sort().map((contactKey, idx) => {
           return <Option
             value={contactKey}
@@ -82,6 +134,6 @@ export const ContactModal: React.FC<Props> = ({
         })}
       </StyledSelect>
       <RoundedButton onClick={handleSubmit} color='primary'>Select</RoundedButton>
-    </AppForm>
-  </StyledModal>
+    </AfterSlideAnimation>}
+  </>
 }
