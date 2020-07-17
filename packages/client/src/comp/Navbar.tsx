@@ -163,8 +163,7 @@ const LocaleToggle = styled.div<NavExpanded>`
     width: var(--rowWidth);
 
     position: fixed;
-    /* Creates the effect that the dropdown is touching/merged with the navbar */
-    top: calc(var(--height) * 0.97);
+    top: var(--height);
     margin-left: calc(var(--rowWidth) / -2.6);
     ${cssQuery.large} { margin-left: calc(var(--rowWidth) / -2.35); }
 
@@ -349,6 +348,21 @@ export const Navbar = () => {
         <a href={`https://translate.google.com/translate?hl=&sl=en&tl=ar&u=${url}`}>
           <Button translate='no' variant='flat'>
             {'\u0627\u0644\u0639\u0631\u0628\u064a\u0629'}
+          </Button>
+        </a>
+        <a href={`https://translate.google.com/translate?hl=&sl=en&tl=fr&u=${url}`}>
+          <Button translate='no' variant='flat'>
+            Fran{'\u00e7'}ais
+          </Button>
+        </a>
+        <a href={`https://translate.google.com/translate?hl=&sl=en&tl=ko&u=${url}`}>
+          <Button translate='no' variant='flat'>
+            {'\ud55c\uad6d\uc5b4'}
+          </Button>
+        </a>
+        <a href={`https://translate.google.com/translate?hl=&sl=en&tl=ru&u=${url}`}>
+          <Button translate='no' variant='flat'>
+            {'\u0440\u0443\u0441\u0441\u043a\u0438\u0439'}
           </Button>
         </a>
       </div>
