@@ -78,9 +78,9 @@ export const ContactModal: React.FC<Props> = ({
       },
       // A bit after the animation duration to ensure getBoundingClientRect
       // gets everything correctly
-      515,
+      505,
     )
-  }, [open])
+  }, [])
 
   React.useEffect(() => {
     (async() => {
