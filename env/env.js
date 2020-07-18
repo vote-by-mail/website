@@ -71,6 +71,14 @@ const development = removeNullValues({
   ...developmentRaw,
 })
 
+const preview = removeNullValues({
+  ...development,
+  REACT_APP_BRAND_NAME: 'Dev.VoteByMail.io',
+  REACT_APP_URL: 'http://dev.votebymail.io/',
+  REACT_APP_SERVER: 'https://dev-app.votebymail.io/',
+  GOOGLE_CLIENT_CALLBACK: 'https://dev-app.votebymail.io/auth/google/callback',
+})
+
 const staging = removeNullValues({
   ...base,
   NODE_ENV: 'production',
@@ -133,6 +141,7 @@ const ci = removeNullValues({
 
 module.exports = {
   development,
+  preview,
   staging,
   production,
   test,
