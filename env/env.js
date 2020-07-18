@@ -7,6 +7,7 @@ const {
   TWILIO_TOKEN,
   TWILIO_FAX_NUMBER,
   RECEIVE_FAX_NUMBER,
+  SENDINBLUE_API_KEY,
   STAGING,
   DEV,
   PROD,
@@ -28,6 +29,8 @@ const base = removeNullValues({
   TWILIO_TOKEN,
   TWILIO_FAX_NUMBER,
   RECEIVE_FAX_NUMBER,
+  SENDINBLUE_API_KEY,
+  SENDINBLUE_LIST_ID: 4,  // This is just a fake testing list -- no emails will be sent
   USER_MAX_ORGS: 15,
   REACT_APP_BRAND_NAME: 'VoteByMail.io',
   REACT_APP_URL: 'https://votebymail.io/',
@@ -96,6 +99,7 @@ const production = removeNullValues({
   GCLOUD_PROJECT: 'vbm-prod-281822',
   GOOGLE_APPLICATION_CREDENTIALS: './secrets/vbm-prod-281822-9e04d7cdeb71.json',
   REACT_APP_GOOGLE_UA: 'UA-171601425-1',
+  SENDINBLUE_LIST_ID: 3,  // This is the real list
   REACT_APP_BRAND_NAME: 'VoteByMail.io',
   REACT_APP_URL: 'https://votebymail.io/',
   FIRESTORE_URL: 'https://vbm-prod-281822.firebaseio.com',
