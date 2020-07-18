@@ -29,7 +29,7 @@ const base = removeNullValues({
   TWILIO_TOKEN,
   TWILIO_FAX_NUMBER,
   RECEIVE_FAX_NUMBER,
-  SENDINBLUE_API_KEY,
+  SENDINBLUE_API_KEY,   // We are using the v3 API
   SENDINBLUE_LIST_ID: 4,  // This is just a fake testing list -- no emails will be sent
   USER_MAX_ORGS: 15,
   REACT_APP_BRAND_NAME: 'VoteByMail.io',
@@ -120,6 +120,7 @@ const production = removeNullValues({
   GOOGLE_STORAGE_BUCKET: 'vbm-prod-281822.appspot.com',
   EMAIL_FAX_OFFICIALS: 1,
   TWILIO_DIVERT: undefined,
+  RECORDS_ADDR: 'records@votebymail.io',
 })
 
 const test = removeNullValues({
