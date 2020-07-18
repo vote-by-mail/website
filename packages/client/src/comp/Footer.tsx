@@ -6,6 +6,9 @@ import { cssQuery } from './util/cssQuery'
 import { InputButton } from './util/InputButton'
 import { Container, Button } from 'muicss/react'
 import { MarketingWrapper } from './util/MarketingWrapper'
+import { FetchingDataContainer } from '../lib/unstated'
+import { toast } from 'react-toastify'
+import { client } from '../lib/trpc'
 
 const FooterWrapper  = styled(MarketingWrapper)`
   box-shadow: 0 12px 14px -10px rgba(0, 0, 0, 0.15) inset;
@@ -133,9 +136,29 @@ const StyledInputButton = styled(InputButton)`
 `
 
 const Form: React.FC = () => {
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    // TODO subscribe users to our newsletter
-    console.log(e)
+  const { setFetchingData } = FetchingDataContainer.useContainer()
+  const emailRef = React.useRef<HTMLInputElement>(null)
+
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    e.persist()
+    setFetchingData(true)
+    if (emailRef.current) {
+      try {
+        await client.subscribe(emailRef?.current?.value)
+        emailRef.current.value = ''
+        toast(
+          'You are now subscribed to our newsletter.',
+          { type: 'success' },
+        )
+      } catch(e) {
+        toast(
+          'Failed to subscribe to our newsletter.  Please try again.',
+          { type: 'error' },
+        )
+      }
+    }
+    setFetchingData(false)
   }
 
   return <>
@@ -148,6 +171,7 @@ const Form: React.FC = () => {
       placeholder="Enter your email"
       onSubmit={onSubmit}
       buttonLabel="Enter"
+      ref={emailRef}
     />
   </>
 }

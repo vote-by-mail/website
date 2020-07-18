@@ -36,6 +36,8 @@ Below are the settings that need to be set to get an environment to work.
 
 - **Mailgun**: You only need these to send emails (last step in signup flow).  It's easy to get set up for free.  Since you don't have access to our domain records, you will probabyl want to set your emails to be sent from the sanbox domain that mailgun sets up automatically when you sign up.
 
+- **SendinBlue**: We use [SendinBlue](https://www.sendinblue.com/) for our newsletter.  Sign up for an account and grab your V3 API key [here](https://account.sendinblue.com/advanced/api).
+
 - **Twilio**: You only need these to send faxes (last step in signup flow).  It's easy to get set up for free.
 
 - **Incoming fax numbers**: To test Twilio, we setup an incoming fax number.  ([FaxBurner](https://www.faxburner.com/)) offers a free temporary one.  Set `RECEIVE_FAX_NUMBER` to this number.
@@ -163,6 +165,7 @@ For every environment (e.g. development, staging, production),
 - Make sure that the right environment variables are set for the right environment (e.g. staging `GCLOUD_PROJECT` and `GOOGLE_APPLICATION_CREDENTIALS` are set for staging and not production).
 - Sign up for `default` org landing page
 - Test email API using `mg.proto.ts`
+- Test newsletter signup API using `sendinblue.proto.ts`
 - Test fax using `twillio.proto.ts`.  You need to set a valid incoming fax number for testing
 - Test geocoding and Google Maps using `gm.proto.ts`.  Try an address in Michigan (for which there are separate rules) and
 - Test pdf generation using `pdf.proto.ts`

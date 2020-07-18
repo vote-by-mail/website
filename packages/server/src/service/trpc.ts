@@ -11,6 +11,7 @@ import { storageFileFromId } from './storage'
 import { Letter } from './letter'
 import { sendFaxes } from './twilio'
 import { TwilioResponse } from './types'
+import { sib } from './sendinblue'
 
 const firestoreService = new FirestoreService()
 
@@ -80,6 +81,16 @@ export class VbmRpc implements ImplRpc<IVbmRpc, Request> {
         subject: `Submission from Contact Us (${authorName} ${authorEmail})`,
         text: text,
       })
+    } catch(e) {
+      console.error(e)
+      return e
+    }
+  }
+  public subscribe = async (email: string) => {
+    try {
+      const success = await sib.addSubscriber(email)
+      if (!success) throw(success)
+      return success
     } catch(e) {
       console.error(e)
       return e

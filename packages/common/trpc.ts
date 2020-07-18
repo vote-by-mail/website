@@ -18,5 +18,6 @@ export interface IVbmRpc extends IRpc<IVbmRpc> {
   fetchContacts(state: ImplementedState): Promise<RpcRet<string[]>>
   getContact(state: ImplementedState, key: string): Promise<RpcRet<ContactData>>
   contactUs(author: string, subject: string, text: string): Promise<RpcRet<boolean>>
+  subscribe(email: string): Promise<RpcRet<boolean>>
   register(info: StateInfo, voter: Voter): Promise<RpcRet<string>>
 }
