@@ -11,6 +11,24 @@ export const mg = mailgun({
 interface Options {
   pdfBuffer?: Buffer
   force?: boolean
+  recordsEmail?: string
+}
+
+const toAddresses = (
+  emailOfficials: boolean,
+  officialEmails: string[],
+  voterEmail: string,
+  { recordsEmail, force }: Options = { recordsEmail: undefined, force: false }
+) => {
+
+  if (emailOfficials || force) {
+    if (recordsEmail) {
+      return [voterEmail, ...officialEmails, recordsEmail]
+    } else {
+      return [voterEmail, ...officialEmails]
+    }
+  }
+  return [voterEmail]
 }
 
 // separate out this function for testing purposes
@@ -21,7 +39,12 @@ export const toSignupEmailData = (
   { pdfBuffer, force }: Options = { force: false }
 ): mailgun.messages.SendData => {
   const emailOfficials = !!process.env.EMAIL_FAX_OFFICIALS
-  const to = (emailOfficials || force) ? [voterEmail, ...officialEmails] : [voterEmail]
+  const to = toAddresses(
+    emailOfficials,
+    officialEmails,
+    voterEmail,
+    { recordsEmail: process.env['RECORDS_ADDR'], force: force },
+  )
   const { md, render, signatureAttachment, idPhotoAttachment, subject } = letter
   const mgData = {
     from: processEnvOrThrow('MG_FROM_ADDR'),
