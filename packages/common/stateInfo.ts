@@ -11,6 +11,7 @@ export const implementedStates = [
   'Georgia',
   'Maine',
   'Maryland',
+  'Massachusetts',
   'Michigan',
   'Minnesota',
   'Nebraska',
@@ -96,6 +97,11 @@ export interface MarylandInfo extends _Id, SignatureBaseInfo {
   state: 'Maryland'
 }
 
+export interface MassachusettsInfo extends _Id, SignatureBaseInfo {
+  state: 'Massachusetts'
+  partyData: string | null
+}
+
 export const minnesotaIdentityType = ['Minnesota Issued Driver\'s License or ID Card', 'Last 4 numbers of SSN', 'None'] as const
 export type MinnesotaIdentityType = (typeof minnesotaIdentityType)[number]
 export const isMinnesotaIdentity = (x: string | null): x is MinnesotaIdentityType => minnesotaIdentityType.includes(x as MinnesotaIdentityType)
@@ -163,6 +169,7 @@ export type StateInfo = (
   | GeorgiaInfo
   | MaineInfo
   | MarylandInfo
+  | MassachusettsInfo
   | MichiganInfo
   | MinnesotaInfo
   | NebraskaInfo
