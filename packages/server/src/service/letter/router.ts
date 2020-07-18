@@ -92,6 +92,13 @@ export const stateInfo = async (state: ImplementedState): Promise<StateInfo> => 
       state,
     }
 
+    case 'Massachusetts': return {
+      ...commonStateInfo,
+      signature,
+      partyData: 'Federalist Party',
+      state,
+    }
+
     default: return {
       ...commonStateInfo,
       signature,
