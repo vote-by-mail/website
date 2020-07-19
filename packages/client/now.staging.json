@@ -1,5 +1,5 @@
 {
   "scope": "votebymail",
-  "alias": ["staging.votebymail.io", "www.staging.votebymail.io"],
+  "alias": ["staging.votebymail.io", "sandbox.votebymail.io","www.staging.votebymail.io"],
   "public": false
 }
