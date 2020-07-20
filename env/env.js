@@ -28,7 +28,7 @@ const removeNullValues = (obj) => {
 const base = removeNullValues({
   ALLOY_API_KEY,
   ALLOY_API_SECRET,
-  ALLOY_RELAXED: false,
+  ALLOY_RELAXED: true,
   MG_API_KEY,
   TWILIO_SID,
   TWILIO_TOKEN,
@@ -51,7 +51,6 @@ const base = removeNullValues({
 
 const development = removeNullValues({
   ...base,
-  ALLOY_RELAXED: true,
   NODE_ENV: 'development',
   REACT_APP_ENVIRONMENT: 'development',
   GCLOUD_PROJECT: 'vbm-dev-281822',
@@ -108,6 +107,7 @@ const staging = removeNullValues({
 
 const production = removeNullValues({
   ...staging,
+  ALLOY_RELAXED: false,
   NODE_ENV: 'production',
   REACT_APP_ENVIRONMENT: 'production',
   GCLOUD_PROJECT: 'vbm-prod-281822',
