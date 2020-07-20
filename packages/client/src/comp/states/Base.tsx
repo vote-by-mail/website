@@ -76,13 +76,25 @@ export const Base = <Info extends StateInfo>({ enrichValues, children }: Props<I
       return
     }
     setFetchingData(true)
-    const result = await client.register(info, voter)
-    setFetchingData(false)
-    if(result.type === 'data'){
-      pushSuccess(result.data)
+    // Checks for registration status before submitting data
+    const registrationResponse = await client.isRegistered(info)
+    if (registrationResponse.type === 'data') {
+      const { data: registrationStatus } = registrationResponse
+      if (registrationStatus === 'Active' || registrationStatus === 'Preregistered') {
+        // Voter is registered, submit their input
+        const result = await client.register(info, voter)
+        if(result.type === 'data'){
+          pushSuccess(result.data)
+        } else {
+          toast.error('Error signing up.  Try resubmitting.  If this persists, try again in a little while.')
+        }
+      } else {
+        toast.error(`It appears that you are not yet registered to vote, current status: ${registrationStatus}`)
+      }
     } else {
-      toast.error('Error signing up.  Try resubmitting.  If this persists, try again in a little while.')
+      toast.error('Error checking your registration status.  Try resubmitting.  If this persists, try again in a little while.')
     }
+    setFetchingData(false)
   }
 
   return <AppForm onSubmit={handleSubmit}>
