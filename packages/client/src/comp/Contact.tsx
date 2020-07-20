@@ -97,22 +97,35 @@ export const Contact: React.FC = () => {
     e.persist()  // allow async function call
     e.preventDefault()
     setFetchingData(true)
-    try {
-      await client.contactUs(
-        emailRef.current?.value ?? '',
-        nameRef.current?.value ?? '',
-        textRef.current?.value ?? '',
-      )
+    if (emailRef.current && nameRef.current && textRef.current) {
+      try {
+        const response = await client.contactUs(
+          emailRef.current.value,
+          nameRef.current.value,
+          textRef.current.value,
+        )
 
-      toast(
-        'Your email has successfully been sent to our support team. Expect to hear from us soon.',
-        {type: 'success'}
-      )
-    } catch(e) {
-      toast(
-        'Failed to send contact email',
-        {type: 'error'}
-      )
+        if (response.type === 'data') {
+          toast(
+            'Your message has been successfully sent to our support team. We will be in touch shortly.',
+            {type: 'success'}
+          )
+
+          emailRef.current.value = ''
+          nameRef.current.value = ''
+          textRef.current.value = ''
+        } else {
+          toast(
+            'We were unable to submit this form. Please submit again.',
+            {type: 'error'}
+          )
+        }
+      } catch(e) {
+        toast(
+          'We were unable to submit this form. Please submit again.',
+          {type: 'error'}
+        )
+      }
     }
     setFetchingData(false)
   }

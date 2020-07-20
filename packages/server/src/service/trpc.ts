@@ -74,16 +74,17 @@ export class VbmRpc implements ImplRpc<IVbmRpc, Request> {
     authorEmail: string, authorName: string, text: string,
   ) => {
     try {
-      return await mg.messages().send({
+      await mg.messages().send({
         to: 'support@votebymail.io',
         from: 'support@votebymail.io',
         "h:Reply-To": authorEmail,
         subject: `Submission from Contact Us (${authorName} ${authorEmail})`,
         text: text,
       })
+      return data(true)
     } catch(e) {
       console.error(e)
-      return e
+      return error(e)
     }
   }
   public subscribe = async (email: string) => {
