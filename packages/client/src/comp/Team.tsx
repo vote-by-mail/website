@@ -152,7 +152,7 @@ export const Team: React.FC = () => {
           description="I’m a data scientist, software engineer, and entrepreneur turned democracy advocate. I grew up voting by mail and want to help support it in other states."
           twitter='tianhuil'
           github='tianhuil'
-          linkedin='tianhuil'
+          linkedin='tianhuili'
         />
         <Person
           img={brettClarke}
