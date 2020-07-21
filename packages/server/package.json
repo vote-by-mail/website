@@ -58,6 +58,7 @@
     "@google-cloud/storage": "^4.7.0",
     "@googlemaps/google-maps-services-js": "^2.6.0",
     "@tianhuil/simple-trpc": "^1.8.0",
+    "axios": "^0.19.2",
     "body-parser": "^1.19.0",
     "connect-flash": "^0.1.1",
     "cors": "^2.8.5",
@@ -77,6 +78,7 @@
     "passport-google-oauth": "^2.0.0",
     "pdf-lib": "^1.7.0",
     "pug": "^2.0.4",
+    "retry-axios": "^2.2.1",
     "sib-api-v3-typescript": "^1.2.1",
     "strip-indent": "^3.0.0",
     "twilio": "^3.43.0"
