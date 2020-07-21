@@ -38,7 +38,7 @@ const main = async () => {
   await testStatus(activeVoter)
   await testStatus(inactiveVoter)
   // Only needed to test if ALLOY_RELAXED
-  if (processEnvOrThrow('ALLOY_RELAXED') !== 'false') {
+  if (process.env.ALLOY_RELAXED) {
     activeVoter.name = 'Unregistered Voter'
     await testStatus(activeVoter)
   }

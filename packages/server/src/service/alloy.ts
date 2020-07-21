@@ -4,7 +4,7 @@ import rax from 'retry-axios'
 
 // Env & axios refactoring
 
-const alloyRelaxed = processEnvOrThrow('ALLOY_RELAXED')
+const alloyRelaxed = process.env.ALLOY_RELAXED
 const apiKey = processEnvOrThrow('ALLOY_API_KEY')
 const apiSecret = processEnvOrThrow('ALLOY_API_SECRET')
 const apiUrl = 'https://api.alloy.us/v1'
