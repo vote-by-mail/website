@@ -144,3 +144,5 @@ export class Letter {
     return new mg.Attachment({data, filename: filenameExt})
   }
 }
+
+export { sampleStateInfo, sampleLetter } from './sample'
