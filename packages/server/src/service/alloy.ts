@@ -42,37 +42,30 @@ interface AlloyResponse {
   }
 }
 
-class Alloy {
-  /**
-   * Returns true if a voter can vote, false otherwise.
-   */
-  public isRegistered = async (voter: StateInfo): Promise<RegistrationStatus> => {
-    const url = `${apiUrl}/verify?${stateInfoToParams(voter)}`
+export const isRegistered = async (voter: StateInfo): Promise<RegistrationStatus> => {
+  const url = `${apiUrl}/verify?${stateInfoToParams(voter)}`
 
-    if (alloyRelaxed !== 'false') {
-      return voter.name.toLowerCase() !== 'unregistered voter'
-        ? 'Active'
-        : null
-    }
-
-    // 429 means we are firing more requests than our maximum rate per second,
-    // to avoid alerting users about this, we use retry-axios on this request
-
-    const axiosInstance = axios.create()
-    rax.attach(axiosInstance)
-    const response = await axiosInstance({
-      ...commonAxiosSettings,
-      url,
-      raxConfig: {
-        retry: 4,
-        noResponseRetries: 0,
-        statusCodesToRetry: [[429, 429]],
-        backoffType: 'exponential',
-      }
-    }) as AxiosResponse<AlloyResponse>
-
-    return response.data.data.registration_status
+  if (alloyRelaxed) {
+    return voter.name.toLowerCase() !== 'unregistered voter'
+      ? 'Active'
+      : null
   }
-}
 
-export const alloy = new Alloy()
+  // 429 means we are firing more requests than our maximum rate per second,
+  // to avoid alerting users about this, we use retry-axios on this request
+
+  const axiosInstance = axios.create()
+  rax.attach(axiosInstance)
+  const response = await axiosInstance({
+    ...commonAxiosSettings,
+    url,
+    raxConfig: {
+      retry: 4,
+      noResponseRetries: 0,
+      statusCodesToRetry: [[429, 429]],
+      backoffType: 'exponential',
+    }
+  }) as AxiosResponse<AlloyResponse>
+
+  return response.data.data.registration_status
+}
