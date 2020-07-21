@@ -3,13 +3,15 @@
 {% set guidance = 'the [Maryland Code §9-305](https://codes.findlaw.com/md/election-law/md-code-elec-law-sect-9-305.html)' %}
 
 {% block body %}
+{%- if phone -%}
 - Phone: **{{phone}}**
-{% if city %}
+{%- endif %}
+{%- if city -%}
 - City: **{{city}}**
-{% endif %}
-{% if county %}
+{%- endif %}
+{%- if county -%}
 - County: **{{county}}**
-{% endif %}
+{%- endif %}
 - Election: **{{election}}**
 - Method of Delivery: I request that my ballot be mailed to me.
 

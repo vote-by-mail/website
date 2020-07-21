@@ -1,5 +1,5 @@
 import { Letter } from '.'
-import { stateInfo, sampleMethod } from './router'
+import { sampleStateInfo, sampleMethod } from './sample'
 import { implementedStates } from '../../common'
 
 beforeAll(() => jest.setTimeout(10000))
@@ -9,7 +9,7 @@ test('Leter for all states render correctly', async () => {
 
   const letters = await Promise.all(implementedStates.map(async state => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const info = await stateInfo(state)
+    const info = await sampleStateInfo(state)
     return new Letter(
       info,
       sampleMethod,
