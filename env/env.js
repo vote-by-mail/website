@@ -47,6 +47,7 @@ const base = removeNullValues({
   MG_FROM_ADDR: 'Vote by Mail Application <application@email.votebymail.io>',
   MG_REPLY_TO_ADDR: 'Vote by Mail Application <application@votebymail.io>',
   ELECTIONS_OFFICIALS_VERSION: 'v1.7.1',
+  REACT_APP_GEORGIA_PRIMARY: undefined,
 })
 
 const development = removeNullValues({
