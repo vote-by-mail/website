@@ -1,4 +1,4 @@
-import fetch from 'node-fetch'
+import axios from 'axios'
 import { processEnvOrThrow, Address } from '../common'
 import { cache } from './util'
 
@@ -14,14 +14,14 @@ const findByType = (
   type: string,
   getShortName = false,
 ) => {
-  return (getShortName 
+  return (getShortName
            ? components.find(c => c.types.includes(type))?.short_name
            : components.find(c => c.types.includes(type))?.long_name)
 }
 
 const rawGeocode = async (query: string): Promise<google.maps.GeocoderResult | null> => {
   const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(query)}&key=${apiKey}`
-  const response = (await (await fetch(url)).json() as GMResults)
+  const response = (await axios.get(url)).data as GMResults
   if (response.status != 'OK') return null
   return response.results[0]
 }
@@ -49,7 +49,7 @@ export const toAddress = (result: google.maps.GeocoderResult): Omit<Address, 'qu
     findByType(components, 'administrative_area_level_4'),
     findByType(components, 'administrative_area_level_5'),
   ].filter((c): c is string => !!c)
-  
+
   return {
     latLong: getLatLong(result.geometry.location),
     fullAddr: result.formatted_address,

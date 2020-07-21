@@ -1,4 +1,4 @@
-import fetch from 'node-fetch'
+import axios from 'axios'
 
 import { State, processEnvOrThrow, AvailableState, availableStates } from "../../common"
 import { RawContactRecord, RawContact, ContactRecord } from "./type"
@@ -13,8 +13,8 @@ const url = (state: State) => {
 }
 
 export const loadState = async (state: AvailableState): Promise<[AvailableState, RawContact[]]> => {
-  const resp = await fetch(url(state))
-  return [state, await resp.json() as RawContact[]]
+  const resp = await axios.get(url(state))
+  return [state, resp.data as RawContact[]]
 }
 
 export const loadStates = async (): Promise<RawContactRecord> => {
