@@ -1,5 +1,5 @@
-import { alloy } from './alloy'
-import { StateInfo, processEnvOrThrow } from '../common'
+import { isRegistered } from './alloy'
+import { StateInfo } from '../common'
 
 // Values taken from https://docs.alloy.us/api/#section/Sandbox/Getting-Started
 
@@ -26,7 +26,7 @@ const inactiveVoter: StateInfo = {
 const testStatus = async (voter: StateInfo) => {
   console.log(`Detecting if ${voter.name} can vote.`)
   try {
-    const resp = await alloy.isRegistered(voter)
+    const resp = await isRegistered(voter)
     console.log(`The current registration status for ${voter.name} is: ${resp}`)
   } catch(e) {
     console.log(`Error while trying to detect ${voter.name} vote registration status`)
