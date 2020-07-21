@@ -44,7 +44,6 @@
     "nodemon": "^1.19.1",
     "react-test-renderer": "^16.13.0",
     "serve": "^11.3.0",
-    "sib-api-v3-typescript": "^1.2.1",
     "supertest": "^4.0.0",
     "ts-auto-mock": "^1.6.0",
     "ts-jest": "^24.0.0",
@@ -78,6 +77,7 @@
     "passport-google-oauth": "^2.0.0",
     "pdf-lib": "^1.7.0",
     "pug": "^2.0.4",
+    "sib-api-v3-typescript": "^1.2.1",
     "strip-indent": "^3.0.0",
     "twilio": "^3.43.0"
   },
