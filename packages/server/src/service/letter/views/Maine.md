@@ -3,7 +3,9 @@
 {% set guidance = 'the [Maine Revised Statutes §753-A](https://www.mainelegislature.org/legis/statutes/21-A/title21-Asec753-A.html)' %}
 
 {% block body %}
+{%- if phone -%}
 - Phone: **{{phone}}**
+{%- endif %}
 - City or Township: **{{city}}**
 - County: **{{county}}**
 - Election: **{{election}}**

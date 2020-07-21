@@ -4,15 +4,17 @@
 {% set guidance = 'the [Title 25, Chapter 293-313 of the Nevada Revised Statues](https://www.leg.state.nv.us/NRS/NRS-293.html)' %}
 
 {% block body %}
+{%- if phone -%}
 - Phone: **{{phone}}**
+{%- endif %}
 - City: **{{city}}**
-{% if county %}
+{%- if county -%}
 - County: **{{county}}**
-{% endif %}
+{%- endif %}
 - Election: generally, all elections through the end of the calendar year; in particular, **{{election}}**
-{% if idPhoto %}
+{%- if idPhoto -%}
 - Photo of ID (see attached)
 {{image(idPhoto)}}
-{% endif %}
+{%- endif %}
 
 {% endblock %}
