@@ -69,6 +69,10 @@ const wisconsinContact: ContactData = {
 test('State Form Without Signature (Wisconsin) works', async () => {
   const history = createMemoryHistory()
 
+  const isRegistered = mocked(client, true).isRegistered = jest.fn().mockResolvedValue({
+    type: 'data',
+    data: 'Active',
+  })
   const register = mocked(client, true).register = jest.fn().mockResolvedValue({
     type: 'data',
     data: 'confirmationId',
@@ -93,5 +97,6 @@ test('State Form Without Signature (Wisconsin) works', async () => {
     () => expect(toPath(history.location.pathname, parseQS('')))
       .toEqual<SuccessPath>({id: "confirmationId", oid: "default", type: "success"})
   )
+  await wait(() => expect(isRegistered).toHaveBeenCalledTimes(1))
   await wait(() => expect(register).toHaveBeenCalledTimes(1))
 })
