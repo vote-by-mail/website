@@ -39,7 +39,6 @@ export const Georgia = () => {
         })}
       </Select>
     </SignatureBase>
-  } else {
-    return <SignatureBase<GeorgiaInfo> enrichValues={enrichValues}/>
   }
+  return <SignatureBase<GeorgiaInfo> enrichValues={enrichValues}/>
 }
