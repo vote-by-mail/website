@@ -39,7 +39,7 @@ const RawStyledModal = styled(Modal.styled``)<Props>`
   bottom: auto;
 
   width: 50%;
-  min-height: 500px;
+  min-height: 200px;
   max-height: 60vh;
   /* Hides unnecessary scrollbars */
   overflow: auto;

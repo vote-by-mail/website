@@ -7,7 +7,7 @@ import { RoundedButton } from '../util/Button'
 import { useControlRef } from '../util/ControlRef'
 import { ContactContainer } from '../../lib/unstated'
 import { AppForm } from '../util/Form'
-import { StyledModal as RawStyledModal } from '../util/StyledModal'
+import { StyledModal } from '../util/StyledModal'
 import styled, { keyframes } from 'styled-components'
 
 interface Props {
@@ -33,10 +33,6 @@ const StyledSelect = styled(Select)`
     top: 0 !important;
     max-height: 50vh;
   }
-`
-
-const StyledModal = styled(RawStyledModal)`
-  min-height: 200px;
 `
 
 const fadeIn = keyframes`
