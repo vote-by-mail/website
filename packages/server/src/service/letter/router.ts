@@ -1,8 +1,8 @@
-import { Router } from 'express';
+import { Router } from 'express'
 
-import { implementedStates, isImplementedState } from '../../common';
-import { getContactRecords } from '../contact';
-import { sampleLetter } from './sample';
+import { implementedStates, isImplementedState } from '../../common'
+import { getContactRecords } from '../contact'
+import { sampleLetter } from './sample'
 
 export const router = Router()
 
