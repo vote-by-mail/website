@@ -14,19 +14,19 @@ export const Georgia = () => {
   const partyRef = useControlRef<Input>()
 
   const enrichValues = (baseInfo: StatelessInfo): NoSignature<GeorgiaInfo> | null => {
-    if (!georgiaPrimary) {
+    if (georgiaPrimary) {
+      const party = partyRef.value()
+      if (!isGeorgiaParty(party)) return null
+
       return {
         ...baseInfo,
         state: 'Georgia',
+        party,
       }
     }
-    const party = partyRef.value()
-    if (!isGeorgiaParty(party)) return null
-
     return {
       ...baseInfo,
       state: 'Georgia',
-      party,
     }
   }
 
