@@ -90,7 +90,7 @@ export const Base = <Info extends StateInfo>({ enrichValues, children }: Props<I
           toast.error('Error signing up.  Try resubmitting.  If this persists, try again in a little while.')
         }
       } else {
-        toast.error(`It appears that you are not yet registered to vote, current status: ${registrationStatus.data}`)
+        toast.error(`It appears that you are not yet registered to vote, current status: ${registrationStatus.data ?? 'Not found in the system'}.`)
       }
 
     } else {
