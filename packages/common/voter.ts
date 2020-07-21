@@ -10,3 +10,21 @@ export interface UTM {
 export interface Voter extends UTM {
   uid: string
 }
+
+export type RegistrationStatus =
+  | 'Active'
+  | 'Challenged'
+  | 'Not Eligible'
+  | 'Denied'
+  | 'Inactive'
+  | 'Pending'
+  | 'Confirmation'
+  | 'Removed'
+  | 'Preregistered'
+  | 'Rejected'
+  | 'Unregistered'
+  | 'Verify'
+  | 'Cancelled'
+  | 'Incomplete'
+  | 'Purged'
+  | null

@@ -12,6 +12,7 @@ import { Letter } from './letter'
 import { sendFaxes } from './twilio'
 import { TwilioResponse } from './types'
 import { sib } from './sendinblue'
+import { alloy } from './alloy'
 
 const firestoreService = new FirestoreService()
 
@@ -95,6 +96,15 @@ export class VbmRpc implements ImplRpc<IVbmRpc, Request> {
     } catch(e) {
       console.error(e)
       return e
+    }
+  }
+  public isRegistered = async (voter: StateInfo) => {
+    try {
+      const response = await alloy.isRegistered(voter)
+      return data(response)
+    } catch(e) {
+      console.error(e)
+      return error(e)
     }
   }
   public register = async (info: StateInfo, voter: Voter, request: Request) => {

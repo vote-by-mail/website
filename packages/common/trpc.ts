@@ -5,7 +5,7 @@ import { ContactData } from './contact'
 import { Analytics } from './analytics'
 import { FeatureFlags } from './featureFlags'
 import { StateInfo, ImplementedState } from './stateInfo'
-import { Voter } from './voter'
+import { Voter, RegistrationStatus } from './voter'
 import { Locale } from './locale'
 
 export interface IVbmRpc extends IRpc<IVbmRpc> {
@@ -19,5 +19,6 @@ export interface IVbmRpc extends IRpc<IVbmRpc> {
   getContact(state: ImplementedState, key: string): Promise<RpcRet<ContactData>>
   contactUs(author: string, subject: string, text: string): Promise<RpcRet<boolean>>
   subscribe(email: string): Promise<RpcRet<boolean>>
+  isRegistered(voter: StateInfo): Promise<RpcRet<RegistrationStatus>>
   register(info: StateInfo, voter: Voter): Promise<RpcRet<string>>
 }

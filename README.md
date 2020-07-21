@@ -34,6 +34,8 @@ Running the app requires some configuration setting.  All of those are exported 
 ## Configuration Details
 Below are the settings that need to be set to get an environment to work.
 
+- **Alloy**: Used to check voter registration status. Since [Alloy has a strict policy](https://docs.alloy.us/api/#section/Sandbox) regarding its API Key distribution, VoteByMail first checks for env variable `ALLOY_RELAXED`, which when `true` makes the app consider every person inputted as a valid registered voter. In this case, to get an unregistered voter use the name "Unregistered Voter" (case insensitive). `ALLOY_RELAXED` is set to `true` on development, but `false` on staging and production.
+
 - **Mailgun**: You only need these to send emails (last step in signup flow).  It's easy to get set up for free.  Since you don't have access to our domain records, you will probabyl want to set your emails to be sent from the sanbox domain that mailgun sets up automatically when you sign up.
 
 - **SendinBlue**: We use [SendinBlue](https://www.sendinblue.com/) for our newsletter.  Sign up for an account and grab your V3 API key [here](https://account.sendinblue.com/advanced/api).
@@ -164,6 +166,7 @@ For every environment (e.g. development, staging, production),
 
 - Make sure that the right environment variables are set for the right environment (e.g. staging `GCLOUD_PROJECT` and `GOOGLE_APPLICATION_CREDENTIALS` are set for staging and not production).
 - Sign up for `default` org landing page
+- Test Alloy voters status using `alloy.proto.ts`
 - Test email API using `mg.proto.ts`
 - Test newsletter signup API using `sendinblue.proto.ts`
 - Test fax using `twillio.proto.ts`.  You need to set a valid incoming fax number for testing
