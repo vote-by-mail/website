@@ -1,10 +1,10 @@
 import React from 'react'
-import Input from 'muicss/lib/react/input'
+// import Input from 'muicss/lib/react/input'
+import { createContainer } from 'unstated-next'
 
 import { BaseInfo, StateInfo, isImplementedLocale, SignatureType, RegistrationStatus } from '../../common'
 import { client } from '../../lib/trpc'
 import { RoundedButton } from '../util/Button'
-import { useControlRef } from '../util/ControlRef'
 import { BaseInput, PhoneInput, EmailInput, NameInput, BirthdateInput } from '../util/Input'
 import { Togglable } from '../util/Togglable'
 import { useAppHistory } from '../../lib/path'
@@ -16,6 +16,7 @@ import { Center } from '../util/Util'
 import { toast } from 'react-toastify'
 import styled from 'styled-components'
 import { StyledModal } from '../util/StyledModal'
+import { cssQuery } from '../util/cssQuery'
 
 export type StatelessInfo = Omit<BaseInfo, 'state'>
 
@@ -25,16 +26,18 @@ type Props<Info> = React.PropsWithChildren<{
   enrichValues: EnrichValues<Info>
 }>
 
-const datePattern = /^([0-3]\d{1})\/((0|1|2)\d{1})\/((19|20)\d{2})/
+const datePattern = /^(0[1-9]|1[012])[/.](0[1-9]|[12][0-9]|3[01])[/.](19|20)[0-9]{2}$/i
 // eslint-disable-next-line no-useless-escape
 const emailPattern = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i
 const telephonePattern = /[0-9]{3}-?[0-9]{3}-?[0-9]{4}/
 
 const NameWrapper = styled.div`
   display: flex;
-  .mui-textfield {
-    flex: 1;
-    &:nth-child(1) { margin-right: 15px; }
+  flex-direction: column;
+  .mui-textfield { flex: 1; }
+  ${cssQuery.medium} {
+    flex-direction: row;
+    .mui-textfield:nth-child(1) { margin-right: 15px; }
   }
 `
 
@@ -42,43 +45,127 @@ const hasSpace = (s: string | null) => {
   return (s?.indexOf(' ') ?? -1) !== -1
 }
 
+type ExtendedStatus = RegistrationStatus | 'Error' | 'Ignored' | 'Not Found'
+
 type InputId =
   | 'birthdate'
   | 'email'
   | 'firstName'
   | 'lastName'
   | 'telephone'
+  | 'mailing'
 
-type ExtendedStatus = RegistrationStatus | 'Error' | 'Ignored' | 'Not Found'
+interface InputData {
+  valid: boolean
+  value: string
+}
+
+// Unstated container containing the values of all inputs used in the registration
+// process.
+const useForm = () => {
+  const [fields, updateFields] = React.useState<Record<InputId, InputData>>({
+    firstName: {valid: false, value: ''},
+    lastName: {valid: false, value: ''},
+    birthdate: {valid: false, value: ''},
+    email: {valid: false, value: ''},
+    telephone: {valid: true, value: ''},
+    mailing: {valid: true, value: ''},
+  })
+
+   /**
+   * Detects the content of all inputs needed for checking voter registration.
+   * When possible, this function will contact the server, updating `registrationStatus`
+   * when finished.
+   *
+   * @param onBlur Helps us perform more intensive checks only when the input
+   * lose focus.
+   */
+  const updateField = (id: InputId, e: React.ChangeEvent<HTMLInputElement>, onBlur: boolean) => {
+    e.preventDefault()
+    let { value } = e.currentTarget
+    let valid = true
+    switch (id) {
+      case 'birthdate':
+        // Removes non-numbers and replaces '-' with '/'
+        value = e.currentTarget.value.replace(
+          '-',
+          '/',
+        )
+        value = e.currentTarget.value.replace(
+          /[^(0-9)|(/).]/g,
+          '',
+        )
+
+        valid = datePattern.test(value)
+        if (onBlur && !valid && value) {
+          toast.warning('Please type a valid date.')
+        }
+        break
+
+      case 'firstName':
+      case 'lastName': {
+        const isFirstName = id === 'firstName'
+        // Check if the user has typed more than one name in a single field
+        // or if the value is empty
+        valid = !hasSpace(value) && value !== ''
+
+        if (!valid && onBlur && value) {
+          toast.warning(
+            `Please type only your ${isFirstName ? 'first' : 'last'} name and with no spaces.`
+          )
+        }
+      } break
+
+      case 'email':
+        valid = emailPattern.test(value)
+        if (onBlur && !valid && value) {
+          toast.warning('Please make sure to enter a valid email')
+        }
+        break
+
+      case 'telephone':
+        if (value) {
+          valid = telephonePattern.test(value)
+          if (onBlur && !valid) {
+            toast.warning('Please make sure to enter a valid phone number')
+          }
+        } else {
+          valid = true
+        }
+        break
+    }
+
+    updateFields({ ...fields, [id]: { valid, value } })
+  }
+
+  return {
+    fields,
+    updateField
+  }
+}
+
+const FormContainer = createContainer(useForm)
 
 /**
  * this works with redirect urls of the form
  * /#/org/default/state?registrationAddress=100%20S%20Biscayne%20Blvd,%20Miami,%20FL%2033131&name=George%20Washington&birthdate=1945-01-01&email=george@us.gov&telephone=212-111-1111
  */
-export const Base = <Info extends StateInfo>({ enrichValues, children }: Props<Info>) => {
+const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: Props<Info>) => {
   const { pushSuccess, oid, query } = useAppHistory()
   const { address, locale } = AddressContainer.useContainer()
   const { contact } = ContactContainer.useContainer()
   const { voter } = VoterContainer.useContainer()
   const { fetchingData, setFetchingData } = FetchingDataContainer.useContainer()
+  const { fields, updateField } = FormContainer.useContainer()
   const [ registrationStatus, setRegistrationStatus ] = React.useState<ExtendedStatus>(null)
 
-  const [ validFirstName, setValidFirstName ] = React.useState(false)
-  const [ validLastName, setValidLastName ] = React.useState(false)
-  const [ validBirthdate, setValidBirthdate ] = React.useState(false)
-  const [ validEmail, setValidEmail ] = React.useState(false)
-  const [ validPhone, setValidPhone ] = React.useState(true)
-  const validInputs = () => (
-    validFirstName && validLastName && validBirthdate && validEmail && validPhone
-  )
-
-  const firstNameRef = useControlRef<Input>()
-  const lastNameRef = useControlRef<Input>()
-  const birthdateRef = useControlRef<Input>()
-  const emailRef = useControlRef<Input>()
-  const phoneRef = useControlRef<Input>()
-  const mailingRef = useControlRef<Input>()
   if (!locale || !isImplementedLocale(locale) || !contact) return null
+  const canCheckRegistration = () => (
+    fields.birthdate.valid && fields.firstName.valid && fields.lastName.valid
+  )
+  const validInputs = () => (
+    canCheckRegistration() && fields.email.valid && fields.telephone.valid
+  )
 
   const uspsAddress = address ? address.fullAddr : null
   const { city, county, otherCities, latLong } = locale
@@ -95,11 +182,11 @@ export const Base = <Info extends StateInfo>({ enrichValues, children }: Props<I
       otherCities,
       latLong,
       oid,
-      name: `${firstNameRef.value()} ${lastNameRef.value()}` || '',
-      birthdate: birthdateRef.value() || '',
-      email: emailRef.value() || '',
-      mailingAddress: mailingRef.value() || '',
-      phone: phoneRef.value() || '',
+      name: `${fields.firstName.value} ${fields.lastName.value}`,
+      birthdate: fields.birthdate.value,
+      email: fields.email.value,
+      mailingAddress: fields.mailing.value,
+      phone: fields.telephone.value,
       uspsAddress,
       contact,
       address,
@@ -118,96 +205,14 @@ export const Base = <Info extends StateInfo>({ enrichValues, children }: Props<I
     return info
   }
 
-  /**
-   * Detects the content of all inputs needed for checking voter registration.
-   * When possible, this function will contact the server, updating `registrationStatus`
-   * when finished.
-   *
-   * @param fromBlur Helps us perform more intensive checks only when the input
-   * lose focus.
-   */
-  async function onChange(
+  async function aboutRegistrationBlur(
+    id: 'firstName' | 'lastName' | 'birthdate',
     e: React.ChangeEvent<HTMLInputElement>,
-    fromBlur: boolean,
   ) {
     e.preventDefault()
     e.persist() // allow async function call
-
-    // Helps avoid creating several onChange functions for each field
-    const triggeredBy = e.target.id as InputId
-
-    // Triggered by a field directly related to registrationStatus
-    const aboutRegistration =
-      triggeredBy === 'birthdate'
-      || triggeredBy === 'firstName'
-      || triggeredBy === 'lastName'
-
-    switch (triggeredBy) {
-      case 'birthdate':
-        // We don't reset registration status here because Alloy doesn't
-        // really need birthdates to work
-        if (birthdateRef.current?.controlEl) {
-          // Removes non-numbers and replaces '-' with '/'
-          birthdateRef.current.controlEl.value = e.currentTarget.value.replace(
-            '-',
-            '/',
-          )
-          birthdateRef.current.controlEl.value = e.currentTarget.value.replace(
-            /[^(0-9)|(/).]/g,
-            '',
-          )
-
-          setValidBirthdate(datePattern.test(birthdateRef.value() ?? ''))
-        }
-        break
-
-      case 'firstName':
-      case 'lastName': {
-        const isFirstName = triggeredBy === 'firstName'
-        // Reset registration status if name changes
-        setRegistrationStatus(!fromBlur ? null : registrationStatus)
-        // Check if the user has typed more than one name in a single field
-        const valid = !hasSpace(
-          isFirstName ? firstNameRef.value() : lastNameRef.value()
-        )
-
-        if (isFirstName) setValidFirstName(valid)
-        else setValidLastName(valid)
-
-        if (!valid && fromBlur && e.currentTarget.value) {
-          toast.warning(
-            `Please type only your ${isFirstName ? 'first' : 'last'} name and with no spaces.`
-          )
-        }
-      } break
-
-      case 'email':
-        if (emailRef.current?.controlEl) {
-          const valid = emailPattern.test(emailRef.value() ?? '')
-          setValidEmail(valid)
-          if (fromBlur && !valid && e.currentTarget.value) {
-            toast.warning('Please make sure to enter a valid email')
-          }
-        }
-        break
-
-      case 'telephone':
-        if (phoneRef.current?.controlEl) {
-          if (e.currentTarget.value) {
-            const valid = telephonePattern.test(phoneRef.value() ?? '')
-            setValidPhone(valid)
-            if (fromBlur && !valid) {
-              toast.warning('Please make sure to enter a valid phone number')
-            }
-          } else {
-            setValidPhone(true)
-          }
-        }
-        break
-    }
-
-    const canCheckRegistration = validFirstName && validLastName && validBirthdate
-    if (fromBlur && canCheckRegistration && aboutRegistration) {
+    updateField(id, e, true)
+    if (canCheckRegistration()) {
       if (registrationStatus !== 'Ignored' && registrationStatus !== 'Active') {
         const info = stateInfo(true)
         if (!info) return
@@ -247,19 +252,25 @@ export const Base = <Info extends StateInfo>({ enrichValues, children }: Props<I
       <NameInput
         id='firstName'
         label='First Name'
-        ref={firstNameRef}
         defaultValue={query.name}
-        onChange={e => onChange(e, false)}
-        onBlur={e => onChange(e, true)}
+        onChange={e => {
+          // Reset registration status on name change
+          setRegistrationStatus(null)
+          updateField('firstName', e, false)
+        }}
+        onBlur={e => aboutRegistrationBlur('firstName', e)}
         required
       />
       <NameInput
         id='lastName'
         label='Last Name'
-        ref={lastNameRef}
         defaultValue={query.name}
-        onChange={e => onChange(e, false)}
-        onBlur={e => onChange(e, true)}
+        onChange={e => {
+          // Reset registration status on name change
+          setRegistrationStatus(null)
+          updateField('lastName', e, false)
+        }}
+        onBlur={e => aboutRegistrationBlur('lastName', e)}
         required
       />
     </NameWrapper>
@@ -272,26 +283,23 @@ export const Base = <Info extends StateInfo>({ enrichValues, children }: Props<I
     <ContactInfo locale={locale} contact={contact}/>
     <BirthdateInput
       id='birthdate'
-      ref={birthdateRef}
       defaultValue={query.birthdate}
-      onChange={e => onChange(e, false)}
-      onBlur={e => onChange(e, true)}
+      onChange={e => updateField('birthdate', e, false)}
+      onBlur={e => aboutRegistrationBlur('birthdate', e)}
       required
     />
     <EmailInput
       id='email'
-      ref={emailRef}
       defaultValue={query.email}
-      onChange={e => onChange(e, false)}
-      onBlur={e => onChange(e, true)}
+      onChange={e => updateField('email', e, false)}
+      onBlur={e => updateField('email', e, true)}
       required
     />
     <PhoneInput
       id='telephone'
-      ref={phoneRef}
       defaultValue={query.telephone}
-      onChange={e => onChange(e, false)}
-      onBlur={e => onChange(e, true)}
+      onChange={e => updateField('telephone', e, false)}
+      onBlur={e => updateField('telephone', e, true)}
     />
     <Togglable
       id='mailing'
@@ -300,7 +308,6 @@ export const Base = <Info extends StateInfo>({ enrichValues, children }: Props<I
       (checked) => <BaseInput
         id='mailing'
         label='Mailing Address'
-        ref={mailingRef}
         required={checked}
       />
     }</Togglable>
@@ -352,6 +359,14 @@ export const Base = <Info extends StateInfo>({ enrichValues, children }: Props<I
       </RoundedButton>
     </StyledModal>
   </AppForm>
+}
+
+export const Base = <Info extends StateInfo>({ enrichValues, children }: Props<Info>) => {
+  return <FormContainer.Provider>
+    <ContainerlessBase enrichValues={enrichValues}>
+      {children}
+    </ContainerlessBase>
+  </FormContainer.Provider>
 }
 
 export type NoSignature<Info extends StateInfo> = Omit<Info, 'signature'>
