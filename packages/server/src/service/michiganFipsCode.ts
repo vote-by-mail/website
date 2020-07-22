@@ -24,7 +24,7 @@ export const toFipscode = async (response: Response): Promise<string | null> => 
   return (response?.features ?? [null])[0]?.attributes?.FIPSCODE ?? null
 }
 
-export const cacheMichiganResponse = cache(rawMichiganResponse, async([x, y]) => `${x}_${y}`)
+export const cacheMichiganResponse = cache(rawMichiganResponse, async([x, y]) => `${x}_${y}`, { refresh: true })
 
 export const michiganFipsCode = async (
   latLong: [number, number],
