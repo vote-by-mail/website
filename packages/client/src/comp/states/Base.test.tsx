@@ -16,11 +16,16 @@ import { ContactData } from '../../common'
 jest.mock('../../lib/trpc')
 
 /** Fill out form without signing */
-const fillWithoutSigning = ({getByLabelText, getByTestId}: RenderResult) => {
+const fillWithoutSigning = async ({getByLabelText}: RenderResult) => {
   act(() => {
-    fireEvent.change(getByLabelText(/^Full Name/i), {
+    fireEvent.change(getByLabelText(/^First Name/i), {
       target: {
-        value: 'Bob Smith'
+        value: 'Bob'
+      },
+    })
+    fireEvent.change(getByLabelText(/^Last Name/i), {
+      target: {
+        value: 'Smith'
       },
     })
     fireEvent.change(getByLabelText(/^Birthdate/i), {
@@ -38,11 +43,19 @@ const fillWithoutSigning = ({getByLabelText, getByTestId}: RenderResult) => {
         value: '123-456-7890'
       },
     })
+  })
+}
 
+/** Triggers validation that should happen after form is filled */
+const triggerValidation = async ({getByLabelText, getByTestId}: RenderResult) => {
+  await act(async () => {
+    await fireEvent.blur(getByLabelText(/^Last Name/i))
+    await fireEvent.blur(getByLabelText(/^Email/i))
+    await fireEvent.blur(getByLabelText(/^Phone/i))
     SignatureCanvas.prototype.isEmpty = jest.fn(() => true)
     mocked(window, true).alert = jest.fn()
 
-    fireEvent.click(getByTestId('submit'), {
+    await fireEvent.click(getByTestId('submit'), {
       bubbles: true,
       cancelable: true,
     })
@@ -69,6 +82,10 @@ const wisconsinContact: ContactData = {
 test('State Form Without Signature (Wisconsin) works', async () => {
   const history = createMemoryHistory()
 
+  const isRegistered = mocked(client, true).isRegistered = jest.fn().mockResolvedValue({
+    type: 'data',
+    data: 'Active',
+  })
   const register = mocked(client, true).register = jest.fn().mockResolvedValue({
     type: 'data',
     data: 'confirmationId',
@@ -87,8 +104,10 @@ test('State Form Without Signature (Wisconsin) works', async () => {
     { wrapper: UnstatedContainer }
   )
 
-  fillWithoutSigning(renderResult)
+  await fillWithoutSigning(renderResult)
+  await triggerValidation(renderResult)
 
+  await wait(() => expect(isRegistered).toHaveBeenCalledTimes(1))
   await wait(
     () => expect(toPath(history.location.pathname, parseQS('')))
       .toEqual<SuccessPath>({id: "confirmationId", oid: "default", type: "success"})
