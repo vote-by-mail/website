@@ -338,7 +338,7 @@ export const Base = <Info extends StateInfo>({ enrichValues, children }: Props<I
       }
       </p>
       <p style={{ marginBottom: 25 }}>
-        Please double check your name, address, and birthdate.  If you feel reasonably sure that you are correctly registered (our data might be slightly out of date), please ignore this warning.
+        Please double check your name, address, and birthdate.  If you are reasonably sure that the registration information entered above is correct (our data might be slightly out of date), please ignore this warning.
       </p>
       <RoundedButton
         color='white'
