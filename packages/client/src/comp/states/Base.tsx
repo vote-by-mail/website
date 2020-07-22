@@ -330,7 +330,7 @@ export const Base = <Info extends StateInfo>({ enrichValues, children }: Props<I
       {
         registrationStatus !== 'Error'
         ? <>
-          It appears that you are not registered to vote, current status: <b>{registrationStatus}</b>.
+          Based on our search of public records, you are not currently registered to vote at this address.
         </>
         : <>
           Error while checking your registration status.
@@ -338,7 +338,7 @@ export const Base = <Info extends StateInfo>({ enrichValues, children }: Props<I
       }
       </p>
       <p style={{ marginBottom: 25 }}>
-        You can continue without confirming your registration status by clicking on <b>Ignore Warning</b> below.
+        Please double check your name, address, and birthdate.  If you feel reasonably sure that you are correctly registered (our data might be slightly out of date), please ignore this warning.
       </p>
       <RoundedButton
         color='accent'
