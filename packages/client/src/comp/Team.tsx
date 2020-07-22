@@ -212,7 +212,7 @@ export const Team: React.FC = () => {
         <Person
           img={marcoCarvalho}
           name="Marco Carvalho"
-          description="I'm an IT expert with a Bachelor's degree in Computer Science from NYU, an equally accomplished leader of several tech startups. I had previously led projects for multinational clients, including the largest health coop in the world (UNIMED Brazil)."
+          description="I'm an IT expert with a Bachelor's degree in Computer Science from NYU, an equally accomplished leader of several tech startups. I had previously led projects for multinational clients, including the largest health co-op in the world."
         />
         <Person
           img={lukasDanin}
