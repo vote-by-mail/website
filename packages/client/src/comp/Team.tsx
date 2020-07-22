@@ -16,6 +16,8 @@ import maryPenckofer from './img/avatars/maryPenckofer.png'
 import sophieHodge from './img/avatars/sophieHodge.png'
 import tristanWagner from './img/avatars/tristanWagner.png'
 import leahTaubitz from './img/avatars/leahTaubitz.png'
+import marcoCarvalho from './img/avatars/marcoCarvalho.jpg'
+import lukasDanin from './img/avatars/lukasDanin.png'
 
 const Wrapper = styled(MarketingWrapper)`
   .mui-container {
@@ -157,7 +159,7 @@ export const Team: React.FC = () => {
         <Person
           img={brettClarke}
           name='Brett Clarke'
-          description='Finishing up my second year of Teach For America. I currently teach high school biology on the south side of chicago. '
+          description="I am a Teach For America Alum turned entrepreneur. I believe that increasing voter turnout benefits our entire society."
           linkedin='brett-clarke-a89200198'
         />
         <Person
@@ -176,7 +178,7 @@ export const Team: React.FC = () => {
         <Person
           img={maryPenckofer}
           name='Mary Penckofer'
-          description="I'm a Pre-K teacher in a CPS school. I graduated from Northwestern University in 2019 with a BA in Neuroscience. I graduated from Northwestern University in 2019 with a BA in Neuroscience."
+          description="I'm a Pre-K teacher in a CPS school. I graduated from Northwestern University in 2019 with a BA in Neuroscience."
           linkedin='mary-penckofer-4b3472178'
         />
         <Person
@@ -197,7 +199,7 @@ export const Team: React.FC = () => {
         <Person
           img={louisReid}
           name='Louis Reid'
-          description="I've has spent over a decade in development and design, including three years explicitly working on visual design across startups and agencies."
+          description="I've spent over a decade in development and design, including three years explicitly working on visual design across startups and agencies."
           linkedin='louisreiduk'
           twitter='louisreid'
         />
@@ -206,6 +208,16 @@ export const Team: React.FC = () => {
           name='Sophie Hodge'
           description="I'm a UX Designer in London, UK, with a background in psychology and mental health. I'm motivated by affecting social good and helping my community at large."
           linkedin='sophie-hodge-ux'
+        />
+        <Person
+          img={marcoCarvalho}
+          name="Marco Carvalho"
+          description="I'm an IT expert with a Bachelor's degree in Computer Science from NYU, an equally accomplished leader of several tech startups. I had previously led projects for multinational clients, including the largest health coop in the world (UNIMED Brazil)."
+        />
+        <Person
+          img={lukasDanin}
+          name="Lukas Danin"
+          description="I'm a full-stack web developer with experience in design and embedded systems, happy to take part in a project which helps people exercise their rights while remaining safe."
         />
       </PeopleWrapper>
 
