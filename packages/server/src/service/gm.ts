@@ -66,7 +66,7 @@ export const toAddress = (result: google.maps.GeocoderResult): Omit<Address, 'qu
   }
 }
 
-export const cacheGeocode = cache(rawGeocode, async x => x)
+export const cacheGeocode = cache(rawGeocode, async x => x, { refresh: true })
 
 export const geocode = async (
   query: string,
