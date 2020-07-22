@@ -341,7 +341,7 @@ export const Base = <Info extends StateInfo>({ enrichValues, children }: Props<I
         Please double check your name, address, and birthdate.  If you feel reasonably sure that you are correctly registered (our data might be slightly out of date), please ignore this warning.
       </p>
       <RoundedButton
-        color='accent'
+        color='white'
         style={{ marginRight: 10 }}
         onClick={() => setRegistrationStatus('Ignored')}
       >
