@@ -1,14 +1,16 @@
 import { toSignupEmailData, mg } from './mg'
-import { Letter } from './letter'
+import { sampleLetter } from './letter'
 
-if (process.env.DEV_EMAIL) {
+const main = async () => {
+  const devEmail = process.env.DEV_EMAIL
+  if (!devEmail) return
+
+  const letter = await sampleLetter('Florida')
+  if (!letter) return
+
   const emailData = toSignupEmailData(
-    new Letter(
-      'Test Subject',
-      '# A Test Email xyz',
-      { stateMethod: 'email', emails: ['bob@gmail.com'], faxes: [] }
-    ),
-    process.env.DEV_EMAIL,
+    letter,
+    devEmail,
     []
   )
   mg.messages().send({
@@ -17,5 +19,7 @@ if (process.env.DEV_EMAIL) {
   }).then(
     (value) => console.log(value)
   )
-  console.log(`Emailed ${process.env.DEV_EMAIL}`)
+  console.log(`Emailed ${devEmail}`)
 }
+
+main()
