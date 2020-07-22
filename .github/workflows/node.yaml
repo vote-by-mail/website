@@ -44,6 +44,11 @@ jobs:
       with:
         path: packages/server/node_modules
         key: packages/server/node-modules--${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('yarn.lock') }}
+    - name: cache packages/server/src/service/cache
+      uses: actions/cache@v2
+      with:
+        path: packages/server/src/service/cache
+        key: packages/server/src/service/cache
     - name: Install Lerna
       run: npm install --global lerna
     - name: Boostrap
