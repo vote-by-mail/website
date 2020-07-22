@@ -72,6 +72,7 @@ test.each(addresses)(
   async (addr, locality) => {
     // This function breaks up geocoding into it's parts so that we can cache and get errMsg
     const geoResult = await cacheGeocode(addr)
+    console.log(geoResult)
     expect(geoResult).toBeTruthy()
     const errMsg = `Google Result was ${JSON.stringify(geoResult?.address_components, null, 2)}`
   
