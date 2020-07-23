@@ -213,11 +213,14 @@ export const Team: React.FC = () => {
           img={marcoCarvalho}
           name="Marco Carvalho"
           description="I'm an IT expert with a Bachelor's degree in Computer Science from NYU, an equally accomplished leader of several tech startups. I had previously led projects for multinational clients, including the largest health co-op in the world."
+          linkedin='marco-aur%C3%A9lio-carvalho-filho-bb70b867'
+          github='marcoacfilho'
         />
         <Person
           img={lukasDanin}
           name="Lukas Danin"
           description="I'm a full-stack web developer with experience in design and embedded systems, happy to take part in a project which helps people exercise their rights while remaining safe."
+          github='ludanin'
         />
       </PeopleWrapper>
 
