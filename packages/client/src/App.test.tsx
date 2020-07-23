@@ -15,8 +15,7 @@ describe('App', () => {
       type: 'data',
       data: 'Florida',
     })
-    mocked(client, true).fetchAnalytics = jest.fn().mockResolvedValue({})
-    mocked(client, true).fetchFeatureFlags = jest.fn().mockResolvedValue({})
+    mocked(client, true).fetchInitialData = jest.fn().mockResolvedValue({})
   })
 
   it('Scrolls when clicked on Blurb page', () => {

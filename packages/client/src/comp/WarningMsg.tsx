@@ -4,7 +4,7 @@ import { RedOutline } from './util/RedOutline'
 import { sampleAddresses } from '../common/sampleAddresses'
 import { ImplementedState, isImplementedState } from '../common'
 import { useAppHistory, Path } from '../lib/path'
-import { FeatureFlagsContainer } from '../lib/unstated'
+import { InitialDataContainer } from '../lib/unstated'
 import { StateSelector, StateContainer } from './StateSelector'
 import styled from 'styled-components'
 import { Button } from 'muicss/react'
@@ -85,11 +85,11 @@ const RawWarningMsg: React.FC<RawWarningProps> = ({ setOpen }) => {
 }
 
 export const WarningMsg = () => {
-  const { featureFlags } = FeatureFlagsContainer.useContainer()
+  const { initialData } = InitialDataContainer.useContainer()
   const { path } = useAppHistory()
   const [ open, setOpen ] = React.useState(false)
 
-  if (featureFlags?.emailFaxOfficials) return null
+  if (initialData?.emailFaxOfficials) return null
 
   return <>
     <FloatingButton color="danger" onClick={() => setOpen(!open)}>
