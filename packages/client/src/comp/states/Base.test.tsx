@@ -19,7 +19,7 @@ jest.mock('../../lib/trpc')
 const fields = {
   firstName: 'Bob', lastName: 'Smith', birthdate: '03/22/1900',
   email: 'bob@gmail.com', phone: '123-456-7890',
-  mailing: '100 Biscayne Blvd, FL, 33131',
+  street: '100 Biscayne Blvd',
 }
 
 const compareResults = async (register: jest.Mock, separateMailing: boolean) => {
@@ -32,7 +32,7 @@ const compareResults = async (register: jest.Mock, separateMailing: boolean) => 
   await expect(call.email).toEqual(fields.email)
   await expect(call.phone).toEqual(fields.phone)
   if (separateMailing) {
-    await expect(call.mailingAddress).toEqual(fields.mailing)
+    await expect(call.mailingAddress?.split(',')[0]).toEqual(fields.street)
   }
 }
 
@@ -193,7 +193,7 @@ const useSeparateMailingAddress = async ({getByLabelText}: RenderResult) => {
 
     const alternateAddress = '100 Biscayne Blvd, FL, 33131'
 
-    const mailingInput = getByLabelText(/^Mailing Address/i)
+    const mailingInput = getByLabelText(/^Street address/i)
     await fireEvent.change(mailingInput, {
       target: {
         value: alternateAddress

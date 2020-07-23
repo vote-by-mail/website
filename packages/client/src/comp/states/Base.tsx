@@ -17,6 +17,7 @@ import { cssQuery } from '../util/cssQuery'
 import { FieldsContainer } from './BaseContainer'
 import { BaseRegistration, BaseRegistrationStatus } from './BaseRegistration'
 import { BaseModal } from './BaseModal'
+import { AddressInputs } from '../AddressInputs'
 import { AppCheckbox } from '../util/Checkbox'
 import { termsOfUseUrl, privacyPolicyUrl } from '../util/urls'
 
@@ -94,7 +95,7 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
       nameParts: nameParts,
       birthdate: fields.birthdate.value,
       email: fields.email.value,
-      mailingAddress: fields.mailing.value,
+      mailingAddress: `${fields.street.value}, ${fields.city.value}, ${fields.state.value} ${fields.zip.value}`,
       phone: fields.telephone.value,
       uspsAddress,
       contact,
@@ -256,13 +257,12 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
     <Togglable
       label='Mail my ballot to a different address than listed above'
     >{
-      (checked) => <BaseInput
-        id='mailing'
-        value={fields.mailing.value}
-        label='Mailing Address'
-        required={checked}
-        onChange={e => updateField('mailing', e.currentTarget.value)}
-      />
+      (_checked) => (
+        <AddressInputs
+          fields={fields}
+          updateField={updateField}
+        />
+      )
     }</Togglable>
     { children }
     <AppCheckbox required label={

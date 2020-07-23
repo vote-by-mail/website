@@ -1,8 +1,8 @@
 import React from 'react'
 
 import { RedOutline } from './util/RedOutline'
-import { sampleAddresses } from '../common/sampleAddresses'
-import { ImplementedState, isImplementedState } from '../common'
+import { sampleAddresses, AddressData } from '../common/sampleAddresses'
+import { ImplementedState, isImplementedState, toAddressStr } from '../common'
 import { useAppHistory, Path } from '../lib/path'
 import { InitialDataContainer } from '../lib/unstated'
 import { StateSelector, StateContainer } from './StateSelector'
@@ -79,22 +79,26 @@ const RawWarningMsg: React.FC<RawWarningProps> = ({ toggleOpen }) => {
 
   const addresses = sampleAddresses[state]
 
-  const fillData = (address: string) => {
+  const fillData = (addrData: AddressData) => {
     return () => {
       switch (path?.type) {
         case 'start': {
           const input = document.getElementById('start-zip') as HTMLInputElement
-          const match = address.match(/(\d{5})$/)
-          if (match) {
-            input.value = match[1]
-            document.getElementById('start-submit')?.click()
-          }
-
+          input.value = addrData.zip
+          document.getElementById('start-submit')?.click()
           break
         }
         case 'address': {
-          const input = document.getElementById('addr-input') as HTMLInputElement
-          input.value = address
+          const addressInput = document.getElementById('street-address') as HTMLInputElement
+          const cityInput = document.getElementById('city-input') as HTMLInputElement
+          const stateInput = document.getElementById('state-input') as HTMLInputElement
+          const zipInput = document.getElementById('zip-input') as HTMLInputElement
+
+          addressInput.value = addrData.streetAddress
+          cityInput.value = addrData.city
+          stateInput.value = addrData.state
+          zipInput.value = addrData.zip
+
           document.getElementById('addr-submit')?.click()
           break
         }
@@ -106,10 +110,10 @@ const RawWarningMsg: React.FC<RawWarningProps> = ({ toggleOpen }) => {
   return (<ul style={{marginTop: '1em'}}>
     {addresses
       .map((addrData, key) => <li key={key}>
-        {addrData.address} ({addrData.city}, {addrData.county ?? '[No County]'}, {addrData.state})
+        { toAddressStr(addrData) } ({addrData.county ?? '[No County]'})
         <button
           style={{marginLeft: '1em'}}
-          onClick={fillData(addrData.address)}
+          onClick={fillData(addrData)}
         >
           Fill
         </button>

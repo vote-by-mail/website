@@ -1,14 +1,15 @@
 import React from 'react'
 
 import { createContainer } from 'unstated-next'
-import { NameParts } from '../../common'
+import { NameParts } from '../../common/nameParts'
+import { AddressInputId } from './AddressFormContainer'
 
 const datePattern = /(0[1-9]|1[012])[/.](0[1-9]|[12][0-9]|3[01])[/.](19|20)[0-9]{2}/i
 // eslint-disable-next-line no-useless-escape
 const emailPattern = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i
 const telephonePattern = /[0-9]{3}-?[0-9]{3}-?[0-9]{4}/
 
-type InputId =
+export type InputId =
   | 'birthdate'
   | 'email'
   | 'firstName'
@@ -16,7 +17,7 @@ type InputId =
   | 'middleName'
   | 'suffix'
   | 'telephone'
-  | 'mailing'
+  | AddressInputId
 
 const isInputValid = (id: InputId, value: string): boolean => {
   switch (id) {
@@ -43,7 +44,7 @@ const isInputValid = (id: InputId, value: string): boolean => {
   }
 }
 
-interface InputData {
+export interface InputData {
   valid: boolean
   value: string
 }
@@ -61,7 +62,11 @@ const useFields = () => {
     birthdate: { valid: false, value: '' },
     email: { valid: false, value: '' },
     telephone: { valid: true, value: '' },
-    mailing: { valid: true, value: '' },
+    street: { valid: true, value: '' },
+    city: { valid: true, value: '' },
+    state: { valid: true, value: '' },
+    zip: { valid: true, value: '' },
+    apt: { valid: true, value: '' },
   })
 
   const nameParts: NameParts = {
@@ -71,6 +76,11 @@ const useFields = () => {
     suffix: fields.suffix.value ? fields.suffix.value : undefined,
   }
 
+   /**
+   * Detects the content of all inputs needed for checking voter registration.
+   * When possible, this function will contact the server, updating `registrationStatus`
+   * when finished.
+   */
   const updateField = (id: InputId, value: string) => {
     _updateValid({ ...fields, [id]: { valid: isInputValid(id, value), value } })
   }
@@ -89,6 +99,7 @@ const useFields = () => {
     canCheckRegistration,
     validInputs,
     nameParts,
+    _updateValid
   }
 }
 

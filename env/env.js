@@ -70,7 +70,6 @@ const development = removeNullValues({
   GOOGLE_CLIENT_CALLBACK: 'http://localhost:8080/auth/google/callback',
   GOOGLE_STORAGE_BUCKET: 'vbm-dev-281822.appspot.com',
   DEV_SERVER_PORT: 8080,
-  REACT_APP_DEFAULT_ADDRESS: 1,
   REACT_APP_TIMEOUT: 2000,
   DEV_EMAIL: 'email@example.com',
   NUNJUNKS_DISABLE_CACHE: 1,

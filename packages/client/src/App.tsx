@@ -25,6 +25,7 @@ import { HowItWorks } from './comp/HowItWorks'
 import { GetInvolved } from './comp/GetInvolved'
 import { Team } from './comp/Team'
 import { Contact } from './comp/Contact'
+import { AddressFormContainer } from './comp/states/AddressFormContainer'
 
 const TallStyleContainer = styled(StyleContainer)`
   min-height: 100vh;
@@ -77,7 +78,9 @@ const Layout = () => {
         <Blurb/>
         <TallStyleContainer>
           <ScrollHook pathEnum='address' pageStart>
-            <AddressForm/>
+            <AddressFormContainer.Provider>
+              <AddressForm/>
+            </AddressFormContainer.Provider>
           </ScrollHook>
         </TallStyleContainer>
       </Route>
@@ -87,7 +90,9 @@ const Layout = () => {
       <Route path={pathData['state'].path}>
         <Blurb/>
         <TallStyleContainer>
-          <AddressForm/>
+          <AddressFormContainer.Provider>
+            <AddressForm/>
+          </AddressFormContainer.Provider>
           <ScrollHook pathEnum='state'>
             <StateForm/>
           </ScrollHook>

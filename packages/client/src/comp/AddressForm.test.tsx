@@ -5,6 +5,7 @@ import { UnstatedContainer } from "./StateContainer"
 import { client } from '../lib/trpc'
 import { pageView } from '../lib/analytics'
 import { mocked } from 'ts-jest/utils'
+import { AddressFormContainer } from './states/AddressFormContainer'
 
 jest.mock('../lib/analytics')
 jest.mock('../lib/trpc')
@@ -20,20 +21,40 @@ test('AddressForm works', async () => {
     },
   })
 
-  const { getByLabelText, getByTestId } = render(
-    <RawAddressForm rawState='Florida'/>,
+  const { getByLabelText, getByTestId, getByText } = render(
+    <AddressFormContainer.Provider>
+      <RawAddressForm rawState='Florida'/>
+    </AddressFormContainer.Provider>,
     { wrapper: UnstatedContainer }
   )
 
   act(() => {
-    fireEvent.change(getByLabelText(/^Full Address/i), {
+    fireEvent.change(getByLabelText(/^Street address/i), {
       target: {
-        value: '100 S Biscayne Blvd, Miami, FL 33131'
+        value: '100 S Biscayne Blvd'
+      },
+    })
+    fireEvent.change(getByLabelText(/^City/i), {
+      target: {
+        value: 'Miami'
+      },
+    })
+    fireEvent.click(getByText(/^State/i), {
+      bubbles: true,
+      cancelable: true,
+    })
+    fireEvent.click(getByText(/^Florida/i), {
+      bubbles: true,
+      cancelable: true,
+    })
+    fireEvent.change(getByLabelText(/^ZIP code/i), {
+      target: {
+        value: '33131'
       },
     })
     fireEvent.click(getByTestId('submit'), {
-        bubbles: true,
-        cancelable: true,
+      bubbles: true,
+      cancelable: true,
     })
   })
 

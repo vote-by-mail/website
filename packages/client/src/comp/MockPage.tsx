@@ -1,6 +1,6 @@
 import React from 'react'
 import { AddressContainer, ContactContainer } from '../lib/unstated'
-import { sampleAddresses } from '../common'
+import { sampleAddresses, toAddressStr } from '../common'
 import { StateForm } from './states/StateForm'
 import { StateSelector, StateContainer } from './StateSelector'
 import { client } from '../lib/trpc'
@@ -14,8 +14,8 @@ const RawMockPage: React.FC<{}> = () => {
     (async () =>  {
       const bareAddress = sampleAddresses[state][0]
       const address = {
-        queryAddr: bareAddress.address,
-        fullAddr: bareAddress.address,
+        queryAddr: toAddressStr(bareAddress),
+        fullAddr: toAddressStr(bareAddress),
         country: 'United States',
         postcode: '20500',
         ...bareAddress

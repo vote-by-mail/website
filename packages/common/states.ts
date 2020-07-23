@@ -116,8 +116,11 @@ const caseInsensitiveStates: Record<string, State> = Object.fromEntries(
   Object.values(stateAbbreviations)
     .map(state => [state.toUpperCase(), state])
 )
-  
 
+/**
+ * Case insensitive normalization of state name from abbreviation or string
+ * @param key string of the form 'tExAs' or 'tx'
+ */
 export const getState = (key: string): State | undefined => {
   const upperKey = key.toUpperCase()
   return stateAbbreviations[upperKey] ?? caseInsensitiveStates[upperKey] ?? undefined
