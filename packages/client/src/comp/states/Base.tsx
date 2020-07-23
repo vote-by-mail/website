@@ -331,6 +331,7 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
       isOpen={
         registrationStatus !== null && registrationStatus !== 'Ignored' && registrationStatus !== 'Active'
       }
+      data-testid='registrationStatusModal'
     >
       <h4>Unconfirmed Registration Status</h4>
       <p>

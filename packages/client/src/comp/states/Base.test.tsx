@@ -17,28 +17,28 @@ jest.mock('../../lib/trpc')
 
 /** Fill out form without signing */
 const fillWithoutSigning = async ({getByLabelText}: RenderResult) => {
-  act(() => {
-    fireEvent.change(getByLabelText(/^First Name/i), {
+  await act(async () => {
+    await fireEvent.change(getByLabelText(/^First Name/i), {
       target: {
         value: 'Bob'
       },
     })
-    fireEvent.change(getByLabelText(/^Last Name/i), {
+    await fireEvent.change(getByLabelText(/^Last Name/i), {
       target: {
         value: 'Smith'
       },
     })
-    fireEvent.change(getByLabelText(/^Birthdate/i), {
+    await fireEvent.change(getByLabelText(/^Birthdate/i), {
       target: {
         value: '03/22/1900'
       },
     })
-    fireEvent.change(getByLabelText(/^Email/i), {
+    await fireEvent.change(getByLabelText(/^Email/i), {
       target: {
         value: 'bob.smith@gmail.com'
       },
     })
-    fireEvent.change(getByLabelText(/^Phone/i), {
+    await fireEvent.change(getByLabelText(/^Phone/i), {
       target: {
         value: '123-456-7890'
       },
@@ -49,7 +49,7 @@ const fillWithoutSigning = async ({getByLabelText}: RenderResult) => {
 /** Triggers validation that should happen after form is filled */
 const triggerValidation = async ({getByLabelText, getByTestId}: RenderResult) => {
   await act(async () => {
-    await fireEvent.blur(getByLabelText(/^Last Name/i))
+    await fireEvent.blur(getByLabelText(/^Birthdate/i))
     await fireEvent.blur(getByLabelText(/^Email/i))
     await fireEvent.blur(getByLabelText(/^Phone/i))
     SignatureCanvas.prototype.isEmpty = jest.fn(() => true)
@@ -113,4 +113,34 @@ test('State Form Without Signature (Wisconsin) works', async () => {
       .toEqual<SuccessPath>({id: "confirmationId", oid: "default", type: "success"})
   )
   await wait(() => expect(register).toHaveBeenCalledTimes(1))
+})
+
+test('State Form shows Unregistered modal warning', async () => {
+  const history = createMemoryHistory()
+
+  const isUnregistered = mocked(client, true).isRegistered = jest.fn().mockResolvedValue({
+    type: 'data',
+    data: 'Unregistered',
+  })
+  mocked(client, true).fetchAnalytics = jest.fn().mockResolvedValue({})
+  mocked(client, true).fetchContacts = jest.fn().mockResolvedValue([])
+
+  const renderResult = render(
+    <Router history={history}>
+      <AddressContainer.Provider initialState={wisconsinAddress}>
+        <ContactContainer.Provider initialState={wisconsinContact}>
+          <Wisconsin/>
+        </ContactContainer.Provider>
+      </AddressContainer.Provider>
+    </Router>,
+    { wrapper: UnstatedContainer }
+  )
+
+  await fillWithoutSigning(renderResult)
+  await triggerValidation(renderResult)
+
+  const modal = renderResult.getByTestId('registrationStatusModal')
+
+  await wait(() => expect(isUnregistered).toHaveBeenCalledTimes(1))
+  expect(modal).toBeInTheDocument()
 })
