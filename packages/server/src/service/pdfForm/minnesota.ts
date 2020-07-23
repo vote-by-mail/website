@@ -5,7 +5,7 @@ import { splitFullName, toSignatureBuffer } from './util'
 export const fillMinnesota = (
   stateInfo: MinnesotaInfo
 ) => fillFormWrapper(
-  __dirname + '/forms/Minnesota.pdf',
+  'Minnesota.pdf',
   async ({check, text, placeImage}) => {
     check(0, 410, 161) // General and primary elections
 

@@ -1,5 +1,5 @@
 import { PDFDocument, StandardFonts, rgb, PDFPage, PDFPageDrawTextOptions } from 'pdf-lib'
-import { safeReadFile } from '../util'
+import { safeReadFile, staticDir } from '../util'
 
 export { fillMassachusetts } from './massachusetts'
 export { fillMinnesota } from './minnesota'
@@ -20,7 +20,7 @@ export const fillFormWrapper = async (
   filename: string,
   fillForm: (arg: FillFormArg) => Promise<void>,
 ): Promise<Buffer> => {
-  const byteArray = await safeReadFile(filename)
+  const byteArray = await safeReadFile(staticDir(`form/${filename}`))
   const doc = await PDFDocument.load(byteArray.toString('base64'))
   const options = {
     font: await doc.embedFont(StandardFonts.Helvetica),

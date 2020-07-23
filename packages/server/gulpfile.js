@@ -81,10 +81,7 @@ gulp.task('test', async () => {
 // build
 gulp.task('tsc', runEnv('tsc --build'))
 gulp.task('pug', () => gulp.src('./src/views/*.pug').pipe(gulp.dest('./dist/views')))
-gulp.task('md', () => gulp.src('./src/service/letter/views/*.md').pipe(gulp.dest('./dist/service/letter/views')))
-gulp.task('png', () => gulp.src('./src/service/letter/*.png').pipe(gulp.dest('./dist/service/letter')))
-gulp.task('jpg', () => gulp.src('./src/service/letter/*.jpg').pipe(gulp.dest('./dist/service/letter')))
-gulp.task('pdf', () => gulp.src('./src/service/pdfForm/forms/*.pdf').pipe(gulp.dest('./dist/service/pdfForm/forms')))
+gulp.task('static', () => gulp.src('./src/service/static/**').pipe(gulp.dest('./dist/service/static')))
 gulp.task('check', (cb) => {
   const executable = './dist/index.js'
   if (!fs.existsSync(executable)) throw Error(`Compile did not create ${executable}`)
@@ -97,10 +94,7 @@ gulp.task('build',
     gulp.parallel(
       'tsc',
       'pug',
-      'md',
-      'png',
-      'jpg',
-      'pdf',
+      'static',
     ),
     'check',
   )

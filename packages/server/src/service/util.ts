@@ -72,3 +72,11 @@ export const cache = <A extends unknown[], R>(
     }
   }
 }
+
+/**
+ * Returns the absolute path to the static folder
+ * @param fileName Optionally returns the path to a file in the static folder
+ */
+export const staticDir = (fileName?: string) => fileName
+  ? `${__dirname}/static/${fileName}`
+  : `${__dirname}/static`

@@ -1,10 +1,10 @@
 import { Letter } from '.'
 import { BaseInfo, ContactMethod, ImplementedState, StateInfo, toContactMethod } from '../../common'
 import { getContact, getFirstContact } from '../contact'
-import { safeReadFileSync } from '../util'
+import { safeReadFileSync, staticDir } from '../util'
 
 const loadBase64 = (filename: string) => {
-  return safeReadFileSync(__dirname + '/' + filename).toString('base64')
+  return safeReadFileSync(staticDir(`test/${filename}`)).toString('base64')
 }
 
 const baseStateInfo: Omit<BaseInfo, 'contact'> = {

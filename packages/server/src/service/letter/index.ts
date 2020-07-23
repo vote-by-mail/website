@@ -4,13 +4,14 @@ import nunjucks from 'nunjucks'
 
 import { processEnvOrThrow, StateInfo, ContactMethod, ImplementedState } from '../../common'
 import { fillMinnesota, fillNewHampshire, fillNorthCarolina, fillMassachusetts } from '../pdfForm'
+import { staticDir } from '../util'
 
 export const mg = mailgun({
   domain: processEnvOrThrow('MG_DOMAIN'),
   apiKey: processEnvOrThrow('MG_API_KEY'),
 })
 
-nunjucks.configure(__dirname + '/views', {
+nunjucks.configure(staticDir('views/'), {
   autoescape: true,
   noCache: !!process.env.NUNJUNKS_DISABLE_CACHE
 })
