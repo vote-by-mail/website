@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { HashRouter } from 'react-router-dom'
 import { Slide, ToastContainer } from "react-toastify"
 import { ModalProvider } from 'styled-react-modal'
-import { AddressContainer, ContactContainer, AnalyticsContainer, VoterContainer, FeatureFlagsContainer, FetchingDataContainer } from '../lib/unstated'
+import { AddressContainer, ContactContainer, VoterContainer, FetchingDataContainer, InitialDataContainer } from '../lib/unstated'
 
 import 'react-toastify/dist/ReactToastify.css'
 import { LoadingOverlay } from './util/LoadingOverlay'
@@ -22,30 +22,28 @@ const CustomToastContainer = styled(ToastContainer)`
 export const UnstatedContainer: React.FC<{}> = ({ children }) => (<HashRouter>
   <AddressContainer.Provider>
     <ContactContainer.Provider>
-      <AnalyticsContainer.Provider>
-        <FeatureFlagsContainer.Provider>
-          <VoterContainer.Provider>
-            <ModalProvider>
-              <FetchingDataContainer.Provider>
-                {children}
-                <LoadingOverlay/>
-                <CustomToastContainer
-                  position="top-right"
-                  autoClose={3000}
-                  hideProgressBar={true}
-                  newestOnTop={true}
-                  closeOnClick={true}
-                  rtl={false}
-                  limit={2}
-                  pauseOnFocusLoss={true}
-                  pauseOnHover={true}
-                  transition={Slide}
-                />
-              </FetchingDataContainer.Provider>
-            </ModalProvider>
-          </VoterContainer.Provider>
-        </FeatureFlagsContainer.Provider>
-      </AnalyticsContainer.Provider>
+      <InitialDataContainer.Provider>
+        <VoterContainer.Provider>
+          <ModalProvider>
+            <FetchingDataContainer.Provider>
+              {children}
+              <LoadingOverlay/>
+              <CustomToastContainer
+                position="top-right"
+                autoClose={3000}
+                hideProgressBar={true}
+                newestOnTop={true}
+                closeOnClick={true}
+                rtl={false}
+                limit={2}
+                pauseOnFocusLoss={true}
+                pauseOnHover={true}
+                transition={Slide}
+              />
+            </FetchingDataContainer.Provider>
+          </ModalProvider>
+        </VoterContainer.Provider>
+      </InitialDataContainer.Provider>
     </ContactContainer.Provider>
   </AddressContainer.Provider>
 </HashRouter>)

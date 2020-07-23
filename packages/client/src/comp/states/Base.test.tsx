@@ -73,7 +73,7 @@ test('State Form Without Signature (Wisconsin) works', async () => {
     type: 'data',
     data: 'confirmationId',
   })
-  mocked(client, true).fetchAnalytics = jest.fn().mockResolvedValue({})
+  mocked(client, true).fetchInitialData = jest.fn().mockResolvedValue({})
   mocked(client, true).fetchContacts = jest.fn().mockResolvedValue([])
 
   const renderResult = render(

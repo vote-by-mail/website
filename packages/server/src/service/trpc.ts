@@ -31,16 +31,12 @@ const hostInfo = (request: Request): HostInfo => {
 
 export class VbmRpc implements ImplRpc<IVbmRpc, Request> {
   public add = async (x: number, y: number) => data(x + y)
-  public fetchAnalytics = async (org: string) => {
+  public fetchInitialData = async (org: string) => {
     const orgObj = await firestoreService.fetchOrg(org)
     return data({
+      emailFaxOfficials: !!process.env.EMAIL_FAX_OFFICIALS,
       facebookId: orgObj?.facebookId,
       googleId: orgObj?.googleId,
-    })
-  }
-  public fetchFeatureFlags = async () => {
-    return data({
-      emailFaxOfficials: !!process.env.EMAIL_FAX_OFFICIALS
     })
   }
   public fetchState = async (zip: string) => {

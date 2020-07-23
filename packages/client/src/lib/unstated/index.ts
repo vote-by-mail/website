@@ -1,6 +1,7 @@
 import React from 'react'
 import { createContainer } from "unstated-next"
-import { Address, ContactData, Analytics, toLocale, Locale, toContactMethod, ContactMethod, FeatureFlags } from '../../common'
+import { Address, ContactData, toLocale, Locale, toContactMethod, ContactMethod } from '../../common'
+import { InitialData } from '../../common/initialData'
 
 const useAddressContainer = (initialState: (Address | null) = null) => {
   const [address, setAddress] = React.useState<Address | null>(initialState)
@@ -17,19 +18,12 @@ const useContactContainer = (initialState: (ContactData | null) = null) => {
 }
 export const ContactContainer = createContainer(useContactContainer)
 
-const useAnalyticsContainer = (initialAnalytics: Analytics | null = null) => {
-  const [analytics, setAnalytics] = React.useState(initialAnalytics)
-  return { analytics, setAnalytics }
+const useInitialDataContainer = (data: InitialData | null = null) => {
+  const [initialData, setInitialData] = React.useState(data)
+  return { initialData, setInitialData }
 }
 
-export const AnalyticsContainer = createContainer(useAnalyticsContainer)
-
-const useFeatureFlagsContainer = (initialFeatureFlags: FeatureFlags | null = null) => {
-  const [featureFlags, setFeatureFlags] = React.useState(initialFeatureFlags)
-  return { featureFlags, setFeatureFlags }
-}
-
-export const FeatureFlagsContainer = createContainer(useFeatureFlagsContainer)
+export const InitialDataContainer = createContainer(useInitialDataContainer)
 
 /**
  * When true replaces the mouse cursor with the operating system's default

@@ -1,13 +1,13 @@
 import React from 'react'
 
-import { FeatureFlagsContainer } from '../lib/unstated'
+import { InitialDataContainer } from '../lib/unstated'
 import { client } from '../lib/trpc'
 
 
 export const Status = () => {
   const [sum, setSum] = React.useState<number | string>('loading ...')
-  const { featureFlags } = FeatureFlagsContainer.useContainer()
-  
+  const { initialData } = InitialDataContainer.useContainer()
+
   React.useEffect(() => {
     (async () => {
       const resp =  await client.add(2, 3)
@@ -29,7 +29,7 @@ export const Status = () => {
     <ul>
       <li>NODE_ENV: {process.env.NODE_ENV}</li>
       <li>REACT_APP_ENVIRONMENT: {process.env.REACT_APP_ENVIRONMENT}</li>
-      <li>EMAIL_FAX_OFFICIALS: {JSON.stringify(featureFlags?.emailFaxOfficials)}</li>
+      <li>EMAIL_FAX_OFFICIALS: {JSON.stringify(initialData?.emailFaxOfficials)}</li>
       <li>2 + 3 = {sum}</li>
     </ul>
   </div>

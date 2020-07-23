@@ -1,14 +1,13 @@
 import React from 'react'
 import { client } from '../lib/trpc'
 import { useAppHistory } from '../lib/path'
-import { AnalyticsContainer, FeatureFlagsContainer, VoterContainer, useDeepMemoize } from '../lib/unstated'
+import { InitialDataContainer, VoterContainer, useDeepMemoize } from '../lib/unstated'
 import { initializeAnalytics } from '../lib/analytics'
 import { UTM } from '../common'
 
 export const Initialize: React.FC = () => {
   const { oid } = useAppHistory()
-  const { setAnalytics } = AnalyticsContainer.useContainer()
-  const { setFeatureFlags } = FeatureFlagsContainer.useContainer()
+  const { setInitialData } = InitialDataContainer.useContainer()
   const { conservativeUpdateVoter } = VoterContainer.useContainer()
   const { query } = useAppHistory()
   const utm: UTM = useDeepMemoize({
@@ -22,23 +21,17 @@ export const Initialize: React.FC = () => {
   React.useEffect(() => {
     (async () => {
       // Load analytics once and only once
-      const result = await client.fetchAnalytics(oid)
+      const result = await client.fetchInitialData(oid)
       if(result.type === 'data') {
-        setAnalytics(result.data)
-        initializeAnalytics(result.data)
+        setInitialData(result.data)
+        initializeAnalytics({
+          facebookId: result.data.facebookId,
+          googleId: result.data.googleId,
+        })
       }
     })()
-  }, [oid, setAnalytics])
+  }, [oid, setInitialData])
 
-  React.useEffect(() => {
-    (async () => {
-      // Load feature flags once and only once
-      const result = await client.fetchFeatureFlags()
-      if(result.type === 'data') {
-        setFeatureFlags(result.data)
-      }
-    })()
-  }, [setFeatureFlags])
 
   React.useEffect(() => {
     conservativeUpdateVoter(utm)
