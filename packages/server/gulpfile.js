@@ -80,7 +80,6 @@ gulp.task('test', async () => {
 
 // build
 gulp.task('tsc', runEnv('tsc --build'))
-gulp.task('pug', () => gulp.src('./src/views/*.pug').pipe(gulp.dest('./dist/views')))
 gulp.task('static', () => gulp.src('./src/service/static/**').pipe(gulp.dest('./dist/service/static')))
 gulp.task('check', (cb) => {
   const executable = './dist/index.js'
@@ -93,7 +92,6 @@ gulp.task('build',
     envRequired,
     gulp.parallel(
       'tsc',
-      'pug',
       'static',
     ),
     'check',
