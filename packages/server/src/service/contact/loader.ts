@@ -5,7 +5,7 @@ import { RawContactRecord, RawContact, ContactRecord } from "./type"
 import { normalizeStates } from "./normalize"
 
 // Local Contact Records
-const version = processEnvOrThrow('ELECTIONS_OFFICIALS_VERSION')
+const version = processEnvOrThrow('ELECTION_OFFICIAL_DATA_VERSION')
 
 const url = (state: State) => {
   const stateStr = state.toLowerCase().replace(' ', '_')
