@@ -53,10 +53,28 @@ type InputId =
   | 'telephone'
   | 'mailing'
 
-// Unstated container containing the values of all inputs used in the registration
-// process.
+const isInputValid = (id: InputId, value: string): boolean => {
+  switch (id) {
+    case 'birthdate': return datePattern.test(value)
+    case 'firstName':
+    case 'lastName': {
+      // Check if the user has typed a valid name: without numbers & non-empty
+      return value !== '' && /^([^0-9]*)$/.test(value)
+    }
+    case 'email': return emailPattern.test(value)
+    case 'telephone': {
+      return value ? telephonePattern.test(value) : true
+    }
+    default: return true
+  }
+}
+
+/**
+ * Unstated container containing the values of all inputs used in the registration
+ * process.
+ */
 const useValidation = () => {
-  const [fields, updateFields] = React.useState<Record<InputId, boolean>>({
+  const [valid, _updateValid] = React.useState<Record<InputId, boolean>>({
     firstName: false,
     lastName: false,
     birthdate: false,
@@ -73,45 +91,20 @@ const useValidation = () => {
    * @param onBlur Helps us perform more intensive checks only when the input
    * lose focus.
    */
-  const updateField = (id: InputId, value: string) => {
-    let valid = true
-    switch (id) {
-      case 'birthdate':
-        valid = datePattern.test(value)
-        break
-
-      case 'firstName':
-      case 'lastName':
-        // Check if the user has typed a valid name: without numbers & non-empty
-        valid = value !== '' && /^([^0-9]*)$/.test(value)
-        break
-
-      case 'email':
-        valid = emailPattern.test(value)
-        break
-
-      case 'telephone':
-        if (value) {
-          valid = telephonePattern.test(value)
-        } else {
-          valid = true
-        }
-        break
-    }
-
-    updateFields({ ...fields, [id]: valid })
+  const updateValid = (id: InputId, value: string) => {
+    _updateValid({ ...valid, [id]: isInputValid(id, value) })
   }
 
   const canCheckRegistration = () => (
-    fields.birthdate && fields.firstName && fields.lastName
+    valid.birthdate && valid.firstName && valid.lastName
   )
   const validInputs = () => (
-    canCheckRegistration() && fields.email && fields.telephone
+    canCheckRegistration() && valid.email && valid.telephone
   )
 
   return {
-    fields,
-    updateField,
+    valid,
+    updateValid,
     canCheckRegistration,
     validInputs,
   }
@@ -130,8 +123,8 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
   const { voter } = VoterContainer.useContainer()
   const { fetchingData, setFetchingData } = FetchingDataContainer.useContainer()
   const {
-    fields,
-    updateField,
+    valid,
+    updateValid,
     canCheckRegistration,
     validInputs,
   } = ValidationContainer.useContainer()
@@ -190,7 +183,7 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
   ) {
     e.preventDefault()
     e.persist() // allow async function call
-    updateField(id, e.currentTarget.value)
+    updateValid(id, e.currentTarget.value)
     if (canCheckRegistration()) {
       if (registrationStatus !== 'Ignored' && registrationStatus !== 'Active') {
         const info = stateInfo(true)
@@ -233,11 +226,11 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
         ref={firstNameRef}
         label='First Name'
         defaultValue={query.name}
-        invalid={!fields.firstName}
+        invalid={!valid.firstName}
         onChange={e => {
           // Reset registration status on name change
           setRegistrationStatus(null)
-          updateField('firstName', e.currentTarget.value)
+          updateValid('firstName', e.currentTarget.value)
         }}
         onBlur={e => aboutRegistrationBlur('firstName', e)}
         required
@@ -247,11 +240,11 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
         ref={lastNameRef}
         label='Last Name'
         defaultValue={query.name}
-        invalid={!fields.lastName}
+        invalid={!valid.lastName}
         onChange={e => {
           // Reset registration status on name change
           setRegistrationStatus(null)
-          updateField('lastName', e.currentTarget.value)
+          updateValid('lastName', e.currentTarget.value)
         }}
         onBlur={e => aboutRegistrationBlur('lastName', e)}
         required
@@ -268,7 +261,7 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
       id='birthdate'
       ref={birthdateRef}
       defaultValue={query.birthdate}
-      invalid={!fields.birthdate}
+      invalid={!valid.birthdate}
       onChange={e => {
         let { value } = e.currentTarget
         // Removes non-numbers and replaces '-' with '/'
@@ -283,7 +276,7 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
         if (birthdateRef.current?.controlEl) {
           birthdateRef.current.controlEl.value = value
         }
-        updateField('birthdate', value)
+        updateValid('birthdate', value)
       }}
       onBlur={e => aboutRegistrationBlur('birthdate', e)}
       required
@@ -292,16 +285,16 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
       id='email'
       ref={emailRef}
       defaultValue={query.email}
-      invalid={!fields.email}
-      onChange={e => updateField('email', e.currentTarget.value)}
+      invalid={!valid.email}
+      onChange={e => updateValid('email', e.currentTarget.value)}
       required
     />
     <PhoneInput
       id='telephone'
       ref={telephoneRef}
       defaultValue={query.telephone}
-      invalid={!fields.telephone}
-      onChange={e => updateField('telephone', e.currentTarget.value)}
+      invalid={!valid.telephone}
+      onChange={e => updateValid('telephone', e.currentTarget.value)}
     />
     <Togglable
       id='mailing'
