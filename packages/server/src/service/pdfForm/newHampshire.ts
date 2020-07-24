@@ -5,7 +5,7 @@ import { toSignatureBuffer } from './util'
 export const fillNewHampshire = (
   stateInfo: NewHampshireInfo
 ) => fillFormWrapper(
-  __dirname + '/forms/New_Hampshire.pdf',
+  'New_Hampshire.pdf',
   async ({check, text, placeImage}) => {
     check(0, 86, 100) // Qualified Voter
     check(0, 86, 315) // Disabled
