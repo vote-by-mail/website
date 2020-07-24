@@ -1,4 +1,4 @@
-import { processEnvOrThrow, StateInfo, RegistrationStatus } from '../common'
+import { processEnvOrThrow, RegistrationStatus, RegistrationArgs } from '../common'
 import axios, { AxiosResponse } from 'axios'
 import rax from 'retry-axios'
 
@@ -13,27 +13,6 @@ const commonAxiosSettings = {
   withCredentials: true,
 }
 
-/** Converts StateInfo to URL query params */
-const stateInfoToParams = (info: StateInfo) => {
-  const nameSplit = info.name.split(' ')
-  const firstName = nameSplit[0]
-  const lastName = nameSplit[nameSplit.length - 1]
-  const { city, stateAbbr: state, street, streetNumber, postcode: zip } = info.address
-  const address = `${streetNumber} ${street}`
-
-  return encodeURI(
-    [
-      `first_name=${firstName}`,
-      `last_name=${lastName}`,
-      `birth_date=${info.birthdate}`,
-      `address=${address}`,
-      `city=${city}`,
-      `state=${state}`,
-      `zip=${zip}`,
-    ].join('&')
-  )
-}
-
 interface AlloyResponse {
   data: {
     // There are other possible registration_status, but for our interests
@@ -42,11 +21,25 @@ interface AlloyResponse {
   }
 }
 
-export const isRegistered = async (voter: StateInfo): Promise<RegistrationStatus> => {
-  const url = `${apiUrl}/verify?${stateInfoToParams(voter)}`
+export const isRegistered = async ({
+  firstName, lastName, birthdate,
+  stateAbbr, city, postcode,
+  street, streetNumber,
+}: RegistrationArgs): Promise<RegistrationStatus> => {
+  const address = `${streetNumber} ${street}`
+  const query = [
+    `first_name=${firstName}`,
+    `last_name=${lastName}`,
+    birthdate ? `birth_date=${birthdate}` : '',
+    `address=${address}`,
+    `city=${city}`,
+    `state=${stateAbbr}`,
+    `zip=${postcode}`,
+  ].join('&')
+  const url = `${apiUrl}/verify?${query}}`
 
   if (alloyRelaxed) {
-    return voter.name.toLowerCase() !== 'unregistered voter'
+    return `${firstName.toLowerCase()} ${lastName.toLowerCase()}` !== 'unregistered voter'
       ? 'Active'
       : null
   }
