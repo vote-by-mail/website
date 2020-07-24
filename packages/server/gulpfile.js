@@ -96,6 +96,9 @@ gulp.task('build',
   )
 )
 
+// serve
+gulp.task('serve', runEnv('node ./dist/index.js', {...envs.development, PORT: 9000}))
+
 // deploy
 gulp.task('appsubst', gulp.series(
   envRequired,
