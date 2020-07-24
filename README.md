@@ -197,6 +197,16 @@ The shapefile used to create the Michigan ArcGIS server can be found here: http:
 7. On the bottom of the page click on the `Query` link
 8. You will be prompted to a page where you can visually input your query parameters, after you are done inputing them you can click on the `Query (GET)` button on the bottom of the page and you will navigate to your endpoint
 
+## Advanced Topics
+
+### Testing Server Build
+Sometimes, one wishes to test the compiled javascript version of the server rather than the interpreted typescript version.  Usually, the latter works.  The former is useful when tweaking with the server's build system or environment variables or anything else where you are not confident that the build appropriately translated the result.  In this case, run the following commands
+```bash
+yarn server gulp build
+yarn server gulp serve
+```
+
+
 ## About Us
 This repository is for VoteByMail.io.
 
