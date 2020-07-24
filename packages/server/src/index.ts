@@ -9,6 +9,7 @@ import { registerExpressHandler } from '@tianhuil/simple-trpc/dist/handler/expre
 import { processEnvOrThrow, IVbmRpc } from './common'
 import { VbmRpc } from './service/trpc'
 import { registerPassportEndpoints } from './service/org'
+import { staticDir } from './service/util'
 
 const app = Express()
 
@@ -19,7 +20,7 @@ app.use('/static', Express.static(__dirname + '/static'))
 app.use(cors({ origin: true }))
 
 app.set('view engine', 'pug')
-app.set('views', __dirname + '/views')
+app.set('views', staticDir('pug'))
 
 app.get('/_ah/warmup', (_, res) => {
   res.status(200).send('')
