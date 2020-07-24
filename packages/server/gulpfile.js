@@ -59,8 +59,6 @@ gulp.task('emulator',
 )
 
 // test
-gulp.task('test', runEnv('jest \\.test\\.ts', envs.test ))
-
 gulp.task('test', async () => {
   const watch = options.watch ? '--watchAll' : ''
   const kind  = options.e2e ? 'e2e' : options.ext ? 'ext' : 'test'
