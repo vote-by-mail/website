@@ -11,7 +11,7 @@
 - County: **{{county}}**
 - Elections: generally, all elections through the end of the calendar year; in particular, **{{election}}**.
 - Method of Delivery: I request that my ballot be mailed to me.
-{%- if idPhoto -%}
+{% if idPhoto -%}
 - Photo of ID (see attached)
 {{image(idPhoto)}}
 {%- endif %}
