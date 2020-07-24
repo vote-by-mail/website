@@ -1,7 +1,7 @@
 import { data, error } from '@tianhuil/simple-trpc/dist/util'
 import { ImplRpc } from '@tianhuil/simple-trpc/dist/type'
 import { Request } from 'express'
-import { IVbmRpc, StateInfo, toLocale, toContactMethod, isState, Voter, Locale, ImplementedState } from '../common'
+import { IVbmRpc, StateInfo, toLocale, toContactMethod, isState, Voter, Locale, ImplementedState, RegistrationArgs } from '../common'
 import { FirestoreService } from './firestore'
 import { sendSignupEmail, mg } from './mg'
 import { toContact, getContactRecords, getContact as _getContact } from './contact'
@@ -94,7 +94,7 @@ export class VbmRpc implements ImplRpc<IVbmRpc, Request> {
       return e
     }
   }
-  public isRegistered = async (voter: StateInfo) => {
+  public isRegistered = async (voter: RegistrationArgs) => {
     try {
       const response = await isRegistered(voter)
       return data(response)

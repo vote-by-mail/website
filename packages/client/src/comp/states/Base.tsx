@@ -17,8 +17,6 @@ import { toast } from 'react-toastify'
 import styled from 'styled-components'
 import { StyledModal } from '../util/StyledModal'
 import { cssQuery } from '../util/cssQuery'
-import { useControlRef } from '../util/ControlRef'
-import { Input } from 'muicss/react'
 
 export type StatelessInfo = Omit<BaseInfo, 'state'>
 
@@ -69,48 +67,50 @@ const isInputValid = (id: InputId, value: string): boolean => {
   }
 }
 
+interface InputData {
+  valid: boolean
+  value: string
+}
+
 /**
  * Unstated container containing the values of all inputs used in the registration
  * process.
  */
-const useValidation = () => {
-  const [valid, _updateValid] = React.useState<Record<InputId, boolean>>({
-    firstName: false,
-    lastName: false,
-    birthdate: false,
-    email: false,
-    telephone: true,
-    mailing: true,
+const useFields = () => {
+  const [fields, _updateValid] = React.useState<Record<InputId, InputData>>({
+    firstName: { valid: false, value: '' },
+    lastName: { valid: false, value: '' },
+    birthdate: { valid: false, value: '' },
+    email: { valid: false, value: '' },
+    telephone: { valid: true, value: '' },
+    mailing: { valid: true, value: '' },
   })
 
    /**
    * Detects the content of all inputs needed for checking voter registration.
    * When possible, this function will contact the server, updating `registrationStatus`
    * when finished.
-   *
-   * @param onBlur Helps us perform more intensive checks only when the input
-   * lose focus.
    */
-  const updateValid = (id: InputId, value: string) => {
-    _updateValid({ ...valid, [id]: isInputValid(id, value) })
+  const updateField = (id: InputId, value: string) => {
+    _updateValid({ ...fields, [id]: { valid: isInputValid(id, value), value } })
   }
 
   const canCheckRegistration = () => (
-    valid.birthdate && valid.firstName && valid.lastName
+    fields.birthdate.valid && fields.firstName.valid && fields.lastName.valid
   )
   const validInputs = () => (
-    canCheckRegistration() && valid.email && valid.telephone
+    canCheckRegistration() && fields.email.valid && fields.telephone.valid
   )
 
   return {
-    valid,
-    updateValid,
+    fields,
+    updateField,
     canCheckRegistration,
     validInputs,
   }
 }
 
-const ValidationContainer = createContainer(useValidation)
+const FieldsContainer = createContainer(useFields)
 
 /**
  * this works with redirect urls of the form
@@ -123,26 +123,19 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
   const { voter } = VoterContainer.useContainer()
   const { fetchingData, setFetchingData } = FetchingDataContainer.useContainer()
   const {
-    valid,
-    updateValid,
+    fields,
+    updateField,
     canCheckRegistration,
     validInputs,
-  } = ValidationContainer.useContainer()
+  } = FieldsContainer.useContainer()
   const [ registrationStatus, setRegistrationStatus ] = React.useState<ExtendedStatus>(null)
-
-  const firstNameRef = useControlRef<Input>()
-  const lastNameRef = useControlRef<Input>()
-  const birthdateRef = useControlRef<Input>()
-  const emailRef = useControlRef<Input>()
-  const telephoneRef = useControlRef<Input>()
-  const mailingRef = useControlRef<Input>()
 
   if (!locale || !isImplementedLocale(locale) || !contact) return null
 
   const uspsAddress = address ? address.fullAddr : null
   const { city, county, otherCities, latLong } = locale
 
-  const stateInfo = (forRegistrationStatus: boolean): StateInfo | null => {
+  const stateInfo = (): StateInfo | null => {
     if (!address || !uspsAddress || !contact) {
       toast.error('Please fill all the required fields')
       return null
@@ -154,20 +147,17 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
       otherCities,
       latLong,
       oid,
-      name: `${firstNameRef.value()} ${lastNameRef.value()}`,
-      birthdate: birthdateRef.value() ?? '',
-      email: emailRef.value() ?? '',
-      mailingAddress: mailingRef.value() ?? '',
-      phone: telephoneRef.value() ?? '',
+      name: `${fields.firstName.value} ${fields.lastName.value}`,
+      birthdate: fields.birthdate.value,
+      email: fields.email.value,
+      mailingAddress: fields.mailing.value,
+      phone: fields.telephone.value,
       uspsAddress,
       contact,
       address,
     }
 
-    const info = enrichValues(
-      // Small hack to prevent SignatureBase toasting missing signatures
-      !forRegistrationStatus ? base : {...base, signature: 'skip'}
-    )
+    const info = enrichValues(base)
 
     if (!info) {
       // Do not dismiss previous errors which may give more details on bad fields
@@ -177,20 +167,30 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
     return info
   }
 
-  async function aboutRegistrationBlur(
+  async function checkRegistration(
     id: 'firstName' | 'lastName' | 'birthdate',
     e: React.ChangeEvent<HTMLInputElement>,
   ) {
     e.preventDefault()
     e.persist() // allow async function call
-    updateValid(id, e.currentTarget.value)
+    updateField(id, e.currentTarget.value)
     if (canCheckRegistration()) {
       if (registrationStatus !== 'Ignored' && registrationStatus !== 'Active') {
-        const info = stateInfo(true)
-        if (!info) return
+        const {
+          firstName, lastName, birthdate,
+        } = fields
         setFetchingData(true)
 
-        const result = await client.isRegistered(info)
+        const result = await client.isRegistered({
+          firstName: firstName.value,
+          lastName: lastName.value,
+          birthdate: birthdate.value,
+          city: address?.city ?? '',
+          postcode: address?.postcode ?? '',
+          stateAbbr: address?.stateAbbr ?? '',
+          street: address?.street ?? '',
+          streetNumber: address?.streetNumber ?? '',
+        })
         if (result.type === 'data') {
           setRegistrationStatus(result.data ?? 'Not Found')
         } else {
@@ -206,7 +206,7 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
     event.persist()  // allow async function call
     event.preventDefault()
 
-    const info = stateInfo(false)
+    const info = stateInfo()
     if (!info) return
 
     setFetchingData(true)
@@ -223,30 +223,30 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
     <NameWrapper>
       <NameInput
         id='firstName'
-        ref={firstNameRef}
+        value={fields.firstName.value}
         label='First Name'
         defaultValue={query.name}
-        invalid={!valid.firstName}
+        invalid={!fields.firstName}
         onChange={e => {
           // Reset registration status on name change
           setRegistrationStatus(null)
-          updateValid('firstName', e.currentTarget.value)
+          updateField('firstName', e.currentTarget.value)
         }}
-        onBlur={e => aboutRegistrationBlur('firstName', e)}
+        onBlur={e => checkRegistration('firstName', e)}
         required
       />
       <NameInput
         id='lastName'
-        ref={lastNameRef}
+        value={fields.lastName.value}
         label='Last Name'
         defaultValue={query.name}
-        invalid={!valid.lastName}
+        invalid={!fields.lastName}
         onChange={e => {
           // Reset registration status on name change
           setRegistrationStatus(null)
-          updateValid('lastName', e.currentTarget.value)
+          updateField('lastName', e.currentTarget.value)
         }}
-        onBlur={e => aboutRegistrationBlur('lastName', e)}
+        onBlur={e => checkRegistration('lastName', e)}
         required
       />
     </NameWrapper>
@@ -259,42 +259,38 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
     <ContactInfo locale={locale} contact={contact}/>
     <BirthdateInput
       id='birthdate'
-      ref={birthdateRef}
+      value={fields.birthdate.value}
       defaultValue={query.birthdate}
-      invalid={!valid.birthdate}
+      invalid={!fields.birthdate}
       onChange={e => {
-        let { value } = e.currentTarget
+        const { value } = e.currentTarget
         // Removes non-numbers and replaces '-' with '/'
-        value = value.replace(
+        const normalizedValue = value.replace(
           '-',
           '/',
-        )
-        value = value.replace(
+        ).replace(
           /[^(0-9)|(/).]/g,
           '',
         )
-        if (birthdateRef.current?.controlEl) {
-          birthdateRef.current.controlEl.value = value
-        }
-        updateValid('birthdate', value)
+        updateField('birthdate', normalizedValue)
       }}
-      onBlur={e => aboutRegistrationBlur('birthdate', e)}
+      onBlur={e => checkRegistration('birthdate', e)}
       required
     />
     <EmailInput
       id='email'
-      ref={emailRef}
+      value={fields.email.value}
       defaultValue={query.email}
-      invalid={!valid.email}
-      onChange={e => updateValid('email', e.currentTarget.value)}
+      invalid={!fields.email}
+      onChange={e => updateField('email', e.currentTarget.value)}
       required
     />
     <PhoneInput
       id='telephone'
-      ref={telephoneRef}
+      value={fields.telephone.value}
       defaultValue={query.telephone}
-      invalid={!valid.telephone}
-      onChange={e => updateValid('telephone', e.currentTarget.value)}
+      invalid={!fields.telephone}
+      onChange={e => updateField('telephone', e.currentTarget.value)}
     />
     <Togglable
       id='mailing'
@@ -302,7 +298,7 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
     >{
       (checked) => <BaseInput
         id='mailing'
-        ref={mailingRef}
+        value={fields.mailing.value}
         label='Mailing Address'
         required={checked}
       />
@@ -359,11 +355,11 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
 }
 
 export const Base = <Info extends StateInfo>({ enrichValues, children }: Props<Info>) => {
-  return <ValidationContainer.Provider>
+  return <FieldsContainer.Provider>
     <ContainerlessBase enrichValues={enrichValues}>
       {children}
     </ContainerlessBase>
-  </ValidationContainer.Provider>
+  </FieldsContainer.Provider>
 }
 
 export type NoSignature<Info extends StateInfo> = Omit<Info, 'signature'>
@@ -378,8 +374,7 @@ export const SignatureBase = <Info extends StateInfo>(
     const values = enrichValues(baseInfo)
     if (!values) return null
 
-    // Small hack to allow for registration status checks
-    if (!signature && baseInfo.signature !== 'skip') {
+    if (!signature) {
       // Do not dismiss previous errors which may give more details on bad fields
       toast.error('Please fill out the signature field')
       return null

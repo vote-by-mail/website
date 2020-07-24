@@ -28,3 +28,14 @@ export type RegistrationStatus =
   | 'Incomplete'
   | 'Purged'
   | null
+
+export interface RegistrationArgs {
+  firstName: string
+  lastName: string
+  birthdate?: string
+  city: string
+  stateAbbr: string
+  street: string
+  streetNumber: string
+  postcode: string
+}
