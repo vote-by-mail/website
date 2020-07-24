@@ -12,7 +12,7 @@
 - County: **{{county}}**
 {%- endif %}
 - Election: generally, all elections through the end of the calendar year; in particular, **{{election}}**
-{%- if idPhoto -%}
+{% if idPhoto -%}
 - Photo of ID (see attached)
 {{image(idPhoto)}}
 {%- endif %}
