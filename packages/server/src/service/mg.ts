@@ -56,9 +56,7 @@ export const toSignupEmailData = (
     idPhotoAttachment ?? [],
     pdfBuffer ? [new mg.Attachment({
       data: pdfBuffer,
-      filename: `${letter.info.name.replace(
-        /[^0-9a-zA-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸ]/g,
-        '_')}-vote-by-mail.pdf`,
+      filename: `${letter.info.name.replace(/[^0-9a-zA-Z]/g,'_')}-vote-by-mail.pdf`,
     })] : []
   ].flatMap(x => x)
   return {
