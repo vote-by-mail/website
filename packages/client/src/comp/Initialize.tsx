@@ -24,10 +24,8 @@ export const Initialize: React.FC = () => {
       const result = await client.fetchInitialData(oid)
       if(result.type === 'data') {
         setInitialData(result.data)
-        initializeAnalytics({
-          facebookId: result.data.facebookId,
-          googleId: result.data.googleId,
-        })
+        const { facebookId, googleId } = result.data
+        initializeAnalytics({ facebookId, googleId })
       }
     })()
   }, [oid, setInitialData])
