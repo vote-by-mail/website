@@ -5,9 +5,9 @@ import { toSignatureBuffer } from './util'
 export const fillMassachusetts = (
   stateInfo: MassachusettsInfo
 ) => fillFormWrapper(
-  __dirname + '/forms/Massachusetts.pdf',
+  'Massachusetts.pdf',
   async ({check, text, placeImage}) => {
-    
+
     text(stateInfo.name, 0, 200, 103)
     text(stateInfo.address.fullAddr, 0, 165, 150)
     text(stateInfo.birthdate, 0, 245, 197)

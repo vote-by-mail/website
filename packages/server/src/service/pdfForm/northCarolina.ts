@@ -5,7 +5,7 @@ import { splitFullName, toSignatureBuffer } from './util'
 export const fillNorthCarolina = (
   stateInfo: NorthCarolinaInfo
 ) => fillFormWrapper(
-  __dirname + '/forms/North_Carolina.pdf',
+  'North_Carolina.pdf',
   async ({check, text, placeImage}) => {
     const nameSplit = splitFullName(stateInfo.name)
     text(nameSplit[2], 2, 56, 90)
