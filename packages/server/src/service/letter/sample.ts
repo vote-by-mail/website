@@ -33,8 +33,8 @@ const baseStateInfo: Omit<BaseInfo, 'contact'> = {
   }
 }
 
-const signature = 'data:image/pngbase64,' + loadBase64('signature.png')
-const idPhoto = 'data:image/jpgbase64,' + loadBase64('idPhoto.jpg')
+const signature = 'data:image/png;base64,' + loadBase64('signature.png')
+const idPhoto = 'data:image/jpg;base64,' + loadBase64('idPhoto.jpg')
 
 export const sampleStateInfo = async (state: ImplementedState): Promise<StateInfo> => {
   const commonStateInfo = {
