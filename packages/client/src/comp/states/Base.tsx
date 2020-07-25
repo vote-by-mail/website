@@ -190,7 +190,7 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
       invalid={!fields.birthdate}
       // Makes the input red when invalid, for some reason just setting
       // invalid to true is not enough
-      pattern='^(0[1-9]|1[012])[/.](0[1-9]|[12][0-9]|3[01])[/.](19[0-9]{2}|200[0-2])$'
+      pattern='^(0[1-9]|1[012])[/.](0[1-9]|[12][0-9]|3[01])[/.](19|20)[0-9]{2}$'
       onChange={e => {
         const { value } = e.currentTarget
         // Removes non-numbers and replaces '-' with '/'
