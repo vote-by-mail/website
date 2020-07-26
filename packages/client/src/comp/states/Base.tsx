@@ -1,7 +1,7 @@
 import React from 'react'
 // import Input from 'muicss/lib/react/input'
 
-import { BaseInfo, StateInfo, isImplementedLocale, SignatureType, RegistrationStatus } from '../../common'
+import { BaseInfo, StateInfo, isImplementedLocale, SignatureType } from '../../common'
 import { client } from '../../lib/trpc'
 import { RoundedButton } from '../util/Button'
 import { BaseInput, PhoneInput, EmailInput, NameInput, BirthdateInput } from '../util/Input'
@@ -17,6 +17,7 @@ import styled from 'styled-components'
 import { StyledModal } from '../util/StyledModal'
 import { cssQuery } from '../util/cssQuery'
 import { FieldsContainer } from './BaseContainer'
+import { BaseRegistration, BaseRegistrationStatus } from './BaseRegistration'
 
 export type StatelessInfo = Omit<BaseInfo, 'state'>
 
@@ -36,8 +37,6 @@ const NameWrapper = styled.div`
   }
 `
 
-type ExtendedStatus = RegistrationStatus | 'Error' | 'Ignored' | 'Not Found'
-
 /**
  * this works with redirect urls of the form
  * /#/org/default/state?registrationAddress=100%20S%20Biscayne%20Blvd,%20Miami,%20FL%2033131&name=George%20Washington&birthdate=1945-01-01&email=george@us.gov&telephone=212-111-1111
@@ -54,7 +53,8 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
     canCheckRegistration,
     validInputs,
   } = FieldsContainer.useContainer()
-  const [ registrationStatus, setRegistrationStatus ] = React.useState<ExtendedStatus>(null)
+  const [ registrationStatus, setRegistrationStatus ] = React.useState<BaseRegistrationStatus>(null)
+  const [ isOpen, setIsOpen ] = React.useState<boolean | 'fromSubmit'>(false)
 
   if (!locale || !isImplementedLocale(locale) || !contact) return null
 
@@ -105,7 +105,7 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
         const {
           firstName, lastName, birthdate,
         } = fields
-        setFetchingData(true)
+        setRegistrationStatus('Loading')
 
         const result = await client.isRegistered({
           firstName: firstName.value,
@@ -118,19 +118,18 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
           streetNumber: address?.streetNumber ?? '',
         })
         if (result.type === 'data') {
-          setRegistrationStatus(result.data ?? 'Not Found')
+          setRegistrationStatus(result.data ?? 'Error')
         } else {
           setRegistrationStatus('Error')
         }
-
-        setFetchingData(false)
       }
     }
   }
 
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.persist()  // allow async function call
-    event.preventDefault()
+  // event is optional so we can use this function outside the form, i.e. modals
+  async function handleSubmit(event?: React.FormEvent<HTMLFormElement>) {
+    event?.persist()  // allow async function call
+    event?.preventDefault()
 
     const info = stateInfo()
     if (!info) return
@@ -233,15 +232,25 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
       />
     }</Togglable>
     { children }
+    <BaseRegistration registrationStatus={registrationStatus} setIsOpen={setIsOpen}/>
     <Center>
       <RoundedButton
         color='primary'
         variant='raised'
+        id='registrationSubmit'
         data-testid='submit'
         disabled={
           fetchingData
-          || (registrationStatus !== 'Active' && registrationStatus !== 'Ignored')
+          || registrationStatus === 'Loading' || registrationStatus === null
           || !validInputs()
+        }
+        onClick={
+          registrationStatus !== 'Active' && registrationStatus !== 'Ignored'
+            ? (e) => {
+              e.preventDefault()
+              setIsOpen('fromSubmit')
+            }
+            : undefined
         }
       >
         Submit signup
@@ -249,9 +258,7 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
     </Center>
 
     <StyledModal
-      isOpen={
-        registrationStatus !== null && registrationStatus !== 'Ignored' && registrationStatus !== 'Active'
-      }
+      isOpen={isOpen !== false}
       data-testid='registrationStatusModal'
     >
       <h4>Unconfirmed Registration Status</h4>
@@ -272,11 +279,17 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
       <RoundedButton
         color='white'
         style={{ marginRight: 10 }}
-        onClick={() => setRegistrationStatus('Ignored')}
+        onClick={() => {
+          setRegistrationStatus('Ignored')
+          if (isOpen === 'fromSubmit') {
+            handleSubmit()
+          }
+          setIsOpen(false)
+        }}
       >
         Ignore Warning
       </RoundedButton>
-      <RoundedButton color='primary' onClick={() => setRegistrationStatus(null)}>
+      <RoundedButton color='primary' onClick={() => setIsOpen(false)}>
         Recheck Fields
       </RoundedButton>
     </StyledModal>
