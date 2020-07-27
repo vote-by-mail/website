@@ -1,3 +1,5 @@
+import { Address } from './address'
+
 // From here: https://ga-dev-tools.appspot.com/campaign-url-builder/
 export interface UTM {
   utmSource?: string
@@ -33,9 +35,5 @@ export interface RegistrationArgs {
   firstName: string
   lastName: string
   birthdate?: string
-  city: string
-  stateAbbr: string
-  street: string
-  streetNumber: string
-  postcode: string
+  address: Address
 }

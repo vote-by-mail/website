@@ -5,14 +5,18 @@ import { RegistrationArgs } from '../common'
 
 const activeVoter: RegistrationArgs = {
   firstName: 'Terrence', lastName: 'Brown', birthdate: '1963-05-05',
-  stateAbbr: 'DC', city: 'Washington', postcode: '20020',
-  street: 'Pecan Acre Ln', streetNumber: '2969',
+  address: {
+    stateAbbr: 'DC', city: 'Washington', postcode: '20020',
+    street: 'Pecan Acres Ln', streetNumber: '2969',
+  }
 }
 
 const inactiveVoter: RegistrationArgs = {
   firstName: 'Mia', lastName: 'Jackson', birthdate: '1996-12-21',
-  stateAbbr: 'DE', city: 'Bear', postcode: '19701',
-  street: 'Oak Lawn Ave', streetNumber: '1067',
+  address: {
+    stateAbbr: 'DE', city: 'Bear', postcode: '19701',
+    street: 'Oak Lawn Ave', streetNumber: '1067',
+  }
 }
 
 const testStatus = async (voter: RegistrationArgs) => {
