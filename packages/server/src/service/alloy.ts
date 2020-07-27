@@ -41,7 +41,7 @@ export const isRegistered = async ({
   if (alloyRelaxed) {
     return `${firstName.toLowerCase()} ${lastName.toLowerCase()}` !== 'unregistered voter'
       ? 'Active'
-      : null
+      : 'Unregistered'
   }
 
   // 429 means we are firing more requests than our maximum rate per second,
