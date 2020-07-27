@@ -1,7 +1,6 @@
 import React from 'react'
-// import Input from 'muicss/lib/react/input'
 
-import { BaseInfo, StateInfo, isImplementedLocale, SignatureType } from '../../common'
+import { BaseInfo, StateInfo, isImplementedLocale, SignatureType, Address } from '../../common'
 import { client } from '../../lib/trpc'
 import { RoundedButton } from '../util/Button'
 import { BaseInput, PhoneInput, EmailInput, NameInput, BirthdateInput } from '../util/Input'
@@ -14,10 +13,10 @@ import { AppForm } from '../util/Form'
 import { Center } from '../util/Util'
 import { toast } from 'react-toastify'
 import styled from 'styled-components'
-import { StyledModal } from '../util/StyledModal'
 import { cssQuery } from '../util/cssQuery'
 import { FieldsContainer } from './BaseContainer'
 import { BaseRegistration, BaseRegistrationStatus } from './BaseRegistration'
+import { BaseModal } from './BaseModal'
 
 export type StatelessInfo = Omit<BaseInfo, 'state'>
 
@@ -54,7 +53,9 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
     validInputs,
   } = FieldsContainer.useContainer()
   const [ registrationStatus, setRegistrationStatus ] = React.useState<BaseRegistrationStatus>(null)
-  const [ isOpen, setIsOpen ] = React.useState<boolean | 'fromSubmit'>(false)
+  const [ ignoreRegistrationStatus, setIgnoreRegistrationStatus ] = React.useState<boolean>(false)
+  const [ isOpen, setIsOpen ] = React.useState<boolean>(false)
+  const [ modalContext, setModalContext ] = React.useState<'formSubmit'|'click'>('click')
 
   if (!locale || !isImplementedLocale(locale) || !contact) return null
 
@@ -100,28 +101,22 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
     e.preventDefault()
     e.persist() // allow async function call
     updateField(id, e.currentTarget.value)
-    if (canCheckRegistration()) {
-      if (registrationStatus !== 'Ignored' && registrationStatus !== 'Active') {
-        const {
-          firstName, lastName, birthdate,
-        } = fields
-        setRegistrationStatus('Loading')
+    if (canCheckRegistration() && !ignoreRegistrationStatus) {
+      const {
+        firstName, lastName, birthdate,
+      } = fields
+      setRegistrationStatus('Loading')
 
-        const result = await client.isRegistered({
-          firstName: firstName.value,
-          lastName: lastName.value,
-          birthdate: birthdate.value,
-          city: address?.city ?? '',
-          postcode: address?.postcode ?? '',
-          stateAbbr: address?.stateAbbr ?? '',
-          street: address?.street ?? '',
-          streetNumber: address?.streetNumber ?? '',
-        })
-        if (result.type === 'data') {
-          setRegistrationStatus(result.data ?? 'Error')
-        } else {
-          setRegistrationStatus('Error')
-        }
+      const result = await client.isRegistered({
+        firstName: firstName.value,
+        lastName: lastName.value,
+        birthdate: birthdate.value,
+        address: address as Address,
+      })
+      if (result.type === 'data') {
+        setRegistrationStatus(result.data ?? 'Error')
+      } else {
+        setRegistrationStatus('Error')
       }
     }
   }
@@ -152,11 +147,7 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
         label='First Name'
         defaultValue={query.name}
         invalid={!fields.firstName}
-        onChange={e => {
-          // Reset registration status on name change
-          setRegistrationStatus(null)
-          updateField('firstName', e.currentTarget.value)
-        }}
+        onChange={e => updateField('firstName', e.currentTarget.value)}
         onBlur={e => checkRegistration('firstName', e)}
         required
       />
@@ -166,11 +157,7 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
         label='Last Name'
         defaultValue={query.name}
         invalid={!fields.lastName}
-        onChange={e => {
-          // Reset registration status on name change
-          setRegistrationStatus(null)
-          updateField('lastName', e.currentTarget.value)
-        }}
+        onChange={e => updateField('lastName', e.currentTarget.value)}
         onBlur={e => checkRegistration('lastName', e)}
         required
       />
@@ -205,7 +192,14 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
       onBlur={e => checkRegistration('birthdate', e)}
       required
     />
-    <BaseRegistration registrationStatus={registrationStatus} setIsOpen={setIsOpen}/>
+    <BaseRegistration
+      registrationStatus={registrationStatus}
+      ignoreRegistrationStatus={ignoreRegistrationStatus}
+      onClick={() => {
+        setModalContext('click')
+        setIsOpen(true)
+      }}
+    />
     <EmailInput
       id='email'
       value={fields.email.value}
@@ -245,10 +239,11 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
           || !validInputs()
         }
         onClick={
-          registrationStatus !== 'Active' && registrationStatus !== 'Ignored'
+          registrationStatus !== 'Active' && !ignoreRegistrationStatus
             ? (e) => {
               e.preventDefault()
-              setIsOpen('fromSubmit')
+              setModalContext('formSubmit')
+              setIsOpen(true)
             }
             : undefined
         }
@@ -257,42 +252,14 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
       </RoundedButton>
     </Center>
 
-    <StyledModal
-      isOpen={isOpen !== false}
-      data-testid='registrationStatusModal'
-    >
-      <h4>Unconfirmed Registration Status</h4>
-      <p>
-      {
-        registrationStatus !== 'Error'
-        ? <>
-          Based on our search of public records, you are not currently registered to vote at this address.
-        </>
-        : <>
-          Error while checking your registration status.
-        </>
-      }
-      </p>
-      <p style={{ marginBottom: 25 }}>
-        Please double check your name, address, and birthdate.  If you are reasonably sure that the registration information entered above is correct (our data might be slightly out of date), please ignore this warning.
-      </p>
-      <RoundedButton
-        color='white'
-        style={{ marginRight: 10 }}
-        onClick={() => {
-          setRegistrationStatus('Ignored')
-          if (isOpen === 'fromSubmit') {
-            handleSubmit()
-          }
-          setIsOpen(false)
-        }}
-      >
-        Ignore Warning
-      </RoundedButton>
-      <RoundedButton color='primary' onClick={() => setIsOpen(false)}>
-        Recheck Fields
-      </RoundedButton>
-    </StyledModal>
+    <BaseModal
+      handleSubmit={handleSubmit}
+      isOpen={isOpen}
+      modalContext={modalContext}
+      registrationStatus={registrationStatus}
+      setIgnoreRegistrationStatus={setIgnoreRegistrationStatus}
+      setIsOpen={setIsOpen}
+    />
   </AppForm>
 }
 
