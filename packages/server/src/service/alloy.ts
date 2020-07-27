@@ -23,20 +23,19 @@ interface AlloyResponse {
 
 export const isRegistered = async ({
   firstName, lastName, birthdate,
-  stateAbbr, city, postcode,
-  street, streetNumber,
+  address,
 }: RegistrationArgs): Promise<RegistrationStatus> => {
-  const address = `${streetNumber} ${street}`
+  const normalizedAddress = `${address.streetNumber} ${address.street}`
   const query = [
     `first_name=${firstName}`,
     `last_name=${lastName}`,
     birthdate ? `birth_date=${birthdate}` : '',
-    `address=${address}`,
-    `city=${city}`,
-    `state=${stateAbbr}`,
-    `zip=${postcode}`,
+    `address=${normalizedAddress}`,
+    `city=${address.city}`,
+    `state=${address.stateAbbr}`,
+    `zip=${address.postcode}`,
   ].join('&')
-  const url = `${apiUrl}/verify?${query}}`
+  const url = `${apiUrl}/verify?${query}`
 
   if (alloyRelaxed) {
     return `${firstName.toLowerCase()} ${lastName.toLowerCase()}` !== 'unregistered voter'
