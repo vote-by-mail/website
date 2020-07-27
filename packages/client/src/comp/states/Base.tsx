@@ -205,6 +205,7 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
       onBlur={e => checkRegistration('birthdate', e)}
       required
     />
+    <BaseRegistration registrationStatus={registrationStatus} setIsOpen={setIsOpen}/>
     <EmailInput
       id='email'
       value={fields.email.value}
@@ -232,7 +233,6 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
       />
     }</Togglable>
     { children }
-    <BaseRegistration registrationStatus={registrationStatus} setIsOpen={setIsOpen}/>
     <Center>
       <RoundedButton
         color='primary'
