@@ -99,7 +99,7 @@ ELECTION_OFFICIAL_DATA_VERSION
 ## Adding a State
 To add a new state, you will need to complete the following steps:
 1. Increment version number and publish a new version of the [elections official data](https://github.com/vote-by-mail/elections-officials), if you need updated data.
-1. Match the version number in the environment variable `ELECTIONS_OFFICIALS_VERSION`, if you need updated data.
+1. Match the version number in the environment variable `ELECTION_OFFICIAL_DATA_VERSION`, if you need updated data.
 1. Add the state to `availableStates` and `implementedStates` const arrays in `common`.  This should start generating type errors from incomplete switch statements when you run
     ```bash
     yarn build
