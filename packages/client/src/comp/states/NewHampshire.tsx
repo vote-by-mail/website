@@ -7,26 +7,34 @@ import { NewHampshireInfo, isNewHampshirePrimaryParty, newHampshirePrimaryParty 
 import { SignatureBase } from './Base'
 import { useControlRef } from '../util/ControlRef'
 
+const newHampshirePrimary = process.env.REACT_APP_NEW_HAMPSHIRE_PRIMARY
+
 export const NewHampshire = () => {
   const primaryPartyRef = useControlRef<Select>()
 
   return <SignatureBase<NewHampshireInfo>
     enrichValues={(info) => {
-      const primaryParty = primaryPartyRef.value()
-      if (!isNewHampshirePrimaryParty(primaryParty)) return null
+      if (newHampshirePrimary) {
+        const primaryParty = primaryPartyRef.value()
+        if (!isNewHampshirePrimaryParty(primaryParty)) return null
 
+        return {
+          ...info,
+          state: 'New Hampshire',
+          primaryParty,
+        }
+      }
       return {
         ...info,
         state: 'New Hampshire',
-        primaryParty,
       }
     }}
   >
-    <Select ref={primaryPartyRef} label='Party for Primary Ballot' defaultValue='Select' {...{required: true}}>
+    {newHampshirePrimary && <Select ref={primaryPartyRef} label='Party for Primary Ballot' defaultValue='Select' {...{required: true}}>
       <Option key={0} hidden={true}/>
       {[...newHampshirePrimaryParty].sort().map((value, key) => {
         return <Option value={value} key={key+1} label={value}/>
       })}
-    </Select>
+    </Select>}
   </SignatureBase>
 }

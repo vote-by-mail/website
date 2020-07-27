@@ -7,10 +7,12 @@ import { MassachusettsInfo } from '../../common'
 import { SignatureBase, StatelessInfo, NoSignature } from './Base'
 import { useControlRef } from '../util/ControlRef'
 
+const massachusettsPrimary = process.env.REACT_APP_MASSACHUSETTS_PRIMARY
+
 export const Massachusetts = () => {
   const partyRef = useControlRef<Select>()
   const enrichValues = (baseInfo: StatelessInfo): NoSignature<MassachusettsInfo> | null => {
-    const partyData = partyRef.value()
+    const partyData = massachusettsPrimary ? partyRef.value() : null
 
     return {
       ...baseInfo,
@@ -19,14 +21,15 @@ export const Massachusetts = () => {
     }
   }
 
-return <SignatureBase<MassachusettsInfo>enrichValues={enrichValues} >
-  If you are interested in voting in the Massachusetts <b>state</b> primary, please designate a Party:
-  <BaseInput
+  return <SignatureBase<MassachusettsInfo>enrichValues={enrichValues}>
+    {massachusettsPrimary && <>
+      If you are interested in voting in the Massachusetts <b>state</b> primary, please designate a Party:
+      <BaseInput
         id='partyData'
         ref={partyRef}
         label='State Primary Party'
         required={false}
       />
-</SignatureBase>
-
+    </>}
+  </SignatureBase>
 }
