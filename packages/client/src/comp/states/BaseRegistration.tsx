@@ -7,34 +7,47 @@ const I = styled.i`
   &:hover { cursor: help; }
 `
 
+const MarginSpan = styled.span`
+  display: block;
+  margin-bottom: 20px;
+`
+
 const Red = styled.span`
   color: var(--danger);
 `
 
-export type BaseRegistrationStatus = RegistrationStatus | 'Error' | 'Ignored' | 'Loading'
+export type BaseRegistrationStatus = RegistrationStatus | 'Error' | 'Loading'
 
 interface Props {
   registrationStatus: BaseRegistrationStatus
-  setIsOpen: (_: boolean) => void
+  ignoreRegistrationStatus: boolean
+  onClick: VoidFunction
 }
 
-export const BaseRegistration: React.FC<Props> = ({ registrationStatus, setIsOpen }) => {
+export const BaseRegistration: React.FC<Props> = ({
+  ignoreRegistrationStatus,
+  registrationStatus,
+  onClick,
+}) => {
   if (registrationStatus === null) return null
 
-  if (registrationStatus === 'Loading') return <>
-    <b>Voter Registration:</b> Loading <i className="fa fa-spinner fa-spin"/>
-  </>
-  if (registrationStatus === 'Active') return <>
-    <b>Voter Registration:</b> Active <i style={{ color: '#4caf50' }} className="fa fa-check"/>
-  </>
-  if (registrationStatus === 'Ignored') return <>
+  if (ignoreRegistrationStatus) return <MarginSpan>
     <b>Voter Registration:</b>{' '}
     Ignored{' '}
-    <I className="fa fa-question-circle" onClick={() => setIsOpen(true)}/>
-  </>
-  return <>
+    <I className="fa fa-question-circle" onClick={onClick}/>
+  </MarginSpan>
+
+  if (registrationStatus === 'Loading') return <MarginSpan>
+    <b>Voter Registration:</b> Loading <i className="fa fa-spinner fa-spin"/>
+  </MarginSpan>
+
+  if (registrationStatus === 'Active') return <MarginSpan>
+    <b>Voter Registration:</b> Active <i style={{ color: '#4caf50' }} className="fa fa-check"/>
+  </MarginSpan>
+
+  return <MarginSpan>
     <b>Voter Registration:</b>{' '}
-    <Red>{registrationStatus === 'Error' ? 'Error' : 'Invalid'}</Red>{' '}
-    <I className="fa fa-question-circle" onClick={() => setIsOpen(true)}/>
-  </>
+    <Red>{registrationStatus}</Red>{' '}
+    <I className="fa fa-question-circle" onClick={onClick}/>
+  </MarginSpan>
 }
