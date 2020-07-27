@@ -63,7 +63,7 @@ export const isArizonaIdentity = (x: string | null): x is ArizonaIdentityType =>
 
 export interface ArizonaInfo extends _Id, BaseInfo{
   state: 'Arizona'
-  party: ArizonaParty
+  party?: ArizonaParty
   idType: ArizonaIdentityType
   idData: string
 }
@@ -129,7 +129,7 @@ export const isNewHampshirePrimaryParty = (
 
 export interface NewHampshireInfo extends _Id, SignatureBaseInfo {
   state: 'New Hampshire'
-  primaryParty: NewHampshirePrimaryParty
+  primaryParty?: NewHampshirePrimaryParty
 }
 
 export interface NewYorkInfo extends _Id, BaseInfo {

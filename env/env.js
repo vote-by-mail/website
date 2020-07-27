@@ -18,6 +18,8 @@ const {
 // These are kept separately to keep development configs out of git
 const { developmentRaw } = process.env.CI ? require('./env.dev.sample.js') : require('./env.dev.nogit.js')
 
+const { statePrimary } = require('./env.statePrimary.js')
+
 const removeNullValues = (obj) => {
   Object.keys(obj).forEach(
     key => (obj[key] === null || obj[key] === undefined) && delete obj[key]
@@ -26,6 +28,7 @@ const removeNullValues = (obj) => {
 }
 
 const base = removeNullValues({
+  ...statePrimary,
   ALLOY_API_KEY,
   ALLOY_API_SECRET,
   ALLOY_RELAXED: 1,
@@ -47,7 +50,6 @@ const base = removeNullValues({
   MG_FROM_ADDR: 'Vote by Mail Application <application@email.votebymail.io>',
   MG_REPLY_TO_ADDR: 'Vote by Mail Application <application@votebymail.io>',
   ELECTIONS_OFFICIALS_VERSION: 'v1.7.1',
-  REACT_APP_GEORGIA_PRIMARY: undefined,
 })
 
 const development = removeNullValues({
