@@ -24,25 +24,20 @@ export const Arizona = () => {
       const idData = idDataRef.value()
       if (!idData) return null
 
-      if (arizonaPrimary) {
-        const party  = partyRef.value()
-        if (!isArizonaParty(party)) return null
-
-        return {
-          ...info,
-          state: 'Arizona',
-          party,
-          idType,
-          idData,
-        }
-      }
-
-      return {
+      const base: ArizonaInfo = {
         ...info,
         state: 'Arizona',
         idType,
         idData,
       }
+
+      if (arizonaPrimary) {
+        const party  = partyRef.value()
+        if (!isArizonaParty(party)) return null
+        base.party = party
+      }
+
+      return base
     }}
   >
     {arizonaPrimary && <Select ref={partyRef} label='Party for Primary Ballot' defaultValue='Select' {...{required: true}}>
