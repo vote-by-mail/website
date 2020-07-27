@@ -161,6 +161,10 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
     setFetchingData(false)
   }
 
+  const handlePhoneChange = (e: any) => {
+    updateField('telephone', formatPhoneNumber(e.currentTarget.value))
+  }
+
   return <AppForm onSubmit={handleSubmit}>
     <NameWrapper>
       <NameInput
@@ -251,7 +255,7 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
       defaultValue={query.telephone}
       maxLength={14}
       invalid={!fields.telephone.valid}
-      onChange={e => updateField('telephone', e.currentTarget.value)}
+      onChange={e => handlePhoneChange(e)}
     />
     <Togglable
       label='Mail my ballot to a different address than listed above'
