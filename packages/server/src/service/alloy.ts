@@ -26,9 +26,31 @@ export const isRegistered = async ({
   address,
 }: RegistrationArgs): Promise<RegistrationStatus> => {
   if (alloyMock) {
-    return `${firstName.toLowerCase()} ${lastName.toLowerCase()}` !== 'unregistered voter'
-      ? 'Active'
-      : 'Unregistered'
+    if (lastName.toLowerCase() === 'voter') {
+      switch (firstName.toLowerCase()) {
+        case 'active': return 'Active'
+        case 'challenged': return 'Challenged'
+        case 'not eligible': return 'Not Eligible'
+        case 'not found': return 'Not Found'
+        case 'denied': return 'Denied'
+        case 'inactive': return 'Inactive'
+        case 'pending': return 'Pending'
+        case 'confirmation': return 'Confirmation'
+        case 'removed': return 'Removed'
+        case 'preregistered': return 'Preregistered'
+        case 'rejected': return 'Rejected'
+        case 'unregistered': return 'Unregistered'
+        case 'verify': return 'Verify'
+        case 'cancelled': return 'Cancelled'
+        case 'incomplete': return 'Incomplete'
+        case 'purged': return 'Purged'
+        case 'not reported': return 'Not Reported'
+        case 'suspense': return 'Suspense'
+        case 'provisional': return 'Provisional'
+        case 'null': return null
+      }
+    }
+    return 'Active'
   }
 
   const normalizedAddress = `${address.streetNumber} ${address.street}`
@@ -58,5 +80,6 @@ export const isRegistered = async ({
     }
   }) as AxiosResponse<AlloyResponse>
 
-  return response.data.data.registration_status
+  // When not found Alloy API returns null, we default this to Not Found
+  return response.data.data.registration_status ?? 'Not Found'
 }
