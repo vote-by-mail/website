@@ -9,9 +9,17 @@ export const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, m
 
 export const formatPhoneNumber = (phoneNumberString: string) => {
   const cleaned = ('' + phoneNumberString).replace(/\D/g, '')
-  const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/)
-  if (match) {
-    return '(' + match[1] + ') ' + match[2] + '-' + match[3]
+  const validPhoneNumber = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/)
+  let formattedPhoneNumber
+  if (validPhoneNumber) {
+    formattedPhoneNumber = '(' + validPhoneNumber[1] + ') ' + validPhoneNumber[2] + '-' + validPhoneNumber[3]
   }
-  return phoneNumberString
+  
+  const match = formattedPhoneNumber.match(/^(\([0-9]{3}\) |[0-9]{3}-)[0-9]{3}-[0-9]{4}$/)
+
+  if(match){
+    return formattedPhoneNumber
+  } else {
+    throw new Error(`Invalid Phone Number`)
+  }
 }
