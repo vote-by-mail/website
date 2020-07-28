@@ -6,16 +6,16 @@ const client = Twilio(
   processEnvOrThrow('TWILIO_TOKEN'),
 )
 const from = processEnvOrThrow('TWILIO_FAX_NUMBER')
-const receiveFax = process.env['RECEIVE_FAX_NUMBER']
+const divertFaxNumber = processEnvOrThrow('DIVERT_FAX_NUMBER')
 
 const tos = (faxes: string[], force: boolean): string[] => {
-  if (process.env.TWILIO_DIVERT) {
-    if (!receiveFax) {
+  if (divertFaxNumber) {
+    if (!divertFaxNumber) { // TODO Test to see if divertFaxNumber is e164
       console.log('It seems you might be trying to test' +
                   ' faxing but haven\'t set RECEIVE_FAX_NUMBER.')
       return []
     } else {
-      return [receiveFax]
+      return [divertFaxNumber]
     }    
   }
   if (!!process.env.EMAIL_FAX_OFFICIALS || force) return faxes

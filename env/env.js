@@ -10,7 +10,7 @@ const {
   TWILIO_SID,
   TWILIO_TOKEN,
   TWILIO_FAX_NUMBER,
-  RECEIVE_FAX_NUMBER,
+  DIVERT_FAX_NUMBER,
   SENDINBLUE_API_KEY,
   STAGING,
   DEV,
@@ -35,7 +35,7 @@ const base = removeNullValues({
   TWILIO_SID,
   TWILIO_TOKEN,
   TWILIO_FAX_NUMBER,
-  RECEIVE_FAX_NUMBER,
+  DIVERT_FAX_NUMBER,
   SENDINBLUE_API_KEY,   // We are using the v3 API
   SENDINBLUE_LIST_ID: 4,  // This is just a fake testing list -- no emails will be sent
   USER_MAX_ORGS: 25,
@@ -74,7 +74,6 @@ const development = removeNullValues({
   REACT_APP_TIMEOUT: 2000,
   DEV_EMAIL: 'email@example.com',
   NUNJUNKS_DISABLE_CACHE: 1,
-  TWILIO_DIVERT: 1,
   REACT_APP_MOCK: 1,
   ALLOY_MOCK: 1,
   ...developmentRaw,
@@ -109,7 +108,6 @@ const staging = removeNullValues({
   REACT_APP_MOCK: 1,
   REACT_APP_TIMEOUT: 10000,
   ALLOY_MOCK: 1,
-  TWILIO_DIVERT: 1,
 })
 
 const production = removeNullValues({
@@ -131,7 +129,7 @@ const production = removeNullValues({
   GOOGLE_CLIENT_CALLBACK: 'https://app.votebymail.io/auth/google/callback',
   GOOGLE_STORAGE_BUCKET: 'vbm-prod-281822.appspot.com',
   EMAIL_FAX_OFFICIALS: 1,
-  TWILIO_DIVERT: undefined,
+  DIVERT_FAX_NUMBER: undefined,
   RECORDS_ADDR: 'records@votebymail.io',
   ALLOY_MOCK: undefined,
   ALLOY_API_KEY,
