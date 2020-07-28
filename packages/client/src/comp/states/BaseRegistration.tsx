@@ -32,9 +32,7 @@ export const BaseRegistration: React.FC<Props> = ({
   if (registrationStatus === null) return null
 
   if (ignoreRegistrationStatus) return <MarginSpan>
-    <b>Voter Registration:</b>{' '}
-    Ignored{' '}
-    <I className="fa fa-question-circle" onClick={onClick}/>
+    <b>Voter Registration:</b> Ignored <I className="fa fa-question-circle" onClick={onClick}/>
   </MarginSpan>
 
   if (registrationStatus === 'Loading') return <MarginSpan>
@@ -46,8 +44,6 @@ export const BaseRegistration: React.FC<Props> = ({
   </MarginSpan>
 
   return <MarginSpan>
-    <b>Voter Registration:</b>{' '}
-    <Red>{registrationStatus}</Red>{' '}
-    <I className="fa fa-question-circle" onClick={onClick}/>
+    <b>Voter Registration:</b> <Red>{registrationStatus}</Red> <I className="fa fa-question-circle" onClick={onClick}/>
   </MarginSpan>
 }
