@@ -132,6 +132,7 @@ const production = removeNullValues({
   EMAIL_FAX_OFFICIALS: 1,
   TWILIO_DIVERT: undefined,
   RECORDS_ADDR: 'records@votebymail.io',
+  ALLOY_MOCK: undefined,
   ALLOY_API_KEY,
   ALLOY_API_SECRET,
 })
