@@ -34,7 +34,7 @@ Running the app requires some configuration setting.  All of those are exported 
 ## Configuration Details
 Below are the settings that need to be set to get an environment to work.
 
-- **Alloy**: Used to check voter registration status. Since [Alloy has a strict policy](https://docs.alloy.us/api/#section/Sandbox) regarding its API Key distribution, VoteByMail first checks for env variable `ALLOY_RELAXED`, which when `true` makes the app consider every person inputted as a valid registered voter. In this case, to get an unregistered voter use the name "Unregistered Voter" (case insensitive). `ALLOY_RELAXED` is set to `true` on development, but `false` on staging and production.
+- **Alloy**: Used to check voter registration status. Since [Alloy has a strict policy](https://docs.alloy.us/api/#section/Sandbox) regarding its API Key distribution, VoteByMail first checks for env variable `ALLOY_MOCK`, which when `true` makes the app consider every person inputted as a valid registered voter. In this case, to get an unregistered voter use the name "Unregistered Voter" (case insensitive). `ALLOY_MOCK` is set to `true` on development, but `false` on staging and production.
 
 - **Mailgun**: You only need these to send emails (last step in signup flow).  It's easy to get set up for free.  Since you don't have access to our domain records, you will probabyl want to set your emails to be sent from the sanbox domain that mailgun sets up automatically when you sign up.
 
