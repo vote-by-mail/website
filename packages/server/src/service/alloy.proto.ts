@@ -34,8 +34,8 @@ const testStatus = async (voter: RegistrationArgs) => {
 const main = async () => {
   await testStatus(activeVoter)
   await testStatus(inactiveVoter)
-  // Only needed to test if ALLOY_RELAXED
-  if (process.env.ALLOY_RELAXED) {
+  // Only needed to test if ALLOY_MOCK
+  if (process.env.ALLOY_MOCK) {
     activeVoter.firstName = 'Unregistered'
     activeVoter.lastName = 'Voter'
     await testStatus(activeVoter)

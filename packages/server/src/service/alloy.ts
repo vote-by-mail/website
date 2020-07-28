@@ -4,7 +4,7 @@ import rax from 'retry-axios'
 
 // Env & axios refactoring
 
-const alloyRelaxed = process.env.ALLOY_RELAXED
+const alloyMock= process.env.ALLOY_MOCK
 const apiKey = processEnvOrThrow('ALLOY_API_KEY')
 const apiSecret = processEnvOrThrow('ALLOY_API_SECRET')
 const apiUrl = 'https://api.alloy.us/v1'
@@ -25,6 +25,12 @@ export const isRegistered = async ({
   firstName, lastName, birthdate,
   address,
 }: RegistrationArgs): Promise<RegistrationStatus> => {
+  if (alloyMock) {
+    return `${firstName.toLowerCase()} ${lastName.toLowerCase()}` !== 'unregistered voter'
+      ? 'Active'
+      : 'Unregistered'
+  }
+
   const normalizedAddress = `${address.streetNumber} ${address.street}`
   const query = [
     `first_name=${firstName}`,
@@ -37,15 +43,8 @@ export const isRegistered = async ({
   ].join('&')
   const url = `${apiUrl}/verify?${query}`
 
-  if (alloyRelaxed) {
-    return `${firstName.toLowerCase()} ${lastName.toLowerCase()}` !== 'unregistered voter'
-      ? 'Active'
-      : 'Unregistered'
-  }
-
   // 429 means we are firing more requests than our maximum rate per second,
   // to avoid alerting users about this, we use retry-axios on this request
-
   const axiosInstance = axios.create()
   rax.attach(axiosInstance)
   const response = await axiosInstance({

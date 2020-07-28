@@ -4,6 +4,8 @@ if (process.env.IGNORE_ENV_FILE) { return; }
 const {
   ALLOY_API_KEY,
   ALLOY_API_SECRET,
+  ALLOY_SANDBOX_API_KEY,
+  ALLOY_SANDBOX_API_SECRET,
   MG_API_KEY,
   TWILIO_SID,
   TWILIO_TOKEN,
@@ -29,9 +31,8 @@ const removeNullValues = (obj) => {
 
 const base = removeNullValues({
   ...statePrimary,
-  ALLOY_API_KEY,
-  ALLOY_API_SECRET,
-  ALLOY_RELAXED: 1,
+  ALLOY_API_KEY: ALLOY_SANDBOX_API_KEY,
+  ALLOY_API_SECRET: ALLOY_SANDBOX_API_SECRET,
   MG_API_KEY,
   TWILIO_SID,
   TWILIO_TOKEN,
@@ -76,6 +77,7 @@ const development = removeNullValues({
   NUNJUNKS_DISABLE_CACHE: 1,
   TWILIO_DIVERT: 1,
   REACT_APP_MOCK: 1,
+  ALLOY_RELAXED: 1,
   ...developmentRaw,
 })
 
@@ -110,7 +112,6 @@ const staging = removeNullValues({
 
 const production = removeNullValues({
   ...staging,
-  ALLOY_RELAXED: undefined,
   NODE_ENV: 'production',
   REACT_APP_ENVIRONMENT: 'production',
   GCLOUD_PROJECT: 'vbm-prod-281822',
@@ -130,6 +131,8 @@ const production = removeNullValues({
   EMAIL_FAX_OFFICIALS: 1,
   TWILIO_DIVERT: undefined,
   RECORDS_ADDR: 'records@votebymail.io',
+  ALLOY_API_KEY,
+  ALLOY_API_SECRET,
 })
 
 const test = removeNullValues({
