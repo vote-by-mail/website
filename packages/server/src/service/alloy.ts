@@ -1,6 +1,7 @@
 import { processEnvOrThrow, RegistrationStatus, RegistrationArgs } from '../common'
 import axios, { AxiosResponse } from 'axios'
 import rax from 'retry-axios'
+import { cache } from './util'
 
 // Env & axios refactoring
 
@@ -21,7 +22,7 @@ interface AlloyResponse {
   }
 }
 
-export const isRegistered = async ({
+const rawIsRegistered = async ({
   firstName, lastName, birthdate,
   address,
 }: RegistrationArgs): Promise<RegistrationStatus> => {
@@ -82,4 +83,13 @@ export const isRegistered = async ({
 
   // When not found Alloy API returns null, we default this to Not Found
   return response.data.data.registration_status ?? 'Not Found'
+}
+
+const cacheIsRegistered = cache(
+  rawIsRegistered,
+  async x => `Voter ${x.firstName} ${x.lastName}`,
+)
+
+export const isRegistered = (voter: RegistrationArgs, cacheResult?: boolean) => {
+  return cacheResult ? cacheIsRegistered(voter) : rawIsRegistered(voter)
 }
