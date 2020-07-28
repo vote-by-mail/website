@@ -77,7 +77,7 @@ const development = removeNullValues({
   NUNJUNKS_DISABLE_CACHE: 1,
   TWILIO_DIVERT: 1,
   REACT_APP_MOCK: 1,
-  ALLOY_RELAXED: 1,
+  ALLOY_MOCK: 1,
   ...developmentRaw,
 })
 
@@ -107,6 +107,7 @@ const staging = removeNullValues({
   GOOGLE_CLIENT_CALLBACK: 'https://staging-app.votebymail.io/auth/google/callback',
   GOOGLE_STORAGE_BUCKET: 'vbm-staging-281822.appspot.com',
   REACT_APP_TIMEOUT: 10000,
+  ALLOY_MOCK: 1,
   TWILIO_DIVERT: 1,
 })
 
