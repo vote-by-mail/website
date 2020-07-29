@@ -1,5 +1,5 @@
 import React from 'react'
-import { ContactData, Locale, ImplementedState } from '../../common'
+import { ContactData, Locale, ImplementedState, formatPhoneNumber } from '../../common'
 import styled from 'styled-components'
 import { ContactModal } from './ContactModal'
 
@@ -32,7 +32,11 @@ const ContactField: React.FC<{name: string, val?: string}> = ({name, val}) => {
 
 const ContactFields: React.FC<{name: string, val?: string[]}> = ({name, val}) => {
   if (!val || val.length === 0) return null
-  return <ContactField name={name} val={val.join(', ')}/>
+  let formattedVal
+  if(name === "Phone" || name === 'Fax'){
+    formattedVal = val.map(item => formatPhoneNumber(item))
+  }
+  return <ContactField name={name} val={formattedVal ? formattedVal.join(', ') : val.join(', ')}/>
 }
 
 export const ContactInfo: React.FC<Props> = ({
