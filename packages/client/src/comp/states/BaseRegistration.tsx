@@ -16,7 +16,7 @@ const Red = styled.span`
   color: var(--danger);
 `
 
-export type BaseRegistrationStatus = RegistrationStatus | 'Error' | 'Loading'
+export type BaseRegistrationStatus = RegistrationStatus | 'Error' | 'Loading' | null
 
 interface Props {
   registrationStatus: BaseRegistrationStatus
