@@ -127,8 +127,10 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
 
   // event is optional so we can use this function outside the form, i.e. modals
   async function handleSubmit(event?: React.FormEvent<HTMLFormElement>) {
-    event?.persist()  // allow async function call
-    event?.preventDefault()
+    if (event) {
+      event.persist()  // allow async function call
+      event.preventDefault()
+    }
 
     const info = stateInfo()
     if (!info) return
