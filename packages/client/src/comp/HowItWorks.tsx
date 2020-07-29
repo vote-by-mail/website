@@ -95,7 +95,7 @@ export const HowItWorks: React.FC = () => {
             <img src={iconDigital} alt="Sign Up"/>
           </div>
           <h5>1. Sign up</h5>
-          <p>Sign up below for vote by mail.  The aplication is sent to your election official.</p>
+          <p>Sign up below for vote by mail.  The application is sent to your election official.</p>
         </Col>
         <Col md={4} sm={12}>
           <div className="imgWrapper">
