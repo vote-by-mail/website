@@ -1,4 +1,4 @@
-import { isRegistered } from './alloy'
+import { cacheIsRegistered } from './alloy'
 import { RegistrationArgs, RegistrationStatus } from '../common'
 import { testEach } from './utilTests'
 
@@ -96,5 +96,5 @@ const voters: RegistrationArgsWithStatus[] = [
 ]
 
 testEach(voters)('Alloy %s Voter', async (voter) => {
-  expect(await isRegistered(voter, true)).toBe(voter.status)
+  expect(await cacheIsRegistered(voter)).toBe(voter.status)
 })

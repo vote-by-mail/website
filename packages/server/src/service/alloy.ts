@@ -24,7 +24,7 @@ interface AlloyResponse {
 
 const lowercaseStatuses = allRegistrationStatus.map(x => x.toLowerCase())
 
-const rawIsRegistered = async ({
+export const isRegistered = async ({
   firstName, lastName, birthdate,
   stateAbbr, city, postcode,
   street, streetNumber,
@@ -71,11 +71,7 @@ const rawIsRegistered = async ({
   return response.data.data.registration_status ?? 'Not Found'
 }
 
-const cacheIsRegistered = cache(
-  rawIsRegistered,
+export const cacheIsRegistered = cache(
+  isRegistered,
   async x => `Voter ${x.firstName} ${x.lastName}`,
 )
-
-export const isRegistered = (voter: RegistrationArgs, cacheResult?: boolean) => {
-  return cacheResult ? cacheIsRegistered(voter) : rawIsRegistered(voter)
-}
