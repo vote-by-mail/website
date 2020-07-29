@@ -1,4 +1,5 @@
 import { ExtendsState } from "./states"
+import { formatPhoneNumber } from "./util"
 
 // States for which we are loading election contactdata
 export const availableStates = [
@@ -108,7 +109,7 @@ export const toContactMethod = (contact: ContactData | null): ContactMethod | nu
 
   const normalizedMethod = {
     emails: emails ?? [],
-    faxes: faxes ?? []
+    faxes: formattedFaxes ?? []
   }
 
   if ((normalizedMethod.emails.length === 0) && (normalizedMethod.faxes.length === 0)) {
