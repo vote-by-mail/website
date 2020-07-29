@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { BaseInfo, StateInfo, isImplementedLocale, SignatureType, Address } from '../../common'
+import { BaseInfo, StateInfo, isImplementedLocale, SignatureType } from '../../common'
 import { client } from '../../lib/trpc'
 import { RoundedButton } from '../util/Button'
 import { BaseInput, PhoneInput, EmailInput, NameInput, BirthdateInput } from '../util/Input'
@@ -111,7 +111,11 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
         firstName: firstName.value,
         lastName: lastName.value,
         birthdate: birthdate.value,
-        address: address as Address,
+        city: address?.city ?? '',
+        postcode: address?.postcode ?? '',
+        stateAbbr: address?.stateAbbr ?? '',
+        street: address?.street ?? '',
+        streetNumber: address?.streetNumber ?? '',
       })
       if (result.type === 'data') {
         setRegistrationStatus(result.data ?? 'Error')
