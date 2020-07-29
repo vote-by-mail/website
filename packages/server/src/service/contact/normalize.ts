@@ -57,8 +57,8 @@ const normalizeKey = lowerCase(({ state, county, city }: OptionalLocale): string
 export const normalizeLocaleKey = ({state, city, county}: OptionalLocale): string => {
   return normalizeKey({
     state,
-    city: city || undefined,
-    county: county || undefined,
+    city: city ? mandatoryTransform(city.toLowerCase()) : undefined,
+    county: county ? mandatoryTransform(county.toLowerCase()) : undefined,
   })
 }
 
