@@ -32,11 +32,7 @@ const ContactField: React.FC<{name: string, val?: string}> = ({name, val}) => {
 
 const ContactFields: React.FC<{name: string, val?: string[]}> = ({name, val}) => {
   if (!val || val.length === 0) return null
-  let formattedVal
-  if(name === "Phone" || name === 'Fax'){
-    formattedVal = val.map(item => formatPhoneNumber(item))
-  }
-  return <ContactField name={name} val={formattedVal ? formattedVal.join(', ') : val.join(', ')}/>
+  return <ContactField name={name} val={val.join(', ')}/>
 }
 
 export const ContactInfo: React.FC<Props> = ({
@@ -50,8 +46,8 @@ export const ContactInfo: React.FC<Props> = ({
     <ContactField name='City' val={contact.city}/>
     <ContactField name='County' val={contact.county}/>
     <ContactFields name='Email' val={contact.emails}/>
-    <ContactFields name='Fax' val={contact.faxes}/>
-    <ContactFields name='Phone' val={contact.phones}/>
+    <ContactFields name='Fax' val={contact.faxes && contact.faxes.map(item => formatPhoneNumber(item))}/>
+    <ContactFields name='Phone' val={contact.phones && contact.phones.map(item => formatPhoneNumber(item))}/>
     <SmallSpacing><small>
       <StyledP onClick={() => setOpen(true)}>Wrong Election Official?</StyledP>
     </small></SmallSpacing>
