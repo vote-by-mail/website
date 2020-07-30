@@ -118,7 +118,7 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
         streetNumber: address?.streetNumber ?? '',
       })
       if (result.type === 'data') {
-        setRegistrationStatus(result.data ?? 'Error')
+        setRegistrationStatus(result.data)
       } else {
         setRegistrationStatus('Error')
       }
