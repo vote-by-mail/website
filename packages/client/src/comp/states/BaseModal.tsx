@@ -20,7 +20,7 @@ const P = styled.div`
 `
 
 const statusMessage = (registrationStatus: BaseRegistrationStatus) => {
-  const doubleCheck = '\nPlease double check your name, address, and birthdate.  If you are reasonably sure that the registration information entered above is correct (our data might be slightly out of date), please ignore this warning.'
+  const doubleCheck = '\nPlease double check your name, address, and birthdate.  Our data is may be slightly out of date so if you are reasonably sure that the registration information you entered is correct, please ignore this warning.'
 
   switch (registrationStatus) {
     case 'Active':
@@ -60,7 +60,7 @@ export const BaseModal: React.FC<Props> = ({
         setIsOpen(false)
       }}
     >
-      {modalContext === 'formSubmit' ? 'Sign up anyway' : 'Ignore Warning'}
+      {modalContext === 'formSubmit' ? 'Sign Up Anyway' : 'Ignore Warning'}
     </RoundedButton>
     <RoundedButton color='primary' onClick={() => {
       setIsOpen(false)
