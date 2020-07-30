@@ -32,11 +32,7 @@ const ContactField: React.FC<{name: string, val?: string}> = ({name, val}) => {
 
 const ContactFields: React.FC<{name: string, val?: string[]}> = ({name, val}) => {
   if (!val || val.length === 0) return null
-  let formattedVal
-  if(name === "Phone" || name === 'Fax'){
-    formattedVal = val.map(item => formatPhoneNumber(item))
-  }
-  return <ContactField name={name} val={formattedVal ? formattedVal.join(', ') : val.join(', ')}/>
+  return <ContactField name={name} val={val.join(', ')}/>
 }
 
 export const ContactInfo: React.FC<Props> = ({
