@@ -5,6 +5,7 @@ import nunjucks from 'nunjucks'
 import { processEnvOrThrow, StateInfo, ContactMethod, ImplementedState } from '../../common'
 import { fillMinnesota, fillNewHampshire, fillNorthCarolina, fillMassachusetts, fillVirginia } from '../pdfForm'
 import { staticDir } from '../util'
+import { ConnectionPolicyTargetContext } from 'twilio/lib/rest/voice/v1/connectionPolicy/connectionPolicyTarget'
 
 export const mg = mailgun({
   domain: processEnvOrThrow('MG_DOMAIN'),
@@ -94,6 +95,8 @@ export class Letter {
    * allows to adapt the resulted markdown for these differences.
    */
   md = (dest: 'email' | 'html') => {
+    const { contact } = this.info
+    
     return nunjucks.render(
       template(this.info.state),
       {
@@ -102,6 +105,11 @@ export class Letter {
         name: this.info.name,
         confirmationId: this.confirmationId,
         method: this.method,
+        contact: {
+          ...contact,
+          faxes: contact.faxes ? contact.faxes.map(item => formatPhoneNumber(item)) : [],
+          phones: contact.phones ? contact.phones.map(item => formatPhoneNumber(item)) : [],
+        },
         warning: !process.env.EMAIL_FAX_OFFICIALS,
         signature: dest === 'email' && this.signatureAttachment
           ? `cid:${this.signatureAttachment.filename}`
