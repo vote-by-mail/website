@@ -95,7 +95,7 @@ export class Letter {
    */
   md = (dest: 'email' | 'html') => {
     const { contact } = this.info
-    
+
     return nunjucks.render(
       template(this.info.state),
       {
@@ -106,8 +106,8 @@ export class Letter {
         method: this.method,
         contact: {
           ...contact,
-          faxes: contact.faxes ? contact.faxes.map(item => formatPhoneNumber(item)) : [],
-          phones: contact.phones ? contact.phones.map(item => formatPhoneNumber(item)) : [],
+          faxes: contact.faxes ? contact.faxes.map(formatPhoneNumber) : [],
+          phones: contact.phones ? contact.phones.map(formatPhoneNumber) : [],
         },
         warning: !process.env.EMAIL_FAX_OFFICIALS,
         signature: dest === 'email' && this.signatureAttachment
