@@ -46,8 +46,8 @@ export const ContactInfo: React.FC<Props> = ({
     <ContactField name='City' val={contact.city}/>
     <ContactField name='County' val={contact.county}/>
     <ContactFields name='Email' val={contact.emails}/>
-    <ContactFields name='Fax' val={contact.faxes && contact.faxes.map(item => formatPhoneNumber(item))}/>
-    <ContactFields name='Phone' val={contact.phones && contact.phones.map(item => formatPhoneNumber(item))}/>
+    <ContactFields name='Fax' val={contact.faxes && contact.faxes.map(formatPhoneNumber)}/>
+    <ContactFields name='Phone' val={contact.phones && contact.phones.map(formatPhoneNumber)}/>
     <SmallSpacing><small>
       <StyledP onClick={() => setOpen(true)}>Wrong Election Official?</StyledP>
     </small></SmallSpacing>
