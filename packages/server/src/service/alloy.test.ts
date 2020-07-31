@@ -101,5 +101,5 @@ test('Alloy date conversion', () => {
 })
 
 testEach(voters)('Alloy %s Voter', async (voter) => {
-  expect(await cacheIsRegistered(voter)).toBe(voter.status)
+  expect((await cacheIsRegistered(voter)).status).toBe(voter.status)
 })

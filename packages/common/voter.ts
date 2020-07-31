@@ -52,3 +52,8 @@ export interface RegistrationArgs {
   street: string
   streetNumber: string
 }
+
+export interface AlloyResponse {
+  id: string
+  status: RegistrationStatus
+}

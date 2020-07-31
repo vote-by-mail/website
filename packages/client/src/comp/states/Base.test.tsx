@@ -84,7 +84,7 @@ test('State Form Without Signature (Wisconsin) works', async () => {
 
   const isRegistered = mocked(client, true).isRegistered = jest.fn().mockResolvedValue({
     type: 'data',
-    data: 'Active',
+    data: {status: 'Active'},
   })
   const register = mocked(client, true).register = jest.fn().mockResolvedValue({
     type: 'data',
@@ -120,7 +120,7 @@ test('State Form shows Unregistered modal warning', async () => {
 
   const isUnregistered = mocked(client, true).isRegistered = jest.fn().mockResolvedValue({
     type: 'data',
-    data: 'Unregistered',
+    data: {status: 'Unregistered'},
   })
   mocked(client, true).fetchAnalytics = jest.fn().mockResolvedValue({})
   mocked(client, true).fetchContacts = jest.fn().mockResolvedValue([])

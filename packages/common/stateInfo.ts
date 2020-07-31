@@ -3,6 +3,7 @@ import { Locale } from './locale'
 import { ContactData } from './contact'
 import { ExtendsState } from './states'
 import { Address } from './address'
+import { RegistrationStatus } from './voter'
 
 // States for which we now support
 export const implementedStates = [
@@ -47,6 +48,10 @@ export interface BaseInfo extends Locale {
   signature?: string
   signatureType?: SignatureType
   contact: ContactData
+  alloy?: {
+    id?: string
+    status: RegistrationStatus | 'Error'
+  }
 }
 
 interface SignatureBaseInfo extends BaseInfo {

@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { BaseInfo, StateInfo, isImplementedLocale, SignatureType } from '../../common'
+import { BaseInfo, StateInfo, isImplementedLocale, SignatureType, RegistrationStatus } from '../../common'
 import { client } from '../../lib/trpc'
 import { RoundedButton } from '../util/Button'
 import { BaseInput, PhoneInput, EmailInput, NameInput, BirthdateInput } from '../util/Input'
@@ -35,6 +35,12 @@ const NameWrapper = styled.div`
     .mui-textfield:nth-child(1) { margin-right: 15px; }
   }
 `
+// We don't import AlloyResponse here since Base.tsx uses an extended RegistrationStatus
+// whereas the one at common/voter.ts doesn't.
+interface AlloyResponse {
+  id?: string
+  status: BaseRegistrationStatus
+}
 
 /**
  * this works with redirect urls of the form
@@ -52,7 +58,8 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
     canCheckRegistration,
     validInputs,
   } = FieldsContainer.useContainer()
-  const [ registrationStatus, setRegistrationStatus ] = React.useState<BaseRegistrationStatus>(null)
+
+  const [ alloy, setAlloy ] = React.useState<AlloyResponse>({status: null})
   const [ ignoreRegistrationStatus, setIgnoreRegistrationStatus ] = React.useState<boolean>(false)
   const [ isOpen, setIsOpen ] = React.useState<boolean>(false)
   const [ modalContext, setModalContext ] = React.useState<'formSubmit'|'click'>('click')
@@ -82,6 +89,10 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
       uspsAddress,
       contact,
       address,
+      // Avoids type checking issues
+      alloy: alloy.id && alloy.status
+        ? { id: alloy.id, status: alloy.status as RegistrationStatus }
+        : undefined,
     }
 
     const info = enrichValues(base)
@@ -105,7 +116,7 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
       const {
         firstName, lastName, birthdate,
       } = fields
-      setRegistrationStatus('Loading')
+      setAlloy({status: 'Loading'})
 
       const result = await client.isRegistered({
         firstName: firstName.value,
@@ -118,9 +129,9 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
         streetNumber: address?.streetNumber ?? '',
       })
       if (result.type === 'data') {
-        setRegistrationStatus(result.data)
+        setAlloy(result.data)
       } else {
-        setRegistrationStatus('Error')
+        setAlloy({status: 'Error'})
       }
     }
   }
@@ -199,7 +210,7 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
       required
     />
     <BaseRegistration
-      registrationStatus={registrationStatus}
+      registrationStatus={alloy.status}
       ignoreRegistrationStatus={ignoreRegistrationStatus}
       onClick={() => {
         setModalContext('click')
@@ -241,11 +252,11 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
         data-testid='submit'
         disabled={
           fetchingData
-          || registrationStatus === 'Loading' || registrationStatus === null
+          || alloy.status === 'Loading' || alloy.status === null
           || !validInputs()
         }
         onClick={
-          registrationStatus !== 'Active' && !ignoreRegistrationStatus
+          alloy.status !== 'Active' && !ignoreRegistrationStatus
             ? (e) => {
               e.preventDefault()
               setModalContext('formSubmit')
@@ -262,7 +273,7 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
       handleSubmit={handleSubmit}
       isOpen={isOpen}
       modalContext={modalContext}
-      registrationStatus={registrationStatus}
+      registrationStatus={alloy.status}
       setIgnoreRegistrationStatus={setIgnoreRegistrationStatus}
       setIsOpen={setIsOpen}
     />

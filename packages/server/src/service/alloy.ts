@@ -1,4 +1,4 @@
-import { processEnvOrThrow, RegistrationStatus, RegistrationArgs, allRegistrationStatus } from '../common'
+import { processEnvOrThrow, RegistrationStatus, RegistrationArgs, allRegistrationStatus, AlloyResponse } from '../common'
 import axios, { AxiosResponse } from 'axios'
 import rax from 'retry-axios'
 import { cache } from './util'
@@ -14,10 +14,9 @@ const commonAxiosSettings = {
   withCredentials: true,
 }
 
-interface AlloyResponse {
+interface AxiosAlloyResponse {
   data: {
-    // There are other possible registration_status, but for our interests
-    // only to know if !== 'Active' is enough
+    id: string
     registration_status: RegistrationStatus
   }
 }
@@ -41,16 +40,19 @@ export const isRegistered = async ({
   firstName, lastName, birthdate,
   stateAbbr, city, postcode,
   street, streetNumber,
-}: RegistrationArgs): Promise<RegistrationStatus> => {
+}: RegistrationArgs): Promise<AlloyResponse> => {
   if (alloyMock) {
     // Allows for case insensitive names when testing, since Alloy API returns
     // these statuses capitalized, and some have more than one word, e.g.
     // Not Found, Not Reported.
     if (lastName.toLowerCase() === 'voter') {
       const indexOf = lowercaseStatuses.indexOf(firstName.toLowerCase())
-      return indexOf >= 0 ? allRegistrationStatus[indexOf] : 'Active'
+      return {
+        id: '00000000-0000-0000-0000-000000000000',
+        status: indexOf >= 0 ? allRegistrationStatus[indexOf] : 'Active',
+      }
     }
-    return 'Active'
+    return { status: 'Active', id: '00000000-0000-0000-0000-000000000000', }
   }
 
   const address = `${streetNumber} ${street}`
@@ -78,10 +80,13 @@ export const isRegistered = async ({
       statusCodesToRetry: [[429, 429]],
       backoffType: 'exponential',
     }
-  }) as AxiosResponse<AlloyResponse>
+  }) as AxiosResponse<AxiosAlloyResponse>
 
+  const id = response.data.data.id
   // When not found Alloy API returns null, we default this to Not Found
-  return response.data.data.registration_status ?? 'Not Found'
+  const status =  response.data.data.registration_status ?? 'Not Found'
+
+  return { status, id }
 }
 
 export const cacheIsRegistered = cache(
