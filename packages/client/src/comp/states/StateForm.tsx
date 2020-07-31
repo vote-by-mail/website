@@ -17,7 +17,7 @@ import { Oklahoma } from './Oklahoma'
 import { Wisconsin } from './Wisconsin'
 import { Wyoming } from './Wyoming'
 import { AddressContainer, ContactContainer } from '../../lib/unstated'
-import { Locale, isImplementedLocale, ContactMethod, ImplementedState, inPrimaryDeadline, State } from '../../common'
+import { Locale, isImplementedLocale, ContactMethod, ImplementedState, primaryEligible, State } from '../../common'
 import { useAppHistory } from '../../lib/path'
 import { InvalidContact } from '../contact/InvalidContact'
 import { StyledPanel } from '../util/Panel'
@@ -98,7 +98,7 @@ export const StateForm: React.FC<Props> = ({ignoreError}) => {
     throw Error(`Locale state ${locale.state} is not implemented`)
   }
 
-  const inDeadline = inPrimaryDeadline(address.state as State)
+  const inDeadline = primaryEligible(address.state as State)
   const forGeneral = inDeadline ? '' : ' for the general election'
 
   return <>

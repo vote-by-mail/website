@@ -8,7 +8,7 @@ type StateDeadline =
   Record<ImplementedState, Date | null>
   & Partial<Record<State, Date | null>>
 
-export const vbmSignupDeadline: StateDeadline = {
+const vbmSignupDeadline: StateDeadline = {
   Alabama: null,
   Alaska: deadline(8, 8),
   Arizona: deadline(5, 3),
@@ -62,6 +62,7 @@ export const vbmSignupDeadline: StateDeadline = {
   Wyoming: deadline(8, 11),
 }
 
-export const inPrimaryDeadline = (state: keyof (typeof vbmSignupDeadline)) => {
-  return new Date() <= (vbmSignupDeadline[state] ?? 0)
+export const primaryEligible = (state: keyof (typeof vbmSignupDeadline)) => {
+  const deadline = vbmSignupDeadline[state]
+  return deadline ? new Date() <= deadline : false
 }

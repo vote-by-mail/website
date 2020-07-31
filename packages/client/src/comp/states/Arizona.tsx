@@ -4,13 +4,13 @@ import Select from 'muicss/lib/react/select'
 import Option from 'muicss/lib/react/option'
 
 
-import { ArizonaInfo, isArizonaParty, arizonaParty, arizonaIdentityType, isArizonaIdentity, inPrimaryDeadline } from '../../common'
+import { ArizonaInfo, isArizonaParty, arizonaParty, arizonaIdentityType, isArizonaIdentity, primaryEligible } from '../../common'
 import { Base } from './Base'
 import { useControlRef } from '../util/ControlRef'
 import { BaseInput } from '../util/Input'
 
 export const Arizona = () => {
-  const arizonaPrimary = inPrimaryDeadline('Arizona')
+  const arizonaPrimary = primaryEligible('Arizona')
   const partyRef = useControlRef<Select>()
   const idTypeRef = useControlRef<Select>()
   const idDataRef = useControlRef<Select>()
