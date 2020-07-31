@@ -3,14 +3,13 @@ import React from 'react'
 import Select from 'muicss/lib/react/select'
 import Option from 'muicss/lib/react/option'
 
-import { NewHampshireInfo, isNewHampshirePrimaryParty, newHampshirePrimaryParty } from '../../common'
+import { NewHampshireInfo, isNewHampshirePrimaryParty, newHampshirePrimaryParty, inPrimaryDeadline } from '../../common'
 import { SignatureBase } from './Base'
 import { useControlRef } from '../util/ControlRef'
 
-const newHampshirePrimary = process.env.REACT_APP_NEW_HAMPSHIRE_PRIMARY
-
 export const NewHampshire = () => {
   const primaryPartyRef = useControlRef<Select>()
+  const newHampshirePrimary = inPrimaryDeadline('New Hampshire')
 
   return <SignatureBase<NewHampshireInfo>
     enrichValues={(info) => {

@@ -20,7 +20,6 @@ const {
 // These are kept separately to keep development configs out of git
 const { developmentRaw } = process.env.CI ? require('./env.dev.sample.js') : require('./env.dev.nogit.js')
 
-const { statePrimary } = require('./env.statePrimary.js')
 
 const removeNullValues = (obj) => {
   Object.keys(obj).forEach(
@@ -30,7 +29,6 @@ const removeNullValues = (obj) => {
 }
 
 const base = removeNullValues({
-  ...statePrimary,
   ALLOY_API_KEY: ALLOY_SANDBOX_API_KEY,
   ALLOY_API_SECRET: ALLOY_SANDBOX_API_SECRET,
   MG_API_KEY,
