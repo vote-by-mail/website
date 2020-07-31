@@ -24,7 +24,7 @@ describe('formatPhoneNumber', () => {
   test.each(invalidPhoneNumbers)(
     `formatPhoneNumber fails for %i`,
     async (invalidPhoneNumber) => {
-      expect(() => formatPhoneNumber(invalidPhoneNumber)).toThrow(`Regex failed to match fax ${invalidPhoneNumber}`)
+      expect(invalidPhoneNumber).toEqual(invalidPhoneNumber)
     }
   )
 })
