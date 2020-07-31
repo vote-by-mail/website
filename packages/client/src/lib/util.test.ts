@@ -3,21 +3,15 @@ import { formatPhoneNumber } from '../../../common/util'
 describe('formatPhoneNumber', () => {
   const validPhones = [
     {
-      received: "1231231234", 
+      received: "+11231231234", 
       expected: "(123) 123-1234",
     },{
-      received: "917-423-4177",
+      received: "+19174234177",
       expected: "(917) 423-4177",
-    },{
-      received: "(321) 3214321",
-      expected: "(321) 321-4321",
-    },{
-      received: "+14414567823",
-      expected: "(441) 456-7823",
     }
   ]
 
-  const invalidPhoneNumbers = ["a1234321245", "123123123123", "asbfi", "123", "///---123"]
+  const invalidPhoneNumbers = ["1231231234", "1112223333"]
 
   test.each(validPhones)(
     `formatPhoneNumber work for %i`,
@@ -30,7 +24,7 @@ describe('formatPhoneNumber', () => {
   test.each(invalidPhoneNumbers)(
     `formatPhoneNumber fails for %i`,
     async (invalidPhoneNumber) => {
-      expect(() => formatPhoneNumber(invalidPhoneNumber)).toThrow('Invalid Phone Number')
+      expect(() => formatPhoneNumber(invalidPhoneNumber)).toThrow(`Regex failed to match fax ${invalidPhoneNumber}`)
     }
   )
 })
