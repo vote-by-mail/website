@@ -17,7 +17,7 @@ import { Oklahoma } from './Oklahoma'
 import { Wisconsin } from './Wisconsin'
 import { Wyoming } from './Wyoming'
 import { AddressContainer, ContactContainer } from '../../lib/unstated'
-import { Locale, isImplementedLocale, ContactMethod, ImplementedState } from '../../common'
+import { Locale, isImplementedLocale, ContactMethod, ImplementedState, inPrimaryDeadline, State } from '../../common'
 import { useAppHistory } from '../../lib/path'
 import { InvalidContact } from '../contact/InvalidContact'
 import { StyledPanel } from '../util/Panel'
@@ -98,9 +98,12 @@ export const StateForm: React.FC<Props> = ({ignoreError}) => {
     throw Error(`Locale state ${locale.state} is not implemented`)
   }
 
+  const inDeadline = inPrimaryDeadline(address.state as State)
+  const forGeneral = inDeadline ? '' : ' for the general election'
+
   return <>
     <h1>{locale.state} Vote by Mail Signup Form</h1>
-    <p>Fill out the following form to sign up for vote by mail.  {methodExplain(method)}</p>
+    <p>Fill out the following form to sign up for vote by mail{forGeneral}.  {methodExplain(method)}</p>
     <StyledPanel>
       <StateFormSwitch locale={locale}/>
     </StyledPanel>

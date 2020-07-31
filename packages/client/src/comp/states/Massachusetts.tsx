@@ -3,14 +3,13 @@ import React from 'react'
 import Select from 'muicss/lib/react/select'
 import { BaseInput } from '../util/Input'
 
-import { MassachusettsInfo } from '../../common'
+import { MassachusettsInfo, inPrimaryDeadline } from '../../common'
 import { SignatureBase, StatelessInfo, NoSignature } from './Base'
 import { useControlRef } from '../util/ControlRef'
 
-const massachusettsPrimary = process.env.REACT_APP_MASSACHUSETTS_PRIMARY
-
 export const Massachusetts = () => {
   const partyRef = useControlRef<Select>()
+  const massachusettsPrimary = inPrimaryDeadline('Massachusetts')
   const enrichValues = (baseInfo: StatelessInfo): NoSignature<MassachusettsInfo> | null => {
     const partyData = massachusettsPrimary ? partyRef.value() : null
 

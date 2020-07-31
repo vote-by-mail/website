@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { GeorgiaInfo, isGeorgiaParty, georgiaParty } from '../../common'
+import { GeorgiaInfo, isGeorgiaParty, georgiaParty, inPrimaryDeadline } from '../../common'
 import Input from 'muicss/lib/react/input'
 import { useControlRef } from '../util/ControlRef'
 import { SignatureBase, StatelessInfo, NoSignature } from './Base'
@@ -8,10 +8,9 @@ import { SignatureBase, StatelessInfo, NoSignature } from './Base'
 import Select from 'muicss/lib/react/select'
 import Option from 'muicss/lib/react/option'
 
-const georgiaPrimary = process.env.REACT_APP_GEORGIA_PRIMARY
-
 export const Georgia = () => {
   const partyRef = useControlRef<Input>()
+  const georgiaPrimary = inPrimaryDeadline('Georgia')
 
   const enrichValues = (baseInfo: StatelessInfo): NoSignature<GeorgiaInfo> | null => {
     if (georgiaPrimary) {
