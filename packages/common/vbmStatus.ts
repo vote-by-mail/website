@@ -19,6 +19,10 @@ export type Status = (
 )
 
 export const vbmStatus = (state: State): Status => {
+  if (state === 'Arizona') {
+    return { status: 'Vote.org' }
+  }
+
   if (isImplementedState(state)) {
     return { status: "VbmApp" }
   }
