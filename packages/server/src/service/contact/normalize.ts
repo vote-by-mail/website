@@ -1,7 +1,7 @@
 import { RawContactRecord, ContactRecord, RawContact, OptionalLocale } from "./type"
 import { AvailableState } from "../../common"
 import { mandatoryTransform } from "./transformers"
-import { e164 } from '../twilio'
+import { e164 } from '../../common/util'
 
 const lowerCase = <T>(f: (_: T) => string): (_: T) => string => {
   return (arg: T) => {

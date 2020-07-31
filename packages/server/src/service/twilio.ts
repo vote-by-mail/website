@@ -8,14 +8,6 @@ const client = Twilio(
 const from = processEnvOrThrow('TWILIO_FAX_NUMBER')
 const receiveFax = process.env['RECEIVE_FAX_NUMBER']
 
-/** phone numbers must be E164 for Twilio: https://www.twilio.com/docs/glossary/what-e164 */
-const regex = /^\D*1?\D*(\d{3})\D*(\d{3})\D*(\d{4})\D*$/
-export const e164 = (number: string): string => {
-  const parts = number.match(regex)
-  if (!parts) throw Error(`Regex failed to match fax ${number}`)
-  return '+1' + parts.splice(1,).join('')
-}
-
 const tos = (faxes: string[], force: boolean): string[] => {
   if (process.env.TWILIO_DIVERT) {
     if (!receiveFax) {
