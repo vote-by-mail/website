@@ -1,4 +1,4 @@
-import { cacheIsRegistered } from './alloy'
+import { cacheIsRegistered, toAlloyDate } from './alloy'
 import { RegistrationArgs, RegistrationStatus } from '../common'
 import { testEach } from './utilTests'
 
@@ -94,6 +94,11 @@ const voters: RegistrationArgsWithStatus[] = [
     streetNumber: '6117', street: 'Paddock Way',
   })
 ]
+
+test('Alloy date conversion', () => {
+  expect(toAlloyDate('07/31/2020')).toBe('2020-07-31')
+  expect(toAlloyDate('02/29/2020')).toBe('2020-02-29')
+})
 
 testEach(voters)('Alloy %s Voter', async (voter) => {
   expect(await cacheIsRegistered(voter)).toBe(voter.status)
