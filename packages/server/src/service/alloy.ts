@@ -24,6 +24,12 @@ interface AlloyResponse {
 
 const lowercaseStatuses = allRegistrationStatus.map(x => x.toLowerCase())
 
+// Alloys only accepts YYYY-MM-DD as date format
+const toAlloyBirthdate = (vbmBirthdate: string) => {
+  const split = vbmBirthdate.split('/')
+  return `birth_date=${split[2]}-${split[0]}-${split[1]}`
+}
+
 export const isRegistered = async ({
   firstName, lastName, birthdate,
   stateAbbr, city, postcode,
@@ -44,7 +50,7 @@ export const isRegistered = async ({
   const query = [
     `first_name=${firstName}`,
     `last_name=${lastName}`,
-    birthdate ? `birth_date=${birthdate}` : '',
+    birthdate ? toAlloyBirthdate(birthdate) : '',
     `address=${address}`,
     `city=${city}`,
     `state=${stateAbbr}`,
