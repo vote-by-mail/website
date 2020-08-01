@@ -23,6 +23,10 @@ export const vbmStatus = (state: State): Status => {
     return { status: 'Vote.org' }
   }
 
+  if (state === 'North Carolina') {
+    return { status: 'Vote.org' }
+  }
+
   if (isImplementedState(state)) {
     return { status: "VbmApp" }
   }
