@@ -8,6 +8,7 @@ import iconArmchair from './img/hiw_icon_armchair.svg'
 import iconBallot from './img/hiw_icon_ballot.svg'
 import { cssQuery } from './util/cssQuery'
 import { MarketingWrapper } from './util/MarketingWrapper'
+import { vbmWording } from './util/vbmWording'
 
 const Wrapper = styled(MarketingWrapper)`
   background-color: #fafafa;
@@ -84,7 +85,7 @@ export const HowItWorks: React.FC = () => {
       <Headline>
         <h4>How does it work?</h4>
         <h5>
-          VoteByMail.io simplifies the state vote-by-mail signup process.
+          VoteByMail.io simplifies the state {vbmWording()} signup process.
         </h5>
       </Headline>
 
@@ -95,7 +96,7 @@ export const HowItWorks: React.FC = () => {
             <img src={iconDigital} alt="Sign Up"/>
           </div>
           <h5>1. Sign up</h5>
-          <p>Sign up below for vote by mail.  The application is sent to your election official.</p>
+          <p>Sign up below for {vbmWording()}.  The application is sent to your election official.</p>
         </Col>
         <Col md={4} sm={12}>
           <div className="imgWrapper">
