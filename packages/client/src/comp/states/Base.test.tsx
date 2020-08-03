@@ -256,10 +256,10 @@ test("Sends fax to twillion successfully", async () => {
     state: "Florida",
     signature: "",
     signatureType: "canvas",
-  };
+  }
 
-  const voter = { uid: "e69jegfcjt5" };
+  const voter = { uid: "e69jegfcjt5" }
 
-  const register = await client.register(stateInfo, voter);
+  const register = await client.register(stateInfo, voter)
   await wait(() => expect(register).toEqual({"data": "confirmationId", "type": "data"}))
-});
+})
