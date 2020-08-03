@@ -11,7 +11,7 @@ export const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, m
 const regex = /^\+1\d{10}(x\d+)?$/
 export const e164 = (number: string): string => {
   const e164Number = number.match(regex)
-  if (!e164Number) throw Error(`Regex failed to match fax ${number}`)
+  if (!e164Number) throw Error(`Regex failed to match ${number}`)
   return e164Number[0]
 }
 
