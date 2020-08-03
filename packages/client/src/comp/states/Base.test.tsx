@@ -217,3 +217,49 @@ test('Signup Flow allows for separate mailing address', async () => {
   await wait(() => expect(register).toHaveBeenCalledTimes(1))
   await compareResults(register, true)
 })
+
+test("Sends fax to twillion successfully", async () => {
+  const stateInfo: StateInfo = {
+    city: "Miami",
+    county: "Miami-Dade County",
+    otherCities: [],
+    latLong: [25.7732314, -80.1879309],
+    oid: "default",
+    name: "Test",
+    birthdate: "12/29/1992",
+    email: "test@test.com",
+    mailingAddress: "",
+    phone: "1231231234",
+    uspsAddress: "100 S Biscayne Blvd, Miami, FL 33131, USA",
+    contact: {
+      official: "Christina  White",
+      emails: ["soedade@miamidade.gov"],
+      url: "http://www.miamidade.gov/elections/",
+      county: "Miami-Dade County",
+      key: ":miami-dade county",
+      state: "Florida",
+    },
+    address: {
+      latLong: [25.7732314, -80.1879309],
+      fullAddr: "100 S Biscayne Blvd, Miami, FL 33131, USA",
+      city: "Miami",
+      country: "United States",
+      state: "Florida",
+      stateAbbr: "FL",
+      postcode: "33131",
+      county: "Miami-Dade County",
+      otherCities: [],
+      streetNumber: "100",
+      street: "South Biscayne Boulevard",
+      queryAddr: "100 S Biscayne Blvd, Miami, FL 33131",
+    },
+    state: "Florida",
+    signature: "",
+    signatureType: "canvas",
+  };
+
+  const voter = { uid: "e69jegfcjt5" };
+
+  const register = await client.register(stateInfo, voter);
+  await wait(() => expect(register).toEqual({"data": "confirmationId", "type": "data"}))
+});
