@@ -23,10 +23,10 @@ type VbmNoun =
 export const VbmWording: React.FC<
   // Warns everyone when trying to use <VbmWording/> with more than one
   // prop since these cases could potentially be shipped unnoticed to production.
-  | { adjective: true, ballot?: never, noun?: never, verb?: never }
-  | { adjective?: never, ballot: true, noun?: never, verb?: never }
-  | { adjective?: never, ballot?: never, noun: true, verb?: never }
-  | { adjective?: never, ballot?: never, noun?: never, verb: true }
+  | { adjective: true, ballot?: undefined, noun?: undefined, verb?: undefined }
+  | { adjective?: undefined, ballot: true, noun?: undefined, verb?: undefined }
+  | { adjective?: undefined, ballot?: undefined, noun: true, verb?: undefined }
+  | { adjective?: undefined, ballot?: undefined, noun?: undefined, verb: true }
 > = ({ adjective, ballot, noun, verb }) => {
   const { path } = useAppHistory()
   const { locale } = AddressContainer.useContainer()
