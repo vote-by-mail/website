@@ -5,7 +5,7 @@ import { Switchable } from './Switchable'
 import { Upload } from './Upload'
 import { Canvas } from './Canvas'
 import { useAppHistory } from '../../lib/path'
-import { SignatureType, eligibleSignatureType } from '../../common'
+import { SignatureType, eligibleSignatureType, isImplementedLocale } from '../../common'
 import { AddressContainer } from '../../lib/unstated'
 
 
@@ -24,16 +24,23 @@ type Props = React.PropsWithChildren<{
 }>
 
 export const Signature: React.FC<Props> = ({ setSignature, setSignatureType, signatureType }) => {
-  const { query } = useAppHistory()
+  const { query, pushStartSection } = useAppHistory()
   const { locale } = AddressContainer.useContainer()
-  const stateSignatureType = eligibleSignatureType(locale?.state)
 
-  React.useEffect(() => {
-    // Ensures signatureType is the same as the one from stateSignatureType
-    if (stateSignatureType !== 'both') {
-      setSignatureType(stateSignatureType)
-    }
-  }, [stateSignatureType, setSignatureType])
+  // Unlikely to happen, here for type-checking
+  if (locale === null) {
+    // if we do not have locale or address data, go back
+    pushStartSection('start')
+    return null
+  } else if (!isImplementedLocale(locale)) {
+    throw Error(`Locale state ${locale.state} is not implemented`)
+  }
+  const stateSignatureType = eligibleSignatureType(locale.state)
+
+  // Ensures signatureType is the same as the one from stateSignatureType
+  if (stateSignatureType !== 'both') {
+    setSignatureType(stateSignatureType)
+  }
 
   return <Margin>
     <Switchable
