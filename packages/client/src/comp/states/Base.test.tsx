@@ -122,7 +122,7 @@ test('State Form shows Unregistered modal warning', async () => {
     type: 'data',
     data: {status: 'Unregistered'},
   })
-  mocked(client, true).fetchAnalytics = jest.fn().mockResolvedValue({})
+  mocked(client, true).fetchInitialData = jest.fn().mockResolvedValue({})
   mocked(client, true).fetchContacts = jest.fn().mockResolvedValue([])
 
   const renderResult = render(
@@ -143,4 +143,47 @@ test('State Form shows Unregistered modal warning', async () => {
 
   await wait(() => expect(isUnregistered).toHaveBeenCalledTimes(1))
   expect(modal).toBeInTheDocument()
+})
+
+const useSeparateMailingAddress = async ({getByLabelText, getByTestId}: RenderResult) => {
+  await act(async () => {
+    await fireEvent.click(getByLabelText(/^Mail my ballot to a different/i))
+  })
+  // await act(async () => {
+  //   await fireEvent.change(getByLabelText(/^Mailing Address$/i), {
+  //     target: { value: '100 Biscayne Blvd, FL, 33131' }
+  //   })
+  // })
+}
+
+test('Signup Flow allows for separate mailing address', async () => {
+  const history = createMemoryHistory()
+
+  const isRegistered = mocked(client, true).isRegistered = jest.fn().mockResolvedValue({
+    type: 'data',
+    data: {status: 'Active'},
+  })
+  mocked(client, true).fetchInitialData = jest.fn().mockResolvedValue({})
+  mocked(client, true).fetchContacts = jest.fn().mockResolvedValue([])
+
+  const renderResult = render(
+    <Router history={history}>
+      <AddressContainer.Provider initialState={wisconsinAddress}>
+        <ContactContainer.Provider initialState={wisconsinContact}>
+          <Wisconsin/>
+        </ContactContainer.Provider>
+      </AddressContainer.Provider>
+    </Router>,
+    { wrapper: UnstatedContainer }
+  )
+
+  await fillWithoutSigning(renderResult)
+  await useSeparateMailingAddress(renderResult)
+  await triggerValidation(renderResult)
+  console.log(renderResult)
+
+  const mailingInput = renderResult.getByLabelText(/^Mailing Address$/i)
+
+  console.log(mailingInput)
+  await wait(() => expect(isRegistered).toHaveBeenCalledTimes(1))
 })
