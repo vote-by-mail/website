@@ -240,6 +240,7 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
         value={fields.mailing.value}
         label='Mailing Address'
         required={checked}
+        onChange={e => updateField('mailing', e.currentTarget.value)}
       />
     }</Togglable>
     { children }
