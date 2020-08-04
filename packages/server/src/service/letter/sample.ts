@@ -38,6 +38,7 @@ const baseStateInfo: Omit<BaseInfo, 'contact'> = {
     state: 'New Jersey',
     stateAbbr: 'NJ',
     country: 'USA',
+    county: 'County',
   }
 }
 
@@ -74,6 +75,12 @@ const getSampleStateInfo = async (): Promise<StateInfoRecord> => {
       idType: 'Arizona License Number',
       idData: '1234',
       party: 'Non-Partisan',
+    },
+    'Kansas': {
+      ...await commonStateInfo('Kansas'),
+      signature,
+      idType: 'Number',
+      idData: '42534',
     },
     'New Hampshire': {
       ...await commonStateInfo('New Hampshire'),
