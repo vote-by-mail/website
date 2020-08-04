@@ -35,32 +35,26 @@ export const Signature: React.FC<Props> = ({ setSignature, setSignatureType, sig
     }
   }, [stateSignatureType, setSignatureType])
 
-  if (stateSignatureType === 'both') {
-    return <Margin>
-      <Switchable visibleSwitchButton={query['case'] !== 'upload'} signatureType={signatureType} setSignatureType={setSignatureType}>
-      {
-        (signatureType) => {
-          if (signatureType === 'canvas') {
-            return <div>
-              <div>
-                <Canvas setSignature={setSignature} width={width} height={height}/>
-              </div>
+  return <Margin>
+    <Switchable
+      visibleSwitchButton={query['case'] !== 'upload' && stateSignatureType === 'both'} signatureType={signatureType}
+      setSignatureType={setSignatureType}
+    >{
+      (signatureType) => {
+        if (signatureType === 'canvas') {
+          return <div>
+            <div>
+              <Canvas setSignature={setSignature} width={width} height={height}/>
             </div>
-          } else {
-            return <div>
-              <div>
-                <Upload label='Upload Signature' setDataString={setSignature} />
-              </div>
+          </div>
+        } else {
+          return <div>
+            <div>
+              <Upload label='Upload Signature' setDataString={setSignature} />
             </div>
-          }
+          </div>
         }
       }
-      </Switchable>
-    </Margin>
-  }
-  return <Margin>{
-    stateSignatureType === 'upload'
-      ? <Upload label='Upload Signature' setDataString={setSignature}/>
-      : <Canvas setSignature={setSignature} width={width} height={height}/>
-  }</Margin>
+    }</Switchable>
+  </Margin>
 }
