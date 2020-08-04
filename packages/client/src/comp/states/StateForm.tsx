@@ -21,7 +21,7 @@ import { Locale, isImplementedLocale, ContactMethod, ImplementedState, primaryEl
 import { useAppHistory } from '../../lib/path'
 import { InvalidContact } from '../contact/InvalidContact'
 import { StyledPanel } from '../util/Panel'
-import { VbmWording } from '../util/VbmWording'
+import { VbmAdjective, VbmNoun } from '../util/VbmWord'
 
 
 type SwitchProps = React.PropsWithChildren<{
@@ -52,8 +52,8 @@ const StateFormSwitch: React.FC<SwitchProps> = ({
 }
 
 const methodExplain = (method: ContactMethod) => {
-  const email = <>We will email the <VbmWording noun/> signup to your local election official and to you.</>
-  const fax = <>We will fax the <VbmWording noun/> signup to your local election official and email a copy to you.</>
+  const email = <>We will email the <VbmAdjective/> signup to your local election official and to you.</>
+  const fax = <>We will fax the <VbmAdjective/> signup to your local election official and email a copy to you.</>
   switch(method.stateMethod) {
     case 'email': return email
     case 'fax': return fax
@@ -103,10 +103,10 @@ export const StateForm: React.FC<Props> = ({ignoreError}) => {
 
   return <>
     <h1 style={{ textTransform: 'capitalize' }}>
-      {locale.state} <VbmWording noun/> Signup Form
+      {locale.state} <VbmAdjective/> Signup Form
     </h1>
     <p>
-      Fill out the following form to sign up for <VbmWording noun/>{forGeneral}.  {methodExplain(method)}
+      Fill out the following form to sign up for <VbmNoun/>{forGeneral}.  {methodExplain(method)}
     </p>
     <StyledPanel>
       <StateFormSwitch locale={locale}/>
