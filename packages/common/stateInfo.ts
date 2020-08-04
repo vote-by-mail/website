@@ -38,22 +38,22 @@ type StateSignatureType =
   & Partial<Record<State, 'both' | SignatureType>>
 
 const stateSignatureType: StateSignatureType = {
-  Arizona: 'both',
-  Florida: 'both',
-  Georgia: 'both',
-  Maine: 'both',
-  Maryland: 'both',
-  Massachusetts: 'both',
-  Michigan: 'both',
-  Minnesota: 'both',
-  Nebraska: 'both',
-  Nevada: 'both',
+  'Arizona': 'both',
+  'Florida': 'both',
+  'Georgia': 'both',
+  'Maine': 'both',
+  'Maryland': 'both',
+  'Massachusetts': 'both',
+  'Michigan': 'both',
+  'Minnesota': 'both',
+  'Nebraska': 'both',
+  'Nevada': 'both',
   'New Hampshire': 'upload',
   'New York': 'both',
   'North Carolina': 'both',
-  Oklahoma: 'both',
-  Wisconsin: 'both',
-  Wyoming: 'both',
+  'Oklahoma': 'both',
+  'Wisconsin': 'both',
+  'Wyoming': 'both',
 }
 
 // Uses State | undefined instead of ImplementedState to avoid type checking
