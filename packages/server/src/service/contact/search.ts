@@ -62,6 +62,7 @@ export const keys = (
     case 'Arizona':
     case 'Florida':
     case 'Georgia':
+    case 'Kansas':
     case 'Maine':
     case 'Massachusetts':
     case 'Minnesota':

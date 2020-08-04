@@ -5,7 +5,7 @@ import { getFirstContact } from './contact'
 import { toContactMethod } from '../common'
 
 const main = async () => {
-  const state = 'Michigan'
+  const state = 'Kansas'
   const info = await sampleStateInfo(state)
   const contact = await getFirstContact(state)
   const method = toContactMethod({...contact, state})
