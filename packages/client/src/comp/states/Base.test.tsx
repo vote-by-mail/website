@@ -12,35 +12,52 @@ import { client } from '../../lib/trpc'
 import { mocked } from 'ts-jest/utils'
 import { toPath, SuccessPath, parseQS } from '../../lib/path'
 import { AddressContainer, ContactContainer } from '../../lib/unstated'
-import { ContactData } from '../../common'
+import { ContactData, StateInfo } from '../../common'
 jest.mock('../../lib/trpc')
+
+const fields = {
+  firstName: 'Bob', lastName: 'Smith', birthdate: '03/22/1900',
+  email: 'bob@gmail.com', phone: '123-456-7890',
+  mailing: '100 Biscayne Blvd, FL, 33131',
+}
+
+const compareResults = async (register: jest.Mock, separateMailing: boolean) => {
+  const call = register.mock.calls[0][0] as StateInfo
+  await expect(call.name).toEqual(`${fields.firstName} ${fields.lastName}`)
+  await expect(call.birthdate).toEqual(fields.birthdate)
+  await expect(call.email).toEqual(fields.email)
+  await expect(call.phone).toEqual(fields.phone)
+  if (separateMailing) {
+    await expect(call.mailingAddress).toEqual(fields.mailing)
+  }
+}
 
 /** Fill out form without signing */
 const fillWithoutSigning = async ({getByLabelText}: RenderResult) => {
   await act(async () => {
     await fireEvent.change(getByLabelText(/^First Name/i), {
       target: {
-        value: 'Bob'
+        value: fields.firstName
       },
     })
     await fireEvent.change(getByLabelText(/^Last Name/i), {
       target: {
-        value: 'Smith'
+        value: fields.lastName
       },
     })
     await fireEvent.change(getByLabelText(/^Birthdate/i), {
       target: {
-        value: '03/22/1900'
+        value: fields.birthdate
       },
     })
     await fireEvent.change(getByLabelText(/^Email/i), {
       target: {
-        value: 'bob.smith@gmail.com'
+        value: fields.email
       },
     })
     await fireEvent.change(getByLabelText(/^Phone/i), {
       target: {
-        value: '123-456-7890'
+        value: fields.phone
       },
     })
   })
@@ -113,6 +130,7 @@ test('State Form Without Signature (Wisconsin) works', async () => {
       .toEqual<SuccessPath>({id: "confirmationId", oid: "default", type: "success"})
   )
   await wait(() => expect(register).toHaveBeenCalledTimes(1))
+  await compareResults(register, false)
 })
 
 test('State Form shows Unregistered modal warning', async () => {
@@ -166,9 +184,13 @@ const useSeparateMailingAddress = async ({getByLabelText}: RenderResult) => {
 test('Signup Flow allows for separate mailing address', async () => {
   const history = createMemoryHistory()
 
-  mocked(client, true).isRegistered = jest.fn().mockResolvedValue({
+  const isRegistered = mocked(client, true).isRegistered = jest.fn().mockResolvedValue({
     type: 'data',
     data: {status: 'Active'},
+  })
+  const register = mocked(client, true).register = jest.fn().mockResolvedValue({
+    type: 'data',
+    data: 'confirmationId',
   })
   mocked(client, true).fetchInitialData = jest.fn().mockResolvedValue({})
   mocked(client, true).fetchContacts = jest.fn().mockResolvedValue([])
@@ -187,4 +209,8 @@ test('Signup Flow allows for separate mailing address', async () => {
   await fillWithoutSigning(renderResult)
   await useSeparateMailingAddress(renderResult)
   await triggerValidation(renderResult)
+
+  await wait(() => expect(isRegistered).toHaveBeenCalledTimes(1))
+  await wait(() => expect(register).toHaveBeenCalledTimes(1))
+  await compareResults(register, true)
 })
