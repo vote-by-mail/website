@@ -145,21 +145,28 @@ test('State Form shows Unregistered modal warning', async () => {
   expect(modal).toBeInTheDocument()
 })
 
-const useSeparateMailingAddress = async ({getByLabelText, getByTestId}: RenderResult) => {
+const useSeparateMailingAddress = async ({getByLabelText}: RenderResult) => {
   await act(async () => {
-    await fireEvent.click(getByLabelText(/^Mail my ballot to a different/i))
+    const checkbox = getByLabelText(/^Mail my ballot to a different/i)
+    await fireEvent.click(checkbox)
+    expect(checkbox.checked).toEqual(true)
+
+    const alternateAddress = '100 Biscayne Blvd, FL, 33131'
+
+    const mailingInput = getByLabelText(/^Mailing Address/i)
+    await fireEvent.change(mailingInput, {
+      target: {
+        value: alternateAddress
+      }
+    })
+    expect(mailingInput.value).toEqual(alternateAddress)
   })
-  // await act(async () => {
-  //   await fireEvent.change(getByLabelText(/^Mailing Address$/i), {
-  //     target: { value: '100 Biscayne Blvd, FL, 33131' }
-  //   })
-  // })
 }
 
 test('Signup Flow allows for separate mailing address', async () => {
   const history = createMemoryHistory()
 
-  const isRegistered = mocked(client, true).isRegistered = jest.fn().mockResolvedValue({
+  mocked(client, true).isRegistered = jest.fn().mockResolvedValue({
     type: 'data',
     data: {status: 'Active'},
   })
@@ -180,10 +187,4 @@ test('Signup Flow allows for separate mailing address', async () => {
   await fillWithoutSigning(renderResult)
   await useSeparateMailingAddress(renderResult)
   await triggerValidation(renderResult)
-  console.log(renderResult)
-
-  const mailingInput = renderResult.getByLabelText(/^Mailing Address$/i)
-
-  console.log(mailingInput)
-  await wait(() => expect(isRegistered).toHaveBeenCalledTimes(1))
 })

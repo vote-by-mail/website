@@ -232,7 +232,6 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
       onChange={e => updateField('telephone', e.currentTarget.value)}
     />
     <Togglable
-      id='mailing'
       label='Mail my ballot to a different address than listed above'
     >{
       (checked) => <BaseInput
