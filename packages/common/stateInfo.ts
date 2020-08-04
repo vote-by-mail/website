@@ -46,7 +46,7 @@ const stateSignatureType: StateSignatureType = {
   'Massachusetts': 'both',
   'Michigan': 'both',
   'Minnesota': 'both',
-  'Nebraska': 'both',
+  'Nebraska': 'upload',
   'Nevada': 'both',
   'New Hampshire': 'upload',
   'New York': 'both',
