@@ -3,10 +3,9 @@ import styled from 'styled-components'
 import { HashRouter } from 'react-router-dom'
 import { Slide, ToastContainer } from "react-toastify"
 import { ModalProvider } from 'styled-react-modal'
-import { AddressContainer, ContactContainer, VoterContainer, FetchingDataContainer, InitialDataContainer } from '../lib/unstated'
+import { AddressContainer, ContactContainer, ExperimentContainer, FetchingDataContainer, InitialDataContainer } from '../lib/unstated'
 import { AddressInputPartContainer } from './Address'
 import { LoadingOverlay } from './util/LoadingOverlay'
-
 import 'react-toastify/dist/ReactToastify.css'
 
 const CustomToastContainer = styled(ToastContainer)`
@@ -24,7 +23,7 @@ export const UnstatedContainer: React.FC<{}> = ({ children }) => (<HashRouter>
   <AddressContainer.Provider>
     <ContactContainer.Provider>
       <InitialDataContainer.Provider>
-        <VoterContainer.Provider>
+        <ExperimentContainer.Provider>
           <ModalProvider>
             <AddressInputPartContainer.Provider>
               <FetchingDataContainer.Provider>
@@ -45,7 +44,7 @@ export const UnstatedContainer: React.FC<{}> = ({ children }) => (<HashRouter>
               </FetchingDataContainer.Provider>
             </AddressInputPartContainer.Provider>
           </ModalProvider>
-        </VoterContainer.Provider>
+        </ExperimentContainer.Provider>
       </InitialDataContainer.Provider>
     </ContactContainer.Provider>
   </AddressContainer.Provider>
