@@ -4,6 +4,7 @@ import { WisconsinInfo } from '../../common'
 import { Base } from './Base'
 import { Upload } from '../util/Upload'
 import { Togglable } from '../util/Togglable'
+import { VbmAdjective } from '../util/VbmWord'
 
 
 
@@ -24,7 +25,7 @@ export const Wisconsin = () => {
       label='This is my first time voting by mail in Wisconsin.'
     >
       {(checked) => <>
-        <p>Wisconsin requires all first-time Vote-by-Mail voters to submit a copy of their ID, even if they have voted in-person in the state previously.</p>
+        <p>Wisconsin requires all first-time <VbmAdjective/> voters to submit a copy of their ID, even if they have voted in-person in the state previously.</p>
         <Upload label='Upload Photo of ID' setDataString={setIdPhoto} required={checked}/>
       </>}
     </Togglable>

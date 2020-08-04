@@ -6,7 +6,7 @@ import img2 from './img/about_pic2.jpeg'
 import { cssQuery } from './util/cssQuery'
 import { MarketingWrapper } from './util/MarketingWrapper'
 import { Container } from 'muicss/react'
-import { VbmWording } from './util/VbmWording'
+import { VbmNoun, VbmAdjective } from './util/VbmWord'
 
 const Wrapper = styled(MarketingWrapper)`
   background-color: #fafafa;
@@ -98,7 +98,7 @@ export const About: React.FC = () => {
           About us
         </h1>
         <p>
-          COVID-19 has catalyzed interest in <VbmWording noun/>. VoteByMail.io streamlines government <VbmWording adjective/> applications by digitizing the voter&apos;s signup process.
+          COVID-19 has catalyzed interest in <VbmNoun/>. VoteByMail.io streamlines government <VbmAdjective/> applications by digitizing the voter&apos;s signup process.
         </p>
         <p>
           <a href="https://votebymail.io" target="_blank" rel="noopener noreferrer">VoteByMail</a> is a Civex Inc project. We are a non-partisan Organization that empowers voters, letting them decide when, how and where they vote.

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Status, Statuses } from '../../common'
-import { VbmWording } from '../util/VbmWording'
+import { VbmNoun, VbmBallot } from '../util/VbmWord'
 
 interface StateField {
   state: string
@@ -8,12 +8,10 @@ interface StateField {
 }
 type StatusProps<T extends Status> = React.PropsWithChildren<T & StateField>
 
-// Uses the right verb/preposition before VbmWording
-
 export const Automatic = ({state}: StatusProps<Statuses.Automatic>) => (<>
   <h1 data-testid='status-title'>Great News!</h1>
   <p data-testid='status-detail'>
-  {state} automatically enrolls all registered voters for <VbmWording ballot/>.
+  {state} automatically enrolls all registered voters for <VbmNoun/>.
     For more information, visit your state election website.
   </p>
 </>)
@@ -21,7 +19,7 @@ export const Automatic = ({state}: StatusProps<Statuses.Automatic>) => (<>
 export const Website = ({state, regUrl, infoUrl}: StatusProps<Statuses.Website>) => (<>
   <h1 data-testid='status-title'>Great News!</h1>
   <p data-testid='status-detail'>
-    {state} allows all registered voters for <VbmWording ballot/>.
+    {state} allows all registered voters to sign up for <VbmBallot/>.
     You can apply on the <a href={regUrl}>official state election application page</a>.
     For more information, visit your <a href={infoUrl}>state election website</a>.
   </p>
@@ -30,7 +28,7 @@ export const Website = ({state, regUrl, infoUrl}: StatusProps<Statuses.Website>)
 export const Mail = ({state, infoUrl}: StatusProps<Statuses.Mail>) => (<>
   <h1 data-testid='status-title'>Great News!</h1>
   <p data-testid='status-detail'>
-    {state} allows all registered voters for <VbmWording ballot/>.
+    {state} allows all registered voters to sign up for <VbmBallot/>.
     However, the state requires mailing a physical application, which we cannot support.
     For more information, visit your <a href={infoUrl}>state election website</a>.
   </p>
@@ -39,7 +37,7 @@ export const Mail = ({state, infoUrl}: StatusProps<Statuses.Mail>) => (<>
 export const VbmApp = ({state, children}: StatusProps<Statuses.VbmApp>) => (<>
   <h1 data-testid='status-title'>Great News!</h1>
   <p data-testid='status-detail'>
-    {state} allows all registered voters for <VbmWording ballot/> and we can help you enroll.
+    {state} allows all registered voters to sign up for <VbmNoun/> and we can help you enroll.
   </p>
   { children }
 </>)
