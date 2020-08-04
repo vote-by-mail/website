@@ -10,7 +10,7 @@ import { Center } from './util/Util'
 import { SocialFollow } from './SocialFollow'
 import { cssQuery } from './util/cssQuery'
 import { Container } from 'muicss/react'
-import { vbmWording } from './util/vbmWording'
+import { VbmWording } from './util/VbmWording'
 
 const BlueH2 = styled.h2`
   color: var(--primary);
@@ -37,7 +37,7 @@ export const Success: React.FC = () => {
 
   return <div>
     <h1>Success!</h1>
-    <p>You have successfully sent your {vbmWording()} signup to your local election official.  We emailed you a copy as well.</p>
+    <p>You have successfully sent your <VbmWording adjective/> signup to your local election official.  We emailed you a copy as well.</p>
     {id && <p>Your Confirmation ID is <b>{id}</b>.</p>}
     <CenterSocial>
       <h5>Share</h5>
