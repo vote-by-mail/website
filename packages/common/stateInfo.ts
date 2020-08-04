@@ -1,7 +1,7 @@
 import { _Id } from './util'
 import { Locale } from './locale'
 import { ContactData } from './contact'
-import { ExtendsState, State } from './states'
+import { ExtendsState } from './states'
 import { Address } from './address'
 import { RegistrationStatus } from './voter'
 
@@ -32,10 +32,7 @@ export const isImplementedLocale = (l: Locale): l is Locale<ImplementedState> =>
 
 export type SignatureType = 'canvas' | 'upload'
 
-// To avoid type checking issues when calling this from client
-type StateSignatureType =
-  Record<ImplementedState, 'both' | SignatureType>
-  & Partial<Record<State, 'both' | SignatureType>>
+type StateSignatureType = Record<ImplementedState, 'both' | SignatureType>
 
 const stateSignatureType: StateSignatureType = {
   'Arizona': 'both',
@@ -56,10 +53,8 @@ const stateSignatureType: StateSignatureType = {
   'Wyoming': 'both',
 }
 
-// Uses State | undefined instead of ImplementedState to avoid type checking
-// issues when calling this function from client.
-export const eligibleSignatureType = (state: State | undefined) => {
-  return state ? (stateSignatureType[state] ?? 'both') : 'both'
+export const eligibleSignatureType = (state: ImplementedState) => {
+  return stateSignatureType[state]
 }
 
 export interface BaseInfo extends Locale {
