@@ -139,6 +139,7 @@ const test = removeNullValues({
   ...base,
   FIRESTORE_URL: 'http://localhost:8081',  // for e2e tests with firestore emulator
   NODE_ENV: 'test',
+  REACT_APP_ENVIRONMENT: 'test',
   REACT_APP_SERVER: 'https://example.com',
   REACT_APP_TIMEOUT: 2000,
   FIRESTORE_EMULATOR_HOST: 'localhost:8081',

@@ -2,7 +2,7 @@ import React from 'react'
 
 import { RedOutline } from './util/RedOutline'
 import { sampleAddresses } from '../common/sampleAddresses'
-import { ImplementedState, isImplementedState } from '../common'
+import { ImplementedState, isImplementedState, processEnvOrThrow } from '../common'
 import { useAppHistory, Path } from '../lib/path'
 import { InitialDataContainer } from '../lib/unstated'
 import { StateSelector, StateContainer } from './StateSelector'
@@ -84,10 +84,14 @@ const RawWarningMsg: React.FC<RawWarningProps> = ({ setOpen }) => {
   </ul>)
 }
 
+const env = processEnvOrThrow('REACT_APP_ENVIRONMENT')
+
 export const WarningMsg = () => {
   const { initialData } = InitialDataContainer.useContainer()
   const { path } = useAppHistory()
   const [ open, setOpen ] = React.useState(false)
+
+  if (env === 'production') return null
 
   if (initialData?.emailFaxOfficials) return null
 
