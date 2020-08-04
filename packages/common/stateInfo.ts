@@ -11,6 +11,7 @@ export const implementedStates = [
   'Arizona',
   'Florida',
   'Georgia',
+  'Kansas',
   'Maine',
   'Maryland',
   'Massachusetts',
@@ -40,6 +41,7 @@ const stateSignatureType: StateSignatureType = {
   'Arizona': 'both',
   'Florida': 'both',
   'Georgia': 'both',
+  'Kansas': 'both',
   'Maine': 'both',
   'Maryland': 'both',
   'Massachusetts': 'both',
@@ -122,6 +124,16 @@ export interface GeorgiaInfo extends _Id, SignatureBaseInfo {
   // Must specify type of election (presidential preference primary, general primary, primary runoff, municipal, municipal runoff, special, general, general runoff)
   state: 'Georgia'
   party?: GeorgiaParty // Name of party ballot being requested (for primaries)
+}
+
+export const kansasIdentityType = ['Image', 'Number'] as const
+export type KansasIdentityType = (typeof kansasIdentityType)[number]
+export const isKansasIdentity = (x: string | null): x is KansasIdentityType => kansasIdentityType.includes(x as KansasIdentityType)
+
+export interface KansasInfo extends _Id, SignatureBaseInfo {
+  state: 'Kansas'
+  idType: KansasIdentityType
+  idData: string
 }
 
 export interface MaineInfo extends _Id, SignatureBaseInfo {
@@ -207,6 +219,7 @@ export type StateInfo = (
   | ArizonaInfo
   | FloridaInfo
   | GeorgiaInfo
+  | KansasInfo
   | MaineInfo
   | MarylandInfo
   | MassachusettsInfo

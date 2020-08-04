@@ -3,6 +3,7 @@ import React from 'react'
 import { Arizona } from './Arizona'
 import { Florida } from './Florida'
 import { Georgia } from './Georgia'
+import { Kansas } from './Kansas'
 import { Maine } from './Maine'
 import { Maryland } from './Maryland'
 import { Massachusetts } from './Massachusetts'
@@ -36,6 +37,7 @@ const StateFormSwitch: React.FC<SwitchProps> = ({
     case 'Arizona': return <Arizona />
     case 'Florida': return <Florida />
     case 'Georgia': return <Georgia />
+    case 'Kansas': return <Kansas />
     case 'Maine': return <Maine />
     case 'Maryland': return <Maryland />
     case 'Massachusetts': return <Massachusetts />

@@ -120,6 +120,22 @@ export const sampleAddresses: Record<ImplementedState, AddressData[]> = {
     street: '305 Coliseum Dr',
     state: 'Georgia',
   }],
+  'Kansas': [{
+    address: '727 Minnesota Ave, Kansas City, KS 66101',
+    city: 'Kansas City',
+    county: 'Wyandotte County',
+    state: 'Kansas',
+  }, {
+    address: '18103 W 106th St #100, Olathe, KS 66061',
+    city: 'Olathe',
+    county: 'Johnson County',
+    state: 'Kansas',
+  }, {
+    address: '719 S Kansas Ave Suite 100, Topeka, KS 66603',
+    city: 'Topeka',
+    county: 'Shawnee County',
+    state: 'Kansas',
+  }],
   'Wisconsin': [{
     address: '756 N Milwaukee St, Milwaukee, WI 53202',
     city: 'Milwaukee',

@@ -18,6 +18,7 @@ const normalizeKey = lowerCase(({ state, county, city }: OptionalLocale): string
     case 'Arizona':
     case 'Florida':
     case 'Georgia':
+    case 'Kansas':
     case 'Minnesota':
     case 'Nebraska':
     case 'New York':

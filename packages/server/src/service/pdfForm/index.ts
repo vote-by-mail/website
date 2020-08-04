@@ -1,6 +1,7 @@
 import { PDFDocument, StandardFonts, rgb, PDFPage, PDFPageDrawTextOptions } from 'pdf-lib'
 import { safeReadFile, staticDir } from '../util'
 
+export { fillKansas } from './kansas'
 export { fillMassachusetts } from './massachusetts'
 export { fillMinnesota } from './minnesota'
 export { fillNorthCarolina } from './northCarolina'
