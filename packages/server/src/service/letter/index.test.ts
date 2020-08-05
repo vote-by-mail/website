@@ -4,7 +4,7 @@ import { implementedStates } from '../../common'
 
 beforeAll(() => jest.setTimeout(10000))
 
-test('Leter for all states render correctly', async () => {
+test('Letter for all states render correctly', async () => {
   const confirmationId = 'sampleConfirmationId'
 
   const letters = await Promise.all(implementedStates.map(async state => {
