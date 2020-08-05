@@ -100,11 +100,11 @@ export class Letter {
         confirmationId: this.confirmationId,
         method: this.method,
         warning: !process.env.EMAIL_FAX_OFFICIALS,
-        signature: dest === 'email'
-          ? `cid:${this.signatureAttachment?.filename}`
+        signature: dest === 'email' && this.signatureAttachment
+          ? `cid:${this.signatureAttachment.filename}`
           : this.info.signature,
-        idPhoto: dest === 'email'
-          ? `cid:${this.idPhotoAttachment?.filename}`
+        idPhoto: dest === 'email' && this.idPhotoAttachment
+          ? `cid:${this.idPhotoAttachment.filename}`
           : this.info.idPhoto,
       },
     )
