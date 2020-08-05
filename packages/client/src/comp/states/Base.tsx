@@ -32,7 +32,12 @@ const NameWrapper = styled.div`
   .mui-textfield { flex: 1; }
   ${cssQuery.medium} {
     flex-direction: row;
-    .mui-textfield:nth-child(1) { margin-right: 15px; }
+    flex-flow: row wrap;
+    .mui-textfield {
+      /* Approx. half of the margin */
+      flex-basis: calc(50% - 8px);
+      :nth-child(odd) { margin-right: 15px; }
+    }
   }
 `
 // We don't import AlloyResponse here since Base.tsx uses an extended RegistrationStatus
@@ -81,7 +86,8 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
       otherCities,
       latLong,
       oid,
-      name: `${fields.firstName.value} ${fields.lastName.value}`,
+      name:
+        `${fields.firstName.value} ${fields.middleName.value} ${fields.lastName.value}, ${fields.suffix.value}`,
       birthdate: fields.birthdate.value,
       email: fields.email.value,
       mailingAddress: fields.mailing.value,
@@ -105,7 +111,7 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
   }
 
   async function checkRegistration(
-    id: 'firstName' | 'lastName' | 'birthdate',
+    id: 'firstName' | 'lastName' | 'middleName' | 'suffix' | 'birthdate',
     e: React.ChangeEvent<HTMLInputElement>,
   ) {
     e.preventDefault()
@@ -113,13 +119,15 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
     updateField(id, e.currentTarget.value)
     if (canCheckRegistration() && !ignoreRegistrationStatus) {
       const {
-        firstName, lastName, birthdate,
+        firstName, lastName, middleName, suffix, birthdate,
       } = fields
       setAlloy({status: 'Loading'})
 
       const result = await client.isRegistered({
         firstName: firstName.value,
         lastName: lastName.value,
+        middleName: middleName.value,
+        suffix: suffix.value,
         birthdate: birthdate.value,
         city: address?.city ?? '',
         postcode: address?.postcode ?? '',
@@ -176,6 +184,24 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
         onChange={e => updateField('lastName', e.currentTarget.value)}
         onBlur={e => checkRegistration('lastName', e)}
         required
+      />
+      <NameInput
+        id='middleName'
+        value={fields.middleName.value}
+        label='Middle Name'
+        defaultValue={query.name}
+        invalid={!fields.middleName.valid}
+        onChange={e => updateField('middleName', e.currentTarget.value)}
+        onBlur={e => checkRegistration('middleName', e)}
+      />
+      <NameInput
+        id='suffix'
+        value={fields.suffix.value}
+        label='Suffix'
+        defaultValue={query.name}
+        invalid={!fields.suffix.valid}
+        onChange={e => updateField('suffix', e.currentTarget.value)}
+        onBlur={e => checkRegistration('suffix', e)}
       />
     </NameWrapper>
     <BaseInput

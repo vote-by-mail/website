@@ -45,6 +45,8 @@ export type RegistrationStatus = (typeof allRegistrationStatus)[number]
 export interface RegistrationArgs {
   firstName: string
   lastName: string
+  middleName?: string
+  suffix?: string
   birthdate?: string
   stateAbbr: string
   city: string
