@@ -24,16 +24,14 @@ type Props = React.PropsWithChildren<{
 }>
 
 export const Signature: React.FC<Props> = ({ setSignature, setSignatureType, signatureType }) => {
-  const { query, pushStartSection } = useAppHistory()
+  const { query } = useAppHistory()
   const { locale } = AddressContainer.useContainer()
 
   // Unlikely to happen, here for type-checking
-  if (locale === null) {
-    // if we do not have locale or address data, go back
-    pushStartSection('start')
-    return null
+  if (!locale) {
+    throw Error(`Locale (${locale}) is falsy`)
   } else if (!isImplementedLocale(locale)) {
-    throw Error(`Locale state ${locale.state} is not implemented`)
+    throw Error(`Locale state (${locale.state}) is not implemented`)
   }
   const stateSignatureType = eligibleSignatureType(locale.state)
 
