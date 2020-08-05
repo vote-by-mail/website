@@ -184,8 +184,8 @@ const Form: React.FC = () => {
   </>
 }
 
-const privacyPolicyUrl = process.env.REACT_APP_SERVER + 'PrivacyPolicy.pdf'
-const termsOfUseUrl = process.env.REACT_APP_SERVER + 'TermsOfUse.pdf'
+const privacyPolicyUrl = process.env.REACT_APP_SERVER + '/PrivacyPolicy.pdf'
+const termsOfUseUrl = process.env.REACT_APP_SERVER + '/TermsOfUse.pdf'
 
 export const Footer = () => {
 
