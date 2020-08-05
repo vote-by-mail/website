@@ -31,7 +31,8 @@ const FooterWrapper  = styled(MarketingWrapper)`
 `
 
 const Logo = styled.div`
-  width: 35%;
+  width: 100%;
+  ${cssQuery.medium} { width: 35%; }
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -43,9 +44,8 @@ const Logo = styled.div`
   }
 
   img {
-    max-width: 190px;
+    max-width: 140px;
     width: 100%;
-    ${cssQuery.medium} { width: 40%; }
   }
 
   /* Styles privacy policy link */
@@ -62,7 +62,13 @@ const Logo = styled.div`
   }
 `
 
-const VBar = () => <span style={{margin: '0 0.5rem'}}>|</span>
+const VBar = styled.span`
+  padding: 0.2em 0.3rem;
+  font-size: 10px;
+  border-top: 1px solid #0001;
+  color: #0003;
+  ::before { content: '|'; }
+`
 
 const ParagraphStyling = styled.div`
   p {
@@ -187,13 +193,15 @@ export const Footer = () => {
     <Container>
       <Logo>
         <img src={logo} alt="VoteByMail"/>
-        <a href={termsOfUseUrl}>
-          Terms of Use
-        </a>
-        <VBar/>
-        <a href={privacyPolicyUrl}>
-          Privacy Policy
-        </a>
+        <div>
+          <a href={termsOfUseUrl}>
+            Terms of Use
+          </a>
+          <VBar/>
+          <a href={privacyPolicyUrl}>
+            Privacy Policy
+          </a>
+        </div>
       </Logo>
       <Section>
         <Form/>
