@@ -48,7 +48,8 @@ const Steps = styled(Row)`
     }
 
     img {
-      width: 45%;
+      width: 30%;
+      margin: 10% 0;
       ${cssQuery.small} { width: 50%; }
       ${cssQuery.short} {
         width: 40%;
