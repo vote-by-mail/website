@@ -49,7 +49,7 @@ const Card = styled.div`
   }
 
   img {
-    height: 25%;
+    width: 25%;
   }
 
   p {
