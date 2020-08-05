@@ -162,7 +162,7 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
         value={fields.firstName.value}
         label='First Name'
         defaultValue={query.name}
-        invalid={!fields.firstName}
+        invalid={!fields.firstName.valid}
         onChange={e => updateField('firstName', e.currentTarget.value)}
         onBlur={e => checkRegistration('firstName', e)}
         required
@@ -172,7 +172,7 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
         value={fields.lastName.value}
         label='Last Name'
         defaultValue={query.name}
-        invalid={!fields.lastName}
+        invalid={!fields.lastName.valid}
         onChange={e => updateField('lastName', e.currentTarget.value)}
         onBlur={e => checkRegistration('lastName', e)}
         required
@@ -189,7 +189,7 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
       id='birthdate'
       value={fields.birthdate.value}
       defaultValue={query.birthdate}
-      invalid={!fields.birthdate}
+      invalid={!fields.birthdate.valid}
       // Makes the input red when invalid, for some reason just setting
       // invalid to true is not enough
       pattern='^(0[1-9]|1[012])[/.](0[1-9]|[12][0-9]|3[01])[/.](19|20)[0-9]{2}$'
@@ -220,7 +220,7 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
       id='email'
       value={fields.email.value}
       defaultValue={query.email}
-      invalid={!fields.email}
+      invalid={!fields.email.valid}
       onChange={e => updateField('email', e.currentTarget.value)}
       required
     />
@@ -228,7 +228,7 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
       id='telephone'
       value={fields.telephone.value}
       defaultValue={query.telephone}
-      invalid={!fields.telephone}
+      invalid={!fields.telephone.valid}
       onChange={e => updateField('telephone', e.currentTarget.value)}
     />
     <Togglable
