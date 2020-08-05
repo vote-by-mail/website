@@ -62,6 +62,8 @@ const Logo = styled.div`
   }
 `
 
+const VBar = () => <span style={{margin: '0 0.5rem'}}>|</span>
+
 const ParagraphStyling = styled.div`
   p {
     font-size: 10px;
@@ -177,6 +179,7 @@ const Form: React.FC = () => {
 }
 
 const privacyPolicyUrl = process.env.REACT_APP_SERVER + 'PrivacyPolicy.pdf'
+const termsOfUseUrl = process.env.REACT_APP_SERVER + 'TermsOfUse.pdf'
 
 export const Footer = () => {
 
@@ -184,6 +187,10 @@ export const Footer = () => {
     <Container>
       <Logo>
         <img src={logo} alt="VoteByMail"/>
+        <a href={termsOfUseUrl}>
+          Terms of Use
+        </a>
+        <VBar/>
         <a href={privacyPolicyUrl}>
           Privacy Policy
         </a>
