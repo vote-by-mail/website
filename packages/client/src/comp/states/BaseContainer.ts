@@ -12,6 +12,8 @@ type InputId =
   | 'email'
   | 'firstName'
   | 'lastName'
+  | 'middleName'
+  | 'suffix'
   | 'telephone'
   | 'mailing'
 
@@ -19,7 +21,13 @@ const isInputValid = (id: InputId, value: string): boolean => {
   switch (id) {
     case 'birthdate': return datePattern.test(value)
     case 'firstName':
-    case 'lastName': {
+    case 'lastName':
+    case 'middleName':
+    case 'suffix': {
+      // Middle name and Suffix can be empty
+      if (value === '' && (id === 'middleName' || id === 'suffix')) {
+        return true
+      }
       // Check if the user has typed a valid name: without numbers & non-empty
       return value !== '' && /^([^0-9]*)$/.test(value)
     }
@@ -44,6 +52,8 @@ const useFields = () => {
   const [fields, _updateValid] = React.useState<Record<InputId, InputData>>({
     firstName: { valid: false, value: '' },
     lastName: { valid: false, value: '' },
+    middleName: { valid: true, value: '' },
+    suffix: { valid: true, value: '' },
     birthdate: { valid: false, value: '' },
     email: { valid: false, value: '' },
     telephone: { valid: true, value: '' },
@@ -60,7 +70,8 @@ const useFields = () => {
   }
 
   const canCheckRegistration = () => (
-    fields.birthdate.valid && fields.firstName.valid && fields.lastName.valid
+    fields.birthdate.valid && fields.firstName.valid && fields.lastName.valid &&
+    fields.middleName.valid && fields.suffix.valid
   )
   const validInputs = () => (
     canCheckRegistration() && fields.email.valid && fields.telephone.valid

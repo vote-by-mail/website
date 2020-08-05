@@ -37,7 +37,7 @@ export const toAlloyDate = (vbmBirthdate: string) => {
 }
 
 export const isRegistered = async ({
-  firstName, lastName, birthdate,
+  firstName, lastName, middleName, suffix, birthdate,
   stateAbbr, city, postcode,
   street, streetNumber,
 }: RegistrationArgs): Promise<AlloyResponse> => {
@@ -59,6 +59,8 @@ export const isRegistered = async ({
   const query = [
     `first_name=${firstName}`,
     `last_name=${lastName}`,
+    middleName ? `middle_name=${middleName}` : '',
+    suffix ? `suffix=${suffix}` : '',
     birthdate ? `birth_date=${toAlloyDate(birthdate)}` : '',
     `address=${address}`,
     `city=${city}`,
