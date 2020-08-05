@@ -50,6 +50,9 @@ const Card = styled.div`
 
   img {
     width: 25%;
+    ${cssQuery.medium} {
+      width: 20%;
+    }
   }
 
   p {
