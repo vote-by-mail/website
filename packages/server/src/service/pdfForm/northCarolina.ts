@@ -1,17 +1,16 @@
 import { NorthCarolinaInfo } from '../../common'
 import { fillFormWrapper  } from '.'
-import { splitFullName, toSignatureBuffer } from './util'
+import { toSignatureBuffer } from './util'
 
 export const fillNorthCarolina = (
   stateInfo: NorthCarolinaInfo
 ) => fillFormWrapper(
   'North_Carolina.pdf',
   async ({check, text, placeImage}) => {
-    const nameSplit = splitFullName(stateInfo.name)
-    text(nameSplit[2], 2, 56, 90)
-    text(nameSplit[0], 2, 226, 90)
-    text(nameSplit[1], 2, 355, 90)
-    text(nameSplit[3], 2, 440, 90)
+    text(stateInfo.name.last, 2, 56, 90)
+    text(stateInfo.name.first, 2, 226, 90)
+    text(stateInfo.name.middle ?? '', 2, 355, 90)
+    text(stateInfo.name.suffix ?? '', 2, 440, 90)
 
     const birthdateSplit = stateInfo.birthdate.split('/')
     // Month

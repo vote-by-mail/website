@@ -9,7 +9,12 @@ const loadBase64 = (filename: string) => {
 
 const baseStateInfo: Omit<BaseInfo, 'contact'> = {
   state: 'Florida',
-  name: 'George Ford Washington Jr.',
+  name: {
+    first: 'George',
+    middle: 'Ford',
+    last: 'Washington',
+    suffix: 'Jr.',
+  },
   email: 'george.washington@gmail.com',
   phone: '+1 (234)-567-8901',
   birthdate: '04/01/1756',

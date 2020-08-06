@@ -1,4 +1,4 @@
-import { MassachusettsInfo } from '../../common'
+import { MassachusettsInfo, stringifyName } from '../../common'
 import { fillFormWrapper  } from '.'
 import { toSignatureBuffer } from './util'
 
@@ -8,7 +8,7 @@ export const fillMassachusetts = (
   'Massachusetts.pdf',
   async ({check, text, placeImage}) => {
 
-    text(stateInfo.name, 0, 200, 103)
+    text(stringifyName(stateInfo.name), 0, 200, 103)
     text(stateInfo.address.fullAddr, 0, 165, 150)
     text(stateInfo.birthdate, 0, 245, 197)
     text(stateInfo.phone, 0, 445, 197)

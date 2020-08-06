@@ -1,4 +1,4 @@
-import { NewHampshireInfo } from '../../common'
+import { NewHampshireInfo, stringifyName } from '../../common'
 import { fillFormWrapper } from '.'
 import { toSignatureBuffer } from './util'
 
@@ -19,7 +19,7 @@ export const fillNewHampshire = (
     }
     check(0, 112, 448) // General Election
 
-    text(stateInfo.name, 1, 86, 58)
+    text(stringifyName(stateInfo.name), 1, 86, 58)
     text(stateInfo.uspsAddress, 1, 86, 127)
     // Sic: we want 'Same as above' even when stateInfo.mailingAddress === ''
     text(stateInfo.mailingAddress ? stateInfo.mailingAddress : 'Same as above', 1, 86, 196)

@@ -53,7 +53,7 @@ describe('Viewing Data', () => {
   test('user can update and view their own org\'s registrations', async () => {
     const id = await fs.addRegistration({
       oid,
-      name: 'Bob',
+      name: {first: 'Bob', last: 'Smith'},
       state: 'Florida',
     } as RichStateInfo)
     expect(id).toBeTruthy()
@@ -67,7 +67,7 @@ describe('Viewing Data', () => {
     expect(richInfo.twilioResponses).toBeUndefined()
 
     fs.updateRegistration(
-      id, 
+      id,
       {message: 'message', id: '123'},
       []
     )
@@ -84,7 +84,7 @@ describe('Viewing Data', () => {
     await expect(
       fs.addRegistration({
         oid: 'new_org',
-        name: 'Bob',
+        name: {first: 'Bob', last: 'Smith'},
         state: 'Florida',
       } as RichStateInfo)
     ).resolves.toBeTruthy()

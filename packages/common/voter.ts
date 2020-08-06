@@ -1,3 +1,5 @@
+import { Name } from './name'
+
 // From here: https://ga-dev-tools.appspot.com/campaign-url-builder/
 export interface UTM {
   utmSource?: string
@@ -43,10 +45,7 @@ export const allRegistrationStatus = [
 export type RegistrationStatus = (typeof allRegistrationStatus)[number]
 
 export interface RegistrationArgs {
-  firstName: string
-  lastName: string
-  middleName?: string
-  suffix?: string
+  name: Name
   birthdate?: string
   stateAbbr: string
   city: string

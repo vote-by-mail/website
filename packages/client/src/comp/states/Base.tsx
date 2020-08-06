@@ -62,6 +62,7 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
     updateField,
     canCheckRegistration,
     validInputs,
+    name,
   } = FieldsContainer.useContainer()
 
   const [ alloy, setAlloy ] = React.useState<AlloyResponse>({status: null})
@@ -80,21 +81,13 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
       return null
     }
 
-    const fullName = () => {
-      const firstName = fields.firstName.value
-      const middleName = fields.middleName.value ? ` ${fields.middleName.value}` : ''
-      const lastName = ` ${fields.lastName.value}`
-      const suffix = fields.suffix.value ? `, ${fields.suffix.value}` : ''
-      return `${firstName}${middleName}${lastName}${suffix}`
-    }
-
     const base: StatelessInfo = {
       city: contact.city ?? city,
       county: contact.county ?? county,
       otherCities,
       latLong,
       oid,
-      name: fullName(),
+      name: name(),
       birthdate: fields.birthdate.value,
       email: fields.email.value,
       mailingAddress: fields.mailing.value,
@@ -125,17 +118,11 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
     e.persist() // allow async function call
     updateField(id, e.currentTarget.value)
     if (canCheckRegistration() && !ignoreRegistrationStatus) {
-      const {
-        firstName, lastName, middleName, suffix, birthdate,
-      } = fields
       setAlloy({status: 'Loading'})
 
       const result = await client.isRegistered({
-        firstName: firstName.value,
-        lastName: lastName.value,
-        middleName: middleName.value,
-        suffix: suffix.value,
-        birthdate: birthdate.value,
+        name: name(),
+        birthdate: fields.birthdate.value,
         city: address?.city ?? '',
         postcode: address?.postcode ?? '',
         stateAbbr: address?.stateAbbr ?? '',
