@@ -92,10 +92,9 @@ export const weekNumber = (d: Date = new Date()): string => {
 
 // Returns a boolean indicating if the cache should be updated, also updates
 // the cacheVer file when needed.
-const handleCacheVer = (options?: Options): boolean => {
+const handleCacheVer = (): boolean => {
   const yearWeek = weekNumber()
-  const workDir = options?.workDir ?? `${__dirname}/cache`
-  const path = `${workDir}/cacheVer`
+  const path = `${__dirname}/cache/cacheVer`
   const encoding = 'utf-8'
 
   if (fs.existsSync(path)) {
@@ -106,6 +105,7 @@ const handleCacheVer = (options?: Options): boolean => {
   return true
 }
 
+/** `options.refresh` overwrites the default check for weekly cache update */
 export const cache = <A extends unknown[], R>(
   func: AsyncFunc<A, R>,
   namer: AsyncFunc<A, string>,
