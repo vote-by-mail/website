@@ -55,7 +55,7 @@ export const safeReadFileSync = (
  * Returns a string indicating the current week number. Since this function
  * follows ISO-8601, the first week of January might actually belong to
  * the previous year, which is why this function returns a string formatted
- * as `YYYY.WN` where YYYY is the year and WN the weeknumber.
+ * as `YYYY-WN` where YYYY is the year and WN the weeknumber.
  *
  * @param d exported for testing purposes, defaults to now when not present
  *
@@ -87,36 +87,20 @@ export const weekNumber = (d: Date = new Date()): string => {
   const previousYear = date.getUTCMonth() === 0 && number > 5
   const year = previousYear ? date.getUTCFullYear() - 1 : date.getUTCFullYear()
 
-  return `${year}.${number}`
+  return `${year}-${number}`
 }
 
-// Returns a boolean indicating if the cache should be updated, also updates
-// the cacheVer file when needed.
-const handleCacheVer = (): boolean => {
-  const yearWeek = weekNumber()
-  const path = `${__dirname}/cache/cacheVer`
-  const encoding = 'utf-8'
-
-  if (fs.existsSync(path)) {
-    if(fs.readFileSync(path, { encoding }) === yearWeek) return false
-  }
-
-  fs.writeFileSync(path, yearWeek, { encoding })
-  return true
-}
-
-/** `options.refresh` overwrites the default check for weekly cache update */
 export const cache = <A extends unknown[], R>(
   func: AsyncFunc<A, R>,
   namer: AsyncFunc<A, string>,
   options?: Options,
 ): AsyncFunc<A, R> => {
-  const refresh   = options?.refresh  ?? handleCacheVer(),
+  const refresh   = options?.refresh  ?? false,
         workDir   = options?.workDir  ?? `${__dirname}/cache/`,
         encoding  = options?.encoding ?? 'utf-8'
 
   return async (...args: A): Promise<R> => {
-    const path = workDir + '/' + await namer(...args)
+    const path = workDir + `/${weekNumber()} ` + await namer(...args)
     if (fs.existsSync(path) && !refresh) {
       const data = await fs.promises.readFile(path, { encoding } )
       return JSON.parse(data)
