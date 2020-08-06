@@ -4,6 +4,7 @@ import { ContactData } from './contact'
 import { ExtendsState } from './states'
 import { Address } from './address'
 import { RegistrationStatus } from './voter'
+import { Name } from './name'
 
 // States for which we now support
 export const implementedStates = [
@@ -59,7 +60,7 @@ export const eligibleSignatureType = (state: ImplementedState) => {
 
 export interface BaseInfo extends Locale {
   state: ImplementedState
-  name: string
+  name: Name
   email: string
   phone: string
   birthdate: string

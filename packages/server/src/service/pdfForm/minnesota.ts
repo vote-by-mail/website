@@ -1,6 +1,6 @@
 import { MinnesotaInfo } from '../../common'
 import { fillFormWrapper  } from '.'
-import { splitFullName, toSignatureBuffer } from './util'
+import { toSignatureBuffer } from './util'
 
 export const fillMinnesota = (
   stateInfo: MinnesotaInfo
@@ -9,11 +9,10 @@ export const fillMinnesota = (
   async ({check, text, placeImage}) => {
     check(0, 410, 161) // General and primary elections
 
-    const nameSplit = splitFullName(stateInfo.name)
-    text(nameSplit[2], 0, 60, 225)
-    text(nameSplit[0], 0, 240, 225)
-    text(nameSplit[1], 0, 390, 225)
-    text(nameSplit[3], 0, 535, 225)
+    text(stateInfo.name.last, 0, 60, 225)
+    text(stateInfo.name.first, 0, 240, 225)
+    text(stateInfo.name.middle ?? '', 0, 390, 225)
+    text(stateInfo.name.suffix ?? '', 0, 535, 225)
 
     text(stateInfo.birthdate, 0, 60, 265)
 
