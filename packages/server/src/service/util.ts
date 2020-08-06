@@ -59,19 +59,27 @@ export const safeReadFileSync = (
  *
  * @param d exported for testing purposes, defaults to now when not present
  *
- * Based on: https://stackoverflow.com/a/6117889/9611230
+ * Based on: https://github.com/commenthol/weeknumber/blob/master/src/index.js
  */
 export const weekNumber = (d: Date = new Date()): string => {
   const date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()))
+  const weekMS = 604800000 // = 7 * 24 * 60 * 60 * 1000 = 7 days in ms
+  const minuteMS = 60000
 
-  // Set to nearest Thursday: current date + 4 - current day number
-  // Make Sunday's day number 7
-  date.setUTCDate(date.getUTCDate() + 4 - (date.getUTCDay()||7))
-
-  const firstDayOfYear = new Date(Date.UTC(date.getUTCFullYear(), 0, 1))
-  // Calculate full weeks to nearest Thursday
-  const number = Math.ceil(
-    (((date.valueOf() - firstDayOfYear.valueOf()) / 86400000) + 1) / 7
+  // day 0 is monday
+  const day = (date.getDay() + 6) % 7
+  // get thursday of present week
+  const thursday = new Date(date)
+  thursday.setDate(date.getDate() - day + 3)
+  // set 1st january first
+  const firstThursday = new Date(thursday.getFullYear(), 0, 1)
+  // if Jan 1st is not a thursday...
+  if (firstThursday.getDay() !== 4) {
+    firstThursday.setMonth(0, 1 + (11 /* 4 + 7 */ - firstThursday.getDay()) % 7)
+  }
+  const timezoneDiff = (firstThursday.getTimezoneOffset() - thursday.getTimezoneOffset()) * minuteMS
+  const number = 1 + Math.floor(
+    (thursday.valueOf() - firstThursday.valueOf() + timezoneDiff) / weekMS
   )
 
   // If the month is January and week number is above 5, it belongs to the
