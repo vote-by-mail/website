@@ -21,15 +21,18 @@ const isInputValid = (id: InputId, value: string): boolean => {
   switch (id) {
     case 'birthdate': return datePattern.test(value)
     case 'firstName':
-    case 'lastName':
+    case 'lastName': {
+      // Check if the user has typed a valid name: without numbers & non-empty
+      return value !== '' && /^([^0-9]*)$/.test(value)
+    }
     case 'middleName':
     case 'suffix': {
       // Middle name and Suffix can be empty
-      if (value === '' && (id === 'middleName' || id === 'suffix')) {
+      if (value === '') {
         return true
       }
       // Check if the user has typed a valid name: without numbers & non-empty
-      return value !== '' && /^([^0-9]*)$/.test(value)
+      return /^([^0-9]*)$/.test(value)
     }
     case 'email': return emailPattern.test(value)
     case 'telephone': {

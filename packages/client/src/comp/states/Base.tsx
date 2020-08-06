@@ -80,14 +80,21 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
       return null
     }
 
+    const fullName = () => {
+      const firstName = fields.firstName.value
+      const middleName = fields.middleName.value ? ` ${fields.middleName.value}` : ''
+      const lastName = ` ${fields.lastName.value}`
+      const suffix = fields.suffix.value ? `, ${fields.suffix.value}` : ''
+      return `${firstName}${middleName}${lastName}${suffix}`
+    }
+
     const base: StatelessInfo = {
       city: contact.city ?? city,
       county: contact.county ?? county,
       otherCities,
       latLong,
       oid,
-      name:
-        `${fields.firstName.value} ${fields.middleName.value} ${fields.lastName.value}, ${fields.suffix.value}`,
+      name: fullName(),
       birthdate: fields.birthdate.value,
       email: fields.email.value,
       mailingAddress: fields.mailing.value,
@@ -176,6 +183,15 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
         required
       />
       <NameInput
+        id='middleName'
+        value={fields.middleName.value}
+        label='Middle Name'
+        defaultValue={query.name}
+        invalid={!fields.middleName.valid}
+        onChange={e => updateField('middleName', e.currentTarget.value)}
+        onBlur={e => checkRegistration('middleName', e)}
+      />
+      <NameInput
         id='lastName'
         value={fields.lastName.value}
         label='Last Name'
@@ -184,15 +200,6 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
         onChange={e => updateField('lastName', e.currentTarget.value)}
         onBlur={e => checkRegistration('lastName', e)}
         required
-      />
-      <NameInput
-        id='middleName'
-        value={fields.middleName.value}
-        label='Middle Name'
-        defaultValue={query.name}
-        invalid={!fields.middleName.valid}
-        onChange={e => updateField('middleName', e.currentTarget.value)}
-        onBlur={e => checkRegistration('middleName', e)}
       />
       <NameInput
         id='suffix'
@@ -216,9 +223,6 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
       value={fields.birthdate.value}
       defaultValue={query.birthdate}
       invalid={!fields.birthdate.valid}
-      // Makes the input red when invalid, for some reason just setting
-      // invalid to true is not enough
-      pattern='^(0[1-9]|1[012])[/.](0[1-9]|[12][0-9]|3[01])[/.](19|20)[0-9]{2}$'
       onChange={e => {
         const { value } = e.currentTarget
         // Removes non-numbers and replaces '-' with '/'
