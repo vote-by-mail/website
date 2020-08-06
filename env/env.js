@@ -85,6 +85,7 @@ const preview = removeNullValues({
   REACT_APP_URL: 'http://dev.votebymail.io/',
   REACT_APP_SERVER: 'https://dev-app.votebymail.io/',
   GOOGLE_CLIENT_CALLBACK: 'https://dev-app.votebymail.io/auth/google/callback',
+  REACT_APP_MOCK: 1,
 })
 
 const staging = removeNullValues({
@@ -104,6 +105,7 @@ const staging = removeNullValues({
   GOOGLE_MAPS_API_KEY: STAGING.GOOGLE_MAPS_API_KEY,
   GOOGLE_CLIENT_CALLBACK: 'https://staging-app.votebymail.io/auth/google/callback',
   GOOGLE_STORAGE_BUCKET: 'vbm-staging-281822.appspot.com',
+  REACT_APP_MOCK: 1,
   REACT_APP_TIMEOUT: 10000,
   ALLOY_MOCK: 1,
   TWILIO_DIVERT: 1,
