@@ -17,8 +17,9 @@ export const e164 = (number: string): string => {
 
 export const formatPhoneNumber = (phoneNumberString: string): string => {
   const cleaned = phoneNumberString.replace(/^\+[0-9]/, '')
-  const splitPhoneNumber = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/)
-  const formattedPhoneNumber = splitPhoneNumber && '(' + splitPhoneNumber[1] + ') ' + splitPhoneNumber[2] + '-' + splitPhoneNumber[3]
+  const splitPhoneNumber = cleaned.match(/^(\d{3})(\d{3})(\d{4})(x\d+)?$/)
+  let formattedPhoneNumber = splitPhoneNumber && '(' + splitPhoneNumber[1] + ')-' + splitPhoneNumber[2] + '-' + splitPhoneNumber[3]
+  formattedPhoneNumber = splitPhoneNumber && splitPhoneNumber[4] ? formattedPhoneNumber + ' Ext. ' + splitPhoneNumber[4].replace('x', '') : formattedPhoneNumber
 
   return formattedPhoneNumber || phoneNumberString
 }
