@@ -100,7 +100,7 @@ export const cache = <A extends unknown[], R>(
         encoding  = options?.encoding ?? 'utf-8'
 
   return async (...args: A): Promise<R> => {
-    const path = workDir + `/${weekNumber()} ` + await namer(...args)
+    const path = workDir + `/${weekNumber()}-` + await namer(...args)
     if (fs.existsSync(path) && !refresh) {
       const data = await fs.promises.readFile(path, { encoding } )
       return JSON.parse(data)
