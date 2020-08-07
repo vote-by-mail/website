@@ -1,11 +1,11 @@
-export interface Name {
+export interface NameParts {
   first: string
   middle?: string
   last: string
   suffix?: string
 }
 
-export const stringifyName = (name: Name) => {
+export const fullName = (name: NameParts) => {
   const first = name.first
   const middle = name.middle ? ` ${name.middle}` : ''
   const last = ` ${name.last}`
