@@ -161,8 +161,8 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
     setFetchingData(false)
   }
 
-  const handlePhoneChange = (e: any) => {
-    updateField('telephone', formatPhoneNumber(e.currentTarget.value))
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    updateField('telephone', e.currentTarget.value)
   }
 
   return <AppForm onSubmit={handleSubmit}>
