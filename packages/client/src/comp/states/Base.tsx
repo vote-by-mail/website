@@ -204,7 +204,7 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
       <NameInput
         id='suffix'
         value={fields.suffix.value}
-        label='Suffix'
+        label='Suffix (e.g. Jr)'
         defaultValue={query.name}
         invalid={!fields.suffix.valid}
         onChange={e => updateField('suffix', e.currentTarget.value)}
