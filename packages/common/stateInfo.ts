@@ -4,7 +4,7 @@ import { ContactData } from './contact'
 import { ExtendsState } from './states'
 import { Address } from './address'
 import { RegistrationStatus } from './voter'
-import { Name } from './name'
+import { NameParts } from './nameParts'
 
 // States for which we now support
 export const implementedStates = [
@@ -60,7 +60,8 @@ export const eligibleSignatureType = (state: ImplementedState) => {
 
 export interface BaseInfo extends Locale {
   state: ImplementedState
-  name: Name
+  name: string
+  nameParts: NameParts
   email: string
   phone: string
   birthdate: string
@@ -117,7 +118,7 @@ export interface GeorgiaInfo extends _Id, SignatureBaseInfo {
   // https://sos.ga.gov/admin/uploads/Absentee_Voting_A_Guide_for_Registered_Voters_2017.pdf
   // Must specify type of election (presidential preference primary, general primary, primary runoff, municipal, municipal runoff, special, general, general runoff)
   state: 'Georgia'
-  party?: GeorgiaParty // Name of party ballot being requested (for primaries)
+  party?: GeorgiaParty // NameParts of party ballot being requested (for primaries)
 }
 
 export interface MaineInfo extends _Id, SignatureBaseInfo {

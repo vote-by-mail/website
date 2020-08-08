@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { BaseInfo, StateInfo, isImplementedLocale, SignatureType, RegistrationStatus } from '../../common'
+import { BaseInfo, StateInfo, isImplementedLocale, SignatureType, RegistrationStatus, fullName } from '../../common'
 import { client } from '../../lib/trpc'
 import { RoundedButton } from '../util/Button'
 import { BaseInput, PhoneInput, EmailInput, NameInput, BirthdateInput } from '../util/Input'
@@ -62,7 +62,7 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
     updateField,
     canCheckRegistration,
     validInputs,
-    name,
+    nameParts,
   } = FieldsContainer.useContainer()
 
   const [ alloy, setAlloy ] = React.useState<AlloyResponse>({status: null})
@@ -87,7 +87,8 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
       otherCities,
       latLong,
       oid,
-      name: name(),
+      name: fullName(nameParts()),
+      nameParts: nameParts(),
       birthdate: fields.birthdate.value,
       email: fields.email.value,
       mailingAddress: fields.mailing.value,
@@ -121,7 +122,7 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
       setAlloy({status: 'Loading'})
 
       const result = await client.isRegistered({
-        name: name(),
+        nameParts: nameParts(),
         birthdate: fields.birthdate.value,
         city: address?.city ?? '',
         postcode: address?.postcode ?? '',

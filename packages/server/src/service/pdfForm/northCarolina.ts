@@ -7,10 +7,14 @@ export const fillNorthCarolina = (
 ) => fillFormWrapper(
   'North_Carolina.pdf',
   async ({check, text, placeImage}) => {
-    text(stateInfo.name.last, 2, 56, 90)
-    text(stateInfo.name.first, 2, 226, 90)
-    text(stateInfo.name.middle ?? '', 2, 355, 90)
-    text(stateInfo.name.suffix ?? '', 2, 440, 90)
+    text(stateInfo.nameParts.last, 2, 56, 90)
+    text(stateInfo.nameParts.first, 2, 226, 90)
+    if (stateInfo.nameParts.middle) {
+      text(stateInfo.nameParts.middle, 2, 355, 90)
+    }
+    if (stateInfo.nameParts.suffix) {
+      text(stateInfo.nameParts.suffix, 2, 440, 90)
+    }
 
     const birthdateSplit = stateInfo.birthdate.split('/')
     // Month

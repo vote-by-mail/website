@@ -63,18 +63,10 @@ block content
 
     ul.mt-2.list-group
       each info in stateInfos
-        - var namePart = info.name
-        - var name = `${namePart.first} ${namePart.last}`
-        if namePart.middle && namePart.suffix
-          - name = `${namePart.first} ${namePart.middle} ${namePart.last} ${namePart.suffix}`
-        if namePart.middle && !namePart.suffix
-          - name = `${namePart.first} ${namePart.middle} ${namePart.last}`
-        if !namePart.middle && namePart.suffix
-          - name = `${namePart.first} ${namePart.last} ${namePart.suffix}`
         li.list-group-item
           .d-flex.justify-content-between
             .d-flex.justify-content-start
-              p.mr-2 #{name} (#{info.state})
+              p.mr-2 #{info.state.name} (#{info.state})
               a(href= info.signedUrl target='_blank') (letter)
 
             .d-flex.justify-content-start

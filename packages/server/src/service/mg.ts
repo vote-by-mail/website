@@ -1,7 +1,7 @@
 import mailgun from 'mailgun-js'
 
 import { Letter } from './letter'
-import { processEnvOrThrow, stringifyName } from '../common'
+import { processEnvOrThrow } from '../common'
 
 export const mg = mailgun({
   domain: processEnvOrThrow('MG_DOMAIN'),
@@ -51,12 +51,13 @@ export const toSignupEmailData = (
     'h:Reply-To': [processEnvOrThrow('MG_REPLY_TO_ADDR'), voterEmail, ...officialEmails].join(','),
   }
 
+  const name = `${letter.info.nameParts.first} ${letter.info.nameParts.last}`
   const attachment = [
     signatureAttachment ?? [],
     idPhotoAttachment ?? [],
     pdfBuffer ? [new mg.Attachment({
       data: pdfBuffer,
-      filename: `${stringifyName(letter.info.name).replace(/[^0-9a-zA-Z]/g,'_')}-vote-by-mail.pdf`,
+      filename: `${name.replace(/[^0-9a-zA-Z]/g,'_')}-vote-by-mail.pdf`,
     })] : []
   ].flatMap(x => x)
   return {

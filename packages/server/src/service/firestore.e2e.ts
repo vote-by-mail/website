@@ -2,9 +2,11 @@ import * as firebase from '@firebase/testing'
 
 import { FirestoreService } from './firestore'
 import { RichStateInfo } from './types'
+import { fullName } from '../common'
 
 const projectId = 'new-test'
-
+const nameParts = { first: 'Bob', last: 'Smith' }
+const name = fullName(nameParts)
 
 let fs: FirestoreService
 let uids: string[]
@@ -53,7 +55,7 @@ describe('Viewing Data', () => {
   test('user can update and view their own org\'s registrations', async () => {
     const id = await fs.addRegistration({
       oid,
-      name: {first: 'Bob', last: 'Smith'},
+      name, nameParts,
       state: 'Florida',
     } as RichStateInfo)
     expect(id).toBeTruthy()
@@ -84,7 +86,7 @@ describe('Viewing Data', () => {
     await expect(
       fs.addRegistration({
         oid: 'new_org',
-        name: {first: 'Bob', last: 'Smith'},
+        name, nameParts,
         state: 'Florida',
       } as RichStateInfo)
     ).resolves.toBeTruthy()
