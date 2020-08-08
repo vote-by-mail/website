@@ -9,9 +9,9 @@ type RegistrationArgsWithStatus = RegistrationArgs & { status: RegistrationStatu
 
 const mockVoter = (voter: RegistrationArgsWithStatus): RegistrationArgsWithStatus => ({
   ...voter,
-  name : {
-    first: !alloyMock ? voter.name.first : voter.status,
-    last: !alloyMock ? voter.name.last : 'Voter',
+  nameParts : {
+    first: !alloyMock ? voter.nameParts.first : voter.status,
+    last: !alloyMock ? voter.nameParts.last : 'Voter',
   }
 })
 
@@ -19,7 +19,7 @@ const mockVoter = (voter: RegistrationArgsWithStatus): RegistrationArgsWithStatu
 const voters: RegistrationArgsWithStatus[] = [
   mockVoter({
     status: 'Active',
-    name: {
+    nameParts: {
       first: 'Terrence',
       last: 'Brown',
     },
@@ -28,7 +28,7 @@ const voters: RegistrationArgsWithStatus[] = [
     street: 'Pecan Acres Ln', streetNumber: '2969',
   }), mockVoter({
     status: 'Inactive',
-    name: {
+    nameParts: {
       first: 'Mia',
       last: 'Jackson',
     },
@@ -37,7 +37,7 @@ const voters: RegistrationArgsWithStatus[] = [
     street: 'Oak Lawn Ave', streetNumber: '1067',
   }), mockVoter({
     status: 'Not Found',
-    name: {
+    nameParts: {
       first: 'Brandie',
       last: 'Nguyen',
     },
@@ -46,7 +46,7 @@ const voters: RegistrationArgsWithStatus[] = [
     streetNumber: '9015', street: 'Fairview St',
   }), mockVoter({
     status: 'Cancelled',
-    name: {
+    nameParts: {
       first: 'Peggy',
       last: 'Lee',
     },
@@ -55,7 +55,7 @@ const voters: RegistrationArgsWithStatus[] = [
     streetNumber: '5737', street: 'Homestead Rd',
   }), mockVoter({
     status: 'Purged',
-    name: {
+    nameParts: {
       first: 'Rebecca',
       last: 'Jones',
     },
@@ -64,7 +64,7 @@ const voters: RegistrationArgsWithStatus[] = [
     streetNumber: '8135', street: 'Woodland St',
   }), mockVoter({
     status: 'Not Reported',
-    name: {
+    nameParts: {
       first: 'Catherine',
       last: 'Medina',
     },
@@ -73,7 +73,7 @@ const voters: RegistrationArgsWithStatus[] = [
     streetNumber: '7438', street: 'W Sherman Dr',
   }), mockVoter({
     status: 'Pending',
-    name: {
+    nameParts: {
       first: 'Cecil',
       last: 'Flores',
     },
@@ -82,7 +82,7 @@ const voters: RegistrationArgsWithStatus[] = [
     streetNumber: '1343', street: 'Smokey Ln',
   }), mockVoter({
     status: 'Provisional',
-    name: {
+    nameParts: {
       first: 'Rhonda',
       last: 'Jordan',
     },
@@ -91,7 +91,7 @@ const voters: RegistrationArgsWithStatus[] = [
     streetNumber: '4498', street: 'Northaven Rd',
   }), mockVoter({
     status: 'Preregistered',
-    name: {
+    nameParts: {
       first: 'Guy',
       last: 'Graves',
     },
@@ -100,7 +100,7 @@ const voters: RegistrationArgsWithStatus[] = [
     streetNumber: '5851', street: 'W Belt Line Rd',
   }), mockVoter({
     status: 'Removed',
-    name: {
+    nameParts: {
       first: 'George',
       last: 'Woods',
     },
@@ -109,7 +109,7 @@ const voters: RegistrationArgsWithStatus[] = [
     streetNumber: '1101', street: 'Karen Dr',
   }), mockVoter({
     status: 'Challenged',
-    name: {
+    nameParts: {
       first: 'Diana',
       last: 'Washington',
     },

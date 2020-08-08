@@ -1,4 +1,4 @@
-import { Name } from './name'
+import { NameParts } from './nameParts'
 
 // From here: https://ga-dev-tools.appspot.com/campaign-url-builder/
 export interface UTM {
@@ -45,7 +45,7 @@ export const allRegistrationStatus = [
 export type RegistrationStatus = (typeof allRegistrationStatus)[number]
 
 export interface RegistrationArgs {
-  name: Name
+  nameParts: NameParts
   birthdate?: string
   stateAbbr: string
   city: string

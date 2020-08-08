@@ -9,10 +9,14 @@ export const fillMinnesota = (
   async ({check, text, placeImage}) => {
     check(0, 410, 161) // General and primary elections
 
-    text(stateInfo.name.last, 0, 60, 225)
-    text(stateInfo.name.first, 0, 240, 225)
-    text(stateInfo.name.middle ?? '', 0, 390, 225)
-    text(stateInfo.name.suffix ?? '', 0, 535, 225)
+    text(stateInfo.nameParts.last, 0, 60, 225)
+    text(stateInfo.nameParts.first, 0, 240, 225)
+    if (stateInfo.nameParts.middle) {
+      text(stateInfo.nameParts.middle, 0, 390, 225)
+    }
+    if (stateInfo.nameParts.suffix) {
+      text(stateInfo.nameParts.suffix, 0, 535, 225)
+    }
 
     text(stateInfo.birthdate, 0, 60, 265)
 

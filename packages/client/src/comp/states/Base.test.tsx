@@ -23,10 +23,10 @@ const fields = {
 
 const compareResults = async (register: jest.Mock, separateMailing: boolean) => {
   const call = register.mock.calls[0][0] as StateInfo
-  await expect(call.name.first).toEqual(fields.firstName)
-  await expect(call.name.last).toEqual(fields.lastName)
-  await expect(call.name.middle).toEqual(undefined)
-  await expect(call.name.suffix).toEqual(undefined)
+  await expect(call.nameParts.first).toEqual(fields.firstName)
+  await expect(call.nameParts.last).toEqual(fields.lastName)
+  await expect(call.nameParts.middle).toEqual(undefined)
+  await expect(call.nameParts.suffix).toEqual(undefined)
   await expect(call.birthdate).toEqual(fields.birthdate)
   await expect(call.email).toEqual(fields.email)
   await expect(call.phone).toEqual(fields.phone)

@@ -2,7 +2,7 @@ import mailgun from 'mailgun-js'
 import marked from 'marked'
 import nunjucks from 'nunjucks'
 
-import { processEnvOrThrow, StateInfo, ContactMethod, ImplementedState, stringifyName } from '../../common'
+import { processEnvOrThrow, StateInfo, ContactMethod, ImplementedState } from '../../common'
 import { fillMinnesota, fillNewHampshire, fillNorthCarolina, fillMassachusetts } from '../pdfForm'
 import { staticDir } from '../util'
 
@@ -97,7 +97,7 @@ export class Letter {
       {
         ...this.info,
         ...envVars,
-        name: stringifyName(this.info.name),
+        name: this.info.name,
         confirmationId: this.confirmationId,
         method: this.method,
         warning: !process.env.EMAIL_FAX_OFFICIALS,

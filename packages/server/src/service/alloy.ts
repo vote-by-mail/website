@@ -37,7 +37,7 @@ export const toAlloyDate = (vbmBirthdate: string) => {
 }
 
 export const isRegistered = async ({
-  name, birthdate,
+  nameParts, birthdate,
   stateAbbr, city, postcode,
   street, streetNumber,
 }: RegistrationArgs): Promise<AlloyResponse> => {
@@ -45,8 +45,8 @@ export const isRegistered = async ({
     // Allows for case insensitive names when testing, since Alloy API returns
     // these statuses capitalized, and some have more than one word, e.g.
     // Not Found, Not Reported.
-    if (name.last.toLowerCase() === 'voter') {
-      const indexOf = lowercaseStatuses.indexOf(name.first.toLowerCase())
+    if (nameParts.last.toLowerCase() === 'voter') {
+      const indexOf = lowercaseStatuses.indexOf(nameParts.first.toLowerCase())
       return {
         id: '00000000-0000-0000-0000-000000000000',
         status: indexOf >= 0 ? allRegistrationStatus[indexOf] : 'Active',
@@ -57,10 +57,10 @@ export const isRegistered = async ({
 
   const address = `${streetNumber} ${street}`
   const query = [
-    `first_name=${name.first}`,
-    `last_name=${name.last}`,
-    name.middle ? `middle_name=${name.middle}` : '',
-    name.suffix ? `suffix=${name.suffix}` : '',
+    `first_name=${nameParts.first}`,
+    `last_name=${nameParts.last}`,
+    nameParts.middle ? `middle_name=${nameParts.middle}` : '',
+    nameParts.suffix ? `suffix=${nameParts.suffix}` : '',
     birthdate ? `birth_date=${toAlloyDate(birthdate)}` : '',
     `address=${address}`,
     `city=${city}`,
@@ -93,5 +93,5 @@ export const isRegistered = async ({
 
 export const cacheIsRegistered = cache(
   isRegistered,
-  async x => `Voter ${x.name.first} ${x.name.last}`,
+  async x => `Voter ${x.nameParts.first} ${x.nameParts.last}`,
 )

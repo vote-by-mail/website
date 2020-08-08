@@ -1,5 +1,5 @@
 import { Letter } from '.'
-import { BaseInfo, ContactMethod, ImplementedState, StateInfo, toContactMethod } from '../../common'
+import { BaseInfo, ContactMethod, ImplementedState, StateInfo, toContactMethod, fullName } from '../../common'
 import { getContact, getFirstContact } from '../contact'
 import { safeReadFileSync, staticDir } from '../util'
 
@@ -7,14 +7,17 @@ const loadBase64 = (filename: string) => {
   return safeReadFileSync(staticDir(`tests/${filename}`)).toString('base64')
 }
 
+const nameParts = {
+  first: 'George',
+  middle: 'Ford',
+  last: 'Washington',
+  suffix: 'Jr.',
+}
+const name = fullName(nameParts)
+
 const baseStateInfo: Omit<BaseInfo, 'contact'> = {
   state: 'Florida',
-  name: {
-    first: 'George',
-    middle: 'Ford',
-    last: 'Washington',
-    suffix: 'Jr.',
-  },
+  name, nameParts,
   email: 'george.washington@gmail.com',
   phone: '+1 (234)-567-8901',
   birthdate: '04/01/1756',
