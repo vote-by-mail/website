@@ -21,6 +21,7 @@ export const implementedStates = [
   'New York',
   'North Carolina',
   'Oklahoma',
+  'Virginia',
   'Wisconsin',
   'Wyoming',
 ] as const
@@ -49,6 +50,7 @@ const stateSignatureType: StateSignatureType = {
   'New York': 'both',
   'North Carolina': 'both',
   'Oklahoma': 'both',
+  'Virginia': 'both',
   'Wisconsin': 'both',
   'Wyoming': 'both',
 }
@@ -181,6 +183,11 @@ export interface OklahomaInfo extends _Id, SignatureBaseInfo {
   state: 'Oklahoma'
 }
 
+export interface VirginiaInfo extends _Id, SignatureBaseInfo {
+  state: 'Virginia'
+  last4DigitsOfSsn: string
+}
+
 export interface WisconsinInfo extends _Id, BaseInfo {
   // https://elections.wi.gov/sites/elections.wi.gov/files/2019-02/Faxing%20or%20Emailing%20Absentee%20Ballots.pdf
   // no signature required
@@ -208,6 +215,7 @@ export type StateInfo = (
   | NewHampshireInfo
   | NorthCarolinaInfo
   | OklahomaInfo
+  | VirginiaInfo
   | WisconsinInfo
   | WyomingInfo
 )
