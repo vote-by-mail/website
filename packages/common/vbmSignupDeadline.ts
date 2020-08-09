@@ -42,6 +42,7 @@ const vbmSignupDeadline: StateDeadline = {
   Tennessee: deadline(7, 30),
   Vermont: deadline(8, 4),
   Washington: deadline(7, 28),
+  Virginia: deadline(6, 1),
   "West Virginia": deadline(6, 3),
   Wisconsin: deadline(8, 6),
   Wyoming: deadline(8, 11),

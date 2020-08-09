@@ -16,7 +16,7 @@ const nameParts = {
 const name = fullName(nameParts)
 
 const baseStateInfo: Omit<BaseInfo, 'contact'> = {
-  state: 'Florida',
+  state: 'Virginia',
   name, nameParts,
   email: 'george.washington@gmail.com',
   phone: '+1 (234)-567-8901',
@@ -34,7 +34,7 @@ const baseStateInfo: Omit<BaseInfo, 'contact'> = {
     street: 'Mount Vernon St',
     unit: 'Apt 3C',
     city: 'Vernon',
-    postcode: '00000',
+    postcode: '01234',
     state: 'New Jersey',
     stateAbbr: 'NJ',
     country: 'USA',
@@ -99,6 +99,13 @@ export const sampleStateInfo = async (state: ImplementedState): Promise<StateInf
       ...commonStateInfo,
       signature,
       partyData: 'Federalist Party',
+      state,
+    }
+
+    case 'Virginia': return {
+      ...commonStateInfo,
+      signature,
+      last4DigitsOfSsn: '1234',
       state,
     }
 

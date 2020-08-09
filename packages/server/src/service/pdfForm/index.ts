@@ -5,6 +5,7 @@ export { fillMassachusetts } from './massachusetts'
 export { fillMinnesota } from './minnesota'
 export { fillNorthCarolina } from './northCarolina'
 export { fillNewHampshire } from './newHampshire'
+export { fillVirginia } from './virginia'
 
 
 interface FillFormArg {

@@ -270,6 +270,22 @@ export const sampleAddresses: Record<ImplementedState, AddressData[]> = {
       state: 'Oklahoma'
     }
   ],
+  'Virginia': [{
+    address: '2100 Parks Avenue Virginia Beach, VA 23451v',
+    city: 'Virginia Beach',
+    county: 'Virginia Beach',
+    state: 'Virginia',
+  }, {
+    address: '500 E Main St #700, Norfolk, VA 23510',
+    city: 'Norfolk',
+    county: 'Norfolk County',
+    state: 'Virginia',
+  }, {
+    address: '919 E Main St, Richmond, VA 23219',
+    city: 'Richmond',
+    county: 'Henrico County',
+    state: 'Virginia',
+  }],
   'Wyoming': [{
     address: '121 W 15th St #204, Cheyenne, WY 82001',
     city: 'Cheyenne',
