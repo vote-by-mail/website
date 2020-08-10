@@ -1,6 +1,6 @@
 import { v3 as gcm } from '@google-cloud/monitoring'
 import { FirestoreService } from '../service/firestore'
-import { storage } from './storage'
+import { analyticsStorage } from './storage'
 import { processEnvOrThrow } from '../common'
 
 // Remember to allow monitoring on the Google Cloud Platform and also to
@@ -21,20 +21,21 @@ const baseMetricUrl = 'custom.googleapis.com'
 
 export const updateTimeSeries = async () => {
   const now = new Date()
-  const startTime = storage.yesterdayZeroed
+  const startTime = analyticsStorage.midnightYesterday
+
   const {
     lastQueryTime: storedLastQueryTime,
     yesterdaySignups: storedYesterdaySignups,
     totalSignups: storedTotalSignups,
-  } = await storage.data()
+  } = await analyticsStorage.data()
 
-  const collection = firestore.db.collection('StateInfo')
+  const stateInfos = firestore.db.collection('StateInfo')
 
   // We only select 'created' when doing these metrics, to avoid fetching
   // needless information
-  const query = collection.where('created', '>=', storedLastQueryTime).select('created')
+  const query = stateInfos.where('created', '>=', storedLastQueryTime).select('created')
   const snapshot = await query.get()
-  console.log(snapshot.size)
+
   let newYesterdaySignups = storedYesterdaySignups
   let newTotalSignups = storedTotalSignups
 
@@ -73,5 +74,5 @@ export const updateTimeSeries = async () => {
     }],
   })
 
-  await storage.update(newTotalSignups, newYesterdaySignups, now)
+  await analyticsStorage.update(newTotalSignups, newYesterdaySignups, now)
 }
