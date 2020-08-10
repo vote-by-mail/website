@@ -1,6 +1,6 @@
 import { VirginiaInfo } from '../../common'
 import { fillFormWrapper  } from '.'
-import { splitFullName, stripPhoneNumber, toSignatureBuffer } from './util'
+import { splitFullName, cleanPhoneNumber, toSignatureBuffer } from './util'
 
 export const fillVirginia = (
   stateInfo: VirginiaInfo
@@ -21,7 +21,7 @@ export const fillVirginia = (
 
     // Birth year.
     const birthYear = stateInfo.birthdate.split('/')[2]
-    text(birthYear[0], 0, 208, 94) 
+    text(birthYear[0], 0, 208, 94)
     text(birthYear[1], 0, 228, 94)
     text(birthYear[2], 0, 247, 94)
     text(birthYear[3], 0, 266, 94)
@@ -68,7 +68,7 @@ export const fillVirginia = (
     }
 
     // Phone number.
-    const phoneNumber = stripPhoneNumber(stateInfo.phone)
+    const phoneNumber = cleanPhoneNumber(stateInfo.phone)
     text(phoneNumber[0], 0, 184, 268)
     text(phoneNumber[1], 0, 206, 268)
     text(phoneNumber[2], 0, 228, 268)
