@@ -20,14 +20,13 @@ export const Virginia = () => {
     }
   }
 
-return <SignatureBase<VirginiaInfo>enrichValues={enrichValues} >
-  <BaseInput
-        id='last4DigitsOfSsn'
-        ref={idRef}
-        label='Last 4 Digits of Social Security Number'
-        pattern='\d\d\d\d+'
-        required={true}
-      />
-</SignatureBase>
-
+  return <SignatureBase<VirginiaInfo>enrichValues={enrichValues} >
+    <BaseInput
+          id='last4DigitsOfSsn'
+          ref={idRef}
+          label='Last 4 Digits of Social Security Number'
+          pattern='\d\d\d\d+'
+          required={true}
+        />
+  </SignatureBase>
 }
