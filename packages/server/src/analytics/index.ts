@@ -75,5 +75,3 @@ export const createTimeSeries = async () => {
 
   await storage.update(newTotalSignups, newYesterdaySignups, now)
 }
-
-createTimeSeries()

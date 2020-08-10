@@ -10,6 +10,7 @@ import { processEnvOrThrow, IVbmRpc } from './common'
 import { VbmRpc } from './service/trpc'
 import { registerPassportEndpoints } from './service/org'
 import { staticDir } from './service/util'
+import { createTimeSeries } from './analytics'
 
 const app = Express()
 
@@ -24,6 +25,16 @@ app.set('views', staticDir('pug'))
 
 app.get('/_ah/warmup', (_, res) => {
   res.status(200).send('')
+})
+
+app.get('/cron/daily_total_sign_ups', async (_, res) => {
+  try {
+    await createTimeSeries()
+    res.status(200).send('')
+  } catch(e) {
+    console.error(e)
+    res.status(500).send('')
+  }
 })
 
 app.get('/_ah/warmup/', (_, res) => {
