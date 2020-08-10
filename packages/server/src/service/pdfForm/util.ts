@@ -31,20 +31,14 @@ export const splitFullName = (fullName: string) => {
 }
 
 export const stripPhoneNumber = (phoneNumber: string) => {
-  // Get rid of characters. split-join acts as 'replaceAll'
-  let strippedNumber = phoneNumber
-    .replace('+', '')
+  return phoneNumber
+    .replace('+1', '')
     .replace('(', '')
     .replace(')', '')
     .split('-')
     .join('')
     .split(' ')
     .join('')
-  // Remove leading 1.
-  if (strippedNumber.length > 10) {
-    strippedNumber = strippedNumber.substr(1, strippedNumber.length)
-  }
-  return strippedNumber
 }
 
 export const toSignatureBuffer = async (dataUrl: string, maxWidth: number, maxHeight: number): Promise<Buffer> => {

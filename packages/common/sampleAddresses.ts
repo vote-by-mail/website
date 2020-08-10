@@ -271,19 +271,22 @@ export const sampleAddresses: Record<ImplementedState, AddressData[]> = {
     }
   ],
   'Virginia': [{
-    address: '2100 Parks Avenue Virginia Beach, VA 23451v',
+    address: '2100 Parks Avenue Virginia Beach, VA 23451',
     city: 'Virginia Beach',
-    county: 'Virginia Beach',
+    county: undefined,
     state: 'Virginia',
   }, {
     address: '500 E Main St #700, Norfolk, VA 23510',
     city: 'Norfolk',
-    county: 'Norfolk County',
+    county: undefined,
     state: 'Virginia',
   }, {
-    address: '919 E Main St, Richmond, VA 23219',
-    city: 'Richmond',
-    county: 'Henrico County',
+    // For some reason above two don't have county associated in geocoding API
+    // (manually tested).  3rd largest city chamber of commerce also doesn't have
+    // county (Richmond), so I use Tyson's Corner mall.
+    address: '1961 Chain Bridge Rd, Tysons, VA 22102',
+    city: 'McLean',
+    county: 'Fairfax County',
     state: 'Virginia',
   }],
   'Wyoming': [{
