@@ -64,13 +64,24 @@ const useFields = () => {
     mailing: { valid: true, value: '' },
   })
 
-   /**
-   * Detects the content of all inputs needed for checking voter registration.
-   * When possible, this function will contact the server, updating `registrationStatus`
-   * when finished.
-   */
+  const nameParts: NameParts = {
+    first: fields.firstName.value,
+    middle: fields.middleName.value ? fields.middleName.value : undefined,
+    last: fields.lastName.value,
+    suffix: fields.suffix.value ? fields.suffix.value : undefined,
+  }
+
   const updateField = (id: InputId, value: string) => {
     _updateValid({ ...fields, [id]: { valid: isInputValid(id, value), value } })
+    if (id.indexOf('Name') !== -1 || id === 'suffix') {
+      // Makes firstName => first, middleName => middle, etc.
+      const key = id.replace('Name', '') as keyof NameParts
+      if (key === 'middle' || key === 'suffix') {
+        nameParts[key] = value ? value : undefined
+      } else {
+        nameParts[key] = value
+      }
+    }
   }
 
   const canCheckRegistration = () => (
@@ -80,13 +91,6 @@ const useFields = () => {
   const validInputs = () => (
     canCheckRegistration() && fields.email.valid && fields.telephone.valid
   )
-
-  const nameParts = (): NameParts => ({
-    first: fields.firstName.value,
-    middle: fields.middleName.value ? fields.middleName.value : undefined,
-    last: fields.lastName.value,
-    suffix: fields.suffix.value ? fields.suffix.value : undefined,
-  })
 
   return {
     fields,

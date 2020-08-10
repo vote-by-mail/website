@@ -87,8 +87,8 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
       otherCities,
       latLong,
       oid,
-      name: fullName(nameParts()),
-      nameParts: nameParts(),
+      name: fullName(nameParts),
+      nameParts: nameParts,
       birthdate: fields.birthdate.value,
       email: fields.email.value,
       mailingAddress: fields.mailing.value,
@@ -122,7 +122,7 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
       setAlloy({status: 'Loading'})
 
       const result = await client.isRegistered({
-        nameParts: nameParts(),
+        nameParts: nameParts,
         birthdate: fields.birthdate.value,
         city: address?.city ?? '',
         postcode: address?.postcode ?? '',
