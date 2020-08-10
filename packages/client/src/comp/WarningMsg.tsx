@@ -148,7 +148,12 @@ const ContainerlessWarningMsg = () => {
   if (initialData?.emailFaxOfficials) return null
 
   return <>
-    <FloatingButton color="danger" onClick={toggleOpen} open={open}>
+    <FloatingButton
+      color="danger"
+      onClick={toggleOpen}
+      open={open}
+      data-testid='notProductionButton'
+    >
       {
         open
         ? <><i className="fa fa-close" aria-hidden="true"/> Close</>
@@ -161,6 +166,7 @@ const ContainerlessWarningMsg = () => {
       onEscapeKeydown={toggleOpen}
       openingAnimation={openingAnimation}
       dismissAnimation={dismissAnimation}
+      data-testid='notProductionModal'
     >
       <RedOutline>
         <h2>Warning: Not Production!</h2>
