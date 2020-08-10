@@ -73,15 +73,6 @@ const useFields = () => {
 
   const updateField = (id: InputId, value: string) => {
     _updateValid({ ...fields, [id]: { valid: isInputValid(id, value), value } })
-    if (id.indexOf('Name') !== -1 || id === 'suffix') {
-      // Makes firstName => first, middleName => middle, etc.
-      const key = id.replace('Name', '') as keyof NameParts
-      if (key === 'middle' || key === 'suffix') {
-        nameParts[key] = value ? value : undefined
-      } else {
-        nameParts[key] = value
-      }
-    }
   }
 
   const canCheckRegistration = () => (
