@@ -1,14 +1,16 @@
 import React from 'react'
 import Modal, { ModalProps } from 'styled-react-modal'
-import styled, { keyframes, css } from 'styled-components'
+import styled, { keyframes, css, Keyframes } from 'styled-components'
 
 const animationDurationMS = 350
 
 interface Props {
   hiding: boolean
+  openingAnimation?: Keyframes
+  dismissAnimation?: Keyframes
 }
 
-const entranceAnimation = keyframes`
+const openingAnimation = keyframes`
   from {
     transform: translateY(100%);
     opacity: 0;
@@ -19,7 +21,7 @@ const entranceAnimation = keyframes`
   }
 `
 
-const hidingAnimation = keyframes`
+const dismissAnimation = keyframes`
   from {
     transform: translateY(0);
     opacity: 1;
@@ -53,12 +55,12 @@ const RawStyledModal = styled(Modal.styled``)<Props>`
   }
 
   animation: ${p => p.hiding === false
-    ? css`${entranceAnimation}`
-    : css`${hidingAnimation}`
+    ? css`${p.openingAnimation ?? openingAnimation}`
+    : css`${p.dismissAnimation ?? dismissAnimation}`
   } ease ${animationDurationMS}ms both;
 `
 
-export const StyledModal: React.FC<ModalProps> = (props) => {
+export const StyledModal: React.FC<ModalProps & Omit<Props, 'hiding'>> = (props) => {
   const [hiding, setHiding] = React.useState(false)
 
   const beforeClose = () => new Promise(resolve => {
