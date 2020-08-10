@@ -10,6 +10,7 @@ import styled from 'styled-components'
 import { Button } from 'muicss/react'
 import { StyledModal } from './util/StyledModal'
 import { toast } from 'react-toastify'
+import { createContainer } from 'unstated-next'
 
 const defaultState = (path: Path | null): ImplementedState => {
   switch(path?.type) {
@@ -38,11 +39,41 @@ const FloatingButton = styled(Button)<{open: boolean}>`
   width: ${p => p.open ? 150 : 200}px;
 `
 
-interface RawWarningProps {
-  onModalClick: () => void
+const useVisibility = () => {
+  // Since localStorage doesn't trigger re-renders, users visiting the
+  // app for the first time might get the toast more than once if the virtual
+  // DOM didn't catch the change.
+  //
+  // To avoid this we wrap a state on the storage item to ensure this issue
+  // doesn't happen.
+  const [ visited, setVisited ] = React.useState(localStorage.getItem('visited') !== null)
+  const [ open, setOpen ] = React.useState(!visited)
+  const toggleOpen = () => {
+    if (!visited) {
+      localStorage.setItem('visited', 'true')
+      setVisited(true)
+      if (open) {
+        toast.info(
+          'You can toggle this popup again by clicking on "Not Production" at the bottom right corner of the page.',
+        )
+      }
+    }
+    setOpen(!open)
+  }
+
+  return {
+    open,
+    toggleOpen,
+  }
 }
 
-const RawWarningMsg: React.FC<RawWarningProps> = ({ onModalClick }) => {
+const VisibilityContainer = createContainer(useVisibility)
+
+interface RawWarningProps {
+  toggleOpen: () => void
+}
+
+const RawWarningMsg: React.FC<RawWarningProps> = ({ toggleOpen }) => {
   const { path } = useAppHistory()
   const { state } = StateContainer.useContainer()
 
@@ -68,7 +99,7 @@ const RawWarningMsg: React.FC<RawWarningProps> = ({ onModalClick }) => {
           break
         }
       }
-      onModalClick()
+      toggleOpen()
     }
   }
 
@@ -87,34 +118,15 @@ const RawWarningMsg: React.FC<RawWarningProps> = ({ onModalClick }) => {
   </ul>)
 }
 
-export const WarningMsg = () => {
+const ContainerlessWarningMsg = () => {
   const { initialData } = InitialDataContainer.useContainer()
   const { path } = useAppHistory()
-  // Since localStorage doesn't trigger re-renders, users visiting the
-  // app for the first time might get the toast more than once if the virtual
-  // DOM didn't catch the change.
-  //
-  // To avoid this we wrap a state on the storage item to ensure this issue
-  // doesn't happen.
-  const [visited, setVisited] = React.useState(localStorage.getItem('visited') !== null)
-  const [ open, setOpen ] = React.useState(!visited)
-  const onClick = () => {
-    if (!visited) {
-      localStorage.setItem('visited', 'true')
-      setVisited(true)
-      if (open) {
-        toast.info(
-          'You can toggle this popup again by clicking on "Not Production" at the bottom right corner of the page.',
-        )
-      }
-    }
-    setOpen(!open)
-  }
+  const { open, toggleOpen } = VisibilityContainer.useContainer()
 
   if (initialData?.emailFaxOfficials) return null
 
   return <>
-    <FloatingButton color="danger" onClick={onClick} open={open}>
+    <FloatingButton color="danger" onClick={toggleOpen} open={open}>
       {
         open
         ? <><i className="fa fa-close" aria-hidden="true"/> Close</>
@@ -123,8 +135,8 @@ export const WarningMsg = () => {
     </FloatingButton>
     <StyledModal
       isOpen={open}
-      onBackgroundClick={onClick}
-      onEscapeKeydown={onClick}
+      onBackgroundClick={toggleOpen}
+      onEscapeKeydown={toggleOpen}
     >
       <RedOutline>
         <h2>Warning: Not Production!</h2>
@@ -138,9 +150,13 @@ export const WarningMsg = () => {
         <p><b>Address:</b> You can fill this out with any address.  But to see it in action, you will want to use an address in a state we support.  Sample addresses are listed below.</p>
         <p><b>Email:</b> When prompted, please use your own email (so as to not spam others!)</p>
         <StateSelector initialState={defaultState(path)}>
-          <RawWarningMsg onModalClick={onClick}/>
+          <RawWarningMsg toggleOpen={toggleOpen}/>
         </StateSelector>
       </RedOutline>
     </StyledModal>
   </>
 }
+
+export const WarningMsg = () => <VisibilityContainer.Provider>
+  <ContainerlessWarningMsg/>
+</VisibilityContainer.Provider>
