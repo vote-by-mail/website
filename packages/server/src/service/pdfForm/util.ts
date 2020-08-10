@@ -30,7 +30,7 @@ export const splitFullName = (fullName: string) => {
   return [firstName, middleName, lastName, suffix]
 }
 
-export const stripPhoneNumber= (phoneNumber: string) => {
+export const stripPhoneNumber = (phoneNumber: string) => {
   // Get rid of characters. split-join acts as 'replaceAll'
   let strippedNumber = phoneNumber.replace('+', '').replace('(', '').replace(')', '').split('-').join('').split(' ').join('')
   // Remove leading 1.
