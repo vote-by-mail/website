@@ -1,14 +1,12 @@
 import { createPdfBuffer } from '../pdf'
 
-export const stripPhoneNumber = (phoneNumber: string) => {
+export const cleanPhoneNumber = (phoneNumber: string) => {
   return phoneNumber
-    .replace('+1', '')
+    .replace(/ /g, '')
+    .replace(/^\+1/, '')
     .replace('(', '')
     .replace(')', '')
-    .split('-')
-    .join('')
-    .split(' ')
-    .join('')
+    .replace(/-/g, '')
 }
 
 export const toSignatureBuffer = async (dataUrl: string, maxWidth: number, maxHeight: number): Promise<Buffer> => {
