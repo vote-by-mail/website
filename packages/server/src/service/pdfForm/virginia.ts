@@ -1,6 +1,6 @@
 import { VirginiaInfo } from '../../common'
 import { fillFormWrapper  } from '.'
-import { splitFullName, cleanPhoneNumber, toSignatureBuffer } from './util'
+import { cleanPhoneNumber, toSignatureBuffer } from './util'
 
 export const fillVirginia = (
   stateInfo: VirginiaInfo
@@ -8,16 +8,20 @@ export const fillVirginia = (
   'Virginia.pdf',
   async ({check, text, placeImage}) => {
 
-    const nameSplit = splitFullName(stateInfo.name)
+    const { nameParts } = stateInfo
 
     // First name.
-    text(nameSplit[0], 0, 410, 60)
+    text(nameParts.first, 0, 410, 60)
     // Middle initial.
-    text(nameSplit[1], 0, 190, 77)
+    if (nameParts.middle) {
+      text(nameParts.middle, 0, 190, 77)
+    }
     // Last name.
-    text(nameSplit[2], 0, 180, 60)
+    text(nameParts.last, 0, 180, 60)
     // Suffix.
-    text(nameSplit[3], 0, 410, 77)
+    if (nameParts.suffix) {
+      text(nameParts.suffix, 0, 410, 77)
+    }
 
     // Birth year.
     const birthYear = stateInfo.birthdate.split('/')[2]
