@@ -118,7 +118,7 @@ export interface GeorgiaInfo extends _Id, SignatureBaseInfo {
   // https://sos.ga.gov/admin/uploads/Absentee_Voting_A_Guide_for_Registered_Voters_2017.pdf
   // Must specify type of election (presidential preference primary, general primary, primary runoff, municipal, municipal runoff, special, general, general runoff)
   state: 'Georgia'
-  party?: GeorgiaParty // NameParts of party ballot being requested (for primaries)
+  party?: GeorgiaParty // Name of party ballot being requested (for primaries)
 }
 
 export interface MaineInfo extends _Id, SignatureBaseInfo {
