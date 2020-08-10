@@ -9,6 +9,7 @@ import { StateSelector, StateContainer } from './StateSelector'
 import styled from 'styled-components'
 import { Button } from 'muicss/react'
 import { StyledModal } from './util/StyledModal'
+import { toast } from 'react-toastify'
 
 const defaultState = (path: Path | null): ImplementedState => {
   switch(path?.type) {
@@ -24,7 +25,7 @@ const defaultState = (path: Path | null): ImplementedState => {
   }
 }
 
-const FloatingButton = styled(Button)`
+const FloatingButton = styled(Button)<{open: boolean}>`
   position: fixed;
   margin: 0;
   bottom: 0;
@@ -33,13 +34,15 @@ const FloatingButton = styled(Button)`
   border-top-left-radius: 4px;
   /* One above the modal */
   z-index: 31;
+  transition: width ease .2s;
+  width: ${p => p.open ? 150 : 200}px;
 `
 
 interface RawWarningProps {
-  setOpen: (_: boolean) => void
+  onModalClick: () => void
 }
 
-const RawWarningMsg: React.FC<RawWarningProps> = ({ setOpen }) => {
+const RawWarningMsg: React.FC<RawWarningProps> = ({ onModalClick }) => {
   const { path } = useAppHistory()
   const { state } = StateContainer.useContainer()
 
@@ -65,7 +68,7 @@ const RawWarningMsg: React.FC<RawWarningProps> = ({ setOpen }) => {
           break
         }
       }
-      setOpen(false)
+      onModalClick()
     }
   }
 
@@ -87,12 +90,31 @@ const RawWarningMsg: React.FC<RawWarningProps> = ({ setOpen }) => {
 export const WarningMsg = () => {
   const { initialData } = InitialDataContainer.useContainer()
   const { path } = useAppHistory()
-  const [ open, setOpen ] = React.useState(false)
+  // Since localStorage doesn't trigger re-renders, users visiting the
+  // app for the first time might get the toast more than once if the virtual
+  // DOM didn't catch the change.
+  //
+  // To avoid this we wrap a state on the storage item to ensure this issue
+  // doesn't happen.
+  const [visited, setVisited] = React.useState(localStorage.getItem('visited') !== null)
+  const [ open, setOpen ] = React.useState(!visited)
+  const onClick = () => {
+    if (!visited) {
+      localStorage.setItem('visited', 'true')
+      setVisited(true)
+      if (open) {
+        toast.info(
+          'You can toggle this popup again by clicking on "Not Production" at the bottom right corner of the page.',
+        )
+      }
+    }
+    setOpen(!open)
+  }
 
   if (initialData?.emailFaxOfficials) return null
 
   return <>
-    <FloatingButton color="danger" onClick={() => setOpen(!open)}>
+    <FloatingButton color="danger" onClick={onClick} open={open}>
       {
         open
         ? <><i className="fa fa-close" aria-hidden="true"/> Close</>
@@ -101,8 +123,8 @@ export const WarningMsg = () => {
     </FloatingButton>
     <StyledModal
       isOpen={open}
-      onBackgroundClick={() => setOpen(false)}
-      onEscapeKeydown={() => setOpen(false)}
+      onBackgroundClick={onClick}
+      onEscapeKeydown={onClick}
     >
       <RedOutline>
         <h2>Warning: Not Production!</h2>
@@ -116,7 +138,7 @@ export const WarningMsg = () => {
         <p><b>Address:</b> You can fill this out with any address.  But to see it in action, you will want to use an address in a state we support.  Sample addresses are listed below.</p>
         <p><b>Email:</b> When prompted, please use your own email (so as to not spam others!)</p>
         <StateSelector initialState={defaultState(path)}>
-          <RawWarningMsg setOpen={setOpen}/>
+          <RawWarningMsg onModalClick={onClick}/>
         </StateSelector>
       </RedOutline>
     </StyledModal>
