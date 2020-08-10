@@ -108,7 +108,8 @@ gulp.task('gcloud', // --quiet disables interaction in gcloud
   async () => {
     const project = envs[options.env].GCLOUD_PROJECT
     if(!project) throw Error(`GCLOUD_PROJECT is not defined for env "${options.env}"`)
-    return run(`gcloud app deploy --quiet --verbosity=info --project ${project}`)()
+    await run(`gcloud app deploy --quiet --verbosity=info --project ${project}`)()
+    return run(`gcloud app deploy cron.yaml --quiet --verbosity=info --project ${project}`)()
   }
 )
 gulp.task('tag', runEnv(`./tag.sh server ${options.env}`))
