@@ -49,12 +49,13 @@
     "ts-node": "^8.0.0",
     "ts-node-dev": "^1.0.0-pre.44",
     "ttypescript": "^1.5.10",
-    "typescript": "~3.7.2"
+    "typescript": "~3.9.7"
   },
   "dependencies": {
     "@firebase/testing": "^0.18.1",
     "@google-cloud/connect-firestore": "^1.0.6",
     "@google-cloud/storage": "^4.7.0",
+    "@google-cloud/monitoring": "^2.1.1",
     "@googlemaps/google-maps-services-js": "^2.6.0",
     "@tianhuil/simple-trpc": "^1.8.0",
     "axios": "^0.19.2",
