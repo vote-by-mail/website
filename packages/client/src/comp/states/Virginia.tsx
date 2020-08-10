@@ -25,7 +25,7 @@ export const Virginia = () => {
           id='last4DigitsOfSsn'
           ref={idRef}
           label='Last 4 Digits of Social Security Number'
-          pattern='\d\d\d\d+'
+          pattern='\d{4}'
           required={true}
         />
   </SignatureBase>
