@@ -1,11 +1,10 @@
-import fs from 'fs'
-import { safeReadFile } from '../service/util'
+import { FirestoreService } from '../service/firestore'
 
-const path = `${__dirname}/storage.json`
-const options = { encoding: 'utf-8' } as const
+const firestore = new FirestoreService()
 
-// Used to save the .json file
+// Used to save the document
 interface RawStorage {
+  id: 'onlyOne'
   lastQueryTime: number
   totalSignups: number
   yesterdayDate: number
@@ -21,38 +20,42 @@ interface Storage {
 }
 
 class AnalyticsStorage {
+  private get doc() {
+    return firestore.db.collection('Analytics').doc('storage')
+  }
+
   private storage: RawStorage = {
+    id: 'onlyOne',
     lastQueryTime: 0,
     totalSignups: 0,
     yesterdayDate: 0,
     yesterdaySignups: 0,
   }
 
-  constructor() { this.init() }
-
-  private createDefaultFile = () => {
-    this.storage = {
-      lastQueryTime: 0, yesterdayDate: 0, yesterdaySignups: 0, totalSignups: 0,
-    }
-    // We don't use this.update here since that function is going to
-    // update lastQueryTime/yesterdayDate
-    return fs.promises.writeFile(
-      path, JSON.stringify(this.storage), options,
-    )
+  constructor() {
+    this.refresh()
   }
 
-  private init = async () => {
-    if (fs.existsSync(path)) {
-      try {
-        await this.refresh()
-      } catch(e) {
-        console.error(e)
-      }
+  /**
+   * Refreshes the in-memory values or creates the default document in
+   * the collection
+   */
+  private refresh = async () => {
+    const get = await this.doc.get()
+    const data = get.data()
+
+    if (!data) {
+      await this.doc.set(this.storage, { merge: true })
     } else {
-      await this.createDefaultFile()
+      this.storage = {
+        id: 'onlyOne',
+        lastQueryTime: data['lastQueryTime'],
+        totalSignups: data['totalSignups'],
+        yesterdayDate: data['yesterdayDate'],
+        yesterdaySignups: data['yesterdaySignups'],
+      }
     }
   }
-
 
   /**
    * If the stored yesterday date is different than the current one, yesterdaySignups
@@ -62,7 +65,7 @@ class AnalyticsStorage {
   data = async (): Promise<Storage> => {
     await this.refresh()
     const yesterdayDate = new Date(this.storage.yesterdayDate)
-    const yesterdaySignups = yesterdayDate.valueOf() === this.yesterdayZeroed.valueOf()
+    const yesterdaySignups = yesterdayDate.valueOf() === this.midnightYesterday.valueOf()
       ? this.storage.yesterdaySignups
       : 0
     return {
@@ -72,38 +75,29 @@ class AnalyticsStorage {
     }
   }
 
-  /**
-   * Returns yesterday's date with zeroed hours/minutes/seconds/millis
-   */
-  get yesterdayZeroed() {
-    const now = new Date()
+  /** Updates the in-memory and firestore values of the analytics functions */
+  update = async (totalSignups: number, yesterdaySignups: number, lastQueryTime: Date) => {
+    this.storage = {
+      id: 'onlyOne',
+      yesterdaySignups, totalSignups,
+      lastQueryTime: lastQueryTime.valueOf(),
+      yesterdayDate: this.midnightYesterday.valueOf(),
+    }
 
+    this.doc.set(this.storage, { merge: true })
+  }
+
+  /** Returns a date set to 00:00 of the previous day */
+  get midnightYesterday() {
+    const now = new Date()
     return new Date(
       now.getFullYear(),
       now.getMonth(),
-      // Node will go back to the latest day of the previous month without
-      // issues when date == 0
+      // Node.js handles 0 as the last day of the previous month without
+      // issues.
       now.getDate() - 1,
     )
   }
-
-  /** Updates the saved and in-memory storage */
-  update = async (totalSignups: number, yesterdaySignups: number, lastQueryTime: Date) => {
-    this.storage = {
-      yesterdaySignups, totalSignups,
-      lastQueryTime: lastQueryTime.valueOf(),
-      yesterdayDate: this.yesterdayZeroed.valueOf(),
-    }
-    return fs.promises.writeFile(
-      path, JSON.stringify(this.storage), options,
-    )
-  }
-
-  /** Updates the in-memory storage with the values written on disk */
-  private refresh = async () => {
-    const buf = await safeReadFile(path)
-    this.storage = JSON.parse(buf.toString(options.encoding))
-  }
 }
 
-export const storage = new AnalyticsStorage()
+export const analyticsStorage = new AnalyticsStorage()
