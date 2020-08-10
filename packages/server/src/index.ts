@@ -10,7 +10,7 @@ import { processEnvOrThrow, IVbmRpc } from './common'
 import { VbmRpc } from './service/trpc'
 import { registerPassportEndpoints } from './service/org'
 import { staticDir } from './service/util'
-import { createTimeSeries } from './analytics'
+import { updateTimeSeries } from './analytics/'
 
 const app = Express()
 
@@ -29,7 +29,7 @@ app.get('/_ah/warmup', (_, res) => {
 
 app.get('/cron/daily_total_sign_ups', async (_, res) => {
   try {
-    await createTimeSeries()
+    await updateTimeSeries()
     res.status(200).send('')
   } catch(e) {
     console.error(e)
