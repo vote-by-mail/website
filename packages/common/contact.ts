@@ -34,19 +34,19 @@ const stateMethods: Record<AvailableState, StateMethod> = {
   'Arizona': 'email',
   'Florida': 'fax-email',
   'Georgia': 'fax-email',
-  'Michigan': 'fax-email',
-  'Wisconsin': 'fax-email',
-  'Nebraska': 'fax-email',
   'Maine': 'fax',
   'Maryland': 'fax',
   'Massachusetts': 'fax-email',
-  'Nevada': 'fax',
-  'Virginia': 'fax-email',
+  'Michigan': 'fax-email',
   'Minnesota': 'fax-email',
+  'Nebraska': 'fax-email',
+  'Nevada': 'fax',
   'New Hampshire': 'fax',
   'New York': 'fax-email',
   'North Carolina': 'fax-email',
   'Oklahoma': 'fax',
+  'Virginia': 'fax-email',
+  'Wisconsin': 'fax-email',
   'Wyoming': 'email',
 }
 
@@ -106,7 +106,7 @@ export const toContactMethod = (contact: ContactData | null): ContactMethod | nu
 
   const { stateMethod, emails, faxes } = method
 
-  const normalizedMethod = { 
+  const normalizedMethod = {
     emails: emails ?? [],
     faxes: faxes ?? []
   }
