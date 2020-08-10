@@ -6,7 +6,7 @@ import { ImplementedState, isImplementedState } from '../common'
 import { useAppHistory, Path } from '../lib/path'
 import { InitialDataContainer } from '../lib/unstated'
 import { StateSelector, StateContainer } from './StateSelector'
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 import { Button } from 'muicss/react'
 import { StyledModal } from './util/StyledModal'
 import { toast } from 'react-toastify'
@@ -118,6 +118,28 @@ const RawWarningMsg: React.FC<RawWarningProps> = ({ toggleOpen }) => {
   </ul>)
 }
 
+const openingAnimation = keyframes`
+  from {
+    transform: translate(100%, 100%);
+    opacity: 0;
+  }
+  to {
+    transform: translate(0, 0);
+    opacity: 1;
+  }
+`
+
+const dismissAnimation = keyframes`
+  from {
+    transform: translate(0, 0);
+    opacity: 1;
+  }
+  to {
+    transform: translate(100%, 100%);
+    opacity: 0;
+  }
+`
+
 const ContainerlessWarningMsg = () => {
   const { initialData } = InitialDataContainer.useContainer()
   const { path } = useAppHistory()
@@ -137,6 +159,8 @@ const ContainerlessWarningMsg = () => {
       isOpen={open}
       onBackgroundClick={toggleOpen}
       onEscapeKeydown={toggleOpen}
+      openingAnimation={openingAnimation}
+      dismissAnimation={dismissAnimation}
     >
       <RedOutline>
         <h2>Warning: Not Production!</h2>
