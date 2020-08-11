@@ -142,6 +142,16 @@ const getSampleStateInfo = async (): Promise<StateInfoRecord> => {
   }
 }
 
+let stateInfoRecord: StateInfoRecord | null = null;
+
+(async () => {
+  stateInfoRecord = await getSampleStateInfo()
+})()
+
+const sampleStateInfo = async <S extends ImplementedState>(state: S) => {
+  // TODO
+}
+
 // export const sampleStateInfo = A
 
 export const sampleMethod: ContactMethod = {
