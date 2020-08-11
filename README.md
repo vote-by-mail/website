@@ -206,6 +206,25 @@ The shapefile used to create the Michigan ArcGIS server can be found here: http:
 7. On the bottom of the page click on the `Query` link
 8. You will be prompted to a page where you can visually input your query parameters, after you are done inputing them you can click on the `Query (GET)` button on the bottom of the page and you will navigate to your endpoint
 
+
+## Monitoring
+
+### IAM & Admin changes
+Currently we use Google Cloud Platform Monitoring to track daily and total signups in the application. But without changes to IAM & Admin, these functions are not going to have the necessary privileges to read/write from the GCP Monitoring. In order to fix this open https://console.cloud.google.com/iam-admin/iam?project=YOUR-PROJECT and add the role `Monitoring Editor` to the user `firebase-adminsdk`.
+
+If you’ve deployed the application before these analytics were implemented, be sure to redeploy your staging instance. This will upload `crontab.yaml` to the GCP App Engine, running the analytics automatically at every midnight.
+
+### Plotting the data
+If you've just set up the steps above be sure to ensure they are all working by visiting https://console.cloud.google.com/appengine/cronjobs?project=PROJECT-NAME and clicking on “Run now”. This will ensure that the algorithm is working and that we’ll have some initial data to plot on the GCP Monitoring dashboard.
+
+Then visit https://console.cloud.google.com/monitoring/dashboards?project=PROJECT-NAME and create a new **dashboard**. A dashboard allows you to display a collection of **charts**, in this documentation you’ll get the instructions of how to set a single chart for each of the tracked values (total sign ups and daily sign ups), but it is possible to configure this dashboard as you see fit.
+
+Setting up charts are easy, first click on "Add chart" on the top right corner of the page, then be sure to type `custom/past_day_sign_ups` in the resource/metric name and to give the appropriate title for this chart (e.g. "Daily sign ups"). After setting the title & the watched metric, set the period to `1 minute`, and click on "Show Advanced Options". Change the value on "Aligner" to `interpolate`, and write `Daily sign ups` on the "Legend Template" text field below.
+
+After this, focus your attention on the area to the right side of this configuration menu, the one displaying the chart. Above the chart there's a ruler displaying time units (`1M`, `1H`, `1D`, etc), click on `1W`, and be sure to choose "Stacked Bar" from the dropdown to the left of this ruler.
+
+Repeat these steps for the "Total sign ups" chart, be sure to use `custom/total_sign_ups` instead of the previous resource/metric--also certify that you name the legends/titles accordingly.
+
 ## Advanced Topics
 
 ### Testing Server Build
