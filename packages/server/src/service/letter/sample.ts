@@ -1,5 +1,5 @@
 import { Letter } from '.'
-import { BaseInfo, ContactMethod, ImplementedState, StateInfo, toContactMethod, fullName } from '../../common'
+import { BaseInfo, ContactMethod, ImplementedState, StateInfo, toContactMethod, fullName, WisconsinInfo, NevadaInfo } from '../../common'
 import { getContact, getFirstContact } from '../contact'
 import { safeReadFileSync, staticDir } from '../util'
 
@@ -44,78 +44,105 @@ const baseStateInfo: Omit<BaseInfo, 'contact'> = {
 const signature = 'data:image/png;base64,' + loadBase64('signature.png')
 const idPhoto = 'data:image/jpg;base64,' + loadBase64('idPhoto.jpg')
 
-export const sampleStateInfo = async (state: ImplementedState): Promise<StateInfo> => {
-  const commonStateInfo = {
-    ...baseStateInfo,
-    contact: await getFirstContact(state)
-  }
+type DiscriminateUnion<T, K extends keyof T, V extends T[K]> =
+  T extends Record<K, V> ? T : never
 
-  switch(state) {
-    case 'Wisconsin': return {
-      ...commonStateInfo,
+type MapDiscriminatedUnion<T extends Record<K, string>, K extends keyof T> =
+  { [V in T[K]]: DiscriminateUnion<T, K, V> }
+
+type StateInfoRecord = MapDiscriminatedUnion<StateInfo, 'state'>
+
+const getSampleStateInfo = async (): Promise<StateInfoRecord> => {
+  const commonStateInfo = async <S extends ImplementedState>(state: S) => ({
+    ...baseStateInfo,
+    contact: await getFirstContact(state),
+    state
+  })
+
+  return {
+    'Wisconsin': {
+      ...await commonStateInfo('Wisconsin'),
       idPhoto,
-      state,
-    }
-    case 'Nevada': return {
-      ...commonStateInfo,
+    },
+    'Nevada': {
+      ...await commonStateInfo('Nevada'),
       signature,
       idPhoto,
-      state,
-    }
-
-    case 'Arizona': return {
-      ...commonStateInfo,
+    },
+    'Arizona': {
+      ...await commonStateInfo('Arizona'),
       idType: 'Arizona License Number',
       idData: '1234',
       party: 'Non-Partisan',
-      state,
-    }
-
-    case 'New Hampshire': return {
-      ...commonStateInfo,
+    },
+    'New Hampshire': {
+      ...await commonStateInfo('New Hampshire'),
       signature,
-      primaryParty: 'No Primary',
-      state,
-    }
-
-    case 'North Carolina': return {
-      ...commonStateInfo,
+      primaryParty: 'Republican Party',
+    },
+    'North Carolina': {
+      ...await commonStateInfo('North Carolina'),
       signature,
       idType: 'North Carolina License Number',
       idData: '47826834534597',
       dateMoved: '10/01/2020',
-      state,
-    }
-
-    case 'Minnesota': return {
-      ...commonStateInfo,
+    },
+    'Minnesota': {
+      ...await commonStateInfo('Minnesota'),
       signature,
       idType: 'Minnesota Issued Driver\'s License or ID Card',
       idData: '47826834534597',
-      state,
-    }
-
-    case 'Massachusetts': return {
-      ...commonStateInfo,
+    },
+    'Massachusetts': {
+      ...await commonStateInfo('Massachusetts'),
       signature,
       partyData: 'Federalist Party',
-      state,
-    }
-
-    case 'Virginia': return {
-      ...commonStateInfo,
+    },
+    'Virginia': {
+      ...await commonStateInfo('Virginia'),
       signature,
       last4DigitsOfSsn: '1234',
-      state,
-    }
-
-    default: return {
-      ...commonStateInfo,
-      signature,
-      state,
-    }
+    },
+    'Florida': {
+      ...await commonStateInfo('Florida'),
+      signature
+    },
+    'Maine': {
+        ...await commonStateInfo('Maine'),
+        signature
+    },
+    'Georgia': {
+        ...await commonStateInfo('Georgia'),
+        signature
+    },
+    'Maryland': {
+        ...await commonStateInfo('Maryland'),
+        signature
+    },
+    'Michigan': {
+        ...await commonStateInfo('Michigan'),
+        signature
+    },
+    'Nebraska': {
+        ...await commonStateInfo('Nebraska'),
+        signature
+    },
+    'New York': {
+        ...await commonStateInfo('New York'),
+        signature
+    },
+    'Wyoming': {
+        ...await commonStateInfo('Wyoming'),
+        signature
+    },
+    'Oklahoma': {
+        ...await commonStateInfo('Oklahoma'),
+        signature
+    },
   }
 }
+
+// export const sampleStateInfo = A
 
 export const sampleMethod: ContactMethod = {
   stateMethod: 'fax-email',
