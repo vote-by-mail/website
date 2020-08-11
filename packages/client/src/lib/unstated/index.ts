@@ -18,7 +18,12 @@ const useContactContainer = (initialState: (ContactData | null) = null) => {
 }
 export const ContactContainer = createContainer(useContactContainer)
 
-const useInitialDataContainer = (data: InitialData | null = null) => {
+const useInitialDataContainer = (data: InitialData = {
+  // We default emailFaxOfficials to true (unless when testing) since this
+  // value is acquired from the backend--which results in a delay that could
+  // potentially show the warning modal on production.
+  emailFaxOfficials: process.env.NODE_ENV !== 'test',
+}) => {
   const [initialData, setInitialData] = React.useState(data)
   return { initialData, setInitialData }
 }

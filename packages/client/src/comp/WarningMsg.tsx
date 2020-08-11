@@ -145,10 +145,7 @@ const ContainerlessWarningMsg = () => {
   const { path } = useAppHistory()
   const { open, toggleOpen } = VisibilityContainer.useContainer()
 
-  // We default emailFaxOfficials to true (unless when testing) since this
-  // value is acquired from the backend--which results in a delay that could
-  // potentially show this modal on production.
-  if (initialData?.emailFaxOfficials ?? process.env.NODE_ENV !== 'test') return null
+  if (initialData.emailFaxOfficials) return null
 
   return <>
     <FloatingButton
