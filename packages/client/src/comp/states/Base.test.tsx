@@ -13,6 +13,7 @@ import { mocked } from 'ts-jest/utils'
 import { toPath, SuccessPath, parseQS } from '../../lib/path'
 import { AddressContainer, ContactContainer } from '../../lib/unstated'
 import { ContactData, StateInfo } from '../../common'
+import { e164 } from '../../../../common/util'
 jest.mock('../../lib/trpc')
 
 const fields = {
@@ -96,7 +97,8 @@ const wisconsinContact: ContactData = {
   key: 'town:county',
   state: 'Wisconsin',
   city: 'town',
-  county: 'county'
+  county: 'county',
+  faxes: ["+14142868445"]
 }
 
 test('State Form Without Signature (Wisconsin) works', async () => {
@@ -219,50 +221,30 @@ test('Signup Flow allows for separate mailing address', async () => {
 })
 
 test("Sends fax to Twillio successfully", async () => {
-  const stateInfo: StateInfo = {
-    city: "Canton Township",
-    county: "Wayne County",
-    otherCities: [],
-    latLong: [42.3288129, -83.49005240000001],
-    oid: "default",
-    name: "Test test test, test",
-    birthdate: "12/29/1992",
-    email: "asd@asd.com",
-    mailingAddress: "",
-    phone: "1231231234",
-    uspsAddress: "45525 Hanford Rd, Canton, MI 48187, USA",
-    contact: {
-      city: "Canton Township",
-      county: "Wayne County",
-      emails: ["cantonclerk@canton-mi.org"],
-      phones: ["+17343945120"],
-      faxes: ["+17343945128"],
-      official: "Michael Siegrist",
-      key: "canton township:wayne county",
-      state: "Michigan",
-    },
-    address: {
-      latLong: [42.3288129, -83.49005240000001],
-      fullAddr: "45525 Hanford Rd, Canton, MI 48187, USA",
-      city: "Canton",
-      country: "United States",
-      state: "Michigan",
-      stateAbbr: "MI",
-      postcode: "48187",
-      county: "Wayne County",
-      otherCities: [],
-      streetNumber: "45525",
-      street: "Hanford Road",
-      queryAddr: "45525 Hanford Rd, Canton, MI 48187",
-    },
-    state: "Michigan",
-    permanentList: true,
-    signature: "",
-    signatureType: "canvas",
+  const history = createMemoryHistory()
+  const register = mocked(client, true).register = jest.fn().mockResolvedValue({
+    type: 'data',
+    data: 'confirmationId',
+  })
+
+  const renderResult = render(
+    <Router history={history}>
+      <AddressContainer.Provider initialState={wisconsinAddress}>
+        <ContactContainer.Provider initialState={wisconsinContact}>
+          <Wisconsin/>
+        </ContactContainer.Provider>
+      </AddressContainer.Provider>
+    </Router>,
+    { wrapper: UnstatedContainer }
+  )
+
+  await fillWithoutSigning(renderResult)
+  await triggerValidation(renderResult)
+
+  await wait(() => expect(register).toHaveBeenCalledTimes(1))
+
+  const call = register.mock.calls[0][0] as StateInfo
+  if(call.contact.faxes){
+    await expect(e164(call.contact.faxes[0])).toEqual(call.contact.faxes[0])
   }
-
-  const voter = { uid: "e69jegfcjt5" }
-
-  const register = await client.register(stateInfo, voter)
-  await wait(() => expect(register).toEqual({"data": "confirmationId", "type": "data"}))
 })
