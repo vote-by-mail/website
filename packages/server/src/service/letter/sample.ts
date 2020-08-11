@@ -142,17 +142,11 @@ const getSampleStateInfo = async (): Promise<StateInfoRecord> => {
   }
 }
 
-let stateInfoRecord: StateInfoRecord | null = null;
+const stateInfoRecord = getSampleStateInfo()
 
-(async () => {
-  stateInfoRecord = await getSampleStateInfo()
-})()
-
-const sampleStateInfo = async <S extends ImplementedState>(state: S) => {
-  // TODO
+const sampleStateInfo = async <S extends ImplementedState>(state: S): Promise<StateInfo> => {
+  return (await stateInfoRecord)[state]
 }
-
-// export const sampleStateInfo = A
 
 export const sampleMethod: ContactMethod = {
   stateMethod: 'fax-email',
