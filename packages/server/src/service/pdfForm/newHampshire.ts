@@ -12,9 +12,9 @@ export const fillNewHampshire = (
     if (stateInfo.primaryParty !== 'No Primary') {
       check(0, 112, 448) // Primary Election
       if (stateInfo.primaryParty === 'Democratic Party') {
-        check(0, 103, 554) // Democratic Party
+        check(0, 102, 570) // Democratic Party
       } else if (stateInfo.primaryParty === 'Republican Party') {
-        check(0, 102, 570) // Republican Party
+        check(0, 103, 554) // Republican Party
       }
     }
     check(0, 112, 448) // General Election
