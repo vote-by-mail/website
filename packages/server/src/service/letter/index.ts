@@ -2,7 +2,7 @@ import mailgun from 'mailgun-js'
 import marked from 'marked'
 import nunjucks from 'nunjucks'
 
-import { processEnvOrThrow, StateInfo, ContactMethod, ImplementedState } from '../../common'
+import { processEnvOrThrow, StateInfo, ContactMethod, ImplementedState, formatPhoneNumber } from '../../common'
 import { fillMinnesota, fillNewHampshire, fillNorthCarolina, fillMassachusetts, fillVirginia } from '../pdfForm'
 import { staticDir } from '../util'
 
