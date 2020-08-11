@@ -17,7 +17,7 @@ export const fillNewHampshire = (
         check(0, 103, 554) // Republican Party
       }
     }
-    check(0, 112, 448) // General Election
+    check(0, 112, 478) // General Election
 
     text(stateInfo.name, 1, 86, 58)
     text(stateInfo.uspsAddress, 1, 86, 127)
