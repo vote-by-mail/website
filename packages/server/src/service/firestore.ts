@@ -266,4 +266,22 @@ export class FirestoreService {
         .limit(options.limit)
     )
   }
+
+  // allows privileged users to change org name
+  async updateOrgName(uid: string, oid: string, name: string) {
+    const org = await this.fetchOrg(oid)
+    if (!org) return false
+    if (!org.user.admins.includes(uid)) return false
+    await this.orgRef(oid).update({ name })
+    return true
+  }
+
+  // allows privileged users to change org privacy
+  async updateOrgPrivacy(uid: string, oid: string, privacyUrl: string) {
+    const org = await this.fetchOrg(oid)
+    if (!org) return false
+    if (!org.user.admins.includes(uid)) return false
+    await this.orgRef(oid).update({ privacyUrl })
+    return true
+  }
 }
