@@ -48,10 +48,10 @@ block content
       .col-lg.mt-3
         .d-flex.justify-content-between
           .flex-grow-1.mr-3
-            h4.text-primary Claim a new organization 
+            h4.text-primary Claim a new organization
           .flex-grow-0
             p.text-muted (maximum #{maxOrgs})
-        
+
         form(action='/claimNewOrg' method='post')
           .d-flex.justify-content-between
             .mt-2.flex-grow-1.mr-3
@@ -86,7 +86,7 @@ block content
               li.list-group-item
                 .mt-1.d-flex.justify-content-between
                   .d-flex.justify-content-start
-                    h5.mr-2= org.id
+                    h5.mr-2= org.name ? `${org.name} (${org.id})` : org.id
                     a.mr-2(href=org.displayUrl target='_blank')
                       i.fa.fa-external-link
                     if org.isAdmin
@@ -100,4 +100,3 @@ block content
                       i.fa.fa-cloud-download
         else
           span No orgs claimed!
-
