@@ -144,7 +144,7 @@ const getSampleStateInfo = async (): Promise<StateInfoRecord> => {
 
 const stateInfoRecord = getSampleStateInfo()
 
-export const sampleStateInfo = async <S extends ImplementedState>(state: S): Promise<StateInfo> => {
+export const sampleStateInfo = async <S extends ImplementedState>(state: S): Promise<StateInfoRecord[S]> => {
   return (await stateInfoRecord)[state]
 }
 
