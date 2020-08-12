@@ -207,7 +207,7 @@ export const Footer = () => {
           </a>
         </div>
         {!!org.privacyUrl && <div>
-          <a href={org.privacyUrl}>{org.name ? `${org.name} (org)` : 'Org'} Privacy Policy</a>
+          <a href={org.privacyUrl}>{org.name ? `${org.name} (org)` : 'Partner'} Privacy Policy</a>
         </div>}
       </Logo>
       <Section>
