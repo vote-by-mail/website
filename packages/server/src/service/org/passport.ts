@@ -86,6 +86,8 @@ const enrichOrg = (org: Org, uid: string) => ({
   editUrl: `/dashboard/${org.id}`,
   downloadUrl: `/download/${org.id}`,
   updateAnalyticsUrl: `/dashboard/${org.id}/updateAnalytics`,
+  updateOrgNameUrl: `/dashboard/${org.id}/updateOrgName`,
+  updateOrgPrivacyUrl: `/dashboard/${org.id}/updateOrgPrivacy`,
 })
 
 export const registerPassportEndpoints = (app: Express.Application) => {
@@ -106,7 +108,7 @@ export const registerPassportEndpoints = (app: Express.Application) => {
   app.use(passport.initialize())
   app.use(passport.session())
   app.use(bodyParser.urlencoded({ extended: true }))
-  
+
   app.get('/auth/google',
     passport.authenticate(
       'google', {
@@ -134,7 +136,7 @@ export const registerPassportEndpoints = (app: Express.Application) => {
         await firestoreService.fetchUser(uid),
         await firestoreService.fetchUserOrgs(uid)
       ])
-      
+
       const richOrgs = orgs.map(org => enrichOrg(org, uid))
 
       res.render('dashboard', {
@@ -174,6 +176,38 @@ export const registerPassportEndpoints = (app: Express.Application) => {
       await firestoreService.updateAnalytics(oid, { facebookId, googleId })
       req.flash('success', `Added Facebook Pixel Id for org "${oid}" to "${facebookId}"`)
       req.flash('success', `Added Google Pixel Id for org "${oid}" to "${googleId}"`)
+      return res.redirect(`/dashboard/`)
+    }
+  )
+
+  app.post('/dashboard/:oid/updateOrgName', validSession, orgPermissions('admins'),
+    async (req, res) => {
+      const { oid } = req.params
+      const uid = getUid(req)
+      const { name } = req.body
+      if (await firestoreService.updateOrgName(uid, oid, name)) {
+        const msg = name ? `Changed org "${oid}" name to "${name}"` : `Removed org "${oid}" name.`
+        req.flash('success', msg)
+      } else {
+        req.flash('danger', `Failed to update org "${oid}" name, please check your privileges or try again.`)
+      }
+      return res.redirect(`/dashboard/`)
+    }
+  )
+
+  app.post('/dashboard/:oid/updateOrgPrivacy', validSession, orgPermissions('admins'),
+    async (req, res) => {
+      const { oid } = req.params
+      const uid = getUid(req)
+      const { privacyUrl } = req.body
+      if (privacyUrl) {
+        if (await firestoreService.updateOrgPrivacy(uid, oid, privacyUrl)) {
+          const msg = privacyUrl ? `Changed org "${oid}" privacy policy url to "${privacyUrl}"` : `Removed org "${oid}" privacy policy.`
+          req.flash('success', msg)
+        } else {
+          req.flash('danger', `Failed to update org "${oid}" privacy policy url, please check your privileges or try again.`)
+        }
+      }
       return res.redirect(`/dashboard/`)
     }
   )
