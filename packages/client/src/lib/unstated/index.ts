@@ -23,6 +23,7 @@ const useInitialDataContainer = (data: InitialData = {
   // value is acquired from the backend--which results in a delay that could
   // potentially show the warning modal on production.
   emailFaxOfficials: process.env.NODE_ENV !== 'test',
+  org: {},
 }) => {
   const [initialData, setInitialData] = React.useState(data)
   return { initialData, setInitialData }
