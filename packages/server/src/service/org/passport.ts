@@ -86,8 +86,7 @@ const enrichOrg = (org: Org, uid: string) => ({
   editUrl: `/dashboard/${org.id}`,
   downloadUrl: `/download/${org.id}`,
   updateAnalyticsUrl: `/dashboard/${org.id}/updateAnalytics`,
-  updateOrgNameUrl: `/dashboard/${org.id}/updateOrgName`,
-  updateOrgPrivacyUrl: `/dashboard/${org.id}/updateOrgPrivacy`,
+  updateOrgDetailsUrl: `/dashboard/${org.id}/updateOrgDetails`,
 })
 
 export const registerPassportEndpoints = (app: Express.Application) => {
@@ -180,33 +179,15 @@ export const registerPassportEndpoints = (app: Express.Application) => {
     }
   )
 
-  app.post('/dashboard/:oid/updateOrgName', validSession, orgPermissions('admins'),
+  app.post('/dashboard/:oid/updateOrgDetails', validSession, orgPermissions('admins'),
     async (req, res) => {
       const { oid } = req.params
       const uid = getUid(req)
-      const { name } = req.body
-      if (await firestoreService.updateOrgName(uid, oid, name)) {
-        const msg = name ? `Changed org "${oid}" name to "${name}"` : `Removed org "${oid}" name.`
-        req.flash('success', msg)
+      const { privacyUrl, name } = req.body
+      if (await firestoreService.updateOrgDetails(uid, oid, { name, privacyUrl })) {
+        req.flash('success', `Updated org "${oid}" details.`)
       } else {
-        req.flash('danger', `Failed to update org "${oid}" name, please check your privileges or try again.`)
-      }
-      return res.redirect(`/dashboard/`)
-    }
-  )
-
-  app.post('/dashboard/:oid/updateOrgPrivacy', validSession, orgPermissions('admins'),
-    async (req, res) => {
-      const { oid } = req.params
-      const uid = getUid(req)
-      const { privacyUrl } = req.body
-      if (privacyUrl) {
-        if (await firestoreService.updateOrgPrivacy(uid, oid, privacyUrl)) {
-          const msg = privacyUrl ? `Changed org "${oid}" privacy policy url to "${privacyUrl}"` : `Removed org "${oid}" privacy policy.`
-          req.flash('success', msg)
-        } else {
-          req.flash('danger', `Failed to update org "${oid}" privacy policy url, please check your privileges or try again.`)
-        }
+        req.flash('danger', `Failed to update org "${oid}" details, please check your privileges or try again in a few minutes.`)
       }
       return res.redirect(`/dashboard/`)
     }

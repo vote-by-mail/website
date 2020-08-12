@@ -2,7 +2,7 @@ import * as firebase from '@firebase/testing'
 
 import { FirestoreService } from './firestore'
 import { RichStateInfo } from './types'
-import { fullName } from '../common'
+import { fullName, OrgDetails } from '../common'
 
 const projectId = 'new-test'
 const nameParts = { first: 'Bob', last: 'Smith' }
@@ -119,13 +119,12 @@ describe('roles and permissions', () => {
     await expect(fs.grantExistingOrg(uids[1], uids[2], oid)).resolves.toBe(false)
   })
 
-  test('only privileged users can update org name', async () => {
-    await expect(fs.updateOrgName(uids[0], oid, 'New Name')).resolves.toBe(true)
-    await expect(fs.updateOrgName(uids[1], oid, 'New Name')).resolves.toBe(false)
-  })
-
-  test('only privileged users can update org privacyUrl', async () => {
-    await expect(fs.updateOrgPrivacy(uids[0], oid, 'http://example.com')).resolves.toBe(true)
-    await expect(fs.updateOrgPrivacy(uids[1], oid, 'http://example.com')).resolves.toBe(false)
+  test('only privileged users can update org details', async () => {
+    const details: OrgDetails = {
+      name: 'New Name',
+      privacyUrl: 'https://example.com',
+    }
+    await expect(fs.updateOrgDetails(uids[0], oid, details)).resolves.toBe(true)
+    await expect(fs.updateOrgDetails(uids[1], oid, details)).resolves.toBe(false)
   })
 })

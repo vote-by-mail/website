@@ -37,6 +37,10 @@ export class VbmRpc implements ImplRpc<IVbmRpc, Request> {
       emailFaxOfficials: !!process.env.EMAIL_FAX_OFFICIALS,
       facebookId: orgObj?.facebookId,
       googleId: orgObj?.googleId,
+      org: {
+        name: orgObj?.name,
+        privacyUrl: orgObj?.privacyUrl,
+      },
     })
   }
   public fetchState = async (zip: string) => {
