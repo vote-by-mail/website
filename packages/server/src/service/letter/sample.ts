@@ -1,5 +1,5 @@
 import { Letter } from '.'
-import { BaseInfo, ContactMethod, ImplementedState, StateInfo, toContactMethod, fullName, WisconsinInfo, NevadaInfo } from '../../common'
+import { BaseInfo, ContactMethod, ImplementedState, StateInfo, toContactMethod, fullName } from '../../common'
 import { getContact, getFirstContact } from '../contact'
 import { safeReadFileSync, staticDir } from '../util'
 
@@ -144,7 +144,7 @@ const getSampleStateInfo = async (): Promise<StateInfoRecord> => {
 
 const stateInfoRecord = getSampleStateInfo()
 
-const sampleStateInfo = async <S extends ImplementedState>(state: S): Promise<StateInfo> => {
+export const sampleStateInfo = async <S extends ImplementedState>(state: S): Promise<StateInfo> => {
   return (await stateInfoRecord)[state]
 }
 
