@@ -7,7 +7,7 @@ import { BaseInput, PhoneInput, EmailInput, NameInput, BirthdateInput } from '..
 import { Togglable } from '../util/Togglable'
 import { useAppHistory } from '../../lib/path'
 import { Signature } from '../util/Signature'
-import { AddressContainer, VoterContainer, ContactContainer, FetchingDataContainer } from '../../lib/unstated'
+import { AddressContainer, VoterContainer, ContactContainer, FetchingDataContainer, InitialDataContainer } from '../../lib/unstated'
 import { ContactInfo } from '../contact/ContactInfo'
 import { AppForm } from '../util/Form'
 import { Center } from '../util/Util'
@@ -17,6 +17,7 @@ import { cssQuery } from '../util/cssQuery'
 import { FieldsContainer } from './BaseContainer'
 import { BaseRegistration, BaseRegistrationStatus } from './BaseRegistration'
 import { BaseModal } from './BaseModal'
+import { AppCheckbox } from '../util/Checkbox'
 
 export type StatelessInfo = Omit<BaseInfo, 'state'>
 
@@ -57,6 +58,7 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
   const { contact } = ContactContainer.useContainer()
   const { voter } = VoterContainer.useContainer()
   const { fetchingData, setFetchingData } = FetchingDataContainer.useContainer()
+  const { org } = InitialDataContainer.useContainer().initialData
   const {
     fields,
     updateField,
@@ -261,6 +263,9 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
       />
     }</Togglable>
     { children }
+    {!!org.privacyUrl && <AppCheckbox required label={
+      <>You agree to the <a href={org.privacyUrl}>privacy policy</a> of your partner organization{org.name ? ` (${org.name})` : null}.</>
+    }/>}
     <Center>
       <RoundedButton
         color='primary'
