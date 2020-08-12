@@ -6,7 +6,7 @@ import { cssQuery } from './util/cssQuery'
 import { InputButton } from './util/InputButton'
 import { Container, Button } from 'muicss/react'
 import { MarketingWrapper } from './util/MarketingWrapper'
-import { FetchingDataContainer } from '../lib/unstated'
+import { FetchingDataContainer, InitialDataContainer } from '../lib/unstated'
 import { toast } from 'react-toastify'
 import { client } from '../lib/trpc'
 
@@ -44,17 +44,21 @@ const Logo = styled.div`
   }
 
   img {
-    max-width: 140px;
-    width: 100%;
+    width: 140px;
   }
 
   /* Styles privacy policy link */
+  div {
+    width: 140px;
+    display: flex;
+    padding-top: 0.15em;
+    border-top: 1px solid #0001;
+    margin-top: 0.15em;
+    &:first-of-type { margin-top: 0.4em; }
+  }
   a {
     color: unset;
     font-size: 10px;
-    padding-top: 0.2em;
-    border-top: 1px solid #0001;
-    margin-top: 0.5em;
     text-decoration: underline;
     &:hover {
       color: var(--primary);
@@ -63,9 +67,8 @@ const Logo = styled.div`
 `
 
 const VBar = styled.span`
-  padding: 0.2em 0.3rem;
+  padding: 0 0.3rem;
   font-size: 10px;
-  border-top: 1px solid #0001;
   color: #0003;
   ::before { content: '|'; }
 `
@@ -188,6 +191,7 @@ const privacyPolicyUrl = process.env.REACT_APP_SERVER + '/PrivacyPolicy.pdf'
 const termsOfUseUrl = process.env.REACT_APP_SERVER + '/TermsOfUse.pdf'
 
 export const Footer = () => {
+  const { org } = InitialDataContainer.useContainer().initialData
 
   return <FooterWrapper centerContent={false}>
     <Container>
@@ -202,6 +206,9 @@ export const Footer = () => {
             Privacy Policy
           </a>
         </div>
+        {!!org.privacyUrl && <div>
+          <a href={org.privacyUrl}>{org.name ? `${org.name} (org)` : 'Org'} Privacy Policy</a>
+        </div>}
       </Logo>
       <Section>
         <Form/>
