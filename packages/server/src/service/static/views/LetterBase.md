@@ -6,9 +6,9 @@ Below are the details of my application:
 - Name: **{{name}}**
 - Birth Date: **{{birthdate}}**
 - Voter Registration Address: **{{uspsAddress}}**
-{%- if mailingAddress -%}
+{%- if mailingAddress %}
 - Mailing Address: {{mailingAddress}}
-{%- else -%}
+{%- else %}
 - Mailing Address: Same as registration address
 {%- endif %}
 - Email: {{email}}

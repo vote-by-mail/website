@@ -17,12 +17,12 @@ const name = fullName(nameParts)
 
 const baseStateInfo: Omit<BaseInfo, 'contact'> = {
   state: 'Virginia',
-  name, nameParts,
+  name,
+  nameParts,
   email: 'george.washington@gmail.com',
   phone: '+1 (234)-567-8901',
   birthdate: '04/01/1756',
   uspsAddress: '35 Mount Vernon St Apt 3C, Vernon, NJ 00000',
-  mailingAddress: '55 Fifth Avenue Apt 10F, New York, NY 34562',
   county: 'Fairfax',
   city: 'Fairfax',
   oid: 'default',

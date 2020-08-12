@@ -4,7 +4,7 @@
 
 {% block body %}
 - County: **{{county}}**
-{%- if party -%}
+{%- if party %}
 - Party: **{{party}}**
 {%- endif %}
 - Identity (**{{idType}}**): **{{idData}}**

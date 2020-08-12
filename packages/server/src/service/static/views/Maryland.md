@@ -3,13 +3,13 @@
 {% set guidance = 'the [Maryland Code §9-305](https://codes.findlaw.com/md/election-law/md-code-elec-law-sect-9-305.html)' %}
 
 {% block body %}
-{%- if phone -%}
+{%- if phone %}
 - Phone: **{{phone}}**
 {%- endif %}
-{%- if city -%}
+{%- if city %}
 - City: **{{city}}**
 {%- endif %}
-{%- if county -%}
+{%- if county %}
 - County: **{{county}}**
 {%- endif %}
 - Election: **{{election}}**
