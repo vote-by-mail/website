@@ -94,7 +94,7 @@ export class Letter {
    * allows to adapt the resulted markdown for these differences.
    */
   md = (dest: 'email' | 'html') => {
-    const { contact } = this.info
+    const method = this.method
     return nunjucks.render(
       template(this.info.state),
       {
@@ -102,11 +102,9 @@ export class Letter {
         ...envVars,
         name: this.info.name,
         confirmationId: this.confirmationId,
-        method: this.method,
-        contact: {
-          ...contact,
-          faxes: contact.faxes ? contact.faxes.map(formatPhoneNumber) : [],
-          phones: contact.phones ? contact.phones.map(formatPhoneNumber) : [],
+        method: {
+          ...method,
+          faxes: method.faxes && method.faxes.map(formatPhoneNumber),
         },
         warning: !process.env.EMAIL_FAX_OFFICIALS,
         signature: dest === 'email' && this.signatureAttachment
