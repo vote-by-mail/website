@@ -1,6 +1,6 @@
 import * as admin from 'firebase-admin'
 
-import { processEnvOrThrow, WithId } from '../common'
+import { processEnvOrThrow, WithId, OrgDetails } from '../common'
 import { Profile } from 'passport'
 import { User, RichStateInfo, Org, TwilioResponse } from './types'
 import { Analytics } from '../common/'
@@ -267,21 +267,15 @@ export class FirestoreService {
     )
   }
 
-  // allows privileged users to change org name
-  async updateOrgName(uid: string, oid: string, name: string): Promise<boolean> {
+  // allows privileged users to change org details
+  async updateOrgDetails(uid: string, oid: string, details: OrgDetails): Promise<boolean> {
     const org = await this.fetchOrg(oid)
     if (!org) return false
     if (!org.user.admins.includes(uid)) return false
-    await this.orgRef(oid).update({ name })
-    return true
-  }
-
-  // allows privileged users to change org privacy
-  async updateOrgPrivacy(uid: string, oid: string, privacyUrl: string): Promise<boolean> {
-    const org = await this.fetchOrg(oid)
-    if (!org) return false
-    if (!org.user.admins.includes(uid)) return false
-    await this.orgRef(oid).update({ privacyUrl })
+    await this.orgRef(oid).update({
+      name: details.name,
+      privacyUrl: details.privacyUrl,
+    })
     return true
   }
 }

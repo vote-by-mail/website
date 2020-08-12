@@ -13,21 +13,16 @@ block content
     .row
       .col-lg
         .card.mt-5.p-3
-          h4.text-primary Name
-          form(action=richOrg.updateOrgNameUrl method='post')
+          h4.text-primary Org Details
+          form(action=richOrg.updateOrgDetailsUrl method='post')
             .form-group
-              label(for='name') Org name
+              label(for='name') Name
               input(type='text' class='form-control' id='name' name='name' placeholder='Organization Name' value=richOrg.name)
 
-            .d-flex.justify-content-end
-              button.btn.btn-primary(type='submit') Update
-
-          h4.text-primary Privacy Policy
-          form(action=richOrg.updateOrgPrivacyUrl method='post')
             .form-group
               label(for='privacyUrl') Privacy Policy Url
               input(type='text' class='form-control' id='privacyUrl' name='privacyUrl' placeholder='https://example.com/privacy_policy.pdf' value=richOrg.privacyUrl )
-              small.form-text.text-muted(id='googleHelp').
+              small.form-text.text-muted(id='privacyPolicyUrl').
                 Set a valid url for your organization's privacy policy. It might be a link for a .PDF file or a webpage where the policy can be found.
 
             .d-flex.justify-content-end
