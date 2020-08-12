@@ -118,4 +118,14 @@ describe('roles and permissions', () => {
     await expect(fs.acceptOrg(uids[1], oid)).resolves.toBe(true)
     await expect(fs.grantExistingOrg(uids[1], uids[2], oid)).resolves.toBe(false)
   })
+
+  test('only privileged users can update org name', async () => {
+    await expect(fs.updateOrgName(uids[0], oid, 'New Name')).resolves.toBe(true)
+    await expect(fs.updateOrgName(uids[1], oid, 'New Name')).resolves.toBe(false)
+  })
+
+  test('only privileged users can update org privacyUrl', async () => {
+    await expect(fs.updateOrgPrivacy(uids[0], oid, 'http://example.com')).resolves.toBe(true)
+    await expect(fs.updateOrgPrivacy(uids[1], oid, 'http://example.com')).resolves.toBe(false)
+  })
 })

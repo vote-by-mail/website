@@ -16,6 +16,8 @@ export interface User extends _Id {
 
 // subcollection
 export interface Org extends _Id {
+  name?: string
+  privacyUrl?: string
   facebookId?: string
   googleId?: string
   user: {
