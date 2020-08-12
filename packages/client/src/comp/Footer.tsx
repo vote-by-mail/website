@@ -52,7 +52,6 @@ const Logo = styled.div`
     width: 140px;
     display: flex;
     padding-top: 0.15em;
-    border-top: 1px solid #0001;
     margin-top: 0.15em;
     &:first-of-type { margin-top: 0.4em; }
   }
@@ -207,7 +206,7 @@ export const Footer = () => {
           </a>
         </div>
         {!!org.privacyUrl && <div>
-          <a href={org.privacyUrl}>{org.name ? `${org.name} (org)` : 'Partner'} Privacy Policy</a>
+          <a href={org.privacyUrl}>{org.name ? `${org.name} (partner)` : 'Partner'} Privacy Policy</a>
         </div>}
       </Logo>
       <Section>
