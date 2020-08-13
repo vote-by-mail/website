@@ -31,7 +31,7 @@ const subject = (state: ImplementedState) => {
   }
 }
 
-const pdfForm = async (info: StateInfo): Promise<Buffer | undefined> => {
+export const pdfForm = async (info: StateInfo): Promise<Buffer | undefined> => {
   switch(info.state) {
     case 'Massachusetts': return fillMassachusetts(info)
     case 'Minnesota': return fillMinnesota(info)

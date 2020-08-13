@@ -1,14 +1,13 @@
 import fs from 'fs'
 import { toSignatureBuffer } from './util'
-import { sampleStateInfo } from '../letter'
-import { fillVirginia } from './virginia'
+import { sampleStateInfo, pdfForm } from '../letter'
 
 
 const main = async () => {
-  const data = await sampleStateInfo('Virginia')
-  const buffer = await fillVirginia({...data})
+  const info = await sampleStateInfo('Virginia')
+  const buffer = await pdfForm(info)
   fs.writeFileSync('/tmp/Foo.pdf', buffer)
-  const signatureBuffer = await toSignatureBuffer(data.signature, 200, 50)
+  const signatureBuffer = await toSignatureBuffer(info.signature, 200, 50)
   fs.writeFileSync('/tmp/Bar.pdf', signatureBuffer)
 }
 
