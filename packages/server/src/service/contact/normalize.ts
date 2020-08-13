@@ -1,7 +1,7 @@
 import { RawContactRecord, ContactRecord, RawContact, OptionalLocale } from "./type"
 import { AvailableState } from "../../common"
 import { mandatoryTransform } from "./transformers"
-import { checkE164 } from '../../common/util'
+import { isE164 } from '../../common/util'
 
 const lowerCase = <T>(f: (_: T) => string): (_: T) => string => {
   return (arg: T) => {
@@ -67,17 +67,22 @@ export const normalizeState = (
   contacts: RawContact[]
 ): Record<string, RawContact> => {
   const array = contacts.map(
-    contact => [
-      normalizeLocaleKey({
-        state,
-        city: contact.city,
-        county: contact.county,
-      }),
-      {
-        ...contact,
-        faxes: contact.faxes?.map((fax: string) => checkE164(fax) === null && fax)
-      },
-    ]
+    contact => {
+      // Do not load server if any fax number is not E164 (needed for Twillio)
+      contact.faxes && contact.faxes.forEach(
+        (fax) => {
+          if (!isE164(fax)) throw Error(`fax number ${fax} in state ${state} is not E164`)
+        }
+      )
+      return [
+        normalizeLocaleKey({
+          state,
+          city: contact.city,
+          county: contact.county,
+        }),
+        contact,
+      ]
+    }
   )
   return Object.fromEntries(array)
 }

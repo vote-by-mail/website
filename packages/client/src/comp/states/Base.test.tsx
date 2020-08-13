@@ -13,7 +13,7 @@ import { mocked } from 'ts-jest/utils'
 import { toPath, SuccessPath, parseQS } from '../../lib/path'
 import { AddressContainer, ContactContainer } from '../../lib/unstated'
 import { ContactData, StateInfo } from '../../common'
-import { checkE164 } from '../../../../common/util'
+import { isE164 } from '../../../../common/util'
 jest.mock('../../lib/trpc')
 
 const fields = {
@@ -262,6 +262,6 @@ test("Sends fax to Twillio successfully", async () => {
 
   const call = register.mock.calls[0][0] as StateInfo
   if(call.contact.faxes){
-    await expect(checkE164(call.contact.faxes[0])).toEqual(null)
+    await expect(isE164(call.contact.faxes[0])).toHaveReturned()
   }
 })
