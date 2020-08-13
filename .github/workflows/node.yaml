@@ -18,7 +18,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
       env:
-        GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
+        GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLEMAPSAPIKEY }}
 
     # Cache node_modules
     - name: Cache ~/.npm
