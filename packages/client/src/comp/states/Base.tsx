@@ -268,7 +268,7 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
       <>
         You agree to our <a href={termsOfUseUrl}>Terms of Use</a> and <a href={privacyPolicyUrl}>Privacy Policy</a>
         {
-          !!org.privacyUrl &&
+          org.privacyUrl &&
           <> and the <a href={org.privacyUrl}>Privacy Policy</a> of our partner{org.name ? ` (${org.name})` : ''}.</>
         }
       </>
