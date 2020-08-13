@@ -4,7 +4,7 @@ import { Request } from 'express'
 import { IVbmRpc, StateInfo, toLocale, toContactMethod, isState, Voter, Locale, ImplementedState, RegistrationArgs } from '../common'
 import { FirestoreService } from './firestore'
 import { sendSignupEmail, mg } from './mg'
-import { toContact, getContactRecords, getContact as _getContact } from './contact'
+import { toContact, contactRecords, getContact as _getContact } from './contact'
 import { geocode } from './gm'
 import { toPdfBuffer } from './pdf'
 import { storageFileFromId } from './storage'
@@ -63,7 +63,7 @@ export class VbmRpc implements ImplRpc<IVbmRpc, Request> {
     return data(contact)
   }
   public fetchContacts = async (state: ImplementedState) => {
-    const stateRecords = (await getContactRecords())[state]
+    const stateRecords = (await contactRecords)[state]
     return data(Object.keys(stateRecords))
   }
   public getContact = async (state: ImplementedState, key: string) => {

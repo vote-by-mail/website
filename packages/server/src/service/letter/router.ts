@@ -1,7 +1,7 @@
 import { Router } from 'express'
 
 import { implementedStates, isImplementedState } from '../../common'
-import { getContactRecords } from '../contact'
+import { contactRecords } from '../contact'
 import { sampleLetter } from './sample'
 
 export const router = Router()
@@ -14,8 +14,7 @@ router.get('/:state/:key?', async (req, res) => {
   const letter = await sampleLetter(state, key)
   if (!letter) return res.redirect(`/${state}`)
 
-  const contactRecords = await getContactRecords()
-  const keys = Object.keys(contactRecords[state])
+  const keys = Object.keys((await contactRecords)[state])
 
   const renderLetter = (letter: string) => {
     return res.render('letter.pug', {

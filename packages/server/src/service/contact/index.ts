@@ -1,7 +1,7 @@
 import { RawContact } from './type'
 import { Locale, isAvailableState, ContactData, AvailableState } from '../../common'
 import { keys } from './search'
-import { getContactRecords, getMichiganRecords } from './loader'
+import { contactRecords, michiganRecords } from './loader'
 import { michiganFipsCode } from '../michiganFipsCode'
 import { normalizeLocaleKey } from './normalize'
 
@@ -14,14 +14,14 @@ const enrichContact = (raw: RawContact, key: string, state: AvailableState): Con
 }
 
 export const getContact = async (state: AvailableState, key: string): Promise<ContactData | null> => {
-  const stateRecords = (await getContactRecords())[state]
+  const stateRecords = (await contactRecords)[state]
   const raw = stateRecords[key]
   if (raw) return enrichContact(raw, key, state)
   return null
 }
 
 export const getFirstContact = async (state: AvailableState): Promise<ContactData> => {
-  const stateRecords = (await getContactRecords())[state]
+  const stateRecords = (await contactRecords)[state]
   const [key, raw] = Object.entries(stateRecords)[0]
   return enrichContact(raw, key, state)
 }
@@ -33,7 +33,7 @@ export const getMichiganContact = async (
 ): Promise<ContactData | null> => {
   const fipscode = await michiganFipsCode(latLong, {cacheQuery})
   if (!fipscode) return null
-  const records = await getMichiganRecords()
+  const records = await michiganRecords
   const record = records[fipscode + ':' + county.toLowerCase()]
   if (!record) return null
   const key = normalizeLocaleKey({state: 'Michigan', county: record.county, city: record.city})
@@ -58,4 +58,4 @@ export const toContact = async (locale: Locale): Promise<ContactData | null> => 
   return null
 }
 
-export { getContactRecords }
+export { contactRecords }
