@@ -18,14 +18,14 @@ const invalidPhoneNumbers = ["1231231234", "1112223333"]
 
 describe('formatPhoneNumber', () => {
   test.each(validPhones)(
-    `formatPhoneNumber work for %i`,
+    `formatPhoneNumber work for %s`,
     async ({received, expected}) => {
       expect(formatPhoneNumber(received)).toEqual(expected)
     }
   )
 
   test.each(invalidPhoneNumbers)(
-    `formatPhoneNumber fails for %i`,
+    `formatPhoneNumber fails for %s`,
     async (invalidPhoneNumber) => {
       expect(formatPhoneNumber(invalidPhoneNumber)).toEqual(invalidPhoneNumber)
     }
@@ -34,9 +34,9 @@ describe('formatPhoneNumber', () => {
 
 describe('Test checkE164 function', () => {
   test.each(validPhones)(
-    `checkE164 function works for %i`,
+    `checkE164 function works for %s`,
     async ({ received }) => {
-      expect(isE164(received)).toHaveReturned()
+      expect(isE164(received)).toBe(true)
     }
   )
 
