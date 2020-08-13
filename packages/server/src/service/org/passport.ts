@@ -191,9 +191,9 @@ export const registerPassportEndpoints = (app: Express.Application) => {
       const uid = getUid(req)
       const { privacyUrl, name } = req.body
       if (await firestoreService.updateOrgDetails(uid, oid, { name, privacyUrl })) {
-        req.flash('success', `Updated org "${oid}" details.`)
+        req.flash('success', `Updated org details for "${oid}".`)
       } else {
-        req.flash('danger', `Failed to update org "${oid}" details, please check your privileges or try again in a few minutes.`)
+        req.flash('danger', `Failed to update org details for "${oid}", please check your privileges or try again in a few minutes.`)
       }
       return res.redirect(editUrl(oid))
     }
