@@ -22,6 +22,7 @@ const findByType = (
 const rawGeocode = async (query: string): Promise<google.maps.GeocoderResult | null> => {
   const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(query)}&key=${apiKey}`
   const response = (await axios.get(url)).data as GMResults
+  console.log(response)
   if (response.status != 'OK') return null
   return response.results[0]
 }
