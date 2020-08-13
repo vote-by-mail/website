@@ -45,35 +45,11 @@ export const loadMichigan = async (
   )
 }
 
-// Utility Functions
-const delay = (t: number): Promise<void> => new Promise(resolve => setTimeout(resolve, t))
-
-/** poll condition every interval millis for a total of timeout millis until condition is true, false otherwise */
-const poll = async (condition: () => boolean, interval: number, timeout: number): Promise<boolean> => {
-  if (condition()) return true
-  if (timeout <= 0) return false
-  await delay(interval)
-  return await poll(condition, interval, timeout - interval)
-}
-
-// Loading ContactRecords
-let contactRecords: null | ContactRecord = null
-let michiganRecords: null | Record<string, RawContact & { key: string }> = null;
-
-(async (): Promise<void> => {
+export const contactRecords: Promise<ContactRecord> = (async () => {
   const data = await loadStates()
-  contactRecords = normalizeStates(data)
-  michiganRecords = await loadMichigan(contactRecords['Michigan'])
+  return normalizeStates(data)
 })()
 
-export const getContactRecords = async (): Promise<ContactRecord> => {
-  await poll(() => !!contactRecords, 100, 5000)
-  if (!contactRecords) throw Error('Unable to load Contact Records')
-  return contactRecords
-}
-
-export const getMichiganRecords = async (): Promise<Record<string, RawContact>> => {
-  await poll(() => !!michiganRecords, 100, 5000)
-  if (!michiganRecords) throw Error('Unable to load Michigan Data')
-  return michiganRecords
-}
+export const michiganRecords: Promise<Record<string, RawContact & { key: string }>> = (async () => {
+  return loadMichigan((await contactRecords)['Michigan'])
+})()
