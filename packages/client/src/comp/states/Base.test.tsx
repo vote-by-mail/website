@@ -13,7 +13,7 @@ import { mocked } from 'ts-jest/utils'
 import { toPath, SuccessPath, parseQS } from '../../lib/path'
 import { AddressContainer, ContactContainer } from '../../lib/unstated'
 import { ContactData, StateInfo } from '../../common'
-import { e164 } from '../../../../common/util'
+import { checkE164 } from '../../../../common/util'
 jest.mock('../../lib/trpc')
 
 const fields = {
@@ -98,7 +98,24 @@ const wisconsinContact: ContactData = {
   state: 'Wisconsin',
   city: 'town',
   county: 'county',
-  faxes: ["+14142868445"]
+}
+
+const nevadaAddress = {
+  fullAddr: '575 W Symphony Park Ave, Las Vegas, NV 89101, USA',
+  city: 'Las Vegas',
+  country: 'United States',
+  state: 'Nevada',
+  postcode: '89101',
+  county: 'Clark County',
+  queryAddr: '575 W Symphony Park Ave, Las Vegas, NV 89106'
+}
+
+const nevadaContact: ContactData = {
+  key: 'town:county',
+  state: 'Nevada',
+  city: 'town',
+  county: 'county',
+  faxes: ["+17024552793"]
 }
 
 test('State Form Without Signature (Wisconsin) works', async () => {
@@ -229,8 +246,8 @@ test("Sends fax to Twillio successfully", async () => {
 
   const renderResult = render(
     <Router history={history}>
-      <AddressContainer.Provider initialState={wisconsinAddress}>
-        <ContactContainer.Provider initialState={wisconsinContact}>
+      <AddressContainer.Provider initialState={nevadaAddress}>
+        <ContactContainer.Provider initialState={nevadaContact}>
           <Wisconsin/>
         </ContactContainer.Provider>
       </AddressContainer.Provider>
@@ -245,6 +262,6 @@ test("Sends fax to Twillio successfully", async () => {
 
   const call = register.mock.calls[0][0] as StateInfo
   if(call.contact.faxes){
-    await expect(e164(call.contact.faxes[0])).toEqual(call.contact.faxes[0])
+    await expect(checkE164(call.contact.faxes[0])).toEqual(null)
   }
 })
