@@ -9,6 +9,7 @@ import { MarketingWrapper } from './util/MarketingWrapper'
 import { FetchingDataContainer, InitialDataContainer } from '../lib/unstated'
 import { toast } from 'react-toastify'
 import { client } from '../lib/trpc'
+import { privacyPolicyUrl, termsOfUseUrl } from './util/urls'
 
 const FooterWrapper  = styled(MarketingWrapper)`
   box-shadow: 0 12px 14px -10px rgba(0, 0, 0, 0.15) inset;
@@ -185,9 +186,6 @@ const Form: React.FC = () => {
     />
   </>
 }
-
-const privacyPolicyUrl = process.env.REACT_APP_SERVER + '/PrivacyPolicy.pdf'
-const termsOfUseUrl = process.env.REACT_APP_SERVER + '/TermsOfUse.pdf'
 
 export const Footer = () => {
   const { org } = InitialDataContainer.useContainer().initialData

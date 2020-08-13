@@ -18,6 +18,7 @@ import { FieldsContainer } from './BaseContainer'
 import { BaseRegistration, BaseRegistrationStatus } from './BaseRegistration'
 import { BaseModal } from './BaseModal'
 import { AppCheckbox } from '../util/Checkbox'
+import { termsOfUseUrl, privacyPolicyUrl } from '../util/urls'
 
 export type StatelessInfo = Omit<BaseInfo, 'state'>
 
@@ -263,9 +264,16 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
       />
     }</Togglable>
     { children }
-    {!!org.privacyUrl && <AppCheckbox required label={
-      <>You agree to the <a href={org.privacyUrl}>privacy policy</a> of your partner organization{org.name ? ` (${org.name})` : null}.</>
-    }/>}
+    <AppCheckbox required label={
+      <>
+        You agree to our <a href={termsOfUseUrl}>Terms of Use</a> and <a href={privacyPolicyUrl}>Privacy Policy</a>
+        {
+          !!org.privacyUrl &&
+          <> and the <a href={org.privacyUrl}>Privacy Policy</a> of our partner{org.name ? ` (${org.name})` : ''}.</>
+        }
+      </>
+    }/>
+
     <Center>
       <RoundedButton
         color='primary'
