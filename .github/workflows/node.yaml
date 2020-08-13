@@ -48,7 +48,7 @@ jobs:
       uses: actions/cache@v2
       with:
         path: packages/server/src/service/cache
-        key: packages/server/src/service/cache
+        key: packages/server/src/service/cache-2
     - name: Install Lerna
       run: npm install --global lerna
     - name: Boostrap
@@ -63,4 +63,5 @@ jobs:
       run: yarn test
       env:
         CI: true
-        GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
+        TEST_ENV: 1234
+        GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_KEY }}
