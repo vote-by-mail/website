@@ -21,7 +21,10 @@ export const Website = ({state, regUrl, infoUrl}: StatusProps<Statuses.Website>)
   <p data-testid='status-detail'>
     {state} allows all registered voters to sign up for <VbmBallot/>.
     You can apply on the <a href={regUrl}>official state election application page</a>.
-    For more information, visit your <a href={infoUrl}>state election website</a>.
+    {
+      infoUrl &&
+      <>For more information, visit your <a href={infoUrl}>state election website</a>.</>
+    }
   </p>
 </>)
 

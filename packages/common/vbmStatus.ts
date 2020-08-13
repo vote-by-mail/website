@@ -1,5 +1,6 @@
-import { State } from "./states"
+import { State } from './states'
 import { isImplementedState } from './stateInfo'
+import { getStatePortal } from './statePortal'
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export declare namespace Statuses {
@@ -7,7 +8,7 @@ export declare namespace Statuses {
   export interface Mail { status: "Mail", infoUrl: string }  // Must apply by mail
   export interface VbmApp { status: "VbmApp" }  // Works with our app
   export interface VoteDotOrg { status: 'Vote.org' }
-  export interface Website { status: "Website", regUrl: string, infoUrl: string }  // Can apply via state website
+  export interface Website { status: "Website", regUrl: string, infoUrl?: string }  // Can apply via state website
 }
 
 export type Status = (
@@ -27,17 +28,9 @@ export const vbmStatus = (state: State): Status => {
     return { status: "VbmApp" }
   }
 
-  switch (state) {
-    case "Pennsylvania": return {
-      status: "Website",
-      regUrl: "https://www.pavoterservices.pa.gov/OnlineAbsenteeApplication/#/OnlineAbsenteeBegin",
-      infoUrl: "https://www.votespa.com/Voting-in-PA/Pages/Mail-and-Absentee-Ballot.aspx",
-    }
-    case "Hawaii": return { status: "Automatic" }
-    case "Colorado": return { status: "Automatic" }
-    case "Utah": return { status: "Automatic" }
-    case "Oregon": return { status: "Automatic" }
-    case "Washington": return { status: "Automatic" }
+  const electionPortal = getStatePortal(state)
+  if (electionPortal) {
+    return { status: 'Website', regUrl: electionPortal }
   }
 
   return { status: 'Vote.org' }
