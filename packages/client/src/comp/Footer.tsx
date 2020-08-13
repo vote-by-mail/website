@@ -203,7 +203,7 @@ export const Footer = () => {
             Privacy Policy
           </a>
         </div>
-        {!!org.privacyUrl && <div>
+        {org.privacyUrl && <div>
           <a href={org.privacyUrl}>{org.name ? `${org.name} (partner)` : 'Partner'} Privacy Policy</a>
         </div>}
       </Logo>
