@@ -262,6 +262,6 @@ test("Sends fax to Twillio successfully", async () => {
 
   const call = register.mock.calls[0][0] as StateInfo
   if(call.contact.faxes){
-    await expect(isE164(call.contact.faxes[0])).toHaveReturned()
+    await expect(isE164(call.contact.faxes[0])).toBe(true)
   }
 })
