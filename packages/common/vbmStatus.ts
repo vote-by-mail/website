@@ -8,7 +8,7 @@ export declare namespace Statuses {
   export interface Mail { status: "Mail", infoUrl: string }  // Must apply by mail
   export interface VbmApp { status: "VbmApp" }  // Works with our app
   export interface VoteDotOrg { status: 'Vote.org' }
-  export interface Website { status: "Website", regUrl: string, infoUrl?: string }  // Can apply via state website
+  export interface Website { status: "Website", regUrl: string, infoUrl: string }  // Can apply via state website
 }
 
 export type Status = (
@@ -30,7 +30,8 @@ export const vbmStatus = (state: State): Status => {
 
   const electionPortal = getStatePortal(state)
   if (electionPortal) {
-    return { status: 'Website', regUrl: electionPortal }
+    const { regUrl, infoUrl } = electionPortal
+    return { status: 'Website', regUrl, infoUrl }
   }
 
   return { status: 'Vote.org' }
