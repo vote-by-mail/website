@@ -3,6 +3,8 @@ import { StyledModal } from '../util/StyledModal'
 import { BaseRegistrationStatus } from './BaseRegistration'
 import { RoundedButton } from '../util/Button'
 import styled from 'styled-components'
+import { AddressContainer } from '../../lib/unstated'
+import { getStatePortal } from '../../common/statePortal'
 
 interface Props {
   isOpen: boolean
@@ -15,24 +17,35 @@ interface Props {
 
 const P = styled.div`
   /* Allows newlines to be rendered without the need of <br> or new <p> */
-  white-space: pre-wrap;
   margin-bottom: 25px;
 `
 
 const statusMessage = (registrationStatus: BaseRegistrationStatus) => {
-  const doubleCheck = '\nPlease double check your name, address, and birthdate.  Our data is may be slightly out of date so if you are reasonably sure that the registration information you entered is correct, please ignore this warning.'
+  const doubleCheck = <p>Please double check your name, address, and birthdate.  Our data is may be slightly out of date so if you are reasonably sure that the registration information you entered is correct, please ignore this warning.</p>
 
   switch (registrationStatus) {
     case 'Active':
-return 'Based on our search of public records, you are currently registered to vote at this address.'
+      return <p>Based on our search of public records, you are currently registered to vote at this address.</p>
     case 'Error':
-return `Error while checking your registration status.
-${doubleCheck}`
-
-    default:
-return `Based on our search of public records, you are not currently registered to vote at this address.
-${doubleCheck}`
+      return <>
+        <p>Error while checking your registration status.</p>
+        {doubleCheck}
+      </>
   }
+
+  const { locale } = AddressContainer.useContainer()
+
+  const state = locale?.state
+  const statePortal = state ? getStatePortal(state) : null
+
+  return <>
+    <p>Based on our search of public records, you are not currently registered to vote at this address.</p>
+    {
+      statePortal &&
+      <p>You can register online for <a href={statePortal}>{state}</a> here.</p>
+    }
+    {doubleCheck}
+  </>
 }
 
 export const BaseModal: React.FC<Props> = ({
