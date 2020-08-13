@@ -1,6 +1,5 @@
-import { State } from './states'
+import { State } from "./states"
 import { isImplementedState } from './stateInfo'
-import { getStatePortal } from './statePortal'
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export declare namespace Statuses {
@@ -28,10 +27,17 @@ export const vbmStatus = (state: State): Status => {
     return { status: "VbmApp" }
   }
 
-  const electionPortal = getStatePortal(state)
-  if (electionPortal) {
-    const { regUrl, infoUrl } = electionPortal
-    return { status: 'Website', regUrl, infoUrl }
+  switch (state) {
+    case "Pennsylvania": return {
+      status: "Website",
+      regUrl: "https://www.pavoterservices.pa.gov/OnlineAbsenteeApplication/#/OnlineAbsenteeBegin",
+      infoUrl: "https://www.votespa.com/Voting-in-PA/Pages/Mail-and-Absentee-Ballot.aspx",
+    }
+    case "Hawaii": return { status: "Automatic" }
+    case "Colorado": return { status: "Automatic" }
+    case "Utah": return { status: "Automatic" }
+    case "Oregon": return { status: "Automatic" }
+    case "Washington": return { status: "Automatic" }
   }
 
   return { status: 'Vote.org' }
