@@ -78,15 +78,21 @@ const orgPermissions = (level: 'members' | 'admins'): Express.RequestHandler => 
 
 const maxOrgs = parseInt(processEnvOrThrow('USER_MAX_ORGS'))
 const frontEnd = processEnvOrThrow('REACT_APP_URL')
+
+const editUrl = (oid: string) => `/dashboard/${oid}`
+const downloadUrl = (oid: string) => `/download/${oid}`
+const updateAnalyticsUrl = (oid: string) => `/dashboard/${oid}/updateAnalytics`
+const updateOrgDetailsUrl = (oid: string) => `/dashboard/${oid}/updateOrgDetails`
+
 const enrichOrg = (org: Org, uid: string) => ({
   ...org,
   isAdmin: org.user.admins.includes(uid),
   isPending: org.user.pendings.includes(uid),
   displayUrl: frontEnd + '#/org/' + org.id,
-  editUrl: `/dashboard/${org.id}`,
-  downloadUrl: `/download/${org.id}`,
-  updateAnalyticsUrl: `/dashboard/${org.id}/updateAnalytics`,
-  updateOrgDetailsUrl: `/dashboard/${org.id}/updateOrgDetails`,
+  editUrl: editUrl(org.id ?? ''),
+  downloadUrl: downloadUrl(org.id ?? ''),
+  updateAnalyticsUrl: updateAnalyticsUrl(org.id ?? ''),
+  updateOrgDetailsUrl: updateOrgDetailsUrl(org.id ?? ''),
 })
 
 export const registerPassportEndpoints = (app: Express.Application) => {
@@ -175,7 +181,7 @@ export const registerPassportEndpoints = (app: Express.Application) => {
       await firestoreService.updateAnalytics(oid, { facebookId, googleId })
       req.flash('success', `Added Facebook Pixel Id for org "${oid}" to "${facebookId}"`)
       req.flash('success', `Added Google Pixel Id for org "${oid}" to "${googleId}"`)
-      return res.redirect(`/dashboard/`)
+      return res.redirect(editUrl(oid))
     }
   )
 
@@ -189,7 +195,7 @@ export const registerPassportEndpoints = (app: Express.Application) => {
       } else {
         req.flash('danger', `Failed to update org "${oid}" details, please check your privileges or try again in a few minutes.`)
       }
-      return res.redirect(`/dashboard/`)
+      return res.redirect(editUrl(oid))
     }
   )
 
