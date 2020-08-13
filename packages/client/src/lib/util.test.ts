@@ -1,4 +1,4 @@
-import { formatPhoneNumber, e164 } from '../../../common/util'
+import { formatPhoneNumber, checkE164 } from '../../../common/util'
 
 const validPhones = [
   {
@@ -33,13 +33,23 @@ describe('formatPhoneNumber', () => {
   )
 })
 
-describe('Test e164 function', () => {
-  it('works', () => {
-    const validE164Phone = e164(validPhones[0].received)
-    expect(validE164Phone).toEqual(validPhones[0].received)
-  })
+describe('Test checkE164 function', () => {
+  test.each(validPhones)(
+    `checkE164 function works for %i`,
+    async ({ received }) => {
+      const validateE164Phone = checkE164(received)
+      expect(validateE164Phone).toEqual(null)
+    }
+  )
 
-  it('throws error', () => {
-    expect(() => e164(invalidPhoneNumbers[0])).toThrow(`Regex failed to match ${invalidPhoneNumbers[0]}`)
-  })
+  test.each(invalidPhoneNumbers)(
+    `checkE164 function throws for %i`,
+    async (invalidPhoneNumber) => {
+      try {
+        checkE164(invalidPhoneNumber)
+      } catch (e) {
+        expect(e.message).toEqual(`Regex failed to match ${invalidPhoneNumber}`)
+      }
+    }
+  )
 })

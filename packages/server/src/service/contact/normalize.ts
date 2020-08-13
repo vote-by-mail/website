@@ -1,7 +1,7 @@
 import { RawContactRecord, ContactRecord, RawContact, OptionalLocale } from "./type"
 import { AvailableState } from "../../common"
 import { mandatoryTransform } from "./transformers"
-import { e164 } from '../../common/util'
+import { checkE164 } from '../../common/util'
 
 const lowerCase = <T>(f: (_: T) => string): (_: T) => string => {
   return (arg: T) => {
@@ -62,13 +62,6 @@ export const normalizeLocaleKey = ({state, city, county}: OptionalLocale): strin
   })
 }
 
-const normalizeContact = (contact: RawContact): RawContact => {
-  return {
-    ...contact,
-    faxes: contact.faxes?.map(e164)
-  }
-}
-
 export const normalizeState = (
   state: AvailableState,
   contacts: RawContact[]
@@ -80,7 +73,10 @@ export const normalizeState = (
         city: contact.city,
         county: contact.county,
       }),
-      normalizeContact(contact),
+      {
+        ...contact,
+        faxes: contact.faxes?.map((fax: string) => checkE164(fax) === null && fax)
+      },
     ]
   )
   return Object.fromEntries(array)
