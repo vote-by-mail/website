@@ -9,12 +9,17 @@ export const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, m
 
 /** phone numbers must be E164 for Twilio: https://www.twilio.com/docs/glossary/what-e164 */
 const regex = /^\+1\d{10}(x\d+)?$/
-export const checkE164 = (number: string) => {
-  const e164Number = number.match(regex)
-  if (!e164Number) throw Error(`Regex failed to match ${number}`)
-  return null
+
+/**
+ * Function returns if string is e164
+ **/
+export const isE164 = (number: string): boolean => {
+  return !!number.match(regex)
 }
 
+/**
+ * Nicely formats an E164 string or returns string if it does not match regex
+ **/
 export const formatPhoneNumber = (phoneNumberString: string): string => {
   const cleaned = phoneNumberString.replace(/^\+[0-9]/, '')
   const splitPhoneNumber = cleaned.match(/^(\d{3})(\d{3})(\d{4})(x\d+)?$/)
