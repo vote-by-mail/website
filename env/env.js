@@ -59,6 +59,7 @@ const development = removeNullValues({
   GCLOUD_PROJECT: 'vbm-dev-281822',
   GOOGLE_APPLICATION_CREDENTIALS: './secrets/vbm-dev-281822-2ed2f90c5f75.json',
   REACT_APP_GOOGLE_UA: 'UA-164550246-2',
+  REACT_APP_FACEBOOK_PIXEL: '327957361869867',
   REACT_APP_URL: 'http://localhost:3000/',
   FIRESTORE_URL: 'https://vbm-dev-281822.firebaseio.com',
   REACT_APP_SERVER: 'http://localhost:8080',
@@ -96,6 +97,7 @@ const staging = removeNullValues({
   GCLOUD_PROJECT: 'vbm-staging-281822',
   GOOGLE_APPLICATION_CREDENTIALS: './secrets/vbm-staging-281822-17369f2f304b.json',
   REACT_APP_GOOGLE_UA: 'UA-171601425-2',
+  REACT_APP_FACEBOOK_PIXEL: '327957361869867',
   REACT_APP_BRAND_NAME: 'Staging.VoteByMail.io',
   REACT_APP_URL: 'https://staging.votebymail.io/',
   FIRESTORE_URL: 'https://vbm-staging-281822.firebaseio.com',
@@ -119,6 +121,7 @@ const production = removeNullValues({
   GCLOUD_PROJECT: 'vbm-prod-281822',
   GOOGLE_APPLICATION_CREDENTIALS: './secrets/vbm-prod-281822-9e04d7cdeb71.json',
   REACT_APP_GOOGLE_UA: 'UA-171601425-1',
+  REACT_APP_FACEBOOK_PIXEL: '327957361869867',
   SENDINBLUE_LIST_ID: 3,  // This is the real list
   REACT_APP_BRAND_NAME: 'VoteByMail.io',
   REACT_APP_URL: 'https://votebymail.io/',

@@ -8,25 +8,23 @@ const fbOptions = {
 }
 
 export const initializeAnalytics = ({ facebookId, googleId }: Analytics) => {
-  if (facebookId) {
-    ReactPixel.init(facebookId, undefined, fbOptions)
-    ReactPixel.pageView()
-  }
+  facebookId = processEnvOrThrow('REACT_APP_FACEBOOK_PIXEL')
+  ReactPixel.init(facebookId, undefined, fbOptions)
+  ReactPixel.pageView()
 
-  const clientTracker: ReactGA.Tracker[] = googleId ? [{
+  const gaClientTracker: ReactGA.Tracker[] = googleId ? [{
     trackingId: googleId,
     gaOptions: { name: 'ClientTracker' }
   }] : []
-  
-  const trackers: ReactGA.Tracker[] = [
+  const gaTrackers: ReactGA.Tracker[] = [
     {
       trackingId: processEnvOrThrow('REACT_APP_GOOGLE_UA'),
       gaOptions: { name: 'VBMTracker' }
     },
-    ...clientTracker,
+    ...gaClientTracker,
   ]
+  ReactGA.initialize(gaTrackers)
 
-  ReactGA.initialize(trackers)
   ReactGA.pageview(window.location.hash, ['ClientTracker', 'VBMTracker'])
 }
 
