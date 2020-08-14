@@ -21,7 +21,7 @@ const P = styled.div`
 `
 
 const statusMessage = (registrationStatus: BaseRegistrationStatus) => {
-  const doubleCheck = <p>Please double check your name, address, and birthdate.  Our data is may be slightly out of date so if you are reasonably sure that the registration information you entered is correct, please ignore this warning.</p>
+  const doubleCheck = <p>Please double check your name, address, and birthdate.  Our data may be slightly out of date so if you are reasonably sure that the registration information you entered is correct, please ignore this warning.</p>
 
   switch (registrationStatus) {
     case 'Active':
@@ -42,7 +42,7 @@ const statusMessage = (registrationStatus: BaseRegistrationStatus) => {
     <p>Based on our search of public records, you are not currently registered to vote at this address.</p>
     {
       statePortal &&
-      <p>You can register online for <a href={statePortal}>{state}</a> here.</p>
+      <p>You can register to vote online for <a href={statePortal}>{state}</a> here.</p>
     }
     {doubleCheck}
   </>
