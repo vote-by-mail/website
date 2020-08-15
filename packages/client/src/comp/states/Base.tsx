@@ -209,18 +209,7 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
       id='birthdate'
       value={fields.birthdate.value}
       invalid={!fields.birthdate.valid}
-      onChange={e => {
-        const { value } = e.currentTarget
-        // Removes non-numbers and replaces '-' with '/'
-        const normalizedValue = value.replace(
-          '-',
-          '/',
-        ).replace(
-          /[^(0-9)|(/).]/g,
-          '',
-        )
-        updateField('birthdate', normalizedValue)
-      }}
+      onChange={e => updateField('birthdate', e.currentTarget.value)}
       onBlur={e => checkRegistration('birthdate', e)}
       required
     />

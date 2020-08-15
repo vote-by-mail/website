@@ -32,7 +32,9 @@ const baseUrl = '/org/default?'
 const params = {
   firstName: 'George',
   lastName: 'Washington',
-  birthdate: '02/22/1732',
+  // To test mm-dd-yyyy to mm/dd/yyyy conversion
+  birthdate: '02-22-1732',
+  normalizedBirthdate: '02/22/1732',
   email: 'washinton@gmail.com',
 }
 const urlWithQuery = baseUrl + Object.entries(params).map(([key, val]) => `${key}=${val}`).join('&')
@@ -52,13 +54,8 @@ test('Loads values from query (url params) by default', () => {
     { wrapper: UnstatedContainer },
   )
 
-  const firstName = rendered.getByDisplayValue(params.firstName)
-  const lastName = rendered.getByDisplayValue(params.lastName)
-  const birthdate = rendered.getByDisplayValue(params.birthdate)
-  const email = rendered.getByDisplayValue(params.email)
-
-  expect(firstName).toBeInTheDocument()
-  expect(lastName).toBeInTheDocument()
-  expect(birthdate).toBeInTheDocument()
-  expect(email).toBeInTheDocument()
+  expect(rendered.getByDisplayValue(params.firstName)).toBeInTheDocument()
+  expect(rendered.getByDisplayValue(params.lastName)).toBeInTheDocument()
+  expect(rendered.getByDisplayValue(params.normalizedBirthdate)).toBeInTheDocument()
+  expect(rendered.getByDisplayValue(params.email)).toBeInTheDocument()
 })
