@@ -2,6 +2,7 @@ import React from 'react'
 
 import { createContainer } from 'unstated-next'
 import { NameParts } from '../../common'
+import { useAppHistory } from '../../lib/path'
 
 const datePattern = /(0[1-9]|1[012])[/.](0[1-9]|[12][0-9]|3[01])[/.](19|20)[0-9]{2}/i
 // eslint-disable-next-line no-useless-escape
@@ -53,15 +54,57 @@ interface InputData {
  * process.
  */
 const useFields = () => {
+  const { query } = useAppHistory()
+
   const [fields, _updateValid] = React.useState<Record<InputId, InputData>>({
-    firstName: { valid: false, value: '' },
-    lastName: { valid: false, value: '' },
-    middleName: { valid: true, value: '' },
-    suffix: { valid: true, value: '' },
-    birthdate: { valid: false, value: '' },
-    email: { valid: false, value: '' },
-    telephone: { valid: true, value: '' },
-    mailing: { valid: true, value: '' },
+    firstName: {
+      valid: query.firstName
+        ? isInputValid('firstName', query.firstName)
+        : false,
+      value: query.firstName ?? ''
+    },
+    middleName: {
+      valid: query.middleName
+        ? isInputValid('middleName', query.middleName)
+        : true,
+      value: query.middleName ?? ''
+    },
+    lastName: {
+      valid: query.lastName
+        ? isInputValid('lastName', query.lastName)
+        : false,
+      value: query.lastName ?? ''
+    },
+    suffix: {
+      valid: query.suffix
+        ? isInputValid('suffix', query.suffix)
+        : true,
+      value: query.suffix ?? ''
+    },
+    birthdate: {
+      valid: query.birthdate
+        ? isInputValid('birthdate', query.birthdate)
+        : false,
+      value: query.birthdate ?? ''
+    },
+    email: {
+      valid: query.email
+        ? isInputValid('email', query.email)
+        : false,
+      value: query.email ?? ''
+    },
+    telephone: {
+      valid: query.telephone
+        ? isInputValid('telephone', query.telephone)
+        : true,
+      value: query.telephone ?? ''
+    },
+    mailing: {
+      valid: query.mailing
+        ? isInputValid('mailing', query.mailing)
+        : true,
+      value: query.mailing ?? ''
+    },
   })
 
   const nameParts: NameParts = {

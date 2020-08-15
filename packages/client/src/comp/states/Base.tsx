@@ -54,7 +54,7 @@ interface AlloyResponse {
  * /#/org/default/state?registrationAddress=100%20S%20Biscayne%20Blvd,%20Miami,%20FL%2033131&name=George%20Washington&birthdate=1945-01-01&email=george@us.gov&telephone=212-111-1111
  */
 const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: Props<Info>) => {
-  const { pushSuccess, oid, query } = useAppHistory()
+  const { pushSuccess, oid } = useAppHistory()
   const { address, locale } = AddressContainer.useContainer()
   const { contact } = ContactContainer.useContainer()
   const { voter } = VoterContainer.useContainer()
@@ -167,7 +167,6 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
         id='firstName'
         value={fields.firstName.value}
         label='First Name'
-        defaultValue={query.name}
         invalid={!fields.firstName.valid}
         onChange={e => updateField('firstName', e.currentTarget.value)}
         onBlur={e => checkRegistration('firstName', e)}
@@ -177,7 +176,6 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
         id='middleName'
         value={fields.middleName.value}
         label='Middle Name'
-        defaultValue={query.name}
         invalid={!fields.middleName.valid}
         onChange={e => updateField('middleName', e.currentTarget.value)}
         onBlur={e => checkRegistration('middleName', e)}
@@ -186,7 +184,6 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
         id='lastName'
         value={fields.lastName.value}
         label='Last Name'
-        defaultValue={query.name}
         invalid={!fields.lastName.valid}
         onChange={e => updateField('lastName', e.currentTarget.value)}
         onBlur={e => checkRegistration('lastName', e)}
@@ -196,7 +193,6 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
         id='suffix'
         value={fields.suffix.value}
         label='Suffix (e.g. Jr)'
-        defaultValue={query.name}
         invalid={!fields.suffix.valid}
         onChange={e => updateField('suffix', e.currentTarget.value)}
         onBlur={e => checkRegistration('suffix', e)}
@@ -212,7 +208,6 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
     <BirthdateInput
       id='birthdate'
       value={fields.birthdate.value}
-      defaultValue={query.birthdate}
       invalid={!fields.birthdate.valid}
       onChange={e => {
         const { value } = e.currentTarget
@@ -240,7 +235,6 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
     <EmailInput
       id='email'
       value={fields.email.value}
-      defaultValue={query.email}
       invalid={!fields.email.valid}
       onChange={e => updateField('email', e.currentTarget.value)}
       required
@@ -248,7 +242,6 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
     <PhoneInput
       id='telephone'
       value={fields.telephone.value}
-      defaultValue={query.telephone}
       maxLength={14}
       invalid={!fields.telephone.valid}
       onChange={e => updateField('telephone', e.currentTarget.value)}
