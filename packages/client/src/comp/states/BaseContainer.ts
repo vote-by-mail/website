@@ -49,6 +49,41 @@ interface InputData {
   value: string
 }
 
+/** Converts mm-dd-yyyy dates to mm/dd/yyyy */
+const normalizeDate = (date: string): string => date.replace(
+  /-/g,
+  '/',
+).replace(
+  /[^(0-9)|(/).]/g,
+  '',
+)
+
+/**
+ * Handles the default value of fields, returning a InputData
+ *
+ * @param id the InputId of the field
+ * @param queryValue The query value from AppHistory
+ * @param defaultValid The default valid state for this field when empty,
+ * for example optional fields have this value set to true
+ */
+const defaultInputData = (
+  id: InputId,
+  queryValue: string | undefined,
+  defaultValid: boolean,
+): InputData => {
+  if (queryValue) {
+    return {
+      valid: isInputValid(id, id === 'birthdate' ? normalizeDate(queryValue) : queryValue),
+      value: id === 'birthdate' ? normalizeDate(queryValue) : queryValue,
+    }
+  }
+
+  return {
+    valid: defaultValid,
+    value: '',
+  }
+}
+
 /**
  * Unstated container containing the values of all inputs used in the registration
  * process.
@@ -57,54 +92,14 @@ const useFields = () => {
   const { query } = useAppHistory()
 
   const [fields, _updateValid] = React.useState<Record<InputId, InputData>>({
-    firstName: {
-      valid: query.firstName
-        ? isInputValid('firstName', query.firstName)
-        : false,
-      value: query.firstName ?? ''
-    },
-    middleName: {
-      valid: query.middleName
-        ? isInputValid('middleName', query.middleName)
-        : true,
-      value: query.middleName ?? ''
-    },
-    lastName: {
-      valid: query.lastName
-        ? isInputValid('lastName', query.lastName)
-        : false,
-      value: query.lastName ?? ''
-    },
-    suffix: {
-      valid: query.suffix
-        ? isInputValid('suffix', query.suffix)
-        : true,
-      value: query.suffix ?? ''
-    },
-    birthdate: {
-      valid: query.birthdate
-        ? isInputValid('birthdate', query.birthdate)
-        : false,
-      value: query.birthdate ?? ''
-    },
-    email: {
-      valid: query.email
-        ? isInputValid('email', query.email)
-        : false,
-      value: query.email ?? ''
-    },
-    telephone: {
-      valid: query.telephone
-        ? isInputValid('telephone', query.telephone)
-        : true,
-      value: query.telephone ?? ''
-    },
-    mailing: {
-      valid: query.mailing
-        ? isInputValid('mailing', query.mailing)
-        : true,
-      value: query.mailing ?? ''
-    },
+    firstName: defaultInputData('firstName', query.firstName, false),
+    middleName: defaultInputData('middleName', query.middleName, true),
+    lastName: defaultInputData('lastName', query.lastName, false),
+    suffix: defaultInputData('suffix', query.suffix, true),
+    birthdate: defaultInputData('birthdate', query.birthdate, false),
+    email: defaultInputData('email', query.email, false),
+    telephone: defaultInputData('telephone', query.telephone, true),
+    mailing: defaultInputData('mailing', query.mailing, true),
   })
 
   const nameParts: NameParts = {
@@ -115,7 +110,12 @@ const useFields = () => {
   }
 
   const updateField = (id: InputId, value: string) => {
-    _updateValid({ ...fields, [id]: { valid: isInputValid(id, value), value } })
+    if (id === 'birthdate') {
+      const normalized = normalizeDate(value)
+      _updateValid({ ...fields, [id]: { valid: isInputValid(id, normalized), value: normalized } })
+    } else {
+      _updateValid({ ...fields, [id]: { valid: isInputValid(id, value), value } })
+    }
   }
 
   const canCheckRegistration = () => (
