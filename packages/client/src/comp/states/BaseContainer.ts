@@ -49,15 +49,6 @@ interface InputData {
   value: string
 }
 
-/** Converts mm-dd-yyyy dates to mm/dd/yyyy */
-const normalizeDate = (date: string): string => date.replace(
-  /-/g,
-  '/',
-).replace(
-  /[^(0-9)|(/).]/g,
-  '',
-)
-
 /**
  * Handles the default value of fields, returning a InputData
  *
@@ -73,8 +64,8 @@ const defaultInputData = (
 ): InputData => {
   if (queryValue) {
     return {
-      valid: isInputValid(id, id === 'birthdate' ? normalizeDate(queryValue) : queryValue),
-      value: id === 'birthdate' ? normalizeDate(queryValue) : queryValue,
+      valid: isInputValid(id, queryValue),
+      value: queryValue,
     }
   }
 
@@ -110,12 +101,7 @@ const useFields = () => {
   }
 
   const updateField = (id: InputId, value: string) => {
-    if (id === 'birthdate') {
-      const normalized = normalizeDate(value)
-      _updateValid({ ...fields, [id]: { valid: isInputValid(id, normalized), value: normalized } })
-    } else {
-      _updateValid({ ...fields, [id]: { valid: isInputValid(id, value), value } })
-    }
+    _updateValid({ ...fields, [id]: { valid: isInputValid(id, value), value } })
   }
 
   const canCheckRegistration = () => (
