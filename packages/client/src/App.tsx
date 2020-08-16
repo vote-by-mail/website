@@ -6,7 +6,7 @@ import { Switch, Route, Redirect } from "react-router-dom"
 import { About } from './comp/About'
 import { Footer } from './comp/Footer'
 import { Initialize } from './comp/Initialize'
-import { AddressForm } from './comp/AddressForm'
+import { AddressForm } from './comp/Address'
 import { DevInfo } from './comp/DevInfo'
 import { Success } from './comp/Success'
 import { Status } from './comp/Status'
