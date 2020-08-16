@@ -1,9 +1,9 @@
 import React from 'react'
 import { render, fireEvent, waitForElement, act } from '@testing-library/react'
-import { RawAddressForm } from './AddressForm'
-import { UnstatedContainer } from "./StateContainer"
-import { client } from '../lib/trpc'
-import { pageView } from '../lib/analytics'
+import { RawAddressForm } from './Form'
+import { UnstatedContainer } from "../StateContainer"
+import { client } from '../../lib/trpc'
+import { pageView } from '../../lib/analytics'
 import { mocked } from 'ts-jest/utils'
 
 jest.mock('../lib/analytics')
