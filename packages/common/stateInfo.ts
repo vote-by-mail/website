@@ -2,7 +2,7 @@ import { _Id } from './util'
 import { Locale } from './locale'
 import { ContactData } from './contact'
 import { ExtendsState } from './states'
-import { Address } from './address'
+import { Address, AddressInputParts } from './address'
 import { RegistrationStatus } from './voter'
 import { NameParts } from './nameParts'
 
@@ -69,6 +69,7 @@ export interface BaseInfo extends Locale {
   birthdate: string
   uspsAddress: string
   mailingAddress?: string
+  mailingAddressParts?: AddressInputParts
   address: Address
   oid: string
   ip?: string

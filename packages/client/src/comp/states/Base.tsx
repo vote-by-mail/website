@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { BaseInfo, StateInfo, isImplementedLocale, SignatureType, RegistrationStatus, fullName } from '../../common'
+import { BaseInfo, StateInfo, isImplementedLocale, SignatureType, RegistrationStatus, fullName, formatAddressInputParts } from '../../common'
 import { client } from '../../lib/trpc'
 import { RoundedButton } from '../util/Button'
 import { BaseInput, PhoneInput, EmailInput, NameInput, BirthdateInput } from '../util/Input'
@@ -19,6 +19,7 @@ import { BaseRegistration, BaseRegistrationStatus } from './BaseRegistration'
 import { BaseModal } from './BaseModal'
 import { AppCheckbox } from '../util/Checkbox'
 import { termsOfUseUrl, privacyPolicyUrl } from '../util/urls'
+import { AddressFields, AddressInputPartContainer } from '../Address'
 
 export type StatelessInfo = Omit<BaseInfo, 'state'>
 
@@ -67,6 +68,7 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
     validInputs,
     nameParts,
   } = FieldsContainer.useContainer()
+  const { mailingFields } = AddressInputPartContainer.useContainer()
 
   const [ alloy, setAlloy ] = React.useState<AlloyResponse>({status: null})
   const [ ignoreRegistrationStatus, setIgnoreRegistrationStatus ] = React.useState<boolean>(false)
@@ -84,6 +86,10 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
       return null
     }
 
+    const hasMailingAddress =
+      !!mailingFields?.city && !!mailingFields?.postcode &&
+      !!mailingFields?.state && !!mailingFields?.street
+
     const base: StatelessInfo = {
       city: contact.city ?? city,
       county: contact.county ?? county,
@@ -94,7 +100,10 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
       nameParts: nameParts,
       birthdate: fields.birthdate.value,
       email: fields.email.value,
-      mailingAddress: fields.mailing.value,
+      mailingAddress: hasMailingAddress
+        ? formatAddressInputParts(mailingFields)
+        : undefined,
+      mailingAddressParts: hasMailingAddress ? mailingFields : undefined,
       phone: fields.telephone.value,
       uspsAddress,
       contact,
@@ -249,13 +258,7 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
     <Togglable
       label='Mail my ballot to a different address than listed above'
     >{
-      (checked) => <BaseInput
-        id='mailing'
-        value={fields.mailing.value}
-        label='Mailing Address'
-        required={checked}
-        onChange={e => updateField('mailing', e.currentTarget.value)}
-      />
+      () => <AddressFields type='separateMailing'/>
     }</Togglable>
     { children }
     <AppCheckbox required label={

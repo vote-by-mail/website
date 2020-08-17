@@ -27,6 +27,6 @@ export interface AddressInputParts {
 
 export const formatAddressInputParts = (addr: AddressInputParts): string => {
   return addr.unit
-    ? `${addr.street} ${addr.unit}, ${addr.city}, ${addr.state} ${addr.postcode}`
+    ? `${addr.street} #${addr.unit}, ${addr.city}, ${addr.state} ${addr.postcode}`
     : `${addr.street}, ${addr.city}, ${addr.state} ${addr.postcode}`
 }
