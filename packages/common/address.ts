@@ -1,5 +1,6 @@
 export interface Address {
   latLong?: [number, number]
+  addressParts?: AddressInputParts
   queryAddr: string
   fullAddr: string
   city?: string
@@ -22,4 +23,10 @@ export interface AddressInputParts {
   state: string
   postcode: string
   unit?: string
+}
+
+export const formatAddressInputParts = (addr: AddressInputParts): string => {
+  return addr.unit
+    ? `${addr.street} ${addr.unit}, ${addr.city}, ${addr.state} ${addr.postcode}`
+    : `${addr.street}, ${addr.city}, ${addr.state} ${addr.postcode}`
 }

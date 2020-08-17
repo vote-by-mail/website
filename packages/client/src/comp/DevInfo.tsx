@@ -20,8 +20,8 @@ const ObjectTable = ({ obj, title }: Props) => {
         <tbody>
         {
           Object.entries(obj).map((keyval, i) => (<tr key={i}>
-            <td style={{textAlign: 'right'}}>{keyval[0]}</td>
-            <td>{keyval[1]}</td>
+            <td style={{textAlign: 'right'}}>{JSON.stringify(keyval[0])}</td>
+            <td>{JSON.stringify(keyval[1])}</td>
           </tr>))
         }
         </tbody>
@@ -44,7 +44,7 @@ const CheckAdd = () => {
       }
     })
   }, [])
-  
+
 
   return (
     <Section>
