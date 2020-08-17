@@ -41,7 +41,7 @@ const Layout = () => {
         </StyleContainer>
       </Route>
       <Redirect exact from='/' to={defaultUrl}/>
-      <Route exact path='/mock'>
+      <Route path='/mock'>
         <TallStyleContainer>
           <MockPage/>
         </TallStyleContainer>
