@@ -77,6 +77,7 @@ const development = removeNullValues({
   TWILIO_DIVERT: 1,
   REACT_APP_MOCK: 1,
   ALLOY_MOCK: 1,
+  MG_DOMAIN: DEV.MG_SANDBOX_DOMAIN,
   ...developmentRaw,
 })
 
