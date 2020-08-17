@@ -109,13 +109,14 @@ export const AddressFields: React.FC<Props> = ({ type }) => {
           const trueSelect = e.currentTarget.firstChild as HTMLSelectElement
           setField('state', trueSelect.value)
         }}
+        defaultValue={fields?.state}
+        data-testid='addressFieldState'
       >
         {
           [...allStates].sort().map((state) => {
             return <Option
               key={state}
               value={state}
-              selected={state === fields?.state}
               label={state}
             >
               {state}

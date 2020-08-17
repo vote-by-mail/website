@@ -12,14 +12,22 @@ import { client } from '../../lib/trpc'
 import { mocked } from 'ts-jest/utils'
 import { toPath, SuccessPath, parseQS } from '../../lib/path'
 import { AddressContainer, ContactContainer } from '../../lib/unstated'
-import { ContactData, StateInfo } from '../../common'
+import { ContactData, StateInfo, formatAddressInputParts, AddressInputParts } from '../../common'
 import { isE164 } from '../../../../common/util'
 jest.mock('../../lib/trpc')
+
+const mailingAddress: AddressInputParts = {
+  street: '100 Biscayne Blvd',
+  unit: '11',
+  city: 'Miami',
+  state: 'Florida',
+  postcode: '33131',
+}
 
 const fields = {
   firstName: 'Bob', lastName: 'Smith', birthdate: '03/22/1900',
   email: 'bob@gmail.com', phone: '123-456-7890',
-  mailing: '100 Biscayne Blvd, FL, 33131',
+  mailing: formatAddressInputParts(mailingAddress),
 }
 
 const compareResults = async (register: jest.Mock, separateMailing: boolean) => {
@@ -185,21 +193,42 @@ test('State Form shows Unregistered modal warning', async () => {
   expect(modal).toBeInTheDocument()
 })
 
-const useSeparateMailingAddress = async ({getByLabelText}: RenderResult) => {
+const useSeparateMailingAddress = async ({getByLabelText, getByTestId}: RenderResult) => {
   await act(async () => {
     const checkbox = getByLabelText(/^Mail my ballot to a different/i)
     await fireEvent.click(checkbox)
     expect(checkbox.checked).toEqual(true)
 
-    const alternateAddress = '100 Biscayne Blvd, FL, 33131'
+    const streetInput = getByLabelText(/^Street Address/i)
+    const apartmentInput = getByLabelText(/^Apartment/i)
+    const cityInput = getByLabelText(/^City/i)
+    const stateInput = getByTestId('addressFieldState').firstChild
+    const zipInput = getByLabelText(/^ZIP code/i)
 
-    const mailingInput = getByLabelText(/^Mailing Address/i)
-    await fireEvent.change(mailingInput, {
-      target: {
-        value: alternateAddress
-      }
+    await fireEvent.change(streetInput, {
+      target: { value: mailingAddress.street },
     })
-    expect(mailingInput.value).toEqual(alternateAddress)
+    expect(streetInput.value).toEqual(mailingAddress.street)
+
+    await fireEvent.change(apartmentInput, {
+      target: { value: mailingAddress.unit },
+    })
+    expect(apartmentInput.value).toEqual(mailingAddress.unit)
+
+    await fireEvent.change(cityInput, {
+      target: { value: mailingAddress.city },
+    })
+    expect(cityInput.value).toEqual(mailingAddress.city)
+
+    await fireEvent.change(stateInput, {
+      target: { value: mailingAddress.state },
+    })
+    expect(stateInput.value).toEqual(mailingAddress.state)
+
+    await fireEvent.change(zipInput, {
+      target: { value: mailingAddress.postcode },
+    })
+    expect(zipInput.value).toEqual(mailingAddress.postcode)
   })
 }
 
