@@ -38,7 +38,7 @@ const base = removeNullValues({
   RECEIVE_FAX_NUMBER,
   SENDINBLUE_API_KEY,   // We are using the v3 API
   SENDINBLUE_LIST_ID: 4,  // This is just a fake testing list -- no emails will be sent
-  USER_MAX_ORGS: 20,
+  USER_MAX_ORGS: 25,
   REACT_APP_BRAND_NAME: 'VoteByMail.io',
   REACT_APP_URL: 'https://votebymail.io/',
   REACT_APP_ELECTION_AND_DATE: 'the General Election on Tuesday, November 3rd, 2020',
