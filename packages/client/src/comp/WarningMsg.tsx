@@ -11,6 +11,7 @@ import { Button } from 'muicss/react'
 import { StyledModal } from './util/StyledModal'
 import { toast } from 'react-toastify'
 import { createContainer } from 'unstated-next'
+import { AddressInputPartContainer } from './Address'
 
 const defaultState = (path: Path | null): ImplementedState => {
   switch(path?.type) {
@@ -76,17 +77,21 @@ interface RawWarningProps {
 const RawWarningMsg: React.FC<RawWarningProps> = ({ toggleOpen }) => {
   const { path } = useAppHistory()
   const { state } = StateContainer.useContainer()
+  const { setField } = AddressInputPartContainer.useContainer()
 
   const addresses = sampleAddresses[state]
 
   const fillData = (address: string) => {
-    return () => {
+    return async () => {
       switch (path?.type) {
         case 'start': {
-          const input = document.getElementById('start-zip') as HTMLInputElement
           const match = address.match(/(\d{5})$/)
           if (match) {
-            input.value = match[1]
+            // Strangely, document.getElementById will only work if we
+            // use await setField (although it is not a async function)
+            // If we don't do this, the click event triggers before setField
+            // finishes.
+            await setField('postcode', match[1])
             document.getElementById('start-submit')?.click()
           }
 

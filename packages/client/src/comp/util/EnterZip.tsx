@@ -1,9 +1,10 @@
 import React from 'react'
-import { useAppHistory } from '../../lib/path'
-import { AddressContainer, FetchingDataContainer } from '../../lib/unstated'
+import { FetchingDataContainer } from '../../lib/unstated'
 import { client } from '../../lib/trpc'
 import { toast } from 'react-toastify'
 import { InputButton } from './InputButton'
+import { AddressInputPartContainer } from '../Address/Container'
+import { useAppHistory } from '../../lib/path'
 
 
 /**
@@ -11,35 +12,25 @@ import { InputButton } from './InputButton'
  * found it automatically starts the registration flow.
  */
 export const EnterZip: React.FC = () => {
-  const { path, pushAddress } = useAppHistory()
-  const { address } = AddressContainer.useContainer()
+  const { pushAddress } = useAppHistory()
   const { setFetchingData } = FetchingDataContainer.useContainer()
-  const zipRef = React.useRef<HTMLInputElement>(null)
+  const { fields, setField } = AddressInputPartContainer.useContainer()
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.persist()  // allow async function call
     event.preventDefault()
-    const zip = zipRef?.current?.value
-    if (!zip) return
     setFetchingData(true)
-    const resp = await client.fetchState(zip)
+    const resp = await client.fetchState(fields.postcode)
     if (resp.type === 'error') {
-    toast(
-      'Error finding the ZIP Code',
-      {type: 'error'},
+      toast(
+        'Error finding the ZIP Code',
+        {type: 'error'},
       )
     } else {
-      pushAddress(resp.data, zip)
+      setField('state', resp.data)
+      pushAddress(resp.data, fields.postcode)
     }
     setFetchingData(false)
-  }
-
-  const defaultValue = () => {
-    if (path?.type === 'address' && path.zip) {
-      return path.zip
-    } else {
-      return address?.postcode ?? undefined
-    }
   }
 
   return <InputButton
@@ -51,7 +42,7 @@ export const EnterZip: React.FC = () => {
     id='start-zip'
     dataTestId='start-zip'
     pattern='[0-9]{5}'
-    defaultValue={defaultValue()}
-    ref={zipRef}
+    value={fields.postcode}
+    onChange={e => setField('postcode', e.currentTarget.value)}
   />
 }
