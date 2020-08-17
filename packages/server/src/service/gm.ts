@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { processEnvOrThrow, Address } from '../common'
+import { processEnvOrThrow, Address, AddressInputParts, formatAddressInputParts } from '../common'
 import { cache } from './util'
 
 interface GMResults {
@@ -19,7 +19,32 @@ const findByType = (
            : components.find(c => c.types.includes(type))?.long_name)
 }
 
-const rawGeocode = async (query: string): Promise<google.maps.GeocoderResult | null> => {
+const rawGeocode = async (addr: AddressInputParts | string): Promise<google.maps.GeocoderResult | null> => {
+  let query: string
+  // Type assertion to ensure backward-compatibility with <StateRedirect/>
+  // since some orgs might already have some links using it as the default
+  // value.
+  if (typeof addr === 'object') {
+    const queryParts = [
+      'country:us',
+      `street:${addr.street}`,
+      `state:${addr.state}`,
+      `city:${addr.city}`,
+      `postcode:${addr.postcode}`,
+    ]
+    if (addr.unit) queryParts.push(`unit:${addr.unit}`)
+    query = encodeURIComponent(queryParts.join(('|')))
+  } else {
+    query = encodeURIComponent(addr)
+  }
+  const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${query}&key=${apiKey}`
+  const response = (await axios.get(url)).data as GMResults
+  if (response.status != 'OK') return null
+  return response.results[0]
+}
+
+const rawZipSearch = async (zip: string): Promise<google.maps.GeocoderResult | null> => {
+  const query = `country:us|postcode:${zip}`
   const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(query)}&key=${apiKey}`
   const response = (await axios.get(url)).data as GMResults
   if (response.status != 'OK') return null
@@ -66,19 +91,44 @@ export const toAddress = (result: google.maps.GeocoderResult): Omit<Address, 'qu
   }
 }
 
-export const cacheGeocode = cache(rawGeocode, async x => x)
+export const cacheGeocode = cache(
+  rawGeocode,
+  async x => typeof x === 'object' ? formatAddressInputParts(x) : x,
+)
+export const cacheZipSearch = cache(rawZipSearch, async x => x)
 
 export const geocode = async (
-  query: string,
+  addr: AddressInputParts | string,
   {cacheQuery} = {cacheQuery: false},
 ): Promise<Address | null> => {
   const func = cacheQuery ? cacheGeocode : rawGeocode
-  const result = await func(query)
+  const result = await func(addr)
+  if (!result) return null
+  const address = toAddress(result)
+  if (!address) return null
+  return typeof addr === 'object'
+    ? {
+      ...address,
+      addressParts: addr,
+      queryAddr: formatAddressInputParts(addr),
+    }
+    : {
+      ...address,
+      queryAddr: addr,
+    }
+}
+
+export const zipSearch = async (
+  zip: string,
+  {cacheQuery} = {cacheQuery: false},
+): Promise<Address | null> => {
+  const func = cacheQuery ? cacheZipSearch : rawZipSearch
+  const result = await func(zip)
   if (!result) return null
   const address = toAddress(result)
   if (!address) return null
   return {
     ...address,
-    queryAddr: query,
+    queryAddr: zip,
   }
 }

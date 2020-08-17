@@ -1,5 +1,5 @@
 import { IRpc, RpcRet } from '@tianhuil/simple-trpc/dist/type'
-import { Address } from './address'
+import { Address, AddressInputParts } from './address'
 import { State } from './states'
 import { ContactData } from './contact'
 import { InitialData } from './initialData'
@@ -11,7 +11,7 @@ export interface IVbmRpc extends IRpc<IVbmRpc> {
   add(x: number, y: number): Promise<RpcRet<number>>
   fetchState(zip: string): Promise<RpcRet<State>>
   fetchInitialData(org: string): Promise<RpcRet<InitialData>>
-  fetchContactAddress(addr: string): Promise<RpcRet<{contact: ContactData, address: Address}>>
+  fetchContactAddress(addr: AddressInputParts | string): Promise<RpcRet<{contact: ContactData, address: Address}>>
   fetchContact(locale: Locale): Promise<RpcRet<ContactData>>
   fetchContacts(state: ImplementedState): Promise<RpcRet<string[]>>
   getContact(state: ImplementedState, key: string): Promise<RpcRet<ContactData>>

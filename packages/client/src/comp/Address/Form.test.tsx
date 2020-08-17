@@ -6,8 +6,8 @@ import { client } from '../../lib/trpc'
 import { pageView } from '../../lib/analytics'
 import { mocked } from 'ts-jest/utils'
 
-jest.mock('../lib/analytics')
-jest.mock('../lib/trpc')
+jest.mock('../../lib/analytics')
+jest.mock('../../lib/trpc')
 
 test('AddressForm works', async () => {
   const mockedPageView = mocked(pageView)

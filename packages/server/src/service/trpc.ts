@@ -1,11 +1,11 @@
 import { data, error } from '@tianhuil/simple-trpc/dist/util'
 import { ImplRpc } from '@tianhuil/simple-trpc/dist/type'
 import { Request } from 'express'
-import { IVbmRpc, StateInfo, toLocale, toContactMethod, isState, Voter, Locale, ImplementedState, RegistrationArgs } from '../common'
+import { IVbmRpc, StateInfo, toLocale, toContactMethod, isState, Voter, Locale, ImplementedState, RegistrationArgs, AddressInputParts } from '../common'
 import { FirestoreService } from './firestore'
 import { sendSignupEmail, mg } from './mg'
 import { toContact, contactRecords, getContact as _getContact } from './contact'
-import { geocode } from './gm'
+import { geocode, zipSearch } from './gm'
 import { toPdfBuffer } from './pdf'
 import { storageFileFromId } from './storage'
 import { Letter } from './letter'
@@ -44,11 +44,11 @@ export class VbmRpc implements ImplRpc<IVbmRpc, Request> {
     })
   }
   public fetchState = async (zip: string) => {
-    const address = await geocode(`${zip} United States`)
+    const address = await zipSearch(zip)
     if (!address || !isState(address.state)) return error('Geocoding Error')
     return data(address.state)
   }
-  public fetchContactAddress = async (addr: string) => {
+  public fetchContactAddress = async (addr: AddressInputParts | string) => {
     const address = await geocode(addr)
     if (!address) return error('Unable to geocode address')
     const locale = toLocale(address)
