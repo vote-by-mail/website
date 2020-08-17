@@ -5,10 +5,11 @@ import { useAppHistory, StartSectionPath, AddressPath, StatePath, StateRedirectP
 import { AddressContainer } from '../../lib/unstated'
 
 type InputId = keyof AddressInputParts
-type RequiredFields = Exclude<InputId, 'unit'>
-type OptionalFields = 'unit'
 
-type Fields = Record<RequiredFields, string> & Partial<Record<OptionalFields, string>>
+const removeOptionalFields = (fields: AddressInputParts) => ({
+  ...fields,
+  unit: fields.unit ? fields.unit : undefined,
+})
 
 const handleDefault = (
   id: InputId,
@@ -33,7 +34,7 @@ const useFields = () => {
   const { path, query } = useAppHistory()
   const { address } = AddressContainer.useContainer()
 
-  const [ _fields, _setField ] = React.useState<Fields>({
+  const [ _fields, _setField ] = React.useState<AddressInputParts>({
     city: handleDefault('city', address, path, query),
     postcode: handleDefault('postcode', address, path, query),
     state: handleDefault('state', address, path, query),
@@ -41,19 +42,34 @@ const useFields = () => {
     unit: handleDefault('unit', address, path, query),
   })
 
-  // Automatically removes empty optional values
-  const fields: Fields = {
-    ..._fields,
-    unit: _fields.unit ? _fields.unit : undefined,
+  const setField = (id: InputId, value: string) => {
+    _setField({ ..._fields, [id]: value })
   }
 
-  const setField = (id: InputId, value: string) => {
-    _setField({ ...fields, [id]: value })
+  // Some users might not use a separate mailing address, only create this
+  // state when needed.
+  const [ _mailingFields, _setMailingField ] = React.useState<AddressInputParts>({
+    city: '',
+    postcode: '',
+    // This is most likely to remain the same
+    state: handleDefault('state', address, path, query),
+    street: '',
+    unit: '',
+  })
+
+  const setMailingField = (id: InputId, value: string) => {
+    _setMailingField({ ..._mailingFields, [id]: value })
   }
+
+  // Automatically removes empty optional values
+  const fields = removeOptionalFields(_fields) as AddressInputParts
+  const mailingFields = removeOptionalFields(_mailingFields)
 
   return {
     fields,
     setField,
+    mailingFields,
+    setMailingField,
   }
 }
 

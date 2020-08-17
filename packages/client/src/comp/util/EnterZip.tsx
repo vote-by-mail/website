@@ -14,7 +14,7 @@ import { useAppHistory } from '../../lib/path'
 export const EnterZip: React.FC = () => {
   const { pushAddress } = useAppHistory()
   const { setFetchingData } = FetchingDataContainer.useContainer()
-  const { fields, setField } = AddressInputPartContainer.useContainer()
+  const { fields, setField, setMailingField } = AddressInputPartContainer.useContainer()
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.persist()  // allow async function call
@@ -28,6 +28,7 @@ export const EnterZip: React.FC = () => {
       )
     } else {
       setField('state', resp.data)
+      setMailingField('state', resp.data)
       pushAddress(resp.data, fields.postcode)
     }
     setFetchingData(false)

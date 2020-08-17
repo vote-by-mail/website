@@ -17,7 +17,6 @@ type InputId =
   | 'middleName'
   | 'suffix'
   | 'telephone'
-  | 'mailing'
 
 const isInputValid = (id: InputId, value: string): boolean => {
   switch (id) {
@@ -90,7 +89,6 @@ const useFields = () => {
     birthdate: defaultInputData('birthdate', query.birthdate, false),
     email: defaultInputData('email', query.email, false),
     telephone: defaultInputData('telephone', query.telephone, true),
-    mailing: defaultInputData('mailing', query.mailing, true),
   })
 
   const nameParts: NameParts = {
