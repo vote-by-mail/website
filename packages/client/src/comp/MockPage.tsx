@@ -4,6 +4,13 @@ import { sampleAddresses } from '../common'
 import { StateForm } from './states/StateForm'
 import { StateSelector, StateContainer } from './StateSelector'
 import { client } from '../lib/trpc'
+import styled from 'styled-components'
+import { cssQuery } from './util/cssQuery'
+
+const AvoidNavbarWrapper = styled.div`
+  margin-top: 100px;
+  ${cssQuery.medium} { margin-top: 150px; }
+`
 
 const RawMockPage: React.FC<{}> = () => {
   const { state } = StateContainer.useContainer()
@@ -35,7 +42,9 @@ const RawMockPage: React.FC<{}> = () => {
 export const MockPage: React.FC<{}> = () => {
   if (!process.env.REACT_APP_MOCK) return null
 
-  return <StateSelector>
-    <RawMockPage/>
-  </StateSelector>
+  return <AvoidNavbarWrapper>
+    <StateSelector>
+      <RawMockPage/>
+    </StateSelector>
+  </AvoidNavbarWrapper>
 }
