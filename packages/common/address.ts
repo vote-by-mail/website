@@ -15,3 +15,11 @@ export interface Address {
   street?: string        // e.g. Amphitheatre Pkwy
   unit?: string          // e.g. Apt 3C
 }
+
+export interface AddressInputParts {
+  street: string
+  city: string
+  state: string
+  postcode: string
+  unit?: string
+}
