@@ -2,6 +2,7 @@ import React from "react"
 import { useHistory, useLocation, matchPath } from "react-router-dom"
 import { pageView } from "./analytics"
 import { useDeepMemoize } from "./unstated"
+import { ImplementedState } from "../common"
 
 export type QueryParams = Record<string, string>
 
@@ -20,6 +21,7 @@ const allPathEnums = [
   'state',
   'stateRedirect',
   'success',
+  'mock',
 ] as const
 export type PathEnum = (typeof allPathEnums)[number]
 
@@ -44,7 +46,10 @@ export interface StatePath extends PathBase {
   type: 'state'
   state: string
 }
-
+export interface MockPath extends PathBase {
+  type: 'mock'
+  state: ImplementedState
+}
 export interface StateRedirectPath extends PathBase {
   type: 'stateRedirect'
 }
@@ -56,6 +61,7 @@ export interface SuccessPath extends PathBase {
 export type Path = (
   | StartSectionPath
   | AddressPath
+  | MockPath
   | StatePath
   | StateRedirectPath
   | SuccessPath
@@ -121,7 +127,12 @@ export const pathData: PathData = {
     path: '/org/:oid/success/:id?',
     toRawUrl: ({oid, id}) => `/org/${oid}/success/${id || ''}`,
     scrollId: 'success',
-  }
+  },
+  'mock': {
+    path: '/mock/:state?',
+    toRawUrl: ({state}) => `/mock/${state}`,
+    scrollId: 'mock'
+  },
 }
 
 const isEmpty = (query: QueryParams) => {
