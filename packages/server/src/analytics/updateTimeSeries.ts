@@ -10,8 +10,9 @@ import { processEnvOrThrow } from '../common'
 // Also be sure to set the right IAM permissions for "firebase-adminsdk" at :
 // https://console.cloud.google.com/iam-admin/iam?project=vbm-staging-281822
 //
-// Ideally "firebase-adminsdk" should have the role "Monitoring Editor" for
-// these metrics to work
+// This is only needed if you're using firebase instead of firestore in your
+// project, ideally in this scenario "firebase-adminsdk" would have the role
+// "Monitoring Editor" for these metrics to work.
 
 const client = new gcm.MetricServiceClient()
 const projectName = processEnvOrThrow('GCLOUD_PROJECT')
