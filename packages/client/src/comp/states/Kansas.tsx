@@ -6,6 +6,13 @@ import { BaseInput } from '../util/Input'
 import { KansasInfo } from '../../common'
 import { SignatureBase, StatelessInfo, NoSignature } from './Base'
 import { useControlRef } from '../util/ControlRef'
+import { TogglableDropdown } from '../util/TogglableDropdown'
+
+const options = {
+  driverId: 'Driver\'s license number',
+  nonDriverId: 'Identification Number',
+  none: 'None',
+} as const
 
 export const Kansas = () => {
   const idRef = useControlRef<Select>()
@@ -21,14 +28,26 @@ export const Kansas = () => {
     }
   }
 
-return <SignatureBase<KansasInfo>enrichValues={enrichValues} >
-  Current Kansas driver&apos;s license number or nondriver&apos;s identification card number:
-  <BaseInput
-        id='idData'
-        ref={idRef}
-        label='Identification Number'
-        required={false}
-      />
-</SignatureBase>
-
+  return <SignatureBase<KansasInfo>enrichValues={enrichValues}>
+    <TogglableDropdown
+      defaultValue={options.driverId}
+      label='Method of identification:'
+      style={{ marginTop: 40 }}
+      options={[
+        options.driverId,
+        options.nonDriverId,
+        options.none,
+      ]}
+    >{
+      (selected: string) => {
+        if (selected === 'None') return null
+        return <BaseInput
+          id='idData'
+          label={selected}
+          required={true}
+          ref={idRef}
+        />
+      }
+    }</TogglableDropdown>
+  </SignatureBase>
 }
