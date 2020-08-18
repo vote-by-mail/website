@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { RedOutline } from './util/RedOutline'
-import { sampleAddresses } from '../common/sampleAddresses'
+import { sampleAddresses, AddressData } from '../common/sampleAddresses'
 import { ImplementedState, isImplementedState } from '../common'
 import { useAppHistory, Path } from '../lib/path'
 import { InitialDataContainer } from '../lib/unstated'
@@ -75,37 +75,25 @@ interface RawWarningProps {
 }
 
 const RawWarningMsg: React.FC<RawWarningProps> = ({ toggleOpen }) => {
-  const { path } = useAppHistory()
   const { state } = StateContainer.useContainer()
-  const { setField } = AddressInputPartContainer.useContainer()
+  const { setAddress } = AddressInputPartContainer.useContainer()
 
   const addresses = sampleAddresses[state]
 
-  const fillData = (address: string) => {
-    return async () => {
-      switch (path?.type) {
-        case 'start': {
-          const match = address.match(/(\d{5})$/)
-          if (match) {
-            // Strangely, document.getElementById will only work if we
-            // use await setField (although it is not a async function)
-            // If we don't do this, the click event triggers before setField
-            // finishes.
-            await setField('postcode', match[1])
-            document.getElementById('start-submit')?.click()
-          }
-
-          break
-        }
-        case 'address': {
-          const input = document.getElementById('addr-input') as HTMLInputElement
-          input.value = address
-          document.getElementById('addr-submit')?.click()
-          break
-        }
-      }
-      toggleOpen()
-    }
+  const fillData = async (address: AddressData) => {
+    // Strangely, document.getElementById will only work if we
+    // use await setAddress (although it is not a async function)
+    // If we don't do this, the click event triggers before setAddress
+    // finishes.
+    await setAddress({
+      city: address.city,
+      postcode: address.postcode,
+      state: address.state,
+      street: address.street,
+      unit: address.unit,
+    })
+    document.getElementById('start-submit')?.click()
+    toggleOpen()
   }
 
   return (<ul style={{marginTop: '1em'}}>
@@ -114,7 +102,10 @@ const RawWarningMsg: React.FC<RawWarningProps> = ({ toggleOpen }) => {
         {addrData.address} ({addrData.city}, {addrData.county ?? '[No County]'}, {addrData.state})
         <button
           style={{marginLeft: '1em'}}
-          onClick={fillData(addrData.address)}
+          onClick={(e) => {
+            e.persist()
+            fillData(addrData)
+          }}
         >
           Fill
         </button>
