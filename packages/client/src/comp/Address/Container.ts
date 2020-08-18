@@ -46,6 +46,10 @@ const useFields = () => {
     _setField({ ..._fields, [id]: value })
   }
 
+  const setAddress = (address: AddressInputParts) => {
+    _setField(address)
+  }
+
   // Some users might not use a separate mailing address, only create this
   // state when needed.
   const [ _mailingFields, _setMailingField ] = React.useState<AddressInputParts>({
@@ -68,6 +72,7 @@ const useFields = () => {
   return {
     fields,
     setField,
+    setAddress,
     mailingFields,
     setMailingField,
   }
