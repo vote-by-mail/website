@@ -26,7 +26,11 @@ export const fillKansas = (
       text(stateInfo.mailingAddress, 0, 60, 485)
     }
 
-    text(stateInfo.idData, 0, 415, 225)
+    if (stateInfo.idNumber) {
+      text(stateInfo.idNumber, 0, 415, 225)
+    } else {
+      text("See attached photo ID", 0, 415, 225)
+    }
 
     text('2020-11-03', 0, 50, 630)  // Promising not to vote in person on general election day
 
