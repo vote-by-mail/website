@@ -80,7 +80,8 @@ const getSampleStateInfo = async (): Promise<StateInfoRecord> => {
       ...await commonStateInfo('Kansas'),
       signature,
       idType: 'Number',
-      idData: '42534',
+      idNumber: '42534',
+      idPhoto: undefined
     },
     'New Hampshire': {
       ...await commonStateInfo('New Hampshire'),

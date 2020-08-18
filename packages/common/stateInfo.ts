@@ -133,7 +133,8 @@ export const isKansasIdentity = (x: string | null): x is KansasIdentityType => k
 export interface KansasInfo extends _Id, SignatureBaseInfo {
   state: 'Kansas'
   idType: KansasIdentityType
-  idData: string
+  idNumber?: string
+  idPhoto?: string
 }
 
 export interface MaineInfo extends _Id, SignatureBaseInfo {
