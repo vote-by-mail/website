@@ -11,14 +11,15 @@ import { Unidentified } from '../status/Status'
 import { toast } from 'react-toastify'
 import { AddressInputPartContainer } from '.'
 import { AddressFields } from './Fields'
+import { RoundedButton } from '../util/Button'
 
 // pulled out for testing
 export const RawAddressForm: React.FC<{rawState: string, zip?: string}> = ({rawState}) => {
-  const { fields } = AddressInputPartContainer.useContainer()
+  const { fields, setField } = AddressInputPartContainer.useContainer()
   const { pushState } = useAppHistory()
   const { setAddress } = AddressContainer.useContainer()
   const { setContact } = ContactContainer.useContainer()
-  const { setFetchingData } = FetchingDataContainer.useContainer()
+  const { fetchingData, setFetchingData } = FetchingDataContainer.useContainer()
 
   const state = getState(rawState)
   if (!state) {
@@ -70,7 +71,17 @@ export const RawAddressForm: React.FC<{rawState: string, zip?: string}> = ({rawS
         Enter your <b>voter-registration address</b> to find your local election official.
         (<a target='_blank' rel='noopener noreferrer' href='https://www.vote.org/am-i-registered-to-vote/'>Unsure if you are registered?</a>)
       </p>
-      <AddressFields type='initialAddress'/>
+      <AddressFields fields={fields} setField={setField}/>
+      <RoundedButton
+        id='addr-submit'  // This id is used for Warning Box to submit form quickly
+        color='primary'
+        variant='raised'
+        data-testid='submit'
+        style={{flexGrow: 0}}
+        disabled={fetchingData}
+      >
+        Find my election official
+      </RoundedButton>
     </AppForm>
   </StatusReport>
 }
