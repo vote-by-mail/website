@@ -3,7 +3,7 @@ import React from 'react'
 import { createContainer } from 'unstated-next'
 import { NameParts, AddressInputParts } from '../../common'
 import { useAppHistory } from '../../lib/path'
-import { AddressInputPartContainer } from '../Address'
+import { AddressInputPartContainer, removeOptionalAddressFields } from '../Address'
 
 const datePattern = /(0[1-9]|1[012])[/.](0[1-9]|[12][0-9]|3[01])[/.](19|20)[0-9]{2}/i
 // eslint-disable-next-line no-useless-escape
@@ -115,8 +115,8 @@ const useFields = () => {
   const [ _mailingFields, _setMailingField ] = React.useState<AddressInputParts>({
     city: '',
     postcode: '',
-    // This is most likely to be the same as the main address state, set
-    // this as the default address.
+    // The default value of state is most likely to be the same as the main
+    // address state.
     state: addressFields.state,
     street: '',
     unit: '',
@@ -125,14 +125,11 @@ const useFields = () => {
   const setMailingField = (id: keyof AddressInputParts, value: string) => {
     _setMailingField({ ..._mailingFields, [id]: value })
   }
+
   // Removes optional empty values
-  const mailingFields: AddressInputParts = {
-    city: _mailingFields.city,
-    postcode: _mailingFields.postcode,
-    state: _mailingFields.state,
-    street: _mailingFields.street,
-    unit: _mailingFields.unit ? _mailingFields.unit : undefined,
-  }
+  const mailingFields: AddressInputParts = removeOptionalAddressFields(_mailingFields)
+
+  const [ hasMailingAddress, setHasMailingAddress ] = React.useState(false)
 
   return {
     fields,
@@ -141,6 +138,8 @@ const useFields = () => {
     validInputs,
     nameParts,
     mailingFields,
+    hasMailingAddress,
+    setHasMailingAddress,
     setMailingField,
   }
 }

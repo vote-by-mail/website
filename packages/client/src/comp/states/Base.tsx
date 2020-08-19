@@ -68,7 +68,9 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
     validInputs,
     nameParts,
     mailingFields,
-    setMailingField
+    setMailingField,
+    hasMailingAddress,
+    setHasMailingAddress,
   } = FieldsContainer.useContainer()
 
   const [ alloy, setAlloy ] = React.useState<AlloyResponse>({status: null})
@@ -86,10 +88,6 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
       toast.error('Please fill all the required fields')
       return null
     }
-
-    const hasMailingAddress =
-      !!mailingFields?.city && !!mailingFields?.postcode &&
-      !!mailingFields?.state && !!mailingFields?.street
 
     const base: StatelessInfo = {
       city: contact.city ?? city,
@@ -258,6 +256,7 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
     />
     <Togglable
       label='Mail my ballot to a different address than listed above'
+      onChange={checked => setHasMailingAddress(checked)}
     >{
       () => <AddressInput fields={mailingFields} setField={setMailingField}/>
     }</Togglable>

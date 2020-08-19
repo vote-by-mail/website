@@ -6,7 +6,7 @@ import { AddressContainer } from '../../lib/unstated'
 
 type InputId = keyof AddressInputParts
 
-const removeOptionalFields = (fields: AddressInputParts) => ({
+export const removeOptionalAddressFields = (fields: AddressInputParts) => ({
   ...fields,
   unit: fields.unit ? fields.unit : undefined,
 })
@@ -67,7 +67,7 @@ const useFields = () => {
   }
 
   // Automatically removes empty optional values
-  const fields = removeOptionalFields(_fields) as AddressInputParts
+  const fields = removeOptionalAddressFields(_fields) as AddressInputParts
 
   return {
     fields,
