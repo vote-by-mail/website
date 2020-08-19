@@ -4,15 +4,13 @@ import styled from 'styled-components'
 import { BaseInput } from '../util/Input'
 import { Select, Option } from 'muicss/react'
 import { useControlRef } from '../util/ControlRef'
-import { RoundedButton } from '../util/Button'
-import { allStates } from '../../common'
+import { allStates, AddressInputParts } from '../../common'
 import { useAppHistory } from '../../lib/path'
-import { AddressInputPartContainer } from './Container'
-import { FetchingDataContainer } from '../../lib/unstated'
 import { cssQuery } from '../util/cssQuery'
 
 interface Props {
-  type: 'initialAddress' | 'separateMailing'
+  fields: AddressInputParts
+  setField: (id: keyof AddressInputParts, value: string) => void
 }
 
 const FlexBox = styled.div`
@@ -35,28 +33,18 @@ const Flex = styled.div<{ basis?: string, mobileBasis?: string }>`
 // depedencies, we declare this function outside of our component.
 const useDidMount = (fun: () => void) => React.useEffect(fun, [])
 
-export const AddressFields: React.FC<Props> = ({ type }) => {
-  const {
-    fields: baseAddressFields,
-    mailingFields,
-    setField: setBaseAddressField,
-    setMailingField,
-  } = AddressInputPartContainer.useContainer()
+export const AddressFields: React.FC<Props> = ({ fields, setField }) => {
   const { path } = useAppHistory()
   const addrRef = useControlRef<Input>()
-  const fields = type === 'initialAddress' ? baseAddressFields : mailingFields
-  const setField = type === 'initialAddress' ? setBaseAddressField : setMailingField
-  const { fetchingData } = FetchingDataContainer.useContainer()
+
   // When we first arrive at page, set focus and move cursor to beginning
   useDidMount(() => {
-      if (type === 'initialAddress') {
-        if (path?.type === 'address' && addrRef?.current) {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const controlEl = (addrRef.current as any).controlEl as HTMLInputElement
-          controlEl.focus({preventScroll: true})
-          controlEl.setSelectionRange(0, 0)
-        }
-      }
+    if (path?.type === 'address' && addrRef?.current) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const controlEl = (addrRef.current as any).controlEl as HTMLInputElement
+      controlEl.focus({preventScroll: true})
+      controlEl.setSelectionRange(0, 0)
+    }
   })
 
   return <FlexBox>
@@ -65,7 +53,6 @@ export const AddressFields: React.FC<Props> = ({ type }) => {
 
     <Flex basis='70%'>
       <BaseInput
-        id='addr-street-input'  // This id is used for Warning Box to fill form quickly
         label='Street Address'
         ref={addrRef}
         required
@@ -79,7 +66,6 @@ export const AddressFields: React.FC<Props> = ({ type }) => {
     <Flex basis='28%'>
       <BaseInput
         label='Apartment'
-        id='addr-apt-input'
         translate='no'
         lang='en'
         value={fields?.unit}
@@ -89,7 +75,6 @@ export const AddressFields: React.FC<Props> = ({ type }) => {
 
     <Flex basis='40%'>
       <BaseInput
-        id='addr-city-input'  // This id is used for Warning Box to fill form quickly
         label='City'
         required
         translate='no'
@@ -101,7 +86,6 @@ export const AddressFields: React.FC<Props> = ({ type }) => {
 
     <Flex basis='28%' mobileBasis='49%'>
       <Select
-        id='addr-state-input'  // This id is used for Warning Box to fill form quickly
         label='State'
         translate='no'
         lang='en'
@@ -120,6 +104,7 @@ export const AddressFields: React.FC<Props> = ({ type }) => {
               key={state}
               value={state}
               label={state}
+              selected={state===fields.state}
             >
               {state}
             </Option>
@@ -130,7 +115,6 @@ export const AddressFields: React.FC<Props> = ({ type }) => {
 
     <Flex basis='28%' mobileBasis='49%'>
       <BaseInput
-        id='addr-zip-input'  // This id is used for Warning Box to fill form quickly
         label='ZIP code'
         required
         translate='no'
@@ -140,20 +124,5 @@ export const AddressFields: React.FC<Props> = ({ type }) => {
         onChange={e => setField('postcode', e.currentTarget.value)}
       />
     </Flex>
-
-    {
-      type === 'initialAddress' && <Flex>
-        <RoundedButton
-          id='addr-submit'  // This id is used for Warning Box to submit form quickly
-          color='primary'
-          variant='raised'
-          data-testid='submit'
-          style={{flexGrow: 0}}
-          disabled={fetchingData}
-        >
-          Find my election official
-        </RoundedButton>
-      </Flex>
-    }
   </FlexBox>
 }

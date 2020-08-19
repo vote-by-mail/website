@@ -46,35 +46,18 @@ const useFields = () => {
     _setField({ ..._fields, [id]: value })
   }
 
+  // Used at WarningMsg, completely replaces the address
   const setAddress = (address: AddressInputParts) => {
     _setField(address)
   }
 
-  // Some users might not use a separate mailing address, only create this
-  // state when needed.
-  const [ _mailingFields, _setMailingField ] = React.useState<AddressInputParts>({
-    city: '',
-    postcode: '',
-    // This is most likely to remain the same
-    state: handleDefault('state', address, path, query),
-    street: '',
-    unit: '',
-  })
-
-  const setMailingField = (id: InputId, value: string) => {
-    _setMailingField({ ..._mailingFields, [id]: value })
-  }
-
   // Automatically removes empty optional values
   const fields = removeOptionalFields(_fields) as AddressInputParts
-  const mailingFields = removeOptionalFields(_mailingFields)
 
   return {
     fields,
     setField,
     setAddress,
-    mailingFields,
-    setMailingField,
   }
 }
 

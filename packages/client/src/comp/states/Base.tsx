@@ -19,7 +19,7 @@ import { BaseRegistration, BaseRegistrationStatus } from './BaseRegistration'
 import { BaseModal } from './BaseModal'
 import { AppCheckbox } from '../util/Checkbox'
 import { termsOfUseUrl, privacyPolicyUrl } from '../util/urls'
-import { AddressFields, AddressInputPartContainer } from '../Address'
+import { AddressFields } from '../Address'
 
 export type StatelessInfo = Omit<BaseInfo, 'state'>
 
@@ -67,8 +67,9 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
     canCheckRegistration,
     validInputs,
     nameParts,
+    mailingFields,
+    setMailingField
   } = FieldsContainer.useContainer()
-  const { mailingFields } = AddressInputPartContainer.useContainer()
 
   const [ alloy, setAlloy ] = React.useState<AlloyResponse>({status: null})
   const [ ignoreRegistrationStatus, setIgnoreRegistrationStatus ] = React.useState<boolean>(false)
@@ -258,7 +259,7 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
     <Togglable
       label='Mail my ballot to a different address than listed above'
     >{
-      () => <AddressFields type='separateMailing'/>
+      () => <AddressFields fields={mailingFields} setField={setMailingField}/>
     }</Togglable>
     { children }
     <AppCheckbox required label={
