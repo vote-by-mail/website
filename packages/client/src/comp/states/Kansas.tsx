@@ -5,10 +5,10 @@ import { SignatureBase, StatelessInfo, NoSignature } from './Base'
 import { Upload } from '../util/Upload'
 import { TogglableDropdown } from '../util/TogglableDropdown'
 
-const options = {
-  driversLicenseNumber: 'Driver\'s License Number',
-  copyOfPhotoId: 'Copy of Photo ID',
-} as const
+const options = [
+  'Driver\'s License Number',
+  'Copy of Photo ID',
+] as const
 
 export const Kansas = () => {
   const [idPhoto, setIdPhoto] = React.useState<string>()
@@ -34,20 +34,17 @@ export const Kansas = () => {
   }, [idType, setIdNumber, setIdPhoto])
 
   return <SignatureBase<KansasInfo>enrichValues={enrichValues}>
-    <TogglableDropdown
-      defaultValue={options.driversLicenseNumber}
+    <TogglableDropdown<typeof options>
+      defaultValue={'Driver\'s License Number'}
       label='Identification Method:'
       style={{ marginTop: 40 }}
-      options={[
-        options.driversLicenseNumber,
-        options.copyOfPhotoId,
-      ]}
+      options={options}
       onChange={value => setIdType(
-        value === options.driversLicenseNumber ? 'Number' : 'Image'
+        value === 'Driver\'s License Number' ? 'Number' : 'Image'
       )}
     >{
-      (selected: string) => {
-        if (selected === options.driversLicenseNumber) {
+      (selected) => {
+        if (selected === 'Driver\'s License Number') {
           return <BaseInput
             id='idData'
             label={selected}

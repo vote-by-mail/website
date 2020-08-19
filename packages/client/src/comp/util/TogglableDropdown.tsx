@@ -1,36 +1,38 @@
 import React from 'react'
 import { Select, Option } from 'muicss/react'
 
-interface Props {
-  children: (selected: string) => React.ReactNode
-  options: string[]
-  defaultValue?: string
+type Options = readonly string[]
+
+interface Props<O extends Options> {
+  children: (selected: O[number]) => React.ReactNode
+  options: O
+  defaultValue?: O[number]
   label?: React.ReactNode
   style?: React.CSSProperties
   /** Function that is called after changing values */
-  onChange?: (value: string | null) => void
+  onChange?: (value: O[number] | null) => void
 }
 
-export const TogglableDropdown: React.FC<Props> = ({
+export const TogglableDropdown = <O extends Options>({
   children,
   defaultValue,
   label,
   onChange,
   options,
   style,
-}) => {
-  const [ selected, setSelected ] = React.useState<string | undefined>(defaultValue)
+}: Props<O>) => {
+  const [ selected, setSelected ] = React.useState<O[number] | undefined>(defaultValue)
 
   return <div style={style}>
     <Select
       label={label}
-      defaultValue={defaultValue}
+      defaultValue={defaultValue as string | undefined}
       onChange={e => {
         // MuiCSS has a buggy support for <Select/> when using TypeScript,
         // to really access HTMLSelect and its value we need to do this hack
         const trueSelect = e.currentTarget.firstChild as HTMLSelectElement
-        setSelected(trueSelect.value)
-        if (onChange) onChange(trueSelect.value)
+        setSelected(trueSelect.value as O[number])
+        if (onChange) onChange(trueSelect.value as O[number])
       }}
     >{
       options.map(
