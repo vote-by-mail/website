@@ -10,7 +10,7 @@ import { AppForm } from '../util/Form'
 import { Unidentified } from '../status/Status'
 import { toast } from 'react-toastify'
 import { AddressInputPartContainer } from '.'
-import { AddressFields } from './Fields'
+import { AddressInput } from './Input'
 import { RoundedButton } from '../util/Button'
 
 // pulled out for testing
@@ -71,7 +71,7 @@ export const RawAddressForm: React.FC<{rawState: string, zip?: string}> = ({rawS
         Enter your <b>voter-registration address</b> to find your local election official.
         (<a target='_blank' rel='noopener noreferrer' href='https://www.vote.org/am-i-registered-to-vote/'>Unsure if you are registered?</a>)
       </p>
-      <AddressFields fields={fields} setField={setField}/>
+      <AddressInput fields={fields} setField={setField}/>
       <RoundedButton
         id='addr-submit'  // This id is used for Warning Box to submit form quickly
         color='primary'

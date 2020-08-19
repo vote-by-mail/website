@@ -19,7 +19,7 @@ import { BaseRegistration, BaseRegistrationStatus } from './BaseRegistration'
 import { BaseModal } from './BaseModal'
 import { AppCheckbox } from '../util/Checkbox'
 import { termsOfUseUrl, privacyPolicyUrl } from '../util/urls'
-import { AddressFields } from '../Address'
+import { AddressInput } from '../Address'
 
 export type StatelessInfo = Omit<BaseInfo, 'state'>
 
@@ -259,7 +259,7 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
     <Togglable
       label='Mail my ballot to a different address than listed above'
     >{
-      () => <AddressFields fields={mailingFields} setField={setMailingField}/>
+      () => <AddressInput fields={mailingFields} setField={setMailingField}/>
     }</Togglable>
     { children }
     <AppCheckbox required label={
