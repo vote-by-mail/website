@@ -107,7 +107,6 @@ export const AddressInput: React.FC<Props> = ({ fields, setField }) => {
               key={state}
               value={state}
               label={state}
-              selected={state===fields.state}
             >
               {state}
             </Option>
