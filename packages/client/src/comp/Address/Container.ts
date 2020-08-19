@@ -1,7 +1,7 @@
 import React from 'react'
 import { createContainer } from 'unstated-next'
 import { AddressInputParts, Address, getState, isState } from '../../common'
-import { useAppHistory, StartSectionPath, AddressPath, StatePath, StateRedirectPath, SuccessPath } from '../../lib/path'
+import { useAppHistory, Path } from '../../lib/path'
 import { AddressContainer } from '../../lib/unstated'
 
 type InputId = keyof AddressInputParts
@@ -28,7 +28,7 @@ const handleDefaultState = (rawState: string) => {
 const handleDefault = (
   id: InputId,
   address: Address | null,
-  path: StartSectionPath | AddressPath | StatePath | StateRedirectPath | SuccessPath | null,
+  path: Path | null,
   query: Record<string, string>,
 ): string => {
   if ((id === 'postcode' || id === 'state') && path?.type === 'address') {
