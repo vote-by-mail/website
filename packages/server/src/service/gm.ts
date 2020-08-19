@@ -22,6 +22,8 @@ const findByType = (
 // Helping function for rawGeocode
 const geocodeQuery = (addr: AddressInputParts | string) => {
   if (typeof addr === 'object') {
+    // Using component filtering to ensure more precise results
+    // https://developers.google.com/maps/documentation/geocoding/overview#component-filtering
     const queryParts = [
       'country:us',
       `street:${addr.street}`,
