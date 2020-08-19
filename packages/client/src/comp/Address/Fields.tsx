@@ -9,6 +9,7 @@ import { allStates } from '../../common'
 import { useAppHistory } from '../../lib/path'
 import { AddressInputPartContainer } from './Container'
 import { FetchingDataContainer } from '../../lib/unstated'
+import { cssQuery } from '../util/cssQuery'
 
 interface Props {
   type: 'initialAddress' | 'separateMailing'
@@ -19,12 +20,13 @@ const FlexBox = styled.div`
   flex-direction: row;
   justify-content: space-between;
   flex-flow: row wrap;
-  align-items: center;
+  align-items: flex-end;
   margin: 1em 0;
 `
 
-const Flex = styled.div<{ basis?: string }>`
-  flex-basis: ${p => p.basis ?? '100%'};
+const Flex = styled.div<{ basis?: string, mobileBasis?: string }>`
+  flex-basis: ${p => p.mobileBasis ?? '100%'};
+  ${cssQuery.medium} { flex-basis: ${p => p.basis ?? '100%'}; }
   /* Fixes needless scrollbars showing on Linux/Windows */
   .mui-select label { overflow: hidden; }
 `
@@ -97,7 +99,7 @@ export const AddressFields: React.FC<Props> = ({ type }) => {
       />
     </Flex>
 
-    <Flex basis='28%' className='mui-select'>
+    <Flex basis='28%' mobileBasis='49%'>
       <Select
         id='addr-state-input'  // This id is used for Warning Box to fill form quickly
         label='State'
@@ -126,7 +128,7 @@ export const AddressFields: React.FC<Props> = ({ type }) => {
       </Select>
     </Flex>
 
-    <Flex basis='28%'>
+    <Flex basis='28%' mobileBasis='49%'>
       <BaseInput
         id='addr-zip-input'  // This id is used for Warning Box to fill form quickly
         label='ZIP code'
