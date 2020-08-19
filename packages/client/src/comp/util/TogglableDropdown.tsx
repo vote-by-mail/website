@@ -1,6 +1,5 @@
 import React from 'react'
 import { Select, Option } from 'muicss/react'
-import { useControlRef } from './ControlRef'
 
 interface Props {
   children: (selected: string) => React.ReactNode
@@ -20,17 +19,18 @@ export const TogglableDropdown: React.FC<Props> = ({
   options,
   style,
 }) => {
-  const [ selected, setSelected ] = React.useState<string | null>(defaultValue ?? null)
-  const selectRef = useControlRef<Select>()
+  const [ selected, setSelected ] = React.useState<string | undefined>(defaultValue)
 
   return <div style={style}>
     <Select
       label={label}
       defaultValue={defaultValue}
-      ref={selectRef}
-      onChange={() => {
-        setSelected(selectRef.value())
-        if (onChange) onChange(selected)
+      onChange={e => {
+        // MuiCSS has a buggy support for <Select/> when using TypeScript,
+        // to really access HTMLSelect and its value we need to do this hack
+        const trueSelect = e.currentTarget.firstChild as HTMLSelectElement
+        setSelected(trueSelect.value)
+        if (onChange) onChange(trueSelect.value)
       }}
     >{
       options.map(
