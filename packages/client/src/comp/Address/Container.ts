@@ -49,9 +49,10 @@ const handleDefault = (
         return pathId === 'state' ? handleDefaultState(rawValue) : rawValue
       }
       return ''
-
-    default: return (address && address[id]) ?? query[id] ?? ''
   }
+
+  const rawValue = (address && address[id]) ?? query[id] ?? ''
+  return id === 'state' ? handleDefaultState(rawValue) : rawValue
 }
 
 const useFields = () => {
