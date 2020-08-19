@@ -31,18 +31,27 @@ const handleDefault = (
   path: Path | null,
   query: Record<string, string>,
 ): string => {
-  if ((id === 'postcode' || id === 'state') && path?.type === 'address') {
-    const normalizedId = id === 'state' ? id : 'zip'
-    const rawValue = path[normalizedId]
-      ? path[normalizedId] as string
-      : (address && address[id]) ?? query[id] ?? ''
-    return id === 'state' ? handleDefaultState(rawValue) : rawValue
-  }
-  if (id === 'state' && path?.type === 'state') {
-    return handleDefaultState(path.state ?? address?.state ?? query[id] ?? '')
-  }
+  // Path does not support 'postcode' but supports 'zip'
+  const pathId = id === 'postcode' ? 'zip' : id
 
-  return (address && address[id]) ?? query[id] ?? ''
+  switch (path?.type) {
+    case 'state':
+      if (pathId === 'state') {
+        return handleDefaultState(path.state ?? address?.state ?? query[pathId] ?? '')
+      }
+      return ''
+
+    case 'address':
+      if (pathId === 'state' || pathId === 'zip') {
+        const rawValue = path[pathId]
+          ? path[pathId] as string
+          : (address && address[id]) ?? query[id] ?? ''
+        return pathId === 'state' ? handleDefaultState(rawValue) : rawValue
+      }
+      return ''
+
+    default: return (address && address[id]) ?? query[id] ?? ''
+  }
 }
 
 const useFields = () => {
