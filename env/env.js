@@ -110,7 +110,6 @@ const staging = removeNullValues({
   REACT_APP_TIMEOUT: 10000,
   ALLOY_MOCK: 1,
   TWILIO_DIVERT: 1,
-  IGNORE_CACHE: 1
 })
 
 const production = removeNullValues({
