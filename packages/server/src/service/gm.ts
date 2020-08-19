@@ -19,11 +19,8 @@ const findByType = (
            : components.find(c => c.types.includes(type))?.long_name)
 }
 
-const rawGeocode = async (addr: AddressInputParts | string): Promise<google.maps.GeocoderResult | null> => {
-  let query: string
-  // Type assertion to ensure backward-compatibility with <StateRedirect/>
-  // since some orgs might already have some links using it as the default
-  // value.
+// Helping function for rawGeocode
+const geocodeQuery = (addr: AddressInputParts | string) => {
   if (typeof addr === 'object') {
     const queryParts = [
       'country:us',
@@ -33,17 +30,30 @@ const rawGeocode = async (addr: AddressInputParts | string): Promise<google.maps
       `postcode:${addr.postcode}`,
     ]
     if (addr.unit) queryParts.push(`unit:${addr.unit}`)
-    query = encodeURIComponent(queryParts.join(('|')))
-  } else {
-    query = encodeURIComponent(addr)
+    return encodeURIComponent(queryParts.join(('|')))
   }
-  const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${query}&key=${apiKey}`
+  return encodeURIComponent(addr)
+}
+
+/**
+ * Returns a raw, uncached Google Maps API result.
+ *
+ * @param addr Ideally should be a AddressInputParts, however addr can be
+ * a string in order to ensure backward-compatibility with <StateRedirect/>
+ * since some orgs might already been sharing pre-defined links using this
+ * component.
+ */
+const rawGeocode = async (addr: AddressInputParts | string): Promise<google.maps.GeocoderResult | null> => {
+  const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${geocodeQuery(addr)}&key=${apiKey}`
   const response = (await axios.get(url)).data as GMResults
   if (response.status != 'OK') return null
   return response.results[0]
 }
 
 const rawZipSearch = async (zip: string): Promise<google.maps.GeocoderResult | null> => {
+  // Because maps API uses ccTLD (https://developers.google.com/maps/documentation/geocoding/overview#RegionCodes)
+  // since .io is assigned to the British Indian Ocean Territory we ensure
+  // the usage of component filtering to avoid issues related to ccTLD.
   const query = `country:us|postcode:${zip}`
   const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(query)}&key=${apiKey}`
   const response = (await axios.get(url)).data as GMResults
