@@ -29,17 +29,17 @@ test('AddressForm works', async () => {
     },
   })
 
-  const { getByLabelText, getByTestId } = render(
+  const { getByTestId } = render(
     <RawAddressForm rawState='Florida'/>,
     { wrapper: UnstatedContainer }
   )
 
   await act(async () => {
-    const streetInput = getByLabelText(/^Street Address/i)
-    const apartmentInput = getByLabelText(/^Apartment/i)
-    const cityInput = getByLabelText(/^City/i)
+    const streetInput = getByTestId('addressFieldStreet')
+    const apartmentInput = getByTestId('addressFieldApartment')
+    const cityInput = getByTestId('addressFieldCity')
     const stateInput = getByTestId('addressFieldState').firstChild
-    const zipInput = getByLabelText(/^ZIP code/i)
+    const zipInput = getByTestId('addressFieldPostcode')
 
     await fireEvent.change(streetInput, {
       target: { value: mailingAddress.street },
