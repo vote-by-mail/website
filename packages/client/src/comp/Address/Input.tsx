@@ -33,7 +33,7 @@ const Flex = styled.div<{ basis?: string, mobileBasis?: string }>`
 // depedencies, we declare this function outside of our component.
 const useDidMount = (fun: () => void) => React.useEffect(fun, [])
 
-export const AddressFields: React.FC<Props> = ({ fields, setField }) => {
+export const AddressInput: React.FC<Props> = ({ fields, setField }) => {
   const { path } = useAppHistory()
   const addrRef = useControlRef<Input>()
 
