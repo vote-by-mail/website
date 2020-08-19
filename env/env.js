@@ -148,6 +148,7 @@ const test = removeNullValues({
   // For CI testing, use GOOGLE_MAPS_API_KEY from environment (secret)
   // Otherwise, use dev key
   GOOGLE_MAPS_API_KEY: process.env.CI ? process.env.GOOGLE_MAPS_API_KEY : DEV.GOOGLE_MAPS_API_KEY,
+  DISABLE_ALLOY_TEST: process.env.CI ? 1 : undefined,
   MG_DISABLE: 1,
   TWILIO_DISABLE: 1,
 })

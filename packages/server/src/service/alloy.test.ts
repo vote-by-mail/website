@@ -1,6 +1,5 @@
 import { cacheIsRegistered, toAlloyDate } from './alloy'
 import { RegistrationArgs, RegistrationStatus } from '../common'
-import { testEach } from './utilTests'
 
 
 const alloyMock = process.env.ALLOY_MOCK
@@ -124,6 +123,8 @@ test('Alloy date conversion', () => {
   expect(toAlloyDate('02/29/2020')).toBe('2020-02-29')
 })
 
-testEach(voters)('Alloy %s Voter', async (voter) => {
-  expect((await cacheIsRegistered(voter)).status).toBe(voter.status)
-})
+if (process.env.DISABLE_ALLOY_TEST) {
+  test.each(voters)('Alloy %s Voter', async (voter) => {
+    expect((await cacheIsRegistered(voter)).status).toBe(voter.status)
+  })
+}
