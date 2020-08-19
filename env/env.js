@@ -149,6 +149,7 @@ const test = removeNullValues((() => {
     MG_DISABLE: 1,
     TWILIO_DISABLE: 1,
     GOOGLE_MAPS_API_KEY: DEV.GOOGLE_MAPS_API_KEY,
+    GOOGLE_STORAGE_BUCKET: 'xxx',
   }
 
   if (process.env.CI) {

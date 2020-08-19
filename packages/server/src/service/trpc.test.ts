@@ -1,0 +1,56 @@
+import { sampleStateInfo } from './letter'
+import { mocked } from 'ts-jest/utils'
+import { VbmRpc } from './trpc'
+import { Request } from 'express'
+import { sendFaxes as unmockedSendFaxes } from './twilio'
+import { isE164 } from '../common'
+import { createMock } from 'ts-auto-mock'
+
+// To avoid doing actual requests (and setting a lot of new envs for tests),
+// we mock the majority of functions/modules related to trpc.
+
+jest.mock('./mg')
+jest.mock('./twilio')
+jest.mock('./firestore')
+jest.mock('./pdf')
+jest.mock('./storage', () => {
+  // Classes are only automatically mocked if they are using default exports
+  const StorageFile = jest.fn().mockImplementation((_: string) => ({
+    async upload() { return 'mocked_id' },
+    async getSignedUrl() { return 'mocked' },
+  }))
+
+  // If we return undefined (default mock behavior) it will throw errors
+  const storageFileFromId = jest.fn().mockImplementation((id: string) => {
+    return new StorageFile(id)
+  })
+
+  return {
+    StorageFile,
+    storageFileFromId,
+  }
+})
+
+const sendFaxes = mocked(unmockedSendFaxes).mockResolvedValue([])
+
+const trpc = new VbmRpc()
+
+test('trpc.register uses e164 number on sendFaxes', async () => {
+  const stateInfo = await sampleStateInfo('Maine')
+
+  const req = createMock<Request>({
+    headers: { "user-agent": 'test' },
+    connection: {
+      remoteAddress: '127.0.0.1',
+    }
+  })
+  const res = await trpc.register(stateInfo, { uid: 'abcdefghij' }, req)
+  // Ensures res.data is processed
+  const cont = res?.continuation as () => Promise<void>
+  await cont()
+
+  expect(sendFaxes).toHaveBeenCalledTimes(1)
+  // [ [ 'url', [ '+12078763198' ] ] ]
+  const faxNumber = sendFaxes.mock.calls[0][1][0]
+  expect(isE164(faxNumber)).toBe(true)
+})
