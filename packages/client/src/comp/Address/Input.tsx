@@ -60,6 +60,7 @@ export const AddressInput: React.FC<Props> = ({ fields, setField }) => {
         lang='en'
         value={fields?.street}
         onChange={e => setField('street', e.currentTarget.value)}
+        data-testid='addressFieldStreet'
       />
     </Flex>
 
@@ -70,6 +71,7 @@ export const AddressInput: React.FC<Props> = ({ fields, setField }) => {
         lang='en'
         value={fields?.unit}
         onChange={e => setField('unit', e.currentTarget.value)}
+        data-testid='addressFieldApartment'
       />
     </Flex>
 
@@ -81,6 +83,7 @@ export const AddressInput: React.FC<Props> = ({ fields, setField }) => {
         lang='en'
         value={fields?.city}
         onChange={e => setField('city', e.currentTarget.value)}
+        data-testid='addressFieldCity'
       />
     </Flex>
 
@@ -122,6 +125,7 @@ export const AddressInput: React.FC<Props> = ({ fields, setField }) => {
         pattern='[0-9]{5}'
         value={fields?.postcode}
         onChange={e => setField('postcode', e.currentTarget.value)}
+        data-testid='addressFieldPostcode'
       />
     </Flex>
   </FlexBox>
