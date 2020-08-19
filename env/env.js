@@ -138,20 +138,31 @@ const production = removeNullValues({
   ALLOY_API_SECRET,
 })
 
-const test = removeNullValues({
-  ...base,
-  FIRESTORE_URL: 'http://localhost:8081',  // for e2e tests with firestore emulator
-  NODE_ENV: 'test',
-  REACT_APP_SERVER: 'https://example.com',
-  REACT_APP_TIMEOUT: 2000,
-  FIRESTORE_EMULATOR_HOST: 'localhost:8081',
-  // For CI testing, use GOOGLE_MAPS_API_KEY from environment (secret)
-  // Otherwise, use dev key
-  GOOGLE_MAPS_API_KEY: process.env.CI ? process.env.GOOGLE_MAPS_API_KEY : DEV.GOOGLE_MAPS_API_KEY,
-  DISABLE_ALLOY_TEST: process.env.CI ? 1 : undefined,
-  MG_DISABLE: 1,
-  TWILIO_DISABLE: 1,
-})
+const test = removeNullValues((() => {
+  const testBase = {
+    ...base,
+    FIRESTORE_URL: 'http://localhost:8081',  // for e2e tests with firestore emulator
+    NODE_ENV: 'test',
+    REACT_APP_SERVER: 'https://example.com',
+    REACT_APP_TIMEOUT: 2000,
+    FIRESTORE_EMULATOR_HOST: 'localhost:8081',
+    MG_DISABLE: 1,
+    TWILIO_DISABLE: 1,
+    GOOGLE_MAPS_API_KEY: DEV.GOOGLE_MAPS_API_KEY,
+  }
+
+  if (process.env.CI) {
+    return {
+      ...testBase,
+      // Use GOOGLE_MAPS_API_KEY from environment (Github secret)
+      GOOGLE_MAPS_API_KEY: process.env.GOOGLE_MAPS_API_KEY,
+      // Disable Alloy Testing
+      DISABLE_ALLOY_TEST: 1,
+    }
+  } else {
+    return testBase
+  }
+})())
 
 const ci = removeNullValues({
   ...test,
