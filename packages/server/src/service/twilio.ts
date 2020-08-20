@@ -1,22 +1,25 @@
 import Twilio from 'twilio'
-import { processEnvOrThrow } from '../common'
+import { processEnvOrThrow, isE164 } from '../common'
 
 const client = Twilio(
   processEnvOrThrow('TWILIO_SID'),
   processEnvOrThrow('TWILIO_TOKEN'),
 )
 const from = processEnvOrThrow('TWILIO_FAX_NUMBER')
-const divertFaxNumber = processEnvOrThrow('DIVERT_FAX_NUMBER')
+const divertFaxNumber = process.env['DIVERT_FAX_NUMBER']
 
 const tos = (faxes: string[], force: boolean): string[] => {
   if (divertFaxNumber) {
-    if (!divertFaxNumber) { // TODO Test to see if divertFaxNumber is e164
+    if (!divertFaxNumber) {
       console.log('It seems you might be trying to test' +
-                  ' faxing but haven\'t set RECEIVE_FAX_NUMBER.')
+                  ' faxing but haven\'t set DIVERT_FAX_NUMBER.')
       return []
     } else {
-      return [divertFaxNumber]
-    }    
+      if (isE164(divertFaxNumber)) {
+        return [divertFaxNumber]
+      }
+      throw('divertFaxNumber is not a valid e164 number')
+    }
   }
   if (!!process.env.EMAIL_FAX_OFFICIALS || force) return faxes
   return []
