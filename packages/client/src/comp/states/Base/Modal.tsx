@@ -1,10 +1,10 @@
 import React from 'react'
-import { StyledModal } from '../util/StyledModal'
-import { BaseRegistrationStatus } from './BaseRegistration'
-import { RoundedButton } from '../util/Button'
+import { StyledModal } from '../../util/StyledModal'
+import { BaseRegistrationStatus } from './Registration'
+import { RoundedButton } from '../../util/Button'
 import styled from 'styled-components'
-import { AddressContainer } from '../../lib/unstated'
-import { getStatePortal } from '../../common/statePortal'
+import { AddressContainer } from '../../../lib/unstated'
+import { getStatePortal } from '../../../common/statePortal'
 
 interface Props {
   isOpen: boolean

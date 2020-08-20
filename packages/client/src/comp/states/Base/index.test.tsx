@@ -6,15 +6,15 @@ import { Router } from 'react-router'
 import SignatureCanvas from 'react-signature-canvas'
 jest.mock('react-signature-canvas')
 
-import { Wisconsin } from './Wisconsin'
-import { UnstatedContainer } from "../StateContainer"
-import { client } from '../../lib/trpc'
+import { Wisconsin } from '../Wisconsin'
+import { UnstatedContainer } from "../../StateContainer"
+import { client } from '../../../lib/trpc'
 import { mocked } from 'ts-jest/utils'
-import { toPath, SuccessPath, parseQS } from '../../lib/path'
-import { AddressContainer, ContactContainer } from '../../lib/unstated'
-import { ContactData, StateInfo, formatAddressInputParts, AddressInputParts } from '../../common'
-import { isE164 } from '../../../../common/util'
-jest.mock('../../lib/trpc')
+import { toPath, SuccessPath, parseQS } from '../../../lib/path'
+import { AddressContainer, ContactContainer } from '../../../lib/unstated'
+import { ContactData, StateInfo, formatAddressInputParts, AddressInputParts } from '../../../common'
+import { isE164 } from '../../../../../common/util'
+jest.mock('../../../lib/trpc')
 
 const mailingAddress: AddressInputParts = {
   street: '100 Biscayne Blvd',

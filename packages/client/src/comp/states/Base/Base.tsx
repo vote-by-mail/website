@@ -1,31 +1,28 @@
 import React from 'react'
 
-import { BaseInfo, StateInfo, isImplementedLocale, SignatureType, RegistrationStatus, fullName, formatAddressInputParts } from '../../common'
-import { client } from '../../lib/trpc'
-import { RoundedButton } from '../util/Button'
-import { BaseInput, PhoneInput, EmailInput, NameInput, BirthdateInput } from '../util/Input'
-import { Togglable } from '../util/Togglable'
-import { useAppHistory } from '../../lib/path'
-import { Signature } from '../util/Signature'
-import { AddressContainer, VoterContainer, ContactContainer, FetchingDataContainer, InitialDataContainer } from '../../lib/unstated'
-import { ContactInfo } from '../contact/ContactInfo'
-import { AppForm } from '../util/Form'
-import { Center } from '../util/Util'
+import { BaseInfo, StateInfo, isImplementedLocale, RegistrationStatus, fullName, formatAddressInputParts } from '../../../common'
+import { client } from '../../../lib/trpc'
+import { RoundedButton } from '../../util/Button'
+import { BaseInput, PhoneInput, EmailInput, NameInput, BirthdateInput } from '../../util/Input'
+import { Togglable } from '../../util/Togglable'
+import { useAppHistory } from '../../../lib/path'
+import { AddressContainer, VoterContainer, ContactContainer, FetchingDataContainer, InitialDataContainer } from '../../../lib/unstated'
+import { ContactInfo } from '../../contact/ContactInfo'
+import { AppForm } from '../../util/Form'
+import { Center } from '../../util/Util'
 import { toast } from 'react-toastify'
 import styled from 'styled-components'
-import { cssQuery } from '../util/cssQuery'
-import { FieldsContainer } from './BaseContainer'
-import { BaseRegistration, BaseRegistrationStatus } from './BaseRegistration'
-import { BaseModal } from './BaseModal'
-import { AppCheckbox } from '../util/Checkbox'
-import { termsOfUseUrl, privacyPolicyUrl } from '../util/urls'
-import { AddressInput } from '../Address'
+import { cssQuery } from '../../util/cssQuery'
+import { AppCheckbox } from '../../util/Checkbox'
+import { termsOfUseUrl, privacyPolicyUrl } from '../../util/urls'
+import { AddressInput } from '../../Address'
+import { BaseRegistrationStatus, FieldsContainer, BaseRegistration, BaseModal } from '.'
 
 export type StatelessInfo = Omit<BaseInfo, 'state'>
 
 type EnrichValues<Info> = (base: StatelessInfo) => Info | null
 
-type Props<Info> = React.PropsWithChildren<{
+export type BaseProps<Info> = React.PropsWithChildren<{
   enrichValues: EnrichValues<Info>
 }>
 
@@ -54,7 +51,7 @@ interface AlloyResponse {
  * this works with redirect urls of the form
  * /#/org/default/state?registrationAddress=100%20S%20Biscayne%20Blvd,%20Miami,%20FL%2033131&name=George%20Washington&birthdate=1945-01-01&email=george@us.gov&telephone=212-111-1111
  */
-const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: Props<Info>) => {
+const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: BaseProps<Info>) => {
   const { pushSuccess, oid } = useAppHistory()
   const { address, locale } = AddressContainer.useContainer()
   const { contact } = ContactContainer.useContainer()
@@ -307,44 +304,10 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: P
   </AppForm>
 }
 
-export const Base = <Info extends StateInfo>({ enrichValues, children }: Props<Info>) => {
+export const Base = <Info extends StateInfo>({ enrichValues, children }: BaseProps<Info>) => {
   return <FieldsContainer.Provider>
     <ContainerlessBase enrichValues={enrichValues}>
       {children}
     </ContainerlessBase>
   </FieldsContainer.Provider>
-}
-
-export type NoSignature<Info extends StateInfo> = Omit<Info, 'signature'>
-
-export const SignatureBase = <Info extends StateInfo>(
-  {enrichValues, children}: Props<NoSignature<Info>>
-) => {
-  const [signature, setSignature] = React.useState<string | null>()
-  const [signatureType, setSignatureType] = React.useState<SignatureType>('upload')
-
-  const enrichValuesWithSignature = (baseInfo: StatelessInfo): Info | null => {
-    const values = enrichValues(baseInfo)
-    if (!values) return null
-
-    if (!signature) {
-      // Do not dismiss previous errors which may give more details on bad fields
-      toast.error('Please fill out the signature field')
-      return null
-    }
-
-    return {
-      ...baseInfo,
-      ...values,
-      signature,
-      signatureType,
-    } as Info  // hack b/c it cannot understand how to distribute over types
-  }
-
-  return <Base<Info>
-    enrichValues={enrichValuesWithSignature}
-  >
-    { children }
-    <Signature setSignature={setSignature} setSignatureType={setSignatureType} signatureType={signatureType}/>
-  </Base>
 }

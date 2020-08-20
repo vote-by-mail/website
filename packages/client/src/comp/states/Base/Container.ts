@@ -1,9 +1,9 @@
 import React from 'react'
 
 import { createContainer } from 'unstated-next'
-import { NameParts, AddressInputParts } from '../../common'
-import { useAppHistory } from '../../lib/path'
-import { AddressInputPartContainer, removeOptionalAddressFields } from '../Address'
+import { NameParts, AddressInputParts } from '../../../common'
+import { useAppHistory } from '../../../lib/path'
+import { AddressInputPartContainer, removeOptionalAddressFields } from '../../Address'
 
 const datePattern = /(0[1-9]|1[012])[/.](0[1-9]|[12][0-9]|3[01])[/.](19|20)[0-9]{2}/i
 // eslint-disable-next-line no-useless-escape

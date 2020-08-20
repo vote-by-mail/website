@@ -1,5 +1,5 @@
 import React from 'react'
-import { RegistrationStatus } from '../../common'
+import { RegistrationStatus } from '../../../common'
 import styled from 'styled-components'
 
 const I = styled.i`
