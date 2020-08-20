@@ -2,14 +2,14 @@ import React from 'react'
 import { render } from '@testing-library/react'
 jest.mock('react-signature-canvas')
 
-import { UnstatedContainer } from "../StateContainer"
+import { UnstatedContainer } from "../../StateContainer"
 import { MemoryRouter } from 'react-router-dom'
-import { ContactData } from '../../common'
-import { AddressContainer, ContactContainer } from '../../lib/unstated'
-import { Wisconsin } from './Wisconsin'
-import { client } from '../../lib/trpc'
+import { ContactData } from '../../../common'
+import { AddressContainer, ContactContainer } from '../../../lib/unstated'
+import { Wisconsin } from '../Wisconsin'
+import { client } from '../../../lib/trpc'
 import { mocked } from 'ts-jest/utils'
-jest.mock('../../lib/trpc')
+jest.mock('../../../lib/trpc')
 
 const wisconsinAddress = {
   fullAddr: '1 S Pinckney St, Madison, WI 53703, USA',
