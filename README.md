@@ -42,7 +42,7 @@ Below are the settings that need to be set to get an environment to work.
 
 - **Twilio**: You only need these to send faxes (last step in signup flow).  It's easy to get set up for free.
 
-- **Incoming fax numbers**: To test Twilio, we setup an incoming fax number.  ([FaxBurner](https://www.faxburner.com/)) offers a free temporary one.  Set `RECEIVE_FAX_NUMBER` to this number.
+- **Incoming fax numbers**: To test Twilio, we setup an incoming fax number.  ([FaxBurner](https://www.faxburner.com/)) offers a free temporary one.  Set `DIVERT_FAX_NUMBER` to this number.
 
 - **Dev Firestore Access**: Goto the [Firebase Console](https://console.firebase.google.com/u/0/project/vbm-dev-281822/settings/serviceaccounts/adminsdk) and generate a new key and place it in `packages/server/secrets/[...].json`.
 Then make sure `env.js` has `GOOGLE_APPLICATION_CREDENTIALS` set to `./secrets/[...].json` (override using `developmentRaw`).
