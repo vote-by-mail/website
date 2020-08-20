@@ -3,7 +3,7 @@ import marked from 'marked'
 import nunjucks from 'nunjucks'
 
 import { processEnvOrThrow, StateInfo, ContactMethod, ImplementedState, formatPhoneNumber } from '../../common'
-import { fillMinnesota, fillNewHampshire, fillNorthCarolina, fillMassachusetts, fillVirginia, fillKansas } from '../pdfForm'
+import { fillMinnesota, fillNewHampshire, fillNorthCarolina, fillMassachusetts, fillVirginia, fillKansas, fillWestVirginia } from '../pdfForm'
 import { staticDir } from '../util'
 
 export const mg = mailgun({
@@ -39,6 +39,7 @@ export const pdfForm = async (info: StateInfo): Promise<Buffer | undefined> => {
     case 'New Hampshire': return fillNewHampshire(info)
     case 'North Carolina': return fillNorthCarolina(info)
     case 'Virginia': return fillVirginia(info)
+    case 'West Virginia': return fillWestVirginia(info)
     default: return undefined
   }
 }
@@ -61,6 +62,7 @@ const template = (state: ImplementedState): string => {
     case 'North Carolina': return 'NorthCarolina.md'
     case 'Oklahoma': return 'Oklahoma.md'
     case 'Virginia': return 'Virginia.md'
+    case 'West Virginia': return 'WestVirginia.md'
     case 'Wisconsin': return 'Wisconsin.md'
     case 'Wyoming': return 'Wyoming.md'
   }

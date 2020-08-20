@@ -154,6 +154,13 @@ const getSampleStateInfo = async (): Promise<StateInfoRecord> => {
         ...await commonStateInfo('Oklahoma'),
         signature
     },
+    'West Virginia': {
+        ...await commonStateInfo('West Virginia'),
+        signature,
+        party: 'Democratic Party',
+        election: 'Federal/State/County',
+        electionType: 'General'
+    }
   }
 }
 
