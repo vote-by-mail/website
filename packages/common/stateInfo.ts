@@ -24,6 +24,7 @@ export const implementedStates = [
   'North Carolina',
   'Oklahoma',
   'Virginia',
+  'West Virginia',
   'Wisconsin',
   'Wyoming',
 ] as const
@@ -54,6 +55,7 @@ const stateSignatureType: StateSignatureType = {
   'North Carolina': 'both',
   'Oklahoma': 'both',
   'Virginia': 'both',
+  'West Virginia': 'both',
   'Wisconsin': 'both',
   'Wyoming': 'both',
 }
@@ -196,6 +198,23 @@ export interface VirginiaInfo extends _Id, SignatureBaseInfo {
   last4DigitsOfSsn: string
 }
 
+export const westVirginiaParty = ['Democratic Party', 'Republican Party', 'Mountain'] as const
+export type WestVirginiaParty = (typeof westVirginiaParty)[number]
+
+export const westVirginiaElectionLevel = ['Federal/State/County', 'City/Town'] as const
+export type WestVirginiaElectionLevel = (typeof westVirginiaElectionLevel)[number]
+
+export const westVirginiaElectionType = ['Primary', 'General', 'Special'] as const
+export type WestVirginiaElectionType = (typeof westVirginiaElectionType)[number]
+
+export interface WestVirginiaInfo extends _Id, SignatureBaseInfo {
+  // Must specify election (federal/state/county or city/town) and type of election (primary, general, special)
+  state: 'West Virginia'
+  party?: WestVirginiaParty // Name of party ballot being requested (for primaries)
+  election: WestVirginiaElectionLevel // The election the user would like to absentee vote in
+  electionType: WestVirginiaElectionType // The type of election the user would like to absentee vote in
+}
+
 export interface WisconsinInfo extends _Id, BaseInfo {
   // https://elections.wi.gov/sites/elections.wi.gov/files/2019-02/Faxing%20or%20Emailing%20Absentee%20Ballots.pdf
   // no signature required
@@ -225,6 +244,7 @@ export type StateInfo = (
   | NorthCarolinaInfo
   | OklahomaInfo
   | VirginiaInfo
+  | WestVirginiaInfo
   | WisconsinInfo
   | WyomingInfo
 )
