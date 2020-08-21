@@ -1,10 +1,10 @@
 {% extends "LetterBase.md" %}
 
-{% set guidance = 'the [New York State Board of Elections](https://www.elections.ny.gov/votingabsentee.html)' %}
+{% set guidance = 'the [recent changes in New York State law](https://www.governor.ny.gov/news/governor-cuomo-signs-law-sweeping-election-reforms)' %}
 
 {% block body %}
 - County: **{{county}}**
-- Reason: "temporary illness or physical disability" due to the potential to contract the novel coronavirus or COVID-19 (see Executive Order 202.15).
+- Reason: "temporary illness or physical disability" due to the risk of contracting COVID-19.
 - Elections: generally, all elections through the end of the calendar year; in particular, **{{election}}**..
 
 {% endblock %}
