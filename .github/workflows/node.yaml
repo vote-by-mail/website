@@ -64,3 +64,5 @@ jobs:
       env:
         CI: true
         GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_KEY }}
+        ALLOY_SANDBOX_API_KEY: ${{ secrets.ALLOY_SANDBOX_API_KEY }}
+        ALLOY_SANDBOX_API_SECRET: ${{ secrets.ALLOY_SANDBOX_API_SECRET }}
