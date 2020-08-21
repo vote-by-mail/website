@@ -36,7 +36,7 @@ export const BaseRegistration: React.FC<Props> = ({
   </MarginSpan>
 
   if (registrationStatus === 'Loading') return <MarginSpan>
-    <b>Voter Registration:</b> Loading <i className="fa fa-spinner fa-spin"/>
+    <b>Voter Registration:</b> Loading <i style={{ display: 'inline-block' }} className="fa fa-spinner fa-spin"/>
   </MarginSpan>
 
   if (registrationStatus === 'Active') return <MarginSpan>
