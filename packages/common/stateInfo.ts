@@ -126,7 +126,7 @@ export interface GeorgiaInfo extends _Id, SignatureBaseInfo {
   party?: GeorgiaParty // Name of party ballot being requested (for primaries)
 }
 
-export const kansasIdentityType = ['Image', 'Number'] as const
+export const kansasIdentityType = ['Driver\'s License Number', 'Copy of Photo ID'] as const
 export type KansasIdentityType = (typeof kansasIdentityType)[number]
 export const isKansasIdentity = (x: string | null): x is KansasIdentityType => kansasIdentityType.includes(x as KansasIdentityType)
 
