@@ -3,17 +3,18 @@ import { Select as RawSelect, Option } from 'muicss/react'
 import styled from 'styled-components'
 
 type Options = readonly string[]
+type OptionType<O extends Options> = O[number]
 
 interface Props<O extends Options> {
-  children: (selected: O[number]) => React.ReactNode
+  children: (selected: OptionType<O>) => React.ReactNode
   options: O
-  defaultValue?: O[number]
+  defaultValue?: OptionType<O>
   label?: React.ReactNode
   style?: React.CSSProperties
   /** Function that is called after changing values */
-  onChange?: (value: O[number]) => void
+  onChange?: (value: OptionType<O>) => void
   /** Turns this TogglableDropdown into a controlled input */
-  value?: O[number]
+  value?: OptionType<O>
 }
 
 // Small hack to allow us to pass this prop to Select, unfortunately we
@@ -29,7 +30,7 @@ export const TogglableDropdown = <O extends Options>({
   style,
   value,
 }: Props<O>) => {
-  const [ selected, setSelected ] = React.useState<O[number]>(defaultValue ?? options[0])
+  const [ selected, setSelected ] = React.useState<OptionType<O>>(defaultValue ?? options[0])
 
   React.useEffect(() => {
     // Since we can't really make a directly controled MuiCSS form without
@@ -47,7 +48,7 @@ export const TogglableDropdown = <O extends Options>({
         // MuiCSS has a buggy support for <Select/> when using TypeScript,
         // to really access HTMLSelect and its value we need to do this hack
         const trueSelect = e.currentTarget.firstChild as HTMLSelectElement
-        const newValue = trueSelect.value as O[number]
+        const newValue = trueSelect.value as OptionType<O>
         // even when this is a controlled form we must keep track of the
         // unexported selected to lock the value of MuiCSS Select.firstChild
         // (the true <select/>)
