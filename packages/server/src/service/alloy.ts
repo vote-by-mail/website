@@ -66,7 +66,7 @@ export const isRegistered = async ({
     `city=${city}`,
     `state=${stateAbbr}`,
     `zip=${postcode}`,
-  ].join('&')
+  ].filter(str => !!str).join('&')
   const url = `${apiUrl}/verify?${query}`
 
   // 429 means we are firing more requests than our maximum rate per second,
