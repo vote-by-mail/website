@@ -79,7 +79,7 @@ const getSampleStateInfo = async (): Promise<StateInfoRecord> => {
     'Kansas': {
       ...await commonStateInfo('Kansas'),
       signature,
-      idType: 'Number',
+      idType: 'Driver\'s License Number',
       idNumber: '42534',
       idPhoto: undefined
     },
