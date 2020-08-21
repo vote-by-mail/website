@@ -23,6 +23,8 @@ interface Props {
   setDataString: (dataString: string) => void
   required?: boolean
   maxSizeMB?: number
+  /** Custom fa-icon that overrides the default one. */
+  icon?: string
 }
 
 interface ImageDetails {
@@ -43,6 +45,7 @@ export const Upload: React.FC<Props> = ({
   setDataString,
   required,
   maxSizeMB,
+  icon,
 }) => {
   const ref = React.useRef<HTMLInputElement | null>()
   const [image, setImage] = React.useState<ImageDetails>()
@@ -96,7 +99,7 @@ export const Upload: React.FC<Props> = ({
 
     return <>
       <h1 style={{marginTop: '0', paddingTop: '0'}}>
-        <i className="fa fa-upload" aria-hidden="true"/>
+        <i className={`fa ${icon ?? 'fa-upload'}`} aria-hidden="true"/>
       </h1>
       <SmallButton color='primary' style={centerBlock} >{label}</SmallButton>
     </>
