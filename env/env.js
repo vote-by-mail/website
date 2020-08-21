@@ -156,8 +156,8 @@ const test = removeNullValues((() => {
       ...testBase,
       // Use GOOGLE_MAPS_API_KEY from environment (Github secret)
       GOOGLE_MAPS_API_KEY: process.env.GOOGLE_MAPS_API_KEY,
-      // Disable Alloy Testing
-      DISABLE_ALLOY_TEST: 1,
+      ALLOY_API_KEY: process.env.ALLOY_SANDBOX_API_KEY,
+      ALLOY_API_SECRET: process.env.ALLOY_SANDBOX_API_SECRET,
     }
   } else {
     return testBase
