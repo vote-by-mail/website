@@ -55,7 +55,7 @@ export const Signature: React.FC<Props> = ({ setSignature, setSignatureType, sig
         } else {
           return <div>
             <div>
-              <Upload label='Upload Signature' setDataString={setSignature} />
+              <Upload label='Upload Signature' icon='fa-signature' setDataString={setSignature} />
             </div>
           </div>
         }

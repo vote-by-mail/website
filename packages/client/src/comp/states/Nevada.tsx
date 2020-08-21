@@ -8,7 +8,7 @@ import { Togglable } from '../util/Togglable'
 
 export const Nevada = () => {
   const [idPhoto, setIdPhoto] = React.useState<string>()
-  
+
   return <SignatureBase<NevadaInfo>
     enrichValues={(info) => {
       return {
@@ -24,7 +24,7 @@ export const Nevada = () => {
     >
       {(checked) => <>
         <p>Nevada requires all first-time voters to submit a copy of their ID.  You do not need to do this if you have voted before, either by mail or in person.</p>
-        <Upload label='Upload Photo of ID' setDataString={setIdPhoto} required={checked}/>
+        <Upload label='Upload Photo of ID' icon='fa-id-card' setDataString={setIdPhoto} required={checked}/>
       </>}
     </Togglable>
   </SignatureBase>
