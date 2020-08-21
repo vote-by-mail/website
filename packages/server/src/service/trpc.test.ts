@@ -51,6 +51,7 @@ test('trpc.register uses e164 number on sendFaxes', async () => {
 
   expect(sendFaxes).toHaveBeenCalledTimes(1)
   // [ [ 'url', [ '+12078763198' ] ] ]
-  const faxNumber = sendFaxes.mock.calls[0][1][0]
-  expect(isE164(faxNumber)).toBe(true)
+  expect(sendFaxes.mock.calls).toHaveLength(1)
+  const faxNumbers = sendFaxes.mock.calls[0][1]
+  expect(faxNumbers.every(isE164)).toBe(true)
 })
