@@ -40,7 +40,7 @@ export const Kansas = () => {
       switch (option) {
         case 'Copy of Photo ID': return <div>
           <p>If I do not have a current valid Kansas driver’s license number or Kansas nondriver’s identification card number, I must provide a copy of one of the following forms of photo identification with this application in order to receive a ballot.</p>
-          <Upload label='Upload Photo of ID' setDataString={setIdPhoto} required={true}/>
+          <Upload label='Upload Photo of ID' icon='fa fa-id-card' setDataString={setIdPhoto} required={true}/>
         </div>
 
         default: return <BaseInput
