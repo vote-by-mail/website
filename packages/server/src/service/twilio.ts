@@ -10,16 +10,10 @@ const divertFaxNumber = process.env['DIVERT_FAX_NUMBER']
 
 const tos = (faxes: string[], force: boolean): string[] => {
   if (divertFaxNumber) {
-    if (!divertFaxNumber) {
-      console.log('It seems you might be trying to test' +
-                  ' faxing but haven\'t set DIVERT_FAX_NUMBER.')
-      return []
-    } else {
-      if (isE164(divertFaxNumber)) {
-        return [divertFaxNumber]
-      }
-      throw('divertFaxNumber is not a valid e164 number')
+    if (isE164(divertFaxNumber)) {
+      return [divertFaxNumber]
     }
+    throw('divertFaxNumber is not a valid e164 number')
   }
   if (!!process.env.EMAIL_FAX_OFFICIALS || force) return faxes
   return []
