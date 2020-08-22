@@ -150,6 +150,15 @@ yarn server gulp script --env production --script src/script/fetchLetter.ts --id
 ### Asthetics
 - [MUI CSS Colors](https://www.muicss.com/docs/v1/getting-started/colors)
 - [Gradient Codegen](https://cssgradient.io/)
+- [IcoMoon](https://icomoon.io)
+
+### Icons
+We're using [IcoMoon](https://icomoon.io) for icons. In order to add/remove icons, please
+import `packages/client/icons.json` to [your IcoMoon project](https://icomoon.io/app/#/projects). It will load all our used icons and preferences (such as class name prefixes) for this project. You can edit the list of used icons by selecting them on [the browse icons page](https://icomoon.io/app/#/select).
+
+When you're done editing, go to [font generation page](https://icomoon.io/app/#/select/font) and download the file (it's a compressed zipped file). Uncompress the archive and rename `style.css` to `icons.css`, the same should be done to `selection.json` if you've updated the selected icons (as implied above, we store `selection.json` as `icons.json` at `packages/client/icons.json`).
+
+Move `icons.css` and the folder `fonts` to `packages/client/public/`. To reduce bandwidth we minimize a copy of `icons.css` as `icons.min.css` (you can minify CSS files online at https://cssminifier.com/)
 
 ### Markdown Library
 We're using [Marked](https://www.npmjs.com/package/marked), which has more dependents, downloads, and is smaller than [Showdown](https://www.npmjs.com/package/showdown).  The documentation on how to run it in node is available [here](https://marked.js.org/#/USING_ADVANCED.md#options)
