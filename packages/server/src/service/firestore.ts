@@ -285,11 +285,11 @@ export class FirestoreService {
   /**
    * Fetches the minimal fields (created) of all signups since lastQueryTime.
    */
-  async getSignups(lastQueryTime: Date): Promise<FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData>> {
+  async getSignups(lastQueryTime: number): Promise<FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData>> {
     const stateInfos = this.db.collection('StateInfo')
     // We only select 'created' when doing these queries, to avoid fetching
     // needless information.
-    const query = stateInfos.where('created', '>', lastQueryTime.valueOf()).select('created')
+    const query = stateInfos.where('created', '>', lastQueryTime).select('created')
     return query.get()
   }
 }
