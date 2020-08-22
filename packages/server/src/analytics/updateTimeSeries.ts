@@ -30,12 +30,7 @@ export const updateTimeSeries = async () => {
     totalSignups: storedTotalSignups,
   } = await analyticsStorage.data()
 
-  const stateInfos = firestore.db.collection('StateInfo')
-
-  // We only select 'created' when doing these metrics, to avoid fetching
-  // needless information
-  const query = stateInfos.where('created', '>', storedLastQueryTime).select('created')
-  const snapshot = await query.get()
+  const snapshot = await firestore.getSignups(storedLastQueryTime)
 
   let newYesterdaySignups = storedYesterdaySignups
   let newTotalSignups = storedTotalSignups
