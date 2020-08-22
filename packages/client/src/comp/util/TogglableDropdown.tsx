@@ -8,6 +8,13 @@ type OptionType<O extends Options> = O[number]
 interface Props<O extends Options> {
   children: (selected: OptionType<O>) => React.ReactNode
   options: O
+  /**
+   * The default value of this TogglableDropdown, this prop is only useful
+   * when not controlling the value of this component, since it will be ignored
+   * if `props.value !== undefined`.
+   *
+   * This mimics the default behavior for React `<select/>` components.
+   */
   defaultValue?: OptionType<O>
   label?: React.ReactNode
   style?: React.CSSProperties
@@ -42,6 +49,7 @@ export const TogglableDropdown = <O extends Options>({
   return <div style={style}>
     <Select
       label={label}
+      // Ignores defaultValue if prop.value is present.
       defaultValue={!value ? defaultValue : undefined}
       value={value}
       onChange={e => {
