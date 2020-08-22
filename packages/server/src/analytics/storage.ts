@@ -48,11 +48,8 @@ class AnalyticsStorage {
       await this.doc.set(this.storage, { merge: true })
     } else {
       this.storage = {
+        ...data as RawStorage,
         id: 'onlyOne',
-        lastQueryTime: data['lastQueryTime'],
-        totalSignups: data['totalSignups'],
-        yesterdayDate: data['yesterdayDate'],
-        yesterdaySignups: data['yesterdaySignups'],
       }
     }
   }
@@ -84,7 +81,7 @@ class AnalyticsStorage {
       yesterdayDate: this.midnightYesterday.valueOf(),
     }
 
-    this.doc.set(this.storage, { merge: true })
+    await this.doc.set(this.storage, { merge: true })
   }
 
   /** Returns a date set to 00:00 of the previous day */
@@ -97,6 +94,12 @@ class AnalyticsStorage {
       // issues.
       now.getDate() - 1,
     )
+  }
+
+  /** Returns true if this storage has no record of previous queries */
+  isFirstQuery = async (): Promise<boolean> => {
+    await this.refresh()
+    return this.storage.lastQueryTime === 0
   }
 }
 

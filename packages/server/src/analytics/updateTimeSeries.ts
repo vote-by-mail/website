@@ -28,7 +28,6 @@ export const updateTimeSeries = async () => {
     lastQueryTime: storedLastQueryTime,
     yesterdaySignups: storedYesterdaySignups,
     totalSignups: storedTotalSignups,
-    yesterdayDate: storedYesterdayDate,
   } = await analyticsStorage.data()
 
   const stateInfos = firestore.db.collection('StateInfo')
@@ -41,21 +40,20 @@ export const updateTimeSeries = async () => {
   let newYesterdaySignups = storedYesterdaySignups
   let newTotalSignups = storedTotalSignups
 
-  // We process this query differently based on the value of storedYesterdayDate.
+  // We process this query based on the value of analyticsStorage.isFirstQuery
   //
-  // If `storedYesterdayDate === startTime` (happens on the first time this
-  // algorithm is run), we'll have to manually iterate through the array
-  // in order to detect which records happened yesterday.
+  // If true, we'll have to manually iterate through the array in order to
+  // detect which records happened yesterday.
   //
-  // If storedYesterdayDate is actually yesterday, we can easily increment
-  // newYesterdaySignups/newTotalSignups based on the size of the snapshot.
-  if (storedYesterdayDate.valueOf() === startTime.valueOf()) {
-    snapshot.forEach(
-      d => d.createTime.seconds >= (startTime.valueOf() / 1000)
-        ? newYesterdaySignups++
-        : newTotalSignups++
-    )
-    newTotalSignups += (newYesterdaySignups - storedYesterdaySignups)
+  // Otherwise we can easily increment newYesterdaySignups/newTotalSignups
+  // based on the size of the snapshot.
+  if (await analyticsStorage.isFirstQuery()) {
+    snapshot.forEach(d => {
+      if (d.createTime.seconds >= (startTime.valueOf() / 1000)) {
+        newYesterdaySignups++
+      }
+    })
+    newTotalSignups = snapshot.size
   } else {
     newYesterdaySignups += snapshot.size
     newTotalSignups += snapshot.size
