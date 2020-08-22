@@ -1,21 +1,14 @@
 import { FirestoreService } from '../service/firestore'
+import { analyticsLogic } from './logic'
 
 const firestore = new FirestoreService()
 
 // Used to save the document
-interface RawStorage {
-  id: 'onlyOne'
+export interface AnalyticsStorageSchema {
+  readonly id: 'onlyOne'
   lastQueryTime: number
   totalSignups: number
   yesterdayDate: number
-  yesterdaySignups: number
-}
-
-// Used to speed up coding, since timestamps are already converted to Dates
-interface Storage {
-  lastQueryTime: Date
-  totalSignups: number
-  yesterdayDate: Date
   yesterdaySignups: number
 }
 
@@ -24,7 +17,7 @@ class AnalyticsStorage {
     return firestore.db.collection('Analytics').doc('storage')
   }
 
-  private storage: RawStorage = {
+  private storage: AnalyticsStorageSchema = {
     id: 'onlyOne',
     lastQueryTime: 0,
     totalSignups: 0,
@@ -48,52 +41,26 @@ class AnalyticsStorage {
       await this.doc.set(this.storage, { merge: true })
     } else {
       this.storage = {
-        ...data as RawStorage,
+        ...data as AnalyticsStorageSchema,
         id: 'onlyOne',
       }
     }
   }
 
-  /**
-   * If the stored yesterday date is different than the current one, yesterdaySignups
-   * is automatically zeroed to avoid wrong values when updating the daily
-   * signup metric
-   */
-  data = async (): Promise<Storage> => {
+  data = async (): Promise<AnalyticsStorageSchema> => {
     await this.refresh()
-    const yesterdayDate = new Date(this.storage.yesterdayDate)
-    const yesterdaySignups = yesterdayDate.valueOf() === this.midnightYesterday.valueOf()
-      ? this.storage.yesterdaySignups
-      : 0
-    return {
-      yesterdayDate, yesterdaySignups,
-      lastQueryTime: new Date(this.storage.lastQueryTime),
-      totalSignups: this.storage.totalSignups,
-    }
+    return this.storage
   }
 
   /** Updates the in-memory and firestore values of the analytics functions */
-  update = async (totalSignups: number, yesterdaySignups: number, lastQueryTime: Date) => {
+  update = async (totalSignups: number, yesterdaySignups: number, lastQueryTime: number) => {
     this.storage = {
       id: 'onlyOne',
-      yesterdaySignups, totalSignups,
-      lastQueryTime: lastQueryTime.valueOf(),
-      yesterdayDate: this.midnightYesterday.valueOf(),
+      yesterdaySignups, totalSignups, lastQueryTime,
+      yesterdayDate: analyticsLogic.midnightYesterday.valueOf(),
     }
 
     await this.doc.set(this.storage, { merge: true })
-  }
-
-  /** Returns a date set to 00:00 of the previous day */
-  get midnightYesterday() {
-    const now = new Date()
-    return new Date(
-      now.getFullYear(),
-      now.getMonth(),
-      // Node.js handles 0 as the last day of the previous month without
-      // issues.
-      now.getDate() - 1,
-    )
   }
 
   /** Returns true if this storage has no record of previous queries */

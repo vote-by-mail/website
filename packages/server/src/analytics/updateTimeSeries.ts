@@ -1,7 +1,7 @@
 import { v3 as gcm } from '@google-cloud/monitoring'
-import { FirestoreService } from '../service/firestore'
 import { analyticsStorage } from './storage'
 import { processEnvOrThrow } from '../common'
+import { analyticsLogic } from './logic'
 
 // Remember to allow monitoring on the Google Cloud Platform and also to
 // ensure a valid workspace/dashboard is available in order to see these
@@ -17,42 +17,11 @@ import { processEnvOrThrow } from '../common'
 const client = new gcm.MetricServiceClient()
 const projectName = processEnvOrThrow('GCLOUD_PROJECT')
 const projectPath = client.projectPath(projectName)
-const firestore = new FirestoreService()
 const baseMetricUrl = 'custom.googleapis.com'
 
 export const updateTimeSeries = async () => {
   const now = new Date()
-  const startTime = analyticsStorage.midnightYesterday
-
-  const {
-    lastQueryTime: storedLastQueryTime,
-    yesterdaySignups: storedYesterdaySignups,
-    totalSignups: storedTotalSignups,
-  } = await analyticsStorage.data()
-
-  const snapshot = await firestore.getSignups(storedLastQueryTime)
-
-  let newYesterdaySignups = storedYesterdaySignups
-  let newTotalSignups = storedTotalSignups
-
-  // We process this query based on the value of analyticsStorage.isFirstQuery
-  //
-  // If true, we'll have to manually iterate through the array in order to
-  // detect which records happened yesterday.
-  //
-  // Otherwise we can easily increment newYesterdaySignups/newTotalSignups
-  // based on the size of the snapshot.
-  if (await analyticsStorage.isFirstQuery()) {
-    snapshot.forEach(d => {
-      if (d.createTime.seconds >= (startTime.valueOf() / 1000)) {
-        newYesterdaySignups++
-      }
-    })
-    newTotalSignups = snapshot.size
-  } else {
-    newYesterdaySignups += snapshot.size
-    newTotalSignups += snapshot.size
-  }
+  const { yesterdaySignups, totalSignups } = await analyticsLogic.calculateSignups()
 
   await client.createTimeSeries({
     name: projectPath,
@@ -61,9 +30,11 @@ export const updateTimeSeries = async () => {
       resource: { type: 'global' },
       points: [{
         interval: {
+          // Google timestamps uses seconds instead of ms (default JS stamp)
+          // we divide valueOf by 1000 to avoid issues
           endTime: { seconds: now.valueOf() / 1000 },
         },
-        value: { int64Value: newYesterdaySignups },
+        value: { int64Value: yesterdaySignups },
       }],
     }],
   })
@@ -75,12 +46,14 @@ export const updateTimeSeries = async () => {
       resource: { type: 'global' },
       points: [{
         interval: {
+          // Google timestamps uses seconds instead of ms (default JS stamp)
+          // we divide valueOf by 1000 to avoid issues
           endTime: { seconds: now.valueOf() / 1000 },
         },
-        value: { int64Value: newTotalSignups },
+        value: { int64Value: totalSignups },
       }],
     }],
   })
 
-  await analyticsStorage.update(newTotalSignups, newYesterdaySignups, now)
+  await analyticsStorage.update(totalSignups, yesterdaySignups, now.valueOf())
 }
