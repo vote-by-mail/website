@@ -124,16 +124,22 @@ export const sampleAddresses: Record<ImplementedState, AddressData[]> = {
     address: '727 Minnesota Ave, Kansas City, KS 66101',
     city: 'Kansas City',
     county: 'Wyandotte County',
+    postcode: '66101',
+    street: '727 Minnesota Ave',
     state: 'Kansas',
   }, {
     address: '18103 W 106th St #100, Olathe, KS 66061',
     city: 'Olathe',
     county: 'Johnson County',
+    postcode: '66061',
+    street: '18103 W 106th St #100',
     state: 'Kansas',
   }, {
     address: '719 S Kansas Ave Suite 100, Topeka, KS 66603',
     city: 'Topeka',
     county: 'Shawnee County',
+    postcode: '66603',
+    street: '719 S Kansas Ave Suite 100',
     state: 'Kansas',
   }],
   'Wisconsin': [{
