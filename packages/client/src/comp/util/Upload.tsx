@@ -99,7 +99,7 @@ export const Upload: React.FC<Props> = ({
 
     return <>
       <h1 style={{marginTop: '0', paddingTop: '0'}}>
-        <i className={`fa ${icon ?? 'fa-upload'}`} aria-hidden="true"/>
+        <i className={icon ?? 'fa fa-upload'} aria-hidden="true"/>
       </h1>
       <SmallButton color='primary' style={centerBlock} >{label}</SmallButton>
     </>

@@ -26,7 +26,7 @@ export const Wisconsin = () => {
     >
       {(checked) => <>
         <p>Wisconsin requires all first-time <VbmAdjective/> voters to submit a copy of their ID, even if they have voted in-person in the state previously.</p>
-        <Upload label='Upload Photo of ID' icon='fa-id-card' setDataString={setIdPhoto} required={checked}/>
+        <Upload label='Upload Photo of ID' icon='fa fa-id-card' setDataString={setIdPhoto} required={checked}/>
       </>}
     </Togglable>
   </Base>
