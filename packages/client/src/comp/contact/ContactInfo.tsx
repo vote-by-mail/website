@@ -40,9 +40,14 @@ export const ContactInfo: React.FC<Props> = ({
 }) => {
   const [open, setOpen] = React.useState<boolean>(false)
 
+  // New York state has two election officials, which does not match our data format
+  // Since they are (usually?) a democrat and a republican, only displaying one appears partisan.
+  // Not displaying NY at their request.
+  const displayOfficial = locale.state !== 'New York'
+
   return <ContacStyle>
     <p><b>Local Election Official Details.</b></p>
-    <ContactField name='Official' val={contact.official}/>
+    { displayOfficial ? <ContactField name='Official' val={contact.official}/> : null }
     <ContactField name='City' val={contact.city}/>
     <ContactField name='County' val={contact.county}/>
     <ContactFields name='Email' val={contact.emails}/>
