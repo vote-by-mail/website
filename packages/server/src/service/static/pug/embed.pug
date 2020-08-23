@@ -1,0 +1,130 @@
+extends layout.pug
+
+block pageName
+  title Embedding VoteByMail.io
+
+block content
+  .container.mt-4
+    h1 Embedding VoteByMail.io
+    p This page helps you to embed VoteByMail.io to your website, in order for these steps to be successful you must at least have the power to edit HTML content of the pages you're wishing to edit. Also, due to the safety measures adopted by modern browsers, these methods are only guaranteed to work on secure web pages, i.e. websites using SSL/HTTPS connections.
+
+    br
+    h2 Selecting the right widget
+    p There are multiple versions of the VoteByMail widget to add to your website, this helps fitting our application on your page as well as helping voters sign up more efficiently.
+    p Please note that all widgets offer the same functionality, and their only difference is aesthetics.
+
+    .row
+      .col.col-lg-6.col-sm-12
+        .card.mt-4.p-3
+          .card-body
+            h3 Portrait widgets
+            p These are ideal for mobile devices or when you need to fit the VoteByMail Widget in a constrained space.
+            p.text-muted Small (340x620) is the only one that fits all smartphones and devices.
+            button(
+              type='button'
+              class='btn btn-primary'
+              onClick='setDimensions(340, 620)'
+              style='margin-right: 15px;'
+            ) Small (340x620)
+            button(
+              type='button'
+              class='btn btn-primary'
+              onClick='setDimensions(768, 1024)'
+              style=''
+            ) Big (768x1024)
+
+      .col.col-lg-6.col-sm-12
+        .card.mt-4.p-3
+          .card-body
+            h3 Landscape widgets
+            p These are ideal for wider devices such as computers and tablets, as well as webpages with lots of space available.
+            p.text-muted We suggest you to use the Flexible Widget below if you need even bigger dimensions.
+            button(
+              type='button'
+              class='btn btn-primary'
+              onClick='setDimensions(1024, 768)'
+              style='margin-right: 15px;'
+            ) Small (1024x768)
+            button(
+              type='button'
+              class='btn btn-primary'
+              onClick='setDimensions(1366, 768)'
+              style=''
+            ) Big (1366x768)
+
+      .col.col-lg-6.col-sm-12
+        .card.mt-4.p-3
+          .card-body
+            h3 Organization changes
+            p You can fill the input below to replace the default organization, or (recommended) click in one of the buttons to update the Widget Code for your desired organization.
+            p.text-muted Only type in the field if you want to manually generate a Widget for an unlisted organization.
+            each org in richOrgs
+              button(
+                onClick=`setOrg('${org.id}', true)`
+                aria-label=org.name ? `${org.name} (${org.id})` : org.id
+                class='btn btn-primary'
+                style='margin-right: 15px; margin-bottom: 15px;'
+              )= org.name ? `${org.name} (${org.id})` : org.id
+
+            .input-group.mb-3
+              input(
+                id='vbm-iframe-org-input'
+                class='form-control'
+                placeholder='Custom org id, e.g. vbm_org'
+                onChange='setOrg(this.value)'
+                aria-label='custom org input'
+              )
+              .input-group-append
+                // This button actually does nothing, but vanilla js
+                // onChange might trigger only after the input is blurred
+                // on some browsers, unlike the default behavior in React
+                button(
+                  class='btn btn-primary'
+                  aria-label='save changes'
+                ) Save
+
+  .container.mt-4
+    br
+    h2 Widget code
+    br
+    div.alert.alert-secondary(style='background-color: #fbfbfb;')
+      p Please copy the text in red and add it to your website, the code in this block updates automatically as you edit your widget.
+      code(id='vbm-iframe-code')= env.REACT_APP_URL
+
+
+    h3 Preview
+    iframe(
+      id='vbm-iframe'
+      src=`${env.REACT_APP_URL}/${org}`
+    )
+
+
+  script.
+    let width = 340;
+    let height = 620;
+    let org = '';
+    const iframe = document.getElementById('vbm-iframe');
+    const code = document.getElementById('vbm-iframe-code');
+    // The initial value of code is env.REACT_APP_URL (we can't access env here)
+    const baseUrl = code.innerText;
+
+    function setDimensions(w, h) {
+      width = w;
+      height = h;
+      iframe.style.width = `${width}px`;
+      iframe.style.height = `${height}px`;
+      code.innerText = iframe.outerHTML;
+    }
+
+    function setOrg(oid, clearInput) {
+      org = `#/org/${oid ? oid : 'default'}`;
+      iframe.src = `${baseUrl}/${org}`;
+      code.innerText = iframe.outerHTML;
+      if (clearInput) {
+        document.getElementById('vbm-iframe-org-input').value = ''
+      }
+    }
+
+    // Initialize default values
+    setDimensions(width, height)
+    setOrg(org)
