@@ -237,5 +237,16 @@ export const registerPassportEndpoints = (app: Express.Application) => {
     }
   )
 
+  app.get('/embed', validSession, async (req, res) => {
+    const uid = getUid(req)
+    const orgs = await firestoreService.fetchUserOrgs(uid)
+
+    const richOrgs = orgs.map(org => enrichOrg(org, uid))
+    const env = {
+      REACT_APP_URL: process.env.REACT_APP_URL,
+    }
+    res.render('embed', { env, richOrgs })
+  })
+
   app.use('/letter', validSession, letterRouter)
 }

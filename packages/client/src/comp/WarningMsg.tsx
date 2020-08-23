@@ -12,6 +12,7 @@ import { StyledModal } from './util/StyledModal'
 import { toast } from 'react-toastify'
 import { createContainer } from 'unstated-next'
 import { AddressInputPartContainer } from './Address'
+import { isEmbedded } from '../lib/util'
 
 const defaultState = (path: Path | null): ImplementedState => {
   switch(path?.type) {
@@ -47,7 +48,11 @@ const useVisibility = () => {
   //
   // To avoid this we wrap a state on the storage item to ensure this issue
   // doesn't happen.
-  const [ visited, setVisited ] = React.useState(localStorage.getItem('visited') !== null)
+  const [ visited, setVisited ] = React.useState(
+    isEmbedded() === false
+      ? localStorage.getItem('visited') !== null
+      : true
+  )
   const [ open, setOpen ] = React.useState(!visited)
   const toggleOpen = () => {
     if (!visited) {
