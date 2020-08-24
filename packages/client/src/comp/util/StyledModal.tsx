@@ -4,6 +4,18 @@ import styled, { keyframes, css, Keyframes } from 'styled-components'
 
 const animationDurationMS = 350
 
+const fadeIn = keyframes`
+  from { opacity: 0; }
+  to { opacity: 1; }
+`
+/**
+ * Delays displaying content until the modal is in its appropriate position
+ */
+export const AfterModalAnimation = styled.div`
+  animation: ${fadeIn} ease .2s 550ms both;
+`
+
+
 interface Props {
   hiding: boolean
   openingAnimation?: Keyframes

@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyledModal } from '../util/StyledModal'
+import { StyledModal, AfterModalAnimation } from '../util/StyledModal'
 import { Select } from '../util/Select'
 import { client } from '../../lib/trpc'
 import { AddressInputPartContainer } from './Container'
@@ -28,6 +28,9 @@ export const AddressModal: React.FC<Props> = ({ isOpen, setOpen }) => {
   const { pushState } = useAppHistory()
   const [ contacts, setContacts ] = React.useState<readonly string[] | undefined | null>()
   const [ newContact, setNewContact ] = React.useState<string>()
+  const [ width, setWidth ] = React.useState<number | string>(0)
+  const [ top, setTop ] = React.useState<number | string>(0)
+  const [ left, setLeft ] = React.useState<number | string>(0)
 
   const state = fields.state as ImplementedState
 
@@ -62,12 +65,46 @@ export const AddressModal: React.FC<Props> = ({ isOpen, setOpen }) => {
     }
   }
 
-  return <StyledModal isOpen={isOpen}>
-    <h3>Unable to locate your Election Official</h3>
-    <p>Some addresses are not covered by our Geocode API, but don&apos;t worry this just means we wont&apos;t be able to automatically find your election official.</p>
-    <p>In order to continue, please select your election official from the list below.</p>
+  // Due to CSS/HTML limitation we can't have styled Select/Options that
+  // displays their content outside their boundaries. We render StyledSelect
+  // on a separate div from the Modal and uses this ref to assign its position
+  // https://reactjs.org/docs/hooks-faq.html#how-can-i-measure-a-dom-node
+  const positionRef = React.useCallback((node: HTMLDivElement) => {
+    setTimeout(
+      () => {
+        if (node !== null) {
+          const { top, x, width} = node.getBoundingClientRect()
+          setTop(top)
+          setLeft(x)
+          setWidth(width)
+        }
+      },
+      // A bit after the animation duration to ensure getBoundingClientRect
+      // gets everything correctly
+      505,
+    )
+  }, [])
 
-    {contacts && (
+  return <>
+    <StyledModal isOpen={isOpen}>
+      <AfterModalAnimation>
+        <h3>Unable to locate your Election Official</h3>
+        <p>Some addresses are not covered by our Geocode API, but don&apos;t worry this just means we wont&apos;t be able to automatically find your election official.</p>
+        <p>Please select your election official from the list below.</p>
+
+        <div ref={positionRef} style={{ width: '100%', height: 67 }}/>
+
+
+        <RoundedButton color='primary' onClick={handleSubmit}>
+          Confirm
+        </RoundedButton>
+      </AfterModalAnimation>
+    </StyledModal>
+    {contacts && <AfterModalAnimation style={{
+      position: 'fixed',
+      zIndex: 33,
+      top, left, width,
+    }}>
       <ContactsSelect
         options={contacts}
         label='Election Official'
@@ -75,10 +112,6 @@ export const AddressModal: React.FC<Props> = ({ isOpen, setOpen }) => {
         value={newContact}
         onChange={v => setNewContact(v)}
       />
-    )}
-
-    <RoundedButton color='primary' onClick={handleSubmit}>
-      Confirm
-    </RoundedButton>
-  </StyledModal>
+    </AfterModalAnimation>}
+  </>
 }
