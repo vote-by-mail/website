@@ -25,15 +25,11 @@ class AnalyticsStorage {
     yesterdaySignups: 0,
   }
 
-  constructor() {
-    this.refresh()
-  }
-
   /**
    * Refreshes the in-memory values or creates the default document in
    * the collection
    */
-  private refresh = async () => {
+  private initializeOrSync = async () => {
     const get = await this.doc.get()
     const data = get.data()
 
@@ -48,7 +44,7 @@ class AnalyticsStorage {
   }
 
   data = async (): Promise<AnalyticsStorageSchema> => {
-    await this.refresh()
+    await this.initializeOrSync()
     return this.storage
   }
 
@@ -65,7 +61,7 @@ class AnalyticsStorage {
 
   /** Returns true if this storage has no record of previous queries */
   isFirstQuery = async (): Promise<boolean> => {
-    await this.refresh()
+    await this.initializeOrSync()
     return this.storage.lastQueryTime === 0
   }
 }
