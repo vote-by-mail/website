@@ -11,6 +11,7 @@ import { toast } from 'react-toastify'
 import { AddressInputPartContainer } from '.'
 import { AddressInput } from './Input'
 import { RoundedButton } from '../util/Button'
+import { AddressModal } from './Modal'
 
 // pulled out for testing
 export const RawAddressForm: React.FC<{rawState: string, zip?: string}> = ({rawState}) => {
@@ -19,6 +20,7 @@ export const RawAddressForm: React.FC<{rawState: string, zip?: string}> = ({rawS
   const { setAddress } = AddressContainer.useContainer()
   const { setContact } = ContactContainer.useContainer()
   const { fetchingData, setFetchingData } = FetchingDataContainer.useContainer()
+  const [ open, setOpen ] = React.useState(false)
 
   const state = getState(rawState)
   // Goes back to starting section if no state was found
@@ -48,6 +50,7 @@ export const RawAddressForm: React.FC<{rawState: string, zip?: string}> = ({rawS
         }
         case 'error': {
           toast.error(<><b>Server Error:</b> {result.message}.  Try resubmitting.  If this persists, try again in a little while.</>)
+          setOpen(true)
           return
         }
       }
@@ -66,25 +69,28 @@ export const RawAddressForm: React.FC<{rawState: string, zip?: string}> = ({rawS
     }
   }
 
-  return <StatusReport state={state}>
-    <AppForm onSubmit={handleSubmit}>
-      <p>
-        Enter your <b>voter-registration address</b> to find your local election official.
-        (<a target='_blank' rel='noopener noreferrer' href='https://www.vote.org/am-i-registered-to-vote/'>Unsure if you are registered?</a>)
-      </p>
-      <AddressInput fields={fields} setField={setField}/>
-      <RoundedButton
-        id='addr-submit'  // This id is used for Warning Box to submit form quickly
-        color='primary'
-        variant='raised'
-        data-testid='submit'
-        style={{flexGrow: 0}}
-        disabled={fetchingData}
-      >
-        Find my election official
-      </RoundedButton>
-    </AppForm>
-  </StatusReport>
+  return <>
+    <StatusReport state={state}>
+      <AppForm onSubmit={handleSubmit}>
+        <p>
+          Enter your <b>voter-registration address</b> to find your local election official.
+          (<a target='_blank' rel='noopener noreferrer' href='https://www.vote.org/am-i-registered-to-vote/'>Unsure if you are registered?</a>)
+        </p>
+        <AddressInput fields={fields} setField={setField}/>
+        <RoundedButton
+          id='addr-submit'  // This id is used for Warning Box to submit form quickly
+          color='primary'
+          variant='raised'
+          data-testid='submit'
+          style={{flexGrow: 0}}
+          disabled={fetchingData}
+        >
+          Find my election official
+        </RoundedButton>
+      </AppForm>
+    </StatusReport>
+    <AddressModal isOpen={open} setOpen={setOpen}/>
+  </>
 }
 
 export const AddressForm = () => {
