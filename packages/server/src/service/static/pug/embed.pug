@@ -2,6 +2,7 @@ extends layout.pug
 
 block pageName
   title Embedding VoteByMail.io
+  meta(name="viewport", content="width=device-width, initial-scale=1.0")
 
 block content
   .container.mt-4
@@ -23,13 +24,13 @@ block content
             button(
               type='button'
               class='btn btn-primary'
-              onClick='setDimensions(340, 620)'
-              style='margin-right: 15px;'
+              onClick="setDimensions('340px', '620px')"
+              style='margin-right: 15px; margin-bottom: 15px;'
             ) Small (340x620)
             button(
               type='button'
               class='btn btn-primary'
-              onClick='setDimensions(768, 1024)'
+              onClick="setDimensions('768px', '1024px')"
               style=''
             ) Big (768x1024)
 
@@ -42,13 +43,13 @@ block content
             button(
               type='button'
               class='btn btn-primary'
-              onClick='setDimensions(1024, 768)'
-              style='margin-right: 15px;'
+              onClick="setDimensions('1024px', '768px')"
+              style='margin-right: 15px; margin-bottom: 15px;'
             ) Small (1024x768)
             button(
               type='button'
               class='btn btn-primary'
-              onClick='setDimensions(1366, 768)'
+              onClick="setDimensions('1366px', '768px')"
               style=''
             ) Big (1366x768)
 
@@ -83,6 +84,18 @@ block content
                   aria-label='save changes'
                 ) Save
 
+      .col.col-lg-6.col-sm-12
+        .card.mt-4.p-3
+          .card-body
+            h3 Flexible Widget
+            p This embedded version of VoteByMail will fill the entire space available by its parent container, this feature allows this widget to responsively adapt to both mobile and desktop devices, although this might require some CSS adjustments to be fully functional.
+            p.text-muted Remember to set both the #[code height] and #[code width] of the parent container, otherwise the widget won't expand at all.
+            button(
+              type='button'
+              class='btn btn-primary'
+              onClick="setDimensions('100%', '100%')"
+            ) Flexible Dimensions
+
   .container.mt-4
     br
     h2 Widget code
@@ -92,16 +105,19 @@ block content
       code(id='vbm-iframe-code')= env.REACT_APP_URL
 
 
+    br
     h3 Preview
-    iframe(
-      id='vbm-iframe'
-      src=`${env.REACT_APP_URL}/${org}`
-    )
+    p.text-muted The dashed red border indicates the available space for the widget, except for #[b Flexible Widget] this area might be overlapped by the other options.
+    div(style='height: 1024px; width: 100%; border: 2px dashed #dc0e52;')
+      iframe(
+        id='vbm-iframe'
+        src=`${env.REACT_APP_URL}/${org}`
+      )
 
 
   script.
-    let width = 340;
-    let height = 620;
+    let width = '340px';
+    let height = '620px';
     let org = '';
     const iframe = document.getElementById('vbm-iframe');
     const code = document.getElementById('vbm-iframe-code');
@@ -111,8 +127,8 @@ block content
     function setDimensions(w, h) {
       width = w;
       height = h;
-      iframe.style.width = `${width}px`;
-      iframe.style.height = `${height}px`;
+      iframe.style.width = w;
+      iframe.style.height = h;
       code.innerText = iframe.outerHTML;
     }
 
