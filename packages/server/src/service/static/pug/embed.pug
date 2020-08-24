@@ -12,20 +12,20 @@ block pageName
 block content
   .container.mt-4
     h1 Embedding VoteByMail.io
-    p This page helps you to embed VoteByMail.io to your website, in order for these steps to be successful you must at least have the power to edit HTML content of the pages you're wishing to edit. Also, due to the safety measures adopted by modern browsers, these methods are only guaranteed to work on secure web pages, i.e. websites using SSL/HTTPS connections.
+    p This page guides you on creating embeddable versions of VoteByMail.io, in order for these steps to be successful you must at least have the power to edit HTML content from the pages you're wishing to edit, hence if using a Content Management System, like WordPress or Drupal, double-check that you're actually editing the raw content of the page and not using any WYSIWYG editor provided by these tools. Due to the safety measures adopted by modern browsers, these methods are only guaranteed to work on secure web pages, i.e. websites using SSL/HTTPS connections.
 
     br
     h2 Selecting the right widget
-    p There are multiple versions of the VoteByMail widget to add to your website, this helps fitting our application on your page as well as helping voters sign up more efficiently.
-    p Please note that all widgets offer the same functionality, and their only difference is aesthetics.
+    p We make available multiple versions of the VoteByMail Widget to add to your website, this helps better fitting our application in your page, as well as helping voters sign up more efficiently.
+    p Please note that all widgets offer the same functionality, but having only aesthetical differences among them.
 
     .row
       .col.col-lg-6.col-sm-12
         .card.mt-4.p-3
           .card-body
             h3 Portrait widgets
-            p These are ideal for mobile devices or when you need to fit the VoteByMail Widget in a constrained space.
-            p.text-muted Small (340x620) is the only one that fits all smartphones and devices.
+            p These are ideal for mobile devices or when you need to fit VoteByMail Widget in a constrained space.
+            p.text-muted Small (340x620) will display correctly on all smartphones and desktop devices.
             button(
               type='button'
               class='btn btn-primary'
@@ -41,7 +41,7 @@ block content
         .card.mt-4.p-3
           .card-body
             h3 Landscape widgets
-            p These are ideal for wider devices such as computers and tablets, as well as webpages with lots of space available.
+            p These are ideal for wider devices such as computers and tablets, but essentially great for webpages with lots of space available.
             p.text-muted We suggest you to use the Flexible Widget below if you need even bigger dimensions.
             button(
               type='button'
@@ -58,15 +58,14 @@ block content
         .card.mt-4.p-3
           .card-body
             h3 Organization changes
-            p You can fill the input below to replace the default organization, or (recommended) click in one of the buttons to update the Widget Code for your desired organization.
-            p.text-muted Only type in the field if you want to manually generate a Widget for an unlisted organization.
+            p You can fill the input below to replace the default organization used by our website. If you plan to replace the default organization with one of yours, we recommend you to select them by clicking on its respective button.
+            p.text-muted Only manually type in the field below to generate a Widget for an unlisted organization.
             each org in richOrgs
               button(
                 onClick=`setOrg('${org.id}', true)`
                 aria-label=org.name ? `${org.name} (${org.id})` : org.id
                 class='btn btn-primary'
               )= org.name ? `${org.name} (${org.id})` : org.id
-
             .input-group.mb-3
               input(
                 id='vbm-iframe-org-input'
@@ -88,8 +87,8 @@ block content
         .card.mt-4.p-3
           .card-body
             h3 Flexible Widget
-            p This embedded version of VoteByMail will fill the entire space available by its parent container, this feature allows this widget to responsively adapt to both mobile and desktop devices, although this might require some CSS adjustments to be fully functional.
-            p.text-muted Remember to set both the #[code height] and #[code width] of the parent container, otherwise the widget won't expand at all.
+            p This embedded version of VoteByMail will fill the entire space available by its parent container, this feature allows this widget to responsively adapt to both mobile and desktop devices, although some CSS knowledge will be required in order to implement this functionality.
+            p.text-muted Remember to set both #[code height] and #[code width] of the parent container, otherwise the widget won't expand at all.
             button(
               type='button'
               class='btn btn-primary'
@@ -107,7 +106,7 @@ block content
 
     br
     h3 Preview
-    p.text-muted The dashed red border indicates the available space for the widget, except for #[b Flexible Widget] this area might be overlapped by the other options.
+    p.text-muted The dashed red border indicates the available space for the widget, except for #[b Flexible Widget] this area might be overlapped by other options.
     div(style='height: 1024px; width: 100%; border: 2px dashed #dc0e52;')
       iframe(
         id='vbm-iframe'
