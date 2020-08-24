@@ -2,6 +2,7 @@ import { v3 as gcm } from '@google-cloud/monitoring'
 import { analyticsStorage } from './storage'
 import { processEnvOrThrow } from '../common'
 import { analyticsLogic } from './logic'
+import { FirestoreService } from '../service/firestore'
 
 // Remember to allow monitoring on the Google Cloud Platform and also to
 // ensure a valid workspace/dashboard is available in order to see these
@@ -14,6 +15,7 @@ import { analyticsLogic } from './logic'
 // project, ideally in this scenario "firebase-adminsdk" would have the role
 // "Monitoring Editor" for these metrics to work.
 
+const firestore = new FirestoreService()
 const client = new gcm.MetricServiceClient()
 const projectName = processEnvOrThrow('GCLOUD_PROJECT')
 const projectPath = client.projectPath(projectName)
@@ -21,7 +23,9 @@ const baseMetricUrl = 'custom.googleapis.com'
 
 export const updateTimeSeries = async () => {
   const now = new Date()
-  const { yesterdaySignups, totalSignups } = await analyticsLogic.calculateSignups()
+  const { lastQueryTime } = await analyticsStorage.data()
+  const snapshot = await firestore.getSignups(lastQueryTime)
+  const { yesterdaySignups, totalSignups } = await analyticsLogic.calculateSignups(snapshot)
 
   await client.createTimeSeries({
     name: projectPath,

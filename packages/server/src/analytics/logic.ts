@@ -1,7 +1,4 @@
 import { analyticsStorage } from './storage'
-import { FirestoreService } from '../service/firestore'
-
-const firestore = new FirestoreService()
 
 class AnalyticsLogic {
   /** Returns a date set to 00:00 of the previous day */
@@ -16,22 +13,14 @@ class AnalyticsLogic {
     )
   }
 
-  async calculateSignups(): Promise<{ totalSignups: number, yesterdaySignups: number }> {
+  async calculateSignups(
+    snapshot: FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData>,
+  ): Promise<{ totalSignups: number, yesterdaySignups: number }> {
     const startTime = this.midnightYesterday
-    const {
-      lastQueryTime: storedLastQueryTime,
-      yesterdayDate: storedYesterdayDate,
-      yesterdaySignups: storedYesterdaySignups,
-      totalSignups: storedTotalSignups,
-    } = await analyticsStorage.data()
-    const snapshot = await firestore.getSignups(storedLastQueryTime)
+    const { totalSignups: storedTotalSignups } = await analyticsStorage.data()
 
+    let yesterdaySignups = 0
     let totalSignups = storedTotalSignups
-    // If the stored yesterday date is different than startTime (midnightYesterday),
-    // yesterdaySignups should be zero to avoid incrementing the wrong amount
-    // of signups.
-    const shouldUseStoredYesterday = storedYesterdayDate.valueOf() === startTime.valueOf()
-    let yesterdaySignups = shouldUseStoredYesterday ? storedYesterdaySignups : 0
 
     // We process this query based on the value of analyticsStorage.isFirstQuery
     //
