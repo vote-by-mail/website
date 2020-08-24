@@ -7,8 +7,8 @@ import { RoundedButton } from '../util/Button'
 import { useControlRef } from '../util/ControlRef'
 import { ContactContainer } from '../../lib/unstated'
 import { AppForm } from '../util/Form'
-import { StyledModal } from '../util/StyledModal'
-import styled, { keyframes } from 'styled-components'
+import { StyledModal, AfterModalAnimation } from '../util/StyledModal'
+import styled from 'styled-components'
 
 interface Props {
   open: boolean
@@ -33,15 +33,6 @@ const StyledSelect = styled(Select)`
     top: 0 !important;
     max-height: 50vh;
   }
-`
-
-const fadeIn = keyframes`
-  from { opacity: 0; }
-  to { opacity: 1; }
-`
-// Delays displaying content until the modal is in its appropriate position
-const AfterSlideAnimation = styled.div`
-  animation: ${fadeIn} ease .2s 550ms both;
 `
 
 export const ContactModal: React.FC<Props> = ({
@@ -103,14 +94,14 @@ export const ContactModal: React.FC<Props> = ({
       onBackgroundClick={() => setOpen(false)}
       onEscapeKeydown={() => setOpen(false)}
     >
-      <AfterSlideAnimation>
+      <AfterModalAnimation>
         <h4>Select Election Jurisdiction</h4>
-      </AfterSlideAnimation>
+      </AfterModalAnimation>
       <AppForm>
         <div ref={positionRef} style={{ width: '100%' }}/>
       </AppForm>
     </StyledModal>
-    {open && <AfterSlideAnimation style={{
+    {open && <AfterModalAnimation style={{
       position: 'fixed',
       zIndex: 33,
       top, left, width,
@@ -129,6 +120,6 @@ export const ContactModal: React.FC<Props> = ({
         })}
       </StyledSelect>
       <RoundedButton onClick={handleSubmit} color='primary'>Select</RoundedButton>
-    </AfterSlideAnimation>}
+    </AfterModalAnimation>}
   </>
 }
