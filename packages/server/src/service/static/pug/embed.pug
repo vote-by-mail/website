@@ -3,6 +3,11 @@ extends layout.pug
 block pageName
   title Embedding VoteByMail.io
   meta(name="viewport", content="width=device-width, initial-scale=1.0")
+  style.
+    div > button {
+      margin-right: 15px;
+      margin-bottom: 15px;
+    }
 
 block content
   .container.mt-4
@@ -25,13 +30,11 @@ block content
               type='button'
               class='btn btn-primary'
               onClick="setDimensions('340px', '620px')"
-              style='margin-right: 15px; margin-bottom: 15px;'
             ) Small (340x620)
             button(
               type='button'
               class='btn btn-primary'
               onClick="setDimensions('768px', '1024px')"
-              style=''
             ) Big (768x1024)
 
       .col.col-lg-6.col-sm-12
@@ -44,13 +47,11 @@ block content
               type='button'
               class='btn btn-primary'
               onClick="setDimensions('1024px', '768px')"
-              style='margin-right: 15px; margin-bottom: 15px;'
             ) Small (1024x768)
             button(
               type='button'
               class='btn btn-primary'
               onClick="setDimensions('1366px', '768px')"
-              style=''
             ) Big (1366x768)
 
       .col.col-lg-6.col-sm-12
@@ -64,7 +65,6 @@ block content
                 onClick=`setOrg('${org.id}', true)`
                 aria-label=org.name ? `${org.name} (${org.id})` : org.id
                 class='btn btn-primary'
-                style='margin-right: 15px; margin-bottom: 15px;'
               )= org.name ? `${org.name} (${org.id})` : org.id
 
             .input-group.mb-3
