@@ -2,11 +2,13 @@ import React from 'react'
 import Input from 'muicss/lib/react/input'
 import styled from 'styled-components'
 import { BaseInput } from '../util/Input'
-import { Select, Option } from 'muicss/react'
 import { useControlRef } from '../util/ControlRef'
-import { allStates, AddressInputParts } from '../../common'
+import { allStates, AddressInputParts, State } from '../../common'
 import { useAppHistory } from '../../lib/path'
 import { cssQuery } from '../util/cssQuery'
+import { Select } from '../util/Select'
+
+const options: readonly State[] = [...allStates].sort()
 
 interface Props {
   fields: AddressInputParts
@@ -88,31 +90,15 @@ export const AddressInput: React.FC<Props> = ({ fields, setField }) => {
     </Flex>
 
     <Flex basis='28%' mobileBasis='49%'>
-      <Select
+      <Select<typeof options>
         label='State'
         translate='no'
         lang='en'
-        onChange={e => {
-          // MuiCSS has a buggy support for <Select/> when using TypeScript,
-          // to really access HTMLSelect and its value we to do this hack
-          const trueSelect = e.currentTarget.firstChild as HTMLSelectElement
-          setField('state', trueSelect.value)
-        }}
-        defaultValue={fields?.state}
+        onChange={value => setField('state', value)}
+        value={fields.state as State}
         data-testid='addressFieldState'
-      >
-        {
-          [...allStates].sort().map((state) => {
-            return <Option
-              key={state}
-              value={state}
-              label={state}
-            >
-              {state}
-            </Option>
-          })
-        }
-      </Select>
+        options={options}
+      />
     </Flex>
 
     <Flex basis='28%' mobileBasis='49%'>

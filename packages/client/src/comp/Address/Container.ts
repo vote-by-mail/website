@@ -1,6 +1,6 @@
 import React from 'react'
 import { createContainer } from 'unstated-next'
-import { AddressInputParts, Address, getState, isState } from '../../common'
+import { AddressInputParts, Address, getState, isState, State } from '../../common'
 import { useAppHistory, Path } from '../../lib/path'
 import { AddressContainer } from '../../lib/unstated'
 
@@ -80,7 +80,7 @@ const useFields = () => {
   const [ _fields, _setField ] = React.useState<AddressInputParts>({
     city: handleDefault('city', address, path, query),
     postcode: handleDefault('postcode', address, path, query),
-    state: handleDefault('state', address, path, query),
+    state: handleDefault('state', address, path, query) as State,
     street: handleDefault('street', address, path, query),
     unit: handleDefault('unit', address, path, query),
   })

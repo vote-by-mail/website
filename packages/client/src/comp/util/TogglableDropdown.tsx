@@ -1,12 +1,8 @@
 import React from 'react'
-import { Select as RawSelect, Option } from 'muicss/react'
-import styled from 'styled-components'
+import { Select, SelectOptions, SelectOptionType } from './Select'
 
-type Options = readonly string[]
-type OptionType<O extends Options> = O[number]
-
-interface Props<O extends Options> {
-  children: (selected: OptionType<O>) => React.ReactNode
+interface Props<O extends SelectOptions> {
+  children: (selected: SelectOptionType<O>) => React.ReactNode
   options: O
   /**
    * The default value of this TogglableDropdown, this prop is only useful
@@ -15,29 +11,20 @@ interface Props<O extends Options> {
    *
    * This mimics the default behavior for React `<select/>` components.
    */
-  defaultValue?: OptionType<O>
+  defaultValue?: SelectOptionType<O>
   label?: React.ReactNode
   style?: React.CSSProperties
   /** Function that is called after changing values */
-  onChange?: (value: OptionType<O>) => void
+  onChange?: (value: SelectOptionType<O>) => void
   /** Turns this TogglableDropdown into a controlled input */
-  value?: OptionType<O>
+  value?: SelectOptionType<O>
 }
 
-// Small hack to allow us to pass this prop to Select, unfortunately we
-// cannot do the same for onChange
-const Select = styled(RawSelect)<{ value?: string }>``
-
-export const TogglableDropdown = <O extends Options>({
-  children,
-  defaultValue,
-  label,
-  onChange,
-  options,
-  style,
-  value,
-}: Props<O>) => {
-  const [ selected, setSelected ] = React.useState<OptionType<O>>(defaultValue ?? options[0])
+export const TogglableDropdown = <O extends SelectOptions>(props: Props<O>) => {
+  const { style, options, value, defaultValue, children, onChange } = props
+  // We need a state to track the value of this component in order to update
+  // its children.
+  const [ selected, setSelected ] = React.useState<SelectOptionType<O>>(value ?? defaultValue ?? options[0])
 
   React.useEffect(() => {
     // Since we can't really make a directly controled MuiCSS form without
@@ -47,29 +34,15 @@ export const TogglableDropdown = <O extends Options>({
   }, [value, selected, setSelected])
 
   return <div style={style}>
-    <Select
-      label={label}
-      // Ignores defaultValue if prop.value is present.
-      defaultValue={!value ? defaultValue : undefined}
-      value={value}
+    <Select<typeof options>
+      {...props}
+      style={undefined}
       onChange={e => {
-        // MuiCSS has a buggy support for <Select/> when using TypeScript,
-        // to really access HTMLSelect and its value we need to do this hack
-        const trueSelect = e.currentTarget.firstChild as HTMLSelectElement
-        const newValue = trueSelect.value as OptionType<O>
-        // even when this is a controlled form we must keep track of the
-        // unexported selected to lock the value of MuiCSS Select.firstChild
-        // (the true <select/>)
-        setSelected(newValue)
-        if (onChange) {
-          onChange(newValue)
-        }
+        setSelected(e)
+        if (onChange) onChange(e)
       }}
-    >{
-      options.map(
-        (option, key) => <Option value={option} label={option} key={key}/>
-      )
-    }</Select>
-    {(value ?? selected) ? children(value ?? selected) : null}
+    />
+    {/* selected will always be the same value of `props.value` */}
+    {children(selected)}
   </div>
 }
