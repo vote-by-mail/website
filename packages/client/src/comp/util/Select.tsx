@@ -12,6 +12,11 @@ interface GenericProps<O extends SelectOptions> extends Omit<SelectProps, 'onCha
   defaultValue?: SelectOptionType<O>
   options: O
   onChange?: (v: SelectOptionType<O>) => void
+  /**
+   * Defines how each option is labelled, use this function if you don't
+   * want options to have the same label as their value
+   */
+  optionsLabeler?: (option: SelectOptionType<O>) => string
 }
 
 const SelectWithValue = styled(RawSelect)<{ value?: string }>``
@@ -21,7 +26,7 @@ const SelectWithValue = styled(RawSelect)<{ value?: string }>``
  * TypeScript.
  */
 export const Select = <O extends SelectOptions>(props: GenericProps<O>) => {
-  const { value, defaultValue, onChange, options } = props
+  const { value, defaultValue, onChange, options, optionsLabeler } = props
   const [ selected, setSelected ] = React.useState<SelectOptionType<O> | undefined>(
     value ?? defaultValue ?? options[0]
   )
@@ -51,7 +56,11 @@ export const Select = <O extends SelectOptions>(props: GenericProps<O>) => {
     }}
   >
     {props.options.map(
-      (option, key) => <Option value={option} label={option} key={key}/>
+      (option, key) => <Option
+        value={option}
+        label={optionsLabeler ? optionsLabeler(option) : option}
+        key={key}
+      />
     )}
   </SelectWithValue>
 }
