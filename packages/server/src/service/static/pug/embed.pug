@@ -17,7 +17,7 @@ block content
     br
     h2 Selecting the right widget
     p We make available multiple versions of the VoteByMail Widget to add to your website, this helps better fitting our application in your page, as well as helping voters sign up more efficiently.
-    p Please note that all widgets offer the same functionality, but having only aesthetical differences among them.
+    p Please note that all widgets offer the same functionality, having only aesthetical differences among them.
 
     .row
       .col.col-lg-6.col-sm-12
@@ -30,11 +30,13 @@ block content
               type='button'
               class='btn btn-primary'
               onClick="setDimensions('340px', '620px')"
+              aria-label='set dimensions to 340px wide and 620px tall'
             ) Small (340x620)
             button(
               type='button'
               class='btn btn-primary'
               onClick="setDimensions('768px', '1024px')"
+              aria-label='set dimensions to 768px wide and 1024px tall'
             ) Big (768x1024)
 
       .col.col-lg-6.col-sm-12
@@ -47,11 +49,13 @@ block content
               type='button'
               class='btn btn-primary'
               onClick="setDimensions('1024px', '768px')"
+              aria-label='set dimensions to 1024px wide and 768px tall'
             ) Small (1024x768)
             button(
               type='button'
               class='btn btn-primary'
               onClick="setDimensions('1366px', '768px')"
+              aria-label='set dimensions to 1366px wide and 768px tall'
             ) Big (1366x768)
 
       .col.col-lg-6.col-sm-12
@@ -93,7 +97,67 @@ block content
               type='button'
               class='btn btn-primary'
               onClick="setDimensions('100%', '100%')"
+              aria-label='enable flexible dimensions'
             ) Flexible Dimensions
+
+      .col.col-lg-12.col-sm-12
+        .card.mt-4.p-3
+          .card-body
+            h3 Anchor
+            p Setting a HTML anchor will replace the default starting point of any web page, for example, in VoteByMail you can set the page to start showing the "About Us" section instead from the top.
+            //- The dashes below are em dashes, although most monospace fonts are
+            //- going to render them equally as a dash
+            p It's possible to set this to any of the sections of our landing page, or—if you want to speed up the sign up process—fill the default value of the zip code.
+            button(
+              type='button'
+              class='btn btn-primary'
+              onClick="setAnchor('')"
+            ) Default (top)
+            button(
+              type='button'
+              class='btn btn-primary'
+              onClick="setAnchor('#howItWorks')"
+            ) How does it work?
+            button(
+              type='button'
+              class='btn btn-primary'
+              onClick="setAnchor('#getInvolved')"
+            ) Get Involved
+            button(
+              type='button'
+              class='btn btn-primary'
+              onClick="setAnchor('#team')"
+            ) Team
+            button(
+              type='button'
+              class='btn btn-primary'
+              onClick="setAnchor('#contact')"
+            ) Contact Us
+            button(
+              type='button'
+              class='btn btn-primary'
+              onClick="setAnchor('#about')"
+            ) About Us
+            br
+            label(for='prefill-zip') Prefill Zip Code
+            div(class='input-group mb-3' style='max-width:370px')
+              input(
+                id='prefill-zip'
+                class='form-control'
+                placeholder='Prefill zip code, e.g. 33131'
+                onChange='setZip(this.value)'
+                aria-label='custom org input'
+                pattern='[0-9]{5}'
+                type='number'
+              )
+              .input-group-append
+                // This button actually does nothing, but vanilla js
+                // onChange might trigger only after the input is blurred
+                // on some browsers, unlike the default behavior in React
+                button(
+                  class='btn btn-primary'
+                  aria-label='save changes'
+                ) Save
 
   .container.mt-4
     br
@@ -102,7 +166,6 @@ block content
     div.alert.alert-secondary(style='background-color: #fbfbfb;')
       p Please copy the text in red and add it to your website, the code in this block updates automatically as you edit your widget.
       code(id='vbm-iframe-code')= env.REACT_APP_URL
-
 
     br
     h3 Preview
@@ -122,24 +185,40 @@ block content
     const code = document.getElementById('vbm-iframe-code');
     // The initial value of code is env.REACT_APP_URL (we can't access env here)
     const baseUrl = code.innerText;
+    let anchor = '';
+    let zip = '';
+
+    function updateCode() {
+      iframe.src = `${baseUrl}/${org}${anchor}${zip}`;
+      code.innerText = iframe.outerHTML;
+    }
 
     function setDimensions(w, h) {
       width = w;
       height = h;
       iframe.style.width = w;
       iframe.style.height = h;
-      code.innerText = iframe.outerHTML;
+      updateCode();
     }
 
     function setOrg(oid, clearInput) {
       org = `#/org/${oid ? oid : 'default'}`;
-      iframe.src = `${baseUrl}/${org}`;
-      code.innerText = iframe.outerHTML;
+      updateCode();
       if (clearInput) {
-        document.getElementById('vbm-iframe-org-input').value = ''
+        document.getElementById('vbm-iframe-org-input').value = '';
       }
     }
 
+    function setAnchor(a) {
+      anchor = a;
+      updateCode();
+    }
+
+    function setZip(z) {
+      zip = z ? `?postcode=${z}` : ''
+      updateCode();
+    }
+
     // Initialize default values
-    setDimensions(width, height)
-    setOrg(org)
+    setDimensions(width, height);
+    setOrg(org);
