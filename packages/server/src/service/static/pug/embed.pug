@@ -14,50 +14,7 @@ block content
     h1 Embedding VoteByMail.io
     p This page guides you on creating embeddable versions of VoteByMail.io.  In order for these steps to be successful, you must be able to insert the iFrame into your page.  If using a Content Management System, like WordPress or Drupal, double-check that you're actually editing the raw content of the page and not using any WYSIWYG editor provided by these tools. Also, due to the safety measures adopted by modern browsers, your page must be HTTPS (not HTTP) for this to work.
 
-    br
-    h2 Selecting the right widget
-    p We make available multiple versions of the VoteByMail Widget to add to your website, this helps better fitting our application in your page, as well as helping voters sign up more efficiently.
-    p Please note that all widgets offer the same functionality, having only aesthetical differences among them.
-
     .row
-      .col.col-lg-6.col-sm-12
-        .card.mt-4.p-3
-          .card-body
-            h3 Portrait widgets
-            p These are ideal for mobile devices or when you need to fit VoteByMail Widget in a constrained space.
-            p.text-muted Small (340x620) will display correctly on all smartphones and desktop devices.
-            button(
-              type='button'
-              class='btn btn-primary'
-              onClick="setDimensions('340px', '620px')"
-              aria-label='set dimensions to 340px wide and 620px tall'
-            ) Small (340x620)
-            button(
-              type='button'
-              class='btn btn-primary'
-              onClick="setDimensions('768px', '1024px')"
-              aria-label='set dimensions to 768px wide and 1024px tall'
-            ) Big (768x1024)
-
-      .col.col-lg-6.col-sm-12
-        .card.mt-4.p-3
-          .card-body
-            h3 Landscape widgets
-            p These are ideal for wider devices such as computers and tablets, but essentially great for webpages with lots of space available.
-            p.text-muted We suggest you to use the Flexible Widget below if you need even bigger dimensions.
-            button(
-              type='button'
-              class='btn btn-primary'
-              onClick="setDimensions('1024px', '768px')"
-              aria-label='set dimensions to 1024px wide and 768px tall'
-            ) Small (1024x768)
-            button(
-              type='button'
-              class='btn btn-primary'
-              onClick="setDimensions('1366px', '768px')"
-              aria-label='set dimensions to 1366px wide and 768px tall'
-            ) Big (1366x768)
-
       .col.col-lg-6.col-sm-12
         .card.mt-4.p-3
           .card-body
@@ -88,19 +45,6 @@ block content
                 ) Save
 
       .col.col-lg-6.col-sm-12
-        .card.mt-4.p-3
-          .card-body
-            h3 Flexible Widget
-            p This embedded version of VoteByMail will fill the entire space available by its parent container, this feature allows this widget to responsively adapt to both mobile and desktop devices, although some CSS knowledge will be required in order to implement this functionality.
-            p.text-muted Remember to set both #[code height] and #[code width] of the parent container, otherwise the widget won't expand at all.
-            button(
-              type='button'
-              class='btn btn-primary'
-              onClick="setDimensions('100%', '100%')"
-              aria-label='enable flexible dimensions'
-            ) Flexible Dimensions
-
-      .col.col-lg-12.col-sm-12
         .card.mt-4.p-3
           .card-body
             h3 Anchor
@@ -169,17 +113,16 @@ block content
 
     br
     h3 Preview
-    p.text-muted The dashed red border indicates the available space for the widget, except for #[b Flexible Widget] this area might be overlapped by other options.
-    div(style='height: 1024px; width: 100%; border: 2px dashed #dc0e52;')
+    p.text-muted The dashed red border indicates the available space for the widget.
+    div(style='width: 100%; height: 1024px; border: 2px dashed #dc0e52;')
       iframe(
         id='vbm-iframe'
         src=`${env.REACT_APP_URL}/${org}`
+        style='width: 100%; height: 100%;'
       )
 
 
   script.
-    let width = '340px';
-    let height = '620px';
     let org = '';
     const iframe = document.getElementById('vbm-iframe');
     const code = document.getElementById('vbm-iframe-code');
@@ -191,14 +134,6 @@ block content
     function updateCode() {
       iframe.src = `${baseUrl}/${org}${anchor}${zip}`;
       code.innerText = iframe.outerHTML;
-    }
-
-    function setDimensions(w, h) {
-      width = w;
-      height = h;
-      iframe.style.width = w;
-      iframe.style.height = h;
-      updateCode();
     }
 
     function setOrg(oid, clearInput) {
@@ -220,5 +155,4 @@ block content
     }
 
     // Initialize default values
-    setDimensions(width, height);
     setOrg(org);
