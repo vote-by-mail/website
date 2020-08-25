@@ -165,7 +165,8 @@ export const registerPassportEndpoints = (app: Express.Application) => {
     const env = {
       REACT_APP_URL: process.env.REACT_APP_URL,
     }
-    res.render('embed', { env, richOrgs })
+    const states = [...implementedStates].sort()
+    res.render('embed', { env, richOrgs, states: ['No default state', ...states] })
   })
 
   app.get('/dashboard/:oid', validSession, orgPermissions('members'),
