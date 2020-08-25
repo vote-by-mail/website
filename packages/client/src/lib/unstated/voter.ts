@@ -2,13 +2,13 @@ import React from 'react'
 import { createContainer } from "unstated-next"
 import { Voter, UTM } from '../../common'
 import { useDeepMemoize } from './memoize'
-import { isEmbedded } from '../util'
+import { isIframeEmbedded } from '../util'
 
 const localStorageKey = 'voter-data'
 
 // https://medium.com/@jrcreencia/persisting-redux-state-to-local-storage-f81eb0b90e7e
 const loadLocalStorage = (): Partial<Voter> => {
-  if (isEmbedded()) return {}
+  if (isIframeEmbedded()) return {}
 
   const serialized = localStorage.getItem(localStorageKey)
   if (serialized === null) return {}
@@ -20,7 +20,7 @@ const loadLocalStorage = (): Partial<Voter> => {
 }
 
 const saveLocalStorage = (userData: Voter): void => {
-  if (isEmbedded()) { return }
+  if (isIframeEmbedded()) { return }
   const serialized = JSON.stringify(userData)
   localStorage.setItem(localStorageKey, serialized)
 }
@@ -44,7 +44,7 @@ const useVoterContainer = (initialState: Voter = defaultInitialState) => {
   /** Non-overwriting update of user data */
   const conservativeUpdateVoter = React.useCallback((utm: UTM) => {
     const newVoter = {...utm, ...voterMemo}
-    if (isEmbedded() === false) {
+    if (!isIframeEmbedded()) {
       saveLocalStorage(newVoter)
       setVoter(newVoter)
     }
