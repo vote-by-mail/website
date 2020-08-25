@@ -103,6 +103,9 @@ export const About: React.FC = () => {
         <p>
           <a href="https://votebymail.io" target="_blank" rel="noopener noreferrer">VoteByMail</a> is a Civex Inc project. We are a non-partisan Organization that empowers voters, letting them decide when, how and where they vote.
         </p>
+        <p>
+          We&apos;re open for donations: <a href="https://give.cornerstone.cc/votebymail" target="_blank" rel="noopener noreferrer">click here for more information.</a>
+        </p>
       </Headline>
     </Container>
   </Wrapper>
