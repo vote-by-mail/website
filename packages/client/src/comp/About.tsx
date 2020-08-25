@@ -7,7 +7,10 @@ import { cssQuery } from './util/cssQuery'
 import { MarketingWrapper } from './util/MarketingWrapper'
 import { Container } from 'muicss/react'
 import { VbmNoun, VbmAdjective } from './util/VbmWord'
+import { StyledModal } from './util/StyledModal'
 import { RoundedButton } from './util/Button'
+import { processEnvOrThrow } from '../common'
+import { toast } from 'react-toastify'
 
 const Wrapper = styled(MarketingWrapper)`
   background-color: #fafafa;
@@ -87,30 +90,84 @@ const Images = styled.div`
   }
 `
 
+// Mimics the behavior of an anchor element (<a/>)
+const AnchorP = styled.p`
+  color: var(--primary);
+  :hover {
+    text-decoration: underline;
+    cursor: pointer;
+  }
+`
+
+const Code = styled.textarea`
+  padding: 10px;
+  margin: 25px 0;
+  background-color: #fafafa;
+  border-radius: 4px;
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  color: var(--danger);
+  resize: none;
+`
+
 export const About: React.FC = () => {
-  return <Wrapper columnChildContent={true}>
-    <Container>
-      <Images>
-        <img src={img2} className="first" alt="Voters"/>
-        <img src={img1} className="second" alt="Election Stickers"/>
-      </Images>
-      <Headline>
-        <h1>
-          About us
-        </h1>
-        <p>
-          COVID-19 has catalyzed interest in <VbmNoun/>. VoteByMail.io streamlines government <VbmAdjective/> applications by digitizing the voter&apos;s signup process.
-        </p>
-        <p>
-          <a href="https://votebymail.io" target="_blank" rel="noopener noreferrer">VoteByMail</a> is a Civex Inc project. We are a non-partisan Organization that empowers voters, letting them decide when, how and where they vote.
-        </p>
-        <a href="https://give.cornerstone.cc/votebymail" target="_blank" rel="noopener noreferrer">
-          <RoundedButton
-            color='primary'
-            variant='raised'
-          >Donate</RoundedButton>
-        </a>
-      </Headline>
-    </Container>
-  </Wrapper>
+  const [ isOpen, setOpen ] = React.useState(false)
+  const codeRef = React.useRef<HTMLTextAreaElement>(null)
+  const copyIframe = () => {
+    codeRef?.current?.select()
+    document.execCommand('copy')
+    toast('Copied code to the clipboard', { type: 'info' })
+  }
+
+  return <>
+    <Wrapper columnChildContent={true}>
+      <Container>
+        <Images>
+          <img src={img2} className="first" alt="Voters"/>
+          <img src={img1} className="second" alt="Election Stickers"/>
+        </Images>
+        <Headline>
+          <h1>
+            About us
+          </h1>
+          <p>
+            COVID-19 has catalyzed interest in <VbmNoun/>. VoteByMail.io streamlines government <VbmAdjective/> applications by digitizing the voter&apos;s signup process.
+          </p>
+          <p>
+            <a href="https://votebymail.io" target="_blank" rel="noopener noreferrer">VoteByMail</a> is a Civex Inc project. We are a non-partisan Organization that empowers voters, letting them decide when, how and where they vote.
+          </p>
+          {/* Not using an <a/> since this is not really a link */}
+          <AnchorP onClick={() => setOpen(true)}>
+            Learn how to embed this website.
+          </AnchorP>
+          <a href="https://give.cornerstone.cc/votebymail" target="_blank" rel="noopener noreferrer">
+            <RoundedButton
+              color='primary'
+              variant='raised'
+            >Donate</RoundedButton>
+          </a>
+        </Headline>
+      </Container>
+    </Wrapper>
+    <StyledModal isOpen={isOpen} onBackgroundClick={() => setOpen(false)}>
+      <h3>Add VoteByMail.io to your website</h3>
+      <p>
+        Copy the code in red below and add it to the HTML content of a webpage to embed VoteByMail.io to your website.
+      </p>
+      <p>
+        If you&apos;re an organizer there are more options and helpful information about this feature available on the organizer dashboard. We highly encourage you to use it if possible.
+      </p>
+      <Code
+        ref={codeRef}
+        value={`<iframe src="${processEnvOrThrow('REACT_APP_URL')}" style="width: 100%; height: 100%;"></iframe>`}
+      />
+      <RoundedButton color='primary' onClick={copyIframe}>
+        Copy
+      </RoundedButton>
+      <RoundedButton onClick={() => setOpen(false)}>
+        Close
+      </RoundedButton>
+    </StyledModal>
+  </>
 }
