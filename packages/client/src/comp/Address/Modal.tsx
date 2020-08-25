@@ -37,7 +37,10 @@ export const AddressModal: React.FC<Props> = ({ isOpen, setOpen }) => {
   const fetchContacts = React.useCallback(async () => {
     setFetchingData(true)
     const resp = await client.fetchContacts(state)
-    if (resp.type === 'data') setContacts(resp.data)
+    if (resp.type === 'data') {
+      setContacts(resp.data)
+      setNewContact(resp.data[0])
+    }
     setFetchingData(false)
   }, [setContacts, setFetchingData, state])
 
