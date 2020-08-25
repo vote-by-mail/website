@@ -18,40 +18,9 @@ block content
       .col.col-lg-6.col-sm-12
         .card.mt-4.p-3
           .card-body
-            h3 Organization changes
-            p You can fill the input below to replace the default organization used by our website. If you plan to replace the default organization with one of yours, we recommend you to select them by clicking on its respective button.
-            p.text-muted Only manually type in the field below to generate a Widget for an unlisted organization.
-            each org in richOrgs
-              button(
-                onClick=`setOrg('${org.id}', true)`
-                aria-label=org.name ? `${org.name} (${org.id})` : org.id
-                class='btn btn-primary'
-              )= org.name ? `${org.name} (${org.id})` : org.id
-            .input-group.mb-3
-              input(
-                id='vbm-iframe-org-input'
-                class='form-control'
-                placeholder='Custom org id, e.g. vbm_org'
-                onChange='setOrg(this.value)'
-                aria-label='custom org input'
-              )
-              .input-group-append
-                // This button actually does nothing, but vanilla js
-                // onChange might trigger only after the input is blurred
-                // on some browsers, unlike the default behavior in React
-                button(
-                  class='btn btn-primary'
-                  aria-label='save changes'
-                ) Save
-
-      .col.col-lg-6.col-sm-12
-        .card.mt-4.p-3
-          .card-body
             h3 Anchor
-            p Setting a HTML anchor will replace the default starting point of any web page, for example, in VoteByMail you can set the page to start showing the "About Us" section instead from the top.
-            //- The dashes below are em dashes, although most monospace fonts are
-            //- going to render them equally as a dash
-            p It's possible to set this to any of the sections of our landing page, or—if you want to speed up the sign up process—fill the default value of the zip code.
+            p Setting a HTML anchor will replace the default starting point of any web page, for example, in VoteByMail you can set an anchor to load the website from the "About Us" section.
+            p.text-muted Setting a default state will replace this anchor, since the widget will start from the input address form.
             button(
               type='button'
               class='btn btn-primary'
@@ -82,34 +51,60 @@ block content
               class='btn btn-primary'
               onClick="setAnchor('#about')"
             ) About Us
-            br
-            label(for='prefill-zip') Prefill Zip Code
-            div(class='input-group mb-3' style='max-width:370px')
-              input(
-                id='prefill-zip'
+
+      .col.col-lg-6.col-sm-12
+        .card.mt-4.p-3
+          .card-body
+            h3 Widget configuration
+            p Use these to prefill the default state and organization of your embedded widget.
+            p.text-muted If you own or belong to an organization, they will be shown on the dropdown below for selection.
+            label(for='prefill-state') Prefill State
+            .input-group.mb-3
+              select(
+                id='prefill-state'
                 class='form-control'
-                placeholder='Prefill zip code, e.g. 33131'
-                onChange='setZip(this.value)'
-                aria-label='custom org input'
-                pattern='[0-9]{5}'
-                type='number'
+                aria-label='prefill state input'
+                onChange=`setState(this.value)`
               )
-              .input-group-append
-                // This button actually does nothing, but vanilla js
-                // onChange might trigger only after the input is blurred
-                // on some browsers, unlike the default behavior in React
-                button(
-                  class='btn btn-primary'
-                  aria-label='save changes'
-                ) Save
+                each state in states
+                  option(
+                    aria-label=state
+                    value=state
+                  )= state
+
+            label(for='prefill-org') Prefill Organization
+            .input-group.mb-3
+              select(
+                id='prefill-org'
+                class='form-control'
+                aria-label='prefill org input'
+                onChange=`setOrg(this.value)`
+              )
+                //- Only add the default org option if the user doesn't own/belong to it.
+                if richOrgs.find(function(org) { return org.id === 'default' }) === undefined
+                  option(
+                    aria-label='default org'
+                    value='default'
+                  ) Default
+                each org in richOrgs
+                  option(
+                    aria-label=org.name ? `${org.name} (${org.id})` : org.id
+                    value=org.id
+                  )= org.name ? `${org.name} (${org.id})` : org.id
 
   .container.mt-4
     br
     h2 Widget code
     br
-    div.alert.alert-secondary(style='background-color: #fbfbfb;')
-      p Please copy the text in red and add it to your website, the code in this block updates automatically as you edit your widget.
-      code(id='vbm-iframe-code')= env.REACT_APP_URL
+    p Please copy the text in red and add it to your website, the code in this block updates automatically as you edit your widget.
+    textarea(
+      name='vbm-iframe-code'
+      id='vbm-iframe-code'
+      style='display: block; width: 100%; padding: 10px; color: #dc0e52; background-color: #fafafa; margin: 25px 0; border-radius: 4px; resize: none;'
+      resizable='false'
+      disabled='true'
+    )= env.REACT_APP_URL
+    button(class='btn btn-primary' onClick='copyIframe()') Copy
 
     br
     h3 Preview
@@ -127,21 +122,34 @@ block content
     const iframe = document.getElementById('vbm-iframe');
     const code = document.getElementById('vbm-iframe-code');
     // The initial value of code is env.REACT_APP_URL (we can't access env here)
-    const baseUrl = code.innerText;
+    const baseUrl = code.value;
     let anchor = '';
-    let zip = '';
+    let state = '';
 
-    function updateCode() {
-      iframe.src = `${baseUrl}/${org}${anchor}${zip}`;
-      code.innerText = iframe.outerHTML;
+    function copyIframe() {
+      // Select will only work if disabled is false
+      code.disabled = false;
+      code.select();
+      document.execCommand('copy');
+      code.disabled = true;
     }
 
-    function setOrg(oid, clearInput) {
+    function updateCode() {
+      // This is why our widget wasn't always updating, to see the changes we must first
+      // clear the iframe.src and then (after a brief delay) load our url.
+      iframe.src = '';
+      setTimeout(
+        function() {
+          iframe.src = `${baseUrl}/${org}${anchor}${state}`;
+          code.value = iframe.outerHTML;
+        },
+        100,
+      );
+    }
+
+    function setOrg(oid) {
       org = `#/org/${oid ? oid : 'default'}`;
       updateCode();
-      if (clearInput) {
-        document.getElementById('vbm-iframe-org-input').value = '';
-      }
     }
 
     function setAnchor(a) {
@@ -149,8 +157,9 @@ block content
       updateCode();
     }
 
-    function setZip(z) {
-      zip = z ? `?postcode=${z}` : ''
+    function setState(s) {
+      anchor = '';
+      state = s !== 'No default state' ? `/address/${s}` : '';
       updateCode();
     }
 
