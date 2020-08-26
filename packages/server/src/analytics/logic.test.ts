@@ -19,14 +19,19 @@ const snapshot = (
   totalAmount: number,
   lastQueryTime: number | null,
 ): Snapshot => {
-  const queryDateTime = new Date(lastQueryTime)
-  const yesterday = !lastQueryTime
-    ? analyticsLogic.midnightYesterday
-    : new Date(
+
+  const yesterday = (() => {
+    if (lastQueryTime) {
+      const queryDateTime = new Date(lastQueryTime)
+      return new Date(
         queryDateTime.getFullYear(),
         queryDateTime.getMonth(),
         queryDateTime.getDate() -1,
       )
+    } else {
+      return analyticsLogic.midnightYesterday
+    }
+  })()
   // Happens two days before the query
   const inThePast = new Date(
     yesterday.getFullYear(),
