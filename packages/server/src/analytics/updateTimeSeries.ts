@@ -22,10 +22,12 @@ const projectPath = client.projectPath(projectName)
 const baseMetricUrl = 'custom.googleapis.com'
 
 export const updateTimeSeries = async () => {
+  await analyticsStorage.initializeOrSync()
   const now = new Date()
-  const { lastQueryTime } = await analyticsStorage.data()
+
+  const { lastQueryTime } = analyticsStorage.data
   const snapshot = await firestore.getSignups(lastQueryTime)
-  const { yesterdaySignups, totalSignups } = await analyticsLogic.calculateSignups(snapshot)
+  const { yesterdaySignups, totalSignups } = analyticsLogic.calculateSignups(snapshot)
 
   await client.createTimeSeries({
     name: projectPath,
