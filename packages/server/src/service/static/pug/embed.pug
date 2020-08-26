@@ -50,22 +50,32 @@ block content
     br
     h3 Preview
     p.text-muted The dashed red border indicates the available space for the widget.
-    div(style='width: 100%; height: 1024px; border: 2px dashed #dc0e52;')
+    div(
+      id='vbm-iframe-wrapper'
+      style='width: 100%; height: 1024px; border: 2px dashed #dc0e52;'
+    )
       iframe(
         id='vbm-iframe'
         src=`${env.REACT_APP_URL}/#/org/${richOrg.id}`
-        style='width: 100%; height: 100%;'
+        width='100%'
+        height='100%'
+        marginheight='0'
+        frameborder='0'
       )
-
-    //- Creates an invisible input for acquiring the value of richOrg.id, since we
-    //- can't access this variable at the script tag below
-    input(value=richOrg.id style='display: none;' id='orgId')
+      script(
+        type='text/javascript'
+        src='//cdnjs.cloudflare.com/ajax/libs/iframe-resizer/3.5.3/iframeResizer.min.js'
+      )
+      //- More information about iFrameResize at
+      //- http://davidjbradshaw.github.io/iframe-resizer/
+      script iFrameResize({checkOrigin: false,scrolling: true,minHeight: 640,minWidth: 340,id: 'vbm-iframe'});
 
 
   script.
+    const iframeWrapper = document.getElementById('vbm-iframe-wrapper');
     const iframe = document.getElementById('vbm-iframe');
     const code = document.getElementById('vbm-iframe-code');
-    // The initial value of code is env.REACT_APP_URL (we can't access env here)
+    // The initial value of code is env.REACT_APP_URL + orgId (we can't access these here)
     const baseUrl = code.value;
     let state = '';
 
@@ -84,7 +94,7 @@ block content
       setTimeout(
         function() {
           iframe.src = `${baseUrl}${state}`;
-          code.value = iframe.outerHTML;
+          code.value = iframeWrapper.innerHTML;
         },
         100,
       );
