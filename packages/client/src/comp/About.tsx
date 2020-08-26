@@ -7,6 +7,7 @@ import { cssQuery } from './util/cssQuery'
 import { MarketingWrapper } from './util/MarketingWrapper'
 import { Container } from 'muicss/react'
 import { VbmNoun, VbmAdjective } from './util/VbmWord'
+import { RoundedButton } from './util/Button'
 
 const Wrapper = styled(MarketingWrapper)`
   background-color: #fafafa;
@@ -103,9 +104,12 @@ export const About: React.FC = () => {
         <p>
           <a href="https://votebymail.io" target="_blank" rel="noopener noreferrer">VoteByMail</a> is a Civex Inc project. We are a non-partisan Organization that empowers voters, letting them decide when, how and where they vote.
         </p>
-        <p>
-          We&apos;re open for donations: <a href="https://give.cornerstone.cc/votebymail" target="_blank" rel="noopener noreferrer">click here for more information.</a>
-        </p>
+        <a href="https://give.cornerstone.cc/votebymail" target="_blank" rel="noopener noreferrer">
+          <RoundedButton
+            color='primary'
+            variant='raised'
+          >Donate</RoundedButton>
+        </a>
       </Headline>
     </Container>
   </Wrapper>
