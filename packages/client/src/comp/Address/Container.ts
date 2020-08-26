@@ -1,6 +1,6 @@
 import React from 'react'
 import { createContainer } from 'unstated-next'
-import { AddressInputParts, Address, getState, isState, State } from '../../common'
+import { AddressInputParts, Address, getState } from '../../common'
 import { useAppHistory, Path } from '../../lib/path'
 import { AddressContainer } from '../../lib/unstated'
 
@@ -11,65 +11,43 @@ export const removeOptionalAddressFields = (fields: AddressInputParts) => ({
   unit: fields.unit ? fields.unit : undefined,
 })
 
-const handleDefaultState = (rawState: string) => {
-  // check if a state abbreviation is used
-  if (rawState.length === 2) {
-    const state = getState(rawState)
-    if (state) return state
-  }
-  if (isState(rawState)) {
-    return rawState
-  }
-
-  // Return an empty string to prevent errors with invalid states in the application
-  return ''
-}
-
 const handleDefault = (
   id: InputId,
   address: Address | null,
   path: Path | null,
   query: Record<string, string>,
 ): string => {
+  // Orgs' default value for every field has precedence over all others
+  // defaults, since they are always assigned as query params, this condition
+  // checks if they are present here.
+  if (query[id]) {
+    return query[id]
+  }
+
   // Path does not support 'postcode' but supports 'zip'
   const pathId = id === 'postcode' ? 'zip' : id
 
-  // We allow both the application and orgs to autofill the address input,
-  // orgs have the highest priority when we assign the default values.
   switch (path?.type) {
-    // The app itself can only auto-fill the state field when path === state.
-    // It's almost unlikely for the application to be loaded on this state,
-    // since this is the actual signup flow page; we coded this case here
-    // to avoid unexpected behavior.
-    case 'state':
-      if (pathId === 'state') {
-        return handleDefaultState(query[pathId] ?? path.state ?? address?.state ?? '')
-      }
-      return query[id] ?? ''
-
-    // When users have already typed a zip code on <EnterZip/> and are
-    // entering the detailed information of their address, the app itself
-    // is only capable of auto-filling state and postcode here, but again
-    // we ensure orgs' autofilled values are passed through.
+    // Some orgs might not use the newly accepted query params to input
+    // their default values, and instead rely on the standard way of assigning
+    // a state, i.e. `#/org/oid/address/State`.
+    //
+    // In this case both 'state' and 'zip'/'postcode' are capable of having
+    // default values.
     case 'address': {
       if (pathId === 'state' || pathId === 'zip') {
-        const rawValue = path[pathId]
-          ? query[id] ?? path[pathId] as string
-          : query[id] ?? (address && address[id]) ?? ''
-        return pathId === 'state' ? handleDefaultState(rawValue) : rawValue
+        return path[pathId]
+          ? path[pathId] as string
+          : (address && address[id]) ?? ''
       }
 
-      const rawValue = query[id] ?? (address && address[id]) ?? ''
-      return id === 'state' ? handleDefaultState(rawValue) : rawValue
+      return (address && address[id]) ?? ''
     }
 
-    // Ensures orgs' default values are assigned by default, this happens
-    // on all pages not covered above, so when users start their signup
-    // flow these values are already defined.
-    default: {
-      const rawValue = query[id] ?? (address && address[id]) ?? ''
-      return id === 'state' ? handleDefaultState(rawValue) : rawValue
-    }
+    // It's very unlikely that address is going to contain a default value
+    // when path.type is not the case above. But avoid not picking a default
+    // value we check for it nonetheless.
+    default: return (address && address[id]) ?? ''
   }
 }
 
@@ -80,7 +58,7 @@ const useFields = () => {
   const [ _fields, _setField ] = React.useState<AddressInputParts>({
     city: handleDefault('city', address, path, query),
     postcode: handleDefault('postcode', address, path, query),
-    state: handleDefault('state', address, path, query) as State,
+    state: getState(handleDefault('state', address, path, query)) ?? '',
     street: handleDefault('street', address, path, query),
     unit: handleDefault('unit', address, path, query),
   })
