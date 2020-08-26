@@ -1,7 +1,6 @@
-import { analyticsStorage } from './storage'
-import { mocked } from 'ts-jest/utils'
 import { analyticsLogic } from './logic'
 import { createMock } from 'ts-auto-mock'
+import { AnalyticsStorageSchema } from './storage'
 
 jest.mock('./storage')
 
@@ -21,15 +20,19 @@ const snapshot = (
   lastQueryTime: number,
 ): Snapshot => {
   const queryDateTime = new Date(lastQueryTime)
-  const yesterday = lastQueryTime === 0
-  ? analyticsLogic.midnightYesterday
-  : new Date(
-      queryDateTime.getFullYear(),
-      queryDateTime.getMonth(),
-      queryDateTime.getDate() -1,
-    )
-  // Happens at the last day of the previous month from yesterday date
-  const inThePast = new Date(yesterday.getFullYear(), yesterday.getMonth(), -1)
+  const yesterday = !lastQueryTime
+    ? analyticsLogic.midnightYesterday
+    : new Date(
+        queryDateTime.getFullYear(),
+        queryDateTime.getMonth(),
+        queryDateTime.getDate() -1,
+      )
+  // Happens two days before the query
+  const inThePast = new Date(
+    yesterday.getFullYear(),
+    yesterday.getMonth(),
+    yesterday.getDate() - 1,
+  )
 
   const signups: SignupMock[] = [
     // Google timestamps uses seconds instead of ms (default JS stamp)
@@ -51,9 +54,8 @@ const snapshot = (
   })
 }
 
-test('analyticsLogic initializes the firstQuery with right results', async () => {
-  mocked(analyticsStorage, true).isFirstQuery = true
-  mocked(analyticsStorage, true).data = {
+test('analyticsLogic initializes the firstQuery with right results', () => {
+  const storedData: AnalyticsStorageSchema = {
     id: 'onlyOne',
     yesterdaySignups: 0,
     yesterdayDate: 0,
@@ -61,7 +63,8 @@ test('analyticsLogic initializes the firstQuery with right results', async () =>
     lastQueryTime: 0,
   }
 
-  const { yesterdaySignups, totalSignups } = await analyticsLogic.calculateSignups(
+  const { yesterdaySignups, totalSignups } = analyticsLogic.calculateSignups(
+    storedData,
     snapshot(4, 10, 0),
   )
 
@@ -69,29 +72,24 @@ test('analyticsLogic initializes the firstQuery with right results', async () =>
   expect(totalSignups).toBe(10)
 })
 
-test('analyticsLogic increments stored values correctly', async () => {
+test('analyticsLogic increments stored values correctly', () => {
   const yesterday = analyticsLogic.midnightYesterday
   const beforeYesterday = new Date(
     yesterday.getFullYear(), yesterday.getMonth(), yesterday.getDate() - 2,
   )
-  mocked(analyticsStorage, true).isFirstQuery = false
-  const storedYesterday = 40 // Should be ignored
-  const storedTotal = 500 // should be added to the new amount of total signups
-  mocked(analyticsStorage, true).data = {
+  const storedData: AnalyticsStorageSchema = {
     id: 'onlyOne',
-    yesterdaySignups: storedYesterday,
     yesterdayDate: beforeYesterday.valueOf(),
-    totalSignups: storedTotal,
+    yesterdaySignups: 40, // Should be ignored
+    totalSignups: 500, // should be added to the new amount of total signups
     lastQueryTime: yesterday.valueOf(),
   }
 
-  const { yesterdaySignups, totalSignups } = await analyticsLogic.calculateSignups(
-    snapshot(4, 10, yesterday.valueOf()),
+  const { yesterdaySignups, totalSignups } = analyticsLogic.calculateSignups(
+    storedData,
+    snapshot(0, 10, yesterday.valueOf()),
   )
 
-  // When the query is run after the first time we assign yesterdaySignup
-  // to the size of the snapshot (since it's expected that these will run daily).
-  // which is why we expect this yesterdaySignup to be 10 and not 6
   expect(yesterdaySignups).toBe(10)
   expect(totalSignups).toBe(510) // stored + the total of new snapshot
 })
