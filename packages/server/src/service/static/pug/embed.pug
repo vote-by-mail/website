@@ -15,49 +15,11 @@ block content
     p This page guides you on creating embeddable versions of VoteByMail.io.  In order for these steps to be successful, you must be able to insert the iFrame into your page.  If using a Content Management System, like WordPress or Drupal, double-check that you're actually editing the raw content of the page and not using any WYSIWYG editor provided by these tools. Also, due to the safety measures adopted by modern browsers, your page must be HTTPS (not HTTP) for this to work.
 
     .row
-      .col.col-lg-6.col-sm-12
-        .card.mt-4.p-3
-          .card-body
-            h4.text-primary Anchor
-            p Setting a HTML anchor will replace the default starting point of any web page, for example, in VoteByMail you can set an anchor to load the website from the "About Us" section.
-            p.text-muted Setting a default state will replace this anchor, since the widget will start from the input address form.
-            button(
-              type='button'
-              class='btn btn-primary'
-              onClick="setAnchor('')"
-            ) Default (top)
-            button(
-              type='button'
-              class='btn btn-primary'
-              onClick="setAnchor('#howItWorks')"
-            ) How does it work?
-            button(
-              type='button'
-              class='btn btn-primary'
-              onClick="setAnchor('#getInvolved')"
-            ) Get Involved
-            button(
-              type='button'
-              class='btn btn-primary'
-              onClick="setAnchor('#team')"
-            ) Team
-            button(
-              type='button'
-              class='btn btn-primary'
-              onClick="setAnchor('#contact')"
-            ) Contact Us
-            button(
-              type='button'
-              class='btn btn-primary'
-              onClick="setAnchor('#about')"
-            ) About Us
-
-      .col.col-lg-6.col-sm-12
+      .col.col-lg
         .card.mt-4.p-3
           .card-body
             h4.text-primary Default state
             p Use this field to prefill the default state of your embedded widget.
-            p.text-muted Setting an anchor will remove the effects of this field, since these settings are not compatible with each other.
             .input-group.mb-3
               select(
                 id='prefill-state'
@@ -105,7 +67,6 @@ block content
     const code = document.getElementById('vbm-iframe-code');
     // The initial value of code is env.REACT_APP_URL (we can't access env here)
     const baseUrl = code.value;
-    let anchor = '';
     let state = '';
 
     function copyIframe() {
@@ -122,18 +83,11 @@ block content
       iframe.src = '';
       setTimeout(
         function() {
-          iframe.src = `${baseUrl}${anchor}${state}`;
+          iframe.src = `${baseUrl}${state}`;
           code.value = iframe.outerHTML;
         },
         100,
       );
-    }
-
-    function setAnchor(a) {
-      anchor = a;
-      state = '';
-      document.getElementById('prefill-state').value = 'No default state'
-      updateCode();
     }
 
     function setState(s) {
