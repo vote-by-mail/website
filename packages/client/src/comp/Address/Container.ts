@@ -58,7 +58,7 @@ const useFields = () => {
   const [ _fields, _setField ] = React.useState<AddressInputParts>({
     city: handleDefault('city', address, path, query),
     postcode: handleDefault('postcode', address, path, query),
-    state: getState(handleDefault('state', address, path, query)) ?? '',
+    state: getState(handleDefault('state', address, path, query)) ?? 'Alabama',
     street: handleDefault('street', address, path, query),
     unit: handleDefault('unit', address, path, query),
   })
