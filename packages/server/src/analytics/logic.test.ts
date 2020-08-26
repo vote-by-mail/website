@@ -12,12 +12,12 @@ type SignupMock = { createTime: { seconds: number } }
  *
  * @param yesterdayAmount The amount of signups for yesterday (day before lastQueryTime)
  * @param totalAmount The total amount of signups (inlcuding from yesterday)
- * @param lastQueryTime Numeric value of lastQueryTime
+ * @param lastQueryTime Numeric value of lastQueryTime or null (set as yesterday midnight)
  */
 const snapshot = (
   yesterdayAmount: number,
   totalAmount: number,
-  lastQueryTime: number,
+  lastQueryTime: number | null,
 ): Snapshot => {
   const queryDateTime = new Date(lastQueryTime)
   const yesterday = !lastQueryTime
@@ -65,7 +65,7 @@ test('analyticsLogic initializes the firstQuery with right results', () => {
 
   const { yesterdaySignups, totalSignups } = analyticsLogic.calculateSignups(
     storedData,
-    snapshot(4, 10, 0),
+    snapshot(4, 10, null),
   )
 
   expect(yesterdaySignups).toBe(4)
