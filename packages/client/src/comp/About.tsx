@@ -160,7 +160,7 @@ export const About: React.FC = () => {
       </p>
       <Code
         ref={codeRef}
-        value={`<iframe src="${processEnvOrThrow('REACT_APP_URL')}" style="width: 100%; height: 100%;"></iframe>`}
+        value={`<iframe id="vbm-iframe" src="${processEnvOrThrow('REACT_APP_URL')}" width="100%" height="100%" marginheight="0" frameborder="0" scrolling="yes" style="overflow: auto; min-height: 640px; min-width: 340px;"></iframe><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/iframe-resizer/3.5.3/iframeResizer.min.js"></script><script>iFrameResize({checkOrigin: false,scrolling: true,minHeight: 640,minWidth: 340,id: 'vbm-iframe'})</script>`}
       />
       <RoundedButton color='primary' onClick={copyIframe}>
         Copy
