@@ -1,4 +1,4 @@
-import { analyticsStorage } from './storage'
+import { AnalyticsStorageSchema } from "./storage"
 
 class AnalyticsLogic {
   /** Returns a date set to 00:00 of the previous day */
@@ -14,22 +14,24 @@ class AnalyticsLogic {
   }
 
   calculateSignups(
+    storage: AnalyticsStorageSchema,
     snapshot: FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData>,
   ): { totalSignups: number, yesterdaySignups: number } {
     const startTime = this.midnightYesterday
-    const { totalSignups: storedTotalSignups } = analyticsStorage.data
+    const { totalSignups: storedTotalSignups } = storage
 
     let yesterdaySignups = 0
     let totalSignups = storedTotalSignups
 
-    // We process this query based on the value of analyticsStorage.isFirstQuery
+    // We process this query differently depending if this is the first time
+    // these analytics has run or not.
     //
     // If true, we'll have to manually iterate through the array in order to
     // detect which records happened yesterday.
     //
     // Otherwise we can easily increment newYesterdaySignups/newTotalSignups
     // based on the size of the snapshot.
-    if (analyticsStorage.isFirstQuery) {
+    if (storage.lastQueryTime === 0) {
       snapshot.forEach(d => {
         // Google timestamps uses seconds instead of ms (default JS stamp)
         // we divide valueOf by 1000 to avoid issues

@@ -1,5 +1,5 @@
 import { v3 as gcm } from '@google-cloud/monitoring'
-import { analyticsStorage } from './storage'
+import { AnalyticsStorage } from './storage'
 import { processEnvOrThrow } from '../common'
 import { analyticsLogic } from './logic'
 import { FirestoreService } from '../service/firestore'
@@ -22,12 +22,13 @@ const projectPath = client.projectPath(projectName)
 const baseMetricUrl = 'custom.googleapis.com'
 
 export const updateTimeSeries = async () => {
-  await analyticsStorage.initializeOrSync()
+  const storage = new AnalyticsStorage()
+  await storage.initializeOrSync()
   const now = new Date()
 
-  const { lastQueryTime } = analyticsStorage.data
+  const { lastQueryTime } = storage.data
   const snapshot = await firestore.getSignups(lastQueryTime)
-  const { yesterdaySignups, totalSignups } = analyticsLogic.calculateSignups(snapshot)
+  const { yesterdaySignups, totalSignups } = analyticsLogic.calculateSignups(storage.data, snapshot)
 
   await client.createTimeSeries({
     name: projectPath,
@@ -61,5 +62,5 @@ export const updateTimeSeries = async () => {
     }],
   })
 
-  await analyticsStorage.update(totalSignups, yesterdaySignups, now.valueOf())
+  await storage.update(totalSignups, yesterdaySignups, now.valueOf())
 }
