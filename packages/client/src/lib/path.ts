@@ -203,7 +203,7 @@ export const useAppHistory = () => {
     // Wrap it on window.onload since if we fire this before images are
     // completely served, users will be scrolled to the wrong area.
     const callback = () => {
-      const pattern = /#(start|about|howItWorks|getInvolved|team|contact)/
+      const pattern = /#(start|about|howItWorks|getInvolved|team|contact)$/
       const match = window.location.href.match(pattern)
       if (match && match?.length >= 0) {
         scrollToId(match[0].substring(1)) // removes '#'
