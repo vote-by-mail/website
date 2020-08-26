@@ -87,7 +87,7 @@ test('analyticsLogic increments stored values correctly', () => {
 
   const { yesterdaySignups, totalSignups } = analyticsLogic.calculateSignups(
     storedData,
-    snapshot(0, 10, yesterday.valueOf()),
+    snapshot(10, 10, yesterday.valueOf()), // 10 new signups
   )
 
   expect(yesterdaySignups).toBe(10)
