@@ -18,7 +18,7 @@ block content
       .col.col-lg-6.col-sm-12
         .card.mt-4.p-3
           .card-body
-            h3 Anchor
+            h4.text-primary Anchor
             p Setting a HTML anchor will replace the default starting point of any web page, for example, in VoteByMail you can set an anchor to load the website from the "About Us" section.
             p.text-muted Setting a default state will replace this anchor, since the widget will start from the input address form.
             button(
@@ -55,10 +55,9 @@ block content
       .col.col-lg-6.col-sm-12
         .card.mt-4.p-3
           .card-body
-            h3 Widget configuration
-            p Use these to prefill the default state and organization of your embedded widget.
-            p.text-muted If you own or belong to an organization, they will be shown on the dropdown below for selection.
-            label(for='prefill-state') Prefill State
+            h4.text-primary Default state
+            p Use this field to prefill the default state of your embedded widget.
+            p.text-muted Setting an anchor will remove the effects of this field, since these settings are not compatible with each other.
             .input-group.mb-3
               select(
                 id='prefill-state'
@@ -72,26 +71,6 @@ block content
                     value=state
                   )= state
 
-            label(for='prefill-org') Prefill Organization
-            .input-group.mb-3
-              select(
-                id='prefill-org'
-                class='form-control'
-                aria-label='prefill org input'
-                onChange=`setOrg(this.value)`
-              )
-                //- Only add the default org option if the user doesn't own/belong to it.
-                if richOrgs.find(function(org) { return org.id === 'default' }) === undefined
-                  option(
-                    aria-label='default org'
-                    value='default'
-                  ) Default
-                each org in richOrgs
-                  option(
-                    aria-label=org.name ? `${org.name} (${org.id})` : org.id
-                    value=org.id
-                  )= org.name ? `${org.name} (${org.id})` : org.id
-
   .container.mt-4
     br
     h2 Widget code
@@ -103,7 +82,7 @@ block content
       style='display: block; width: 100%; padding: 10px; color: #dc0e52; background-color: #fafafa; margin: 25px 0; border-radius: 4px; resize: none;'
       resizable='false'
       disabled='true'
-    )= env.REACT_APP_URL
+    )=`${env.REACT_APP_URL}/#/org/${richOrg.id}`
     button(class='btn btn-primary' onClick='copyIframe()') Copy
 
     br
@@ -112,13 +91,16 @@ block content
     div(style='width: 100%; height: 1024px; border: 2px dashed #dc0e52;')
       iframe(
         id='vbm-iframe'
-        src=`${env.REACT_APP_URL}/${org}`
+        src=`${env.REACT_APP_URL}/#/org/${richOrg.id}`
         style='width: 100%; height: 100%;'
       )
 
+    //- Creates an invisible input for acquiring the value of richOrg.id, since we
+    //- can't access this variable at the script tag below
+    input(value=richOrg.id style='display: none;' id='orgId')
+
 
   script.
-    let org = '';
     const iframe = document.getElementById('vbm-iframe');
     const code = document.getElementById('vbm-iframe-code');
     // The initial value of code is env.REACT_APP_URL (we can't access env here)
@@ -140,20 +122,17 @@ block content
       iframe.src = '';
       setTimeout(
         function() {
-          iframe.src = `${baseUrl}/${org}${anchor}${state}`;
+          iframe.src = `${baseUrl}${anchor}${state}`;
           code.value = iframe.outerHTML;
         },
         100,
       );
     }
 
-    function setOrg(oid) {
-      org = `#/org/${oid ? oid : 'default'}`;
-      updateCode();
-    }
-
     function setAnchor(a) {
       anchor = a;
+      state = '';
+      document.getElementById('prefill-state').value = 'No default state'
       updateCode();
     }
 
@@ -163,5 +142,5 @@ block content
       updateCode();
     }
 
-    // Initialize default values
-    setOrg(org);
+    // Initializes default values
+    updateCode();
