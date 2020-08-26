@@ -8,25 +8,40 @@ jest.mock('./storage')
 type Snapshot = FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData>
 type SignupMock = { createTime: { seconds: number } }
 
-// Returns a snapshot that always has 40 yesterday signups and 500 total signups.
-const snapshot = (lastQueryTime: number): Snapshot => {
+/**
+ * Returns a snapshot that always has the desired amount of yesterday and total signups.
+ *
+ * @param yesterdayAmount The amount of signups for yesterday (day before lastQueryTime)
+ * @param totalAmount The total amount of signups (inlcuding from yesterday)
+ * @param lastQueryTime Numeric value of lastQueryTime
+ */
+const snapshot = (
+  yesterdayAmount: number,
+  totalAmount: number,
+  lastQueryTime: number,
+): Snapshot => {
   const queryDateTime = new Date(lastQueryTime)
-  const yesterdayDate = lastQueryTime === 0
+  const yesterday = lastQueryTime === 0
   ? analyticsLogic.midnightYesterday
   : new Date(
       queryDateTime.getFullYear(),
       queryDateTime.getMonth(),
       queryDateTime.getDate() -1,
     )
-  const signups: SignupMock[] = []
+  // Happens at the last day of the previous month from yesterday date
+  const inThePast = new Date(yesterday.getFullYear(), yesterday.getMonth(), -1)
 
-  for (let i = 0; i < 500; i++) {
-    if (i < 40) {
-      signups.push({ createTime: { seconds: yesterdayDate.valueOf() } })
-    } else {
-      signups.push({ createTime: { seconds: lastQueryTime } })
-    }
-  }
+  const signups: SignupMock[] = [
+    // Google timestamps uses seconds instead of ms (default JS stamp)
+    // we divide valueOf by 1000 to avoid issues, since logic.ts will expect
+    // google timestamps
+    ...Array<SignupMock>(yesterdayAmount).fill({
+      createTime: { seconds: yesterday.valueOf() / 1000 }
+    }),
+    ...Array<SignupMock>(totalAmount - yesterdayAmount).fill({
+      createTime: { seconds: inThePast.valueOf() / 1000 }
+    })
+  ]
 
   return createMock<Snapshot>({
     forEach(cb: (el: SignupMock) => void) {
@@ -37,21 +52,21 @@ const snapshot = (lastQueryTime: number): Snapshot => {
 }
 
 test('analyticsLogic initializes the firstQuery with right results', async () => {
-  mocked(analyticsStorage, true).isFirstQuery = jest.fn().mockResolvedValue(true)
-  const data = mocked(analyticsStorage, true).data = jest.fn().mockResolvedValue({
+  mocked(analyticsStorage, true).isFirstQuery = true
+  mocked(analyticsStorage, true).data = {
+    id: 'onlyOne',
     yesterdaySignups: 0,
     yesterdayDate: 0,
     totalSignups: 0,
     lastQueryTime: 0,
-  })
+  }
 
   const { yesterdaySignups, totalSignups } = await analyticsLogic.calculateSignups(
-    snapshot(0),
+    snapshot(4, 10, 0),
   )
 
-  expect(yesterdaySignups).toBe(40)
-  expect(totalSignups).toBe(500)
-  expect(data).toHaveBeenCalledTimes(1)
+  expect(yesterdaySignups).toBe(4)
+  expect(totalSignups).toBe(10)
 })
 
 test('analyticsLogic increments stored values correctly', async () => {
@@ -59,22 +74,24 @@ test('analyticsLogic increments stored values correctly', async () => {
   const beforeYesterday = new Date(
     yesterday.getFullYear(), yesterday.getMonth(), yesterday.getDate() - 2,
   )
-  mocked(analyticsStorage, true).isFirstQuery = jest.fn().mockResolvedValue(false)
-  const data = mocked(analyticsStorage, true).data = jest.fn().mockResolvedValue({
-    yesterdaySignups: 40,
+  mocked(analyticsStorage, true).isFirstQuery = false
+  const storedYesterday = 40 // Should be ignored
+  const storedTotal = 500 // should be added to the new amount of total signups
+  mocked(analyticsStorage, true).data = {
+    id: 'onlyOne',
+    yesterdaySignups: storedYesterday,
     yesterdayDate: beforeYesterday.valueOf(),
-    totalSignups: 500,
+    totalSignups: storedTotal,
     lastQueryTime: yesterday.valueOf(),
-  })
+  }
 
   const { yesterdaySignups, totalSignups } = await analyticsLogic.calculateSignups(
-    snapshot(yesterday.valueOf()),
+    snapshot(4, 10, yesterday.valueOf()),
   )
 
   // When the query is run after the first time we assign yesterdaySignup
   // to the size of the snapshot (since it's expected that these will run daily).
-  // which is why we expect this yesterdaySignup to be 500 and not 460
-  expect(yesterdaySignups).toBe(500)
-  expect(totalSignups).toBe(1000)
-  expect(data).toHaveBeenCalledTimes(1)
+  // which is why we expect this yesterdaySignup to be 10 and not 6
+  expect(yesterdaySignups).toBe(10)
+  expect(totalSignups).toBe(510) // stored + the total of new snapshot
 })

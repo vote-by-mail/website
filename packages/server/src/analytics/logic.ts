@@ -13,11 +13,11 @@ class AnalyticsLogic {
     )
   }
 
-  async calculateSignups(
+  calculateSignups(
     snapshot: FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData>,
-  ): Promise<{ totalSignups: number, yesterdaySignups: number }> {
+  ): { totalSignups: number, yesterdaySignups: number } {
     const startTime = this.midnightYesterday
-    const { totalSignups: storedTotalSignups } = await analyticsStorage.data()
+    const { totalSignups: storedTotalSignups } = analyticsStorage.data
 
     let yesterdaySignups = 0
     let totalSignups = storedTotalSignups
@@ -29,7 +29,7 @@ class AnalyticsLogic {
     //
     // Otherwise we can easily increment newYesterdaySignups/newTotalSignups
     // based on the size of the snapshot.
-    if (await analyticsStorage.isFirstQuery()) {
+    if (analyticsStorage.isFirstQuery) {
       snapshot.forEach(d => {
         // Google timestamps uses seconds instead of ms (default JS stamp)
         // we divide valueOf by 1000 to avoid issues
