@@ -12,6 +12,7 @@ interface Options {
   pdfBuffer?: Buffer
   force?: boolean
   recordsEmail?: string
+  id?: string
 }
 
 const toAddresses = (
@@ -36,7 +37,7 @@ export const toSignupEmailData = (
   letter: Letter,
   voterEmail: string,
   officialEmails: string[],
-  { pdfBuffer, force }: Options = { force: false }
+  { pdfBuffer, force, id }: Options = { force: false }
 ): mailgun.messages.SendData => {
   const emailOfficials = !!process.env.EMAIL_FAX_OFFICIALS
   const to = toAddresses(
@@ -49,6 +50,9 @@ export const toSignupEmailData = (
   const mgData = {
     from: processEnvOrThrow('MG_FROM_ADDR'),
     'h:Reply-To': [processEnvOrThrow('MG_REPLY_TO_ADDR'), voterEmail, ...officialEmails].join(','),
+    'v:metadata': { 
+      uid: id
+    },
   }
 
   const name = `${letter.info.nameParts.first} ${letter.info.nameParts.last}`
@@ -75,13 +79,13 @@ export const sendSignupEmail = async (
   letter: Letter,
   voterEmail: string,
   officialEmails: string[],
-  { pdfBuffer, force }: Options = { force: false },
+  { pdfBuffer, force, id }: Options = { force: false },
 ): Promise<mailgun.messages.SendResponse | null> => {
   if (process.env.MG_DISABLE) { // to disable MG for testing
     console.warn('No email sent (disabled)')
     return null
   }
 
-  const emailData = toSignupEmailData(letter, voterEmail, officialEmails, { pdfBuffer, force })
+  const emailData = toSignupEmailData(letter, voterEmail, officialEmails, { pdfBuffer, force, id })
   return mg.messages().send(emailData)
 }
