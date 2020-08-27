@@ -83,23 +83,39 @@ block content
       code.disabled = true;
     }
 
-    function updateCode() {
-      // This is why our widget wasn't always updating, to see the changes we must first
-      // clear the iframe.src and then (after a brief delay) load our url.
+    function updateCode(scrollY) {
+      // This is why our widget wasn't always updating, to see the changes
+      // we must first clear the iframe.src and then (after a brief delay)
+      // load our url.
       iframe.src = '';
       setTimeout(
         function() {
           iframe.src = `${baseUrl}${state}`;
           code.value = iframeWrapper.innerHTML;
+
+          // Prevents VoteByMail scroll events from stealing focus for half
+          // a second.
+          if (scrollY) {
+            for (let i = 0; i < 500; i++) {
+              setTimeout(
+                function() {
+                  window.scroll({
+                    top: scrollY,
+                  })
+                },
+                i,
+              );
+            }
+          }
         },
-        100,
+        50,
       );
     }
 
     function setState(s) {
       anchor = '';
       state = s !== 'No default state' ? `/address/${s}` : '';
-      updateCode();
+      updateCode(window.scrollY);
     }
 
     // Initializes default values
