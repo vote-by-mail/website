@@ -14,42 +14,38 @@ block content
     h1 Embedding VoteByMail.io
     p This page guides you on creating embeddable versions of VoteByMail.io.  In order for these steps to be successful, you must be able to insert the iFrame into your page.  If using a Content Management System, like WordPress or Drupal, double-check that you're actually editing the raw content of the page and not using any WYSIWYG editor provided by these tools. Also, due to the safety measures adopted by modern browsers, your page must be HTTPS (not HTTP) for this to work.
 
-    .row
-      .col.col-lg
-        .card.mt-4.p-3
-          .card-body
-            h4.text-primary Default state
-            p Use this field to prefill the default state of your embedded widget.
-            .input-group.mb-3
-              select(
-                id='prefill-state'
-                class='form-control'
-                aria-label='prefill state input'
-                onChange=`setState(this.value)`
-              )
-                each state in states
-                  option(
-                    aria-label=state
-                    value=state
-                  )= state
+    .card
+      .card-body.row
+        .col.col-md-6.col-sm-12.mt-3
+          h4.text-primary Default State
+          p Select default state (or no default)
+          .input-group.mb-3
+            select(
+              id='prefill-state'
+              class='form-control'
+              aria-label='prefill state input'
+              onChange=`setState(this.value)`
+            )
+              each state in states
+                option(
+                  aria-label=state
+                  value=state
+                )= state
 
-  .container.mt-4
-    br
-    h2 Widget code
-    br
-    p Please copy the text in red and add it to your website, the code in this block updates automatically as you edit your widget.
-    textarea(
-      name='vbm-iframe-code'
-      id='vbm-iframe-code'
-      style='display: block; width: 100%; padding: 10px; color: #dc0e52; background-color: #fafafa; margin: 25px 0; border-radius: 4px; resize: none;'
-      resizable='false'
-      disabled='true'
-    )=`${env.REACT_APP_URL}/#/org/${richOrg.id}`
-    button(class='btn btn-primary' onClick='copyIframe()') Copy
+        .col.col-md-6.col-sm-12.mt-3
+          h4.text-primary Widget Code
+          textarea(
+            name='vbm-iframe-code'
+            id='vbm-iframe-code'
+            style='display: block; width: 100%; padding: 10px; color: #dc0e52; background-color: #fafafa; margin: 25px 0; border-radius: 4px; resize: none;'
+            resizable='false'
+            disabled='true'
+          )=`${env.REACT_APP_URL}/#/org/${richOrg.id}`
+          button(class='btn btn-primary' onClick='copyIframe()') Copy
 
     br
     h3 Preview
-    p.text-muted The dashed red border indicates the available space for the widget.
+    p.text-muted The dashed red border does not appear in your embed.
     div(
       id='vbm-iframe-wrapper'
       style='width: 100%; height: 1024px; border: 2px dashed #dc0e52;'
