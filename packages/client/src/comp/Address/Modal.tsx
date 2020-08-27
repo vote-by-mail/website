@@ -34,22 +34,22 @@ export const AddressModal: React.FC<Props> = ({ isOpen, setOpen }) => {
 
   const state = fields.state as ImplementedState
 
-  const fetchContacts = React.useCallback(async () => {
-    setFetchingData(true)
-    const resp = await client.fetchContacts(state)
-    if (resp.type === 'data') {
-      setContacts(resp.data)
-      setNewContact(resp.data[0])
-    }
-    setFetchingData(false)
-  }, [setContacts, setFetchingData, state])
-
-  // Loads the initial data when the modal is open for the first time
   React.useEffect(() => {
-    if (isOpen && contacts === undefined) {
-      fetchContacts()
+    // Loads the initial data when the modal is open for the first time
+    if (isOpen && !contacts) {
+      (async () => {
+        setContacts([]) // Prevents function from firing more than once
+
+        setFetchingData(true)
+        const resp = await client.fetchContacts(state)
+        if (resp.type === 'data') {
+          setContacts(resp.data)
+          setNewContact(resp.data[0])
+        }
+        setFetchingData(false)
+      })()
     }
-  }, [contacts, fetchContacts, isOpen])
+  }, [contacts, isOpen, setFetchingData, state])
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.persist()
