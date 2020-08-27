@@ -96,9 +96,11 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: B
       nameParts: nameParts,
       birthdate: fields.birthdate.value,
       email: fields.email.value,
+      // CSV functions will output undefined, defaulting this to an empty
+      // string.
       mailingAddress: hasMailingAddress
         ? formatAddressInputParts(mailingFields)
-        : undefined,
+        : '',
       mailingAddressParts: hasMailingAddress ? mailingFields : undefined,
       phone: fields.telephone.value,
       uspsAddress,
