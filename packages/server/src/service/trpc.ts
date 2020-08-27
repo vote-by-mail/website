@@ -3,16 +3,12 @@ import { ImplRpc } from '@tianhuil/simple-trpc/dist/type'
 import { Request } from 'express'
 import { IVbmRpc, StateInfo, toLocale, toContactMethod, isState, Voter, Locale, ImplementedState, RegistrationArgs, AddressInputParts } from '../common'
 import { FirestoreService } from './firestore'
-import { sendSignupEmail, mg } from './mg'
+import { mg } from './mg'
 import { toContact, contactRecords, getContact as _getContact } from './contact'
 import { geocode, zipSearch } from './gm'
-import { toPdfBuffer } from './pdf'
-import { storageFileFromId } from './storage'
-import { Letter } from './letter'
-import { sendFaxes } from './twilio'
-import { TwilioResponse } from './types'
 import { sib } from './sendinblue'
 import { isRegistered } from './alloy'
+import { sendAndStoreSignup } from './signup'
 
 const firestoreService = new FirestoreService()
 
@@ -120,30 +116,7 @@ export class VbmRpc implements ImplRpc<IVbmRpc, Request> {
     })
 
     return data(id, async (): Promise<void> => {
-      const letter = new Letter(info, method, id)
-      const pdfBuffer = await toPdfBuffer(letter.render('html'), await letter.form)
-
-      // Send email (perhaps only to voter)
-      const mgResponse = await sendSignupEmail(
-        letter,
-        info.email,
-        method.emails,
-        { pdfBuffer, id },
-      )
-
-      // Upload PDF
-      const file = storageFileFromId(id)
-      await file.upload(pdfBuffer)
-
-      // Send faxes
-      let twilioResponses: TwilioResponse[] = []
-      if (method.faxes.length > 0) {
-        const uri = await file.getSignedUrl(24 * 60 * 60 * 1000)
-        const resposnes = await sendFaxes(uri, method.faxes)
-        twilioResponses = resposnes.map(({url, sid, status}) => ({url, sid, status}))
-      }
-
-      await firestoreService.updateRegistration(id, mgResponse, twilioResponses)
+      await sendAndStoreSignup(info, method, id)
     })
   }
 }

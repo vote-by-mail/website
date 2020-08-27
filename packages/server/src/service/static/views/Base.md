@@ -7,6 +7,13 @@ The request was not sent from production.  <b>No email or fax was sent to an ele
 
 {% endif %}
 
+{% if resendReasonAndOriginalSignupDate %}
+<p style='color:red;'>
+This request was resent to the voter and the election official because: {{resendReasonAndOriginalSignupDate}}<p>
+<p>
+
+{% endif %}
+
 Dear Election Official,
 
 I am writing to request an Absentee or Vote-by-Mail ballot through [{{brandName}}]({{brandUrl}}).  This letter conforms to the requirements set forth by {{guidance}}.
