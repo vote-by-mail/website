@@ -22,17 +22,18 @@ const findByType = (
 // Helping function for rawGeocode
 const geocodeQuery = (addr: AddressInputParts | string) => {
   if (typeof addr === 'object') {
-    // Using component filtering to ensure more precise results
-    // https://developers.google.com/maps/documentation/geocoding/overview#component-filtering
-    const queryParts = [
+    // Using both address and component filtering field to ensure precise
+    // results https://developers.google.com/maps/documentation/geocoding/overview#component-filtering
+    const components = [
       'country:us',
-      `street:${addr.street}`,
-      `state:${addr.state}`,
-      `city:${addr.city}`,
-      `postcode:${addr.postcode}`,
-    ]
-    if (addr.unit) queryParts.push(`unit:${addr.unit}`)
-    return encodeURIComponent(queryParts.join(('|')))
+      `locality:${addr.city}`,
+      `administrative_area:${addr.state}`,
+      `postal_code:${addr.postcode}`,
+    ].join('|')
+    const address = addr.unit
+      ? `${addr.street} #${addr.unit}, ${addr.city}`
+      : `${addr.street}, ${addr.city}`
+    return encodeURIComponent(`${address}&components=${components}`)
   }
   return encodeURIComponent(addr)
 }
