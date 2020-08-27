@@ -15,7 +15,7 @@ import styled from 'styled-components'
 import { cssQuery } from '../../util/cssQuery'
 import { AppCheckbox } from '../../util/Checkbox'
 import { termsOfUseUrl, privacyPolicyUrl } from '../../util/urls'
-import { AddressInput } from '../../Address'
+import { AddressInput, AddressInputPartContainer } from '../../Address'
 import { BaseRegistrationStatus, FieldsContainer, BaseRegistration, BaseModal } from '.'
 
 export type StatelessInfo = Omit<BaseInfo, 'state'>
@@ -58,6 +58,7 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: B
   const { voter } = VoterContainer.useContainer()
   const { fetchingData, setFetchingData } = FetchingDataContainer.useContainer()
   const { org } = InitialDataContainer.useContainer().initialData
+  const { fields: addressFields } = AddressInputPartContainer.useContainer()
   const {
     fields,
     updateField,
@@ -96,12 +97,14 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: B
       nameParts: nameParts,
       birthdate: fields.birthdate.value,
       email: fields.email.value,
+      // CSV functions will render 'undefined', defaulting this to an empty
+      // string.
       mailingAddress: hasMailingAddress
         ? formatAddressInputParts(mailingFields)
-        : undefined,
+        : '',
       mailingAddressParts: hasMailingAddress ? mailingFields : undefined,
       phone: fields.telephone.value,
-      uspsAddress,
+      uspsAddress: formatAddressInputParts(addressFields),
       contact,
       address,
       ...(alloy.id && alloy.status // Avoids type checking issues
