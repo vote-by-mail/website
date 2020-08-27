@@ -5,11 +5,13 @@ import { Request } from 'express'
 import { sendFaxes as unmockedSendFaxes } from './twilio'
 import { isE164 } from '../common'
 import { createMock } from 'ts-auto-mock'
+import { sendSignupEmail } from './mg'
 
 // To avoid doing actual requests (and setting a lot of new envs for tests),
 // we mock the majority of functions/modules related to trpc.
 
 jest.mock('./mg')
+mocked(sendSignupEmail).mockResolvedValue({ message: 'Queued. Thank you.', id: 'dummy' })
 jest.mock('./twilio')
 jest.mock('./firestore')
 jest.mock('./pdf')

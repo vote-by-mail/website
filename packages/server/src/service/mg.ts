@@ -57,7 +57,7 @@ export const toSignupEmailData = (
     },
   }
 
-  const name = `${letter.info.nameParts.first} ${letter.info.nameParts.last}`
+  const name = letter.info.nameParts ? `${letter.info.nameParts.first} ${letter.info.nameParts.last}` : letter.info.name
   const attachment = [
     signatureAttachment ?? [],
     idPhotoAttachment ?? [],

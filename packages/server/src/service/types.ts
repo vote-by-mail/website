@@ -35,10 +35,17 @@ export interface TwilioResponse {
   status: FaxStatus
 }
 
+export interface Resend {
+  // Datetime in milllis.
+  dateTime: number 
+  reason: string
+}
+
 export type RichStateInfo = StateInfo & {
   created: admin.firestore.Timestamp
   voter: Voter
   mgResponse?: Mailgun.messages.SendResponse | null
   twilioResponses?: TwilioResponse[]
   method?: ContactMethod
+  resends?: Resend[]
 }

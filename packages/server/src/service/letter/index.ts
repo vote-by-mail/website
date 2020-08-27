@@ -85,11 +85,13 @@ export class Letter {
   readonly signatureAttachment?: mailgun.Attachment
   readonly idPhotoAttachment?: mailgun.Attachment
   readonly form?: Promise<Buffer | undefined>
+  readonly resendReasonAndOriginalSignupDate?: string
 
   constructor(
     info: StateInfo,
     method: ContactMethod,
     confirmationId: string,
+    resendReasonAndOriginalSignupDate?: string,
   ) {
     this.confirmationId = confirmationId
     this.subject = subject(info.state)
@@ -98,6 +100,7 @@ export class Letter {
     this.signatureAttachment = this.makeAttachment(info.signature, 'signature')
     this.idPhotoAttachment = this.makeAttachment(info.idPhoto, 'identification')
     this.form = pdfForm(info)
+    this.resendReasonAndOriginalSignupDate = resendReasonAndOriginalSignupDate
   }
 
   /**
@@ -120,6 +123,7 @@ export class Letter {
           faxes: method.faxes && method.faxes.map(formatPhoneNumber),
         },
         warning: !process.env.EMAIL_FAX_OFFICIALS,
+        resendReasonAndOriginalSignupDate: this.resendReasonAndOriginalSignupDate,
         signature: dest === 'email' && this.signatureAttachment
           ? `cid:${this.signatureAttachment.filename}`
           : this.info.signature,
