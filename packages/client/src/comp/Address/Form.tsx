@@ -5,20 +5,20 @@ import { TimeoutError } from '@tianhuil/simple-trpc/dist/timedFetch'
 import { StatusReport } from '../status/StatusReport'
 import { useParams } from 'react-router-dom'
 import { useAppHistory } from '../../lib/path'
-import { getState } from '../../common'
+import { getState, possibleStreetNumbers } from '../../common'
 import { AppForm } from '../util/Form'
 import { Unidentified } from '../status/Status'
 import { toast } from 'react-toastify'
 import { AddressInputPartContainer } from '.'
 import { AddressInput } from './Input'
 import { RoundedButton } from '../util/Button'
-import { AddressModal } from './Modal'
+import { AddressGeocodeErrorModal } from './Modal'
 
 // pulled out for testing
 export const RawAddressForm: React.FC<{rawState: string, zip?: string}> = ({rawState}) => {
-  const { fields, setField } = AddressInputPartContainer.useContainer()
+  const { fields, setField, setStreetNumbers } = AddressInputPartContainer.useContainer()
   const { pushState } = useAppHistory()
-  const { setAddress } = AddressContainer.useContainer()
+  const { address, setAddress } = AddressContainer.useContainer()
   const { setContact } = ContactContainer.useContainer()
   const { fetchingData, setFetchingData } = FetchingDataContainer.useContainer()
   const [ open, setOpen ] = React.useState(false)
@@ -49,10 +49,35 @@ export const RawAddressForm: React.FC<{rawState: string, zip?: string}> = ({rawS
         }
         case 'error': {
           toast.error(<><b>Server Error:</b> {result.message}.  Try resubmitting.  If this persists, try again in a little while.</>)
+
+          setStreetNumbers(possibleStreetNumbers(fields.street))
           setOpen(true)
           return
         }
       }
+
+      // After successfully fetching all the data we must check the acquired
+      // address lacks street number, if it does and possible street numbers
+      // are found we assign them to the AddressContainer so AddressGeocodeErrorModal
+      // can handle this incident.
+      if (address && !address.streetNumber) {
+        const streetNumbers = possibleStreetNumbers(fields.state)
+        if (streetNumbers) {
+          // Automatically assign the value of street number since there's
+          // only one possibility and avoid opening the modal in this case
+          if (streetNumbers.length === 1) {
+            address.streetNumber = streetNumbers[0]
+            setAddress(address)
+          } else {
+            // Open the modal and ask for the user to confirm or select
+            // the appropriate street number.
+            setStreetNumbers(streetNumbers)
+            setOpen(true)
+            return
+          }
+        }
+      }
+
       pushState(state)
     } catch(e) {
       toast.dismiss()
@@ -88,7 +113,7 @@ export const RawAddressForm: React.FC<{rawState: string, zip?: string}> = ({rawS
         </RoundedButton>
       </AppForm>
     </StatusReport>
-    <AddressModal isOpen={open} setOpen={setOpen}/>
+    <AddressGeocodeErrorModal isOpen={open} setOpen={setOpen}/>
   </>
 }
 

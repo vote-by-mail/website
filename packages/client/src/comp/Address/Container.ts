@@ -3,6 +3,7 @@ import { createContainer } from 'unstated-next'
 import { AddressInputParts, Address, getState } from '../../common'
 import { useAppHistory, Path } from '../../lib/path'
 import { AddressContainer } from '../../lib/unstated'
+import { SelectOptions } from '../util/Select'
 
 type InputId = keyof AddressInputParts
 
@@ -75,10 +76,15 @@ const useFields = () => {
   // Automatically removes empty optional values
   const fields = removeOptionalAddressFields(_fields) as AddressInputParts
 
+  const [ streetNumbers, setStreetNumbers ] = React.useState<SelectOptions | null>(null)
+
   return {
     fields,
     setField,
     setAddress,
+    /** Stores possible street numbers inferred from fields.street */
+    streetNumbers,
+    setStreetNumbers,
   }
 }
 
