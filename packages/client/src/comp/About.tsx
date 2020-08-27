@@ -153,10 +153,10 @@ export const About: React.FC = () => {
     <StyledModal isOpen={isOpen} onBackgroundClick={() => setOpen(false)}>
       <h3>Add VoteByMail.io to your website</h3>
       <p>
-        Copy the code in red below and add it to the HTML content of a webpage to embed VoteByMail.io to your website.
+        Copy the below code and insert it into your HTML to embed VoteByMail.io to your website.
       </p>
       <p>
-        If you&apos;re an organizer there are more options and helpful information about this feature available on the organizer dashboard. We highly encourage you to use it if possible.
+        For more options, see <a href='https://docs.google.com/document/d/1341vB4gQin_dPyweDQc_rUSAzch85Q8ouQbAjokxBCo/edit' target="_blank" rel="noopener noreferrer">our organizer docs</a>
       </p>
       <Code
         ref={codeRef}
