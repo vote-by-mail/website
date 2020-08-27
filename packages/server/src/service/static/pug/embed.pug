@@ -75,6 +75,30 @@ block content
     const baseUrl = code.value;
     let state = '';
 
+    // When the iframe loads it might scroll to the address form, stealing
+    // window focus, we don't want that.
+    let lockScroll = false;
+    let lockScrollPosition = 0;
+
+    // Basically what we do is wait for a window scroll event, if it is
+    // different than lockScrollPosition we will consider that the iframe
+    // has finished loading, and with a short delay we'll unlock the page.
+    //
+    // We do this due to the safety measures blocking us from accessing
+    // iframe.onload from this page.
+    window.onscroll = function() {
+      if (window.scrollY !== lockScrollPosition) {
+        if (lockScroll) {
+          window.scroll({ top: lockScrollPosition });
+        }
+        // Adding a small timeout since it's a smooth animation
+        setTimeout(
+          function() { lockScroll = false },
+          500,
+        );
+      }
+    }
+
     function copyIframe() {
       // Select will only work if disabled is false
       code.disabled = false;
@@ -83,6 +107,8 @@ block content
       code.disabled = true;
     }
 
+    // scrollY must be a number, and if present it will lock scrolling the
+    // screen to the given position.
     function updateCode(scrollY) {
       // This is why our widget wasn't always updating, to see the changes
       // we must first clear the iframe.src and then (after a brief delay)
@@ -92,21 +118,10 @@ block content
         function() {
           iframe.src = `${baseUrl}${state}`;
           code.value = iframeWrapper.innerHTML;
-
-          // Prevents VoteByMail scroll events from stealing focus for half
-          // a second.
-          if (scrollY) {
-            for (let i = 0; i < 500; i++) {
-              setTimeout(
-                function() {
-                  window.scroll({
-                    top: scrollY,
-                  })
-                },
-                i,
-              );
-            }
-          }
+          // we'll lock scrolling if scrollY is provided (when users change
+          // default states).
+          lockScroll = scrollY !== undefined
+          lockScrollPosition = scrollY
         },
         50,
       );
