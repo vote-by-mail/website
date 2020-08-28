@@ -38,7 +38,7 @@ export const AddressModal: React.FC<Props> = ({ isOpen, setOpen }) => {
     // Loads the initial data when the modal is open for the first time
     if (isOpen && !contacts) {
       (async () => {
-        setContacts([]) // Prevents function from firing more than once
+        setContacts([]) // Prevents effect from firing more than once
 
         setFetchingData(true)
         const resp = await client.fetchContacts(state)
@@ -89,7 +89,7 @@ export const AddressModal: React.FC<Props> = ({ isOpen, setOpen }) => {
   }, [])
 
   return <>
-    <StyledModal isOpen={isOpen}>
+    <StyledModal isOpen={isOpen} data-testid='address-error-modal'>
       <AfterModalAnimation>
         <h3>Unable to locate your Election Official</h3>
         <p>Some addresses are not covered by our Geocode API, but don&apos;t worry this just means we wont&apos;t be able to automatically find your election official.</p>
@@ -97,8 +97,11 @@ export const AddressModal: React.FC<Props> = ({ isOpen, setOpen }) => {
 
         <div ref={positionRef} style={{ width: '100%', height: 67 }}/>
 
-
-        <RoundedButton color='primary' onClick={handleSubmit}>
+        <RoundedButton
+          color='primary'
+          onClick={handleSubmit}
+          data-testid='address-error-modal-submit'
+        >
           Confirm
         </RoundedButton>
       </AfterModalAnimation>
@@ -111,6 +114,7 @@ export const AddressModal: React.FC<Props> = ({ isOpen, setOpen }) => {
       <ContactsSelect
         options={contacts}
         label='Election Official'
+        data-testid='address-error-modal-contact'
         optionsLabeler={o => o.replace(/:/g, '')}
         value={newContact}
         onChange={v => setNewContact(v)}
