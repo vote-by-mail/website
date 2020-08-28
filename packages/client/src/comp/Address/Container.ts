@@ -63,6 +63,7 @@ const useFields = (initialFieldsValue: AddressInputParts | null = null) => {
     postcode: handleDefault('postcode', address, path, query),
     state: getState(handleDefault('state', address, path, query)) ?? '',
     street: handleDefault('street', address, path, query),
+    streetNumber: handleDefault('streetNumber', address, path, query),
     unit: handleDefault('unit', address, path, query),
   })
 

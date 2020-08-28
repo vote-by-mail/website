@@ -53,7 +53,18 @@ export const AddressInput: React.FC<Props> = ({ fields, setField }) => {
     {/* We use a 7:3 basis proportion between Flex Components */}
     {/* The spacing between them 2% of the basis */}
 
-    <Flex basis='70%'>
+    <Flex basis='18%' mobileBasis='28%'>
+      <BaseInput
+        label='Street Number'
+        translate='no'
+        lang='en'
+        value={fields?.streetNumber}
+        onChange={e => setField('streetNumber', e.currentTarget.value)}
+        data-testid='addressFieldStreetNumber'
+      />
+    </Flex>
+
+    <Flex basis='50%' mobileBasis='70%'>
       <BaseInput
         label='Street Address'
         ref={addrRef}

@@ -119,6 +119,7 @@ const useFields = () => {
     // address state.
     state: addressFields.state,
     street: '',
+    streetNumber: '',
     unit: '',
   })
 

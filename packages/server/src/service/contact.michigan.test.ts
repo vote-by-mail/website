@@ -7,315 +7,360 @@ type AddressExpected = AddressInputParts & { expected: string }
 // from: https://en.wikipedia.org/wiki/List_of_municipalities_in_Michigan
 const addresses: AddressExpected[] = [
   {
-    street: '2648 W Grand Blvd',
+    street: 'Grand Blvd',
+    streetNumber: '2648 W',
     city: 'Detroit',
     state: 'MI',
     postcode: '48208',
     expected: 'Detroit City:Wayne County'
   },
   {
-    street: '834 Leonard St NE',
+    street: 'Leonard St NE',
+    streetNumber: '834',
     city: 'Grand Rapids',
     state: 'MI',
     postcode: '49503',
     expected: 'Grand Rapids City:Kent County'
   },
   {
-    street: '30100 Campbell Ave',
+    street: 'Campbell Ave',
+    streetNumber: '30100',
     city: 'Warren',
     state: 'MI',
     postcode: '48093',
     expected: 'Warren City:Macomb County'
   },
   {
-    street: '5150 Rudgate Cir',
+    street: 'Rudgate Cir',
+    streetNumber: '5150',
     city: 'Sterling Heights',
     state: 'MI',
     postcode: '48310',
     expected: 'Sterling Heights City:Macomb County'
   },
   {
-    street: '4230 S Martin Luther King Jr Blvd',
+    street: 'Martin Luther King Jr Blvd',
+    streetNumber: '4230 S',
     city: 'Lansing',
     state: 'MI',
     postcode: '48910',
     expected: 'Lansing City:Ingham County'
   },
   {
-    street: '1120 E Kearsley St',
+    street: 'Kearsley St',
+    streetNumber: '1120 E',
     city: 'Flint',
     state: 'MI',
     postcode: '48503',
     expected: 'Flint City:Genesee County'
   },
   {
-    street: '1231 Van Dusen Dr',
+    street: 'Van Dusen Dr',
+    streetNumber: '1231',
     city: 'Ann Arbor',
     state: 'MI',
     postcode: '48103',
     expected: 'Ann Arbor City:Washtenaw County'
   },
   {
-    street: '15264 Michigan Ave',
+    street: 'Michigan Ave',
+    streetNumber: '15264',
     city: 'Dearborn',
     state: 'MI',
     postcode: '48126',
     expected: 'Dearborn City:Wayne County'
   },
   {
-    street: '35301 Five Mile Rd',
+    street: 'Five Mile Rd',
+    streetNumber: '35301',
     city: 'Livonia',
     state: 'MI',
     postcode: '48154',
     expected: 'Livonia City:Wayne County'
   },
   {
-    street: '43350 Elizabeth Rd',
+    street: 'Elizabeth Rd',
+    streetNumber: '43350',
     city: 'Clinton Twp',
     state: 'MI',
     postcode: '48036',
     expected: 'Clinton Township:Macomb County'
   },
   {
-    street: '44500 Cherry Hill Rd',
+    street: 'Cherry Hill Rd',
+    streetNumber: '44500',
     city: 'Canton',
     state: 'MI',
     postcode: '48187',
     expected: 'Canton Township:Wayne County'
   },
   {
-    street: '17051 24 Mile Rd',
+    street: '24 Mile Rd',
+    streetNumber: '17051',
     city: 'Macomb',
     state: 'MI',
     postcode: '48042',
     expected: 'Macomb Township:Macomb County'
   },
   {
-    street: '46155 Schoenherr Rd',
+    street: 'Schoenherr Rd',
+    streetNumber: '46155',
     city: 'Shelby Charter Twp',
     state: 'MI',
     postcode: '48315',
     expected: 'Shelby Charter Township:Macomb County'
   },
   {
-    street: '3882 Highland Rd',
+    street: 'Highland Rd',
+    streetNumber: '3882',
     city: 'Waterford Twp',
     state: 'MI',
     postcode: '48328',
     expected: 'Waterford Township:Oakland County'
   },
   {
-    street: '4100 Walnut Lake Rd',
+    street: 'Walnut Lake Rd',
+    streetNumber: '4100',
     city: 'West Bloomfield Township',
     state: 'MI',
     postcode: '48323',
     expected: 'West Bloomfield Township:Oakland County'
   },
   {
-    street: '20 N Washington St',
+    street: 'Washington St',
+    streetNumber: '20 N',
     city: 'Ypsilanti',
     state: 'MI',
     postcode: '48197',
     expected: 'Ypsilanti City:Washtenaw County'
   },
   {
-    street: '7180 S Huron River Dr',
+    street: 'Huron River Dr',
+    streetNumber: '7180 S',
     city: 'Ypsilanti',
     state: 'MI',
     postcode: '48197',
     expected: 'Ypsilanti Township:Washtenaw County'
   },
   {
-    street: '14841 Beech Daly',
+    street: 'Beech Daly',
+    streetNumber: '14841',
     city: 'Redford Charter Twp',
     state: 'MI',
     postcode: '48239',
     expected: 'Redford Township:Wayne County'
   },
   {
-    street: '2766 Baldwin St',
+    street: 'Baldwin St',
+    streetNumber: '2766',
     city: 'Jenison',
     state: 'MI',
     postcode: '49428',
     expected: 'Georgetown Township:Ottawa County'
   },
   {
-    street: '54205 Washington St',
+    street: 'Washington St',
+    streetNumber: '54205',
     city: 'Chesterfield',
     state: 'MI',
     postcode: '48047',
     expected: 'Chesterfield Township:Macomb County'
   },
   {
-    street: '3600 Telegraph Rd',
+    street: 'Telegraph Rd',
+    streetNumber: '3600',
     city: 'Bloomfield Twp',
     state: 'MI',
     postcode: '48302',
     expected: 'Bloomfield Township:Oakland County'
   },
   {
-    street: '4873 N Center Rd',
+    street: 'Center Rd',
+    streetNumber: '4873 N',
     city: 'Saginaw',
     state: 'MI',
     postcode: '48608',
     expected: 'Saginaw Township:Saginaw County'
   },
   {
-    street: '1155 N Commerce Rd',
+    street: 'Commerce Rd',
+    streetNumber: '1155 N',
     city: 'Commerce Charter Twp',
     state: 'MI',
     postcode: '48382',
     expected: 'Commerce Township:Oakland County'
   },
   {
-    street: '5165 Marsh Rd',
+    street: 'Marsh Rd',
+    streetNumber: '5165',
     city: 'Okemos',
     state: 'MI',
     postcode: '48864',
     expected: 'Meridian Township:Ingham County'
   },
   {
-    street: '515 Bush Ave',
+    street: 'Bush Ave',
+    streetNumber: '515',
     city: 'Grand Blanc',
     state: 'MI',
     postcode: '48439',
     expected: 'Grand Blanc City:Genesee County'
   },
   {
-    street: '6106 S Saginaw St',
+    street: 'Saginaw St',
+    streetNumber: '6106 S',
     city: 'Grand Blanc',
     state: 'MI',
     postcode: '48439',
     expected: 'Grand Blanc Township:Genesee County'
   },
   {
-    street: '12251 James Street',
+    street: 'James Street',
+    streetNumber: '12251',
     city: 'Holland',
     state: 'MI',
     postcode: '49424',
     expected: 'Holland Township:Ottawa County'
   },
   {
-    street: '12220 Fillmore Street',
+    street: 'Fillmore Street',
+    streetNumber: '12220',
     city: 'Room 130, West Olive',
     state: 'MI',
     postcode: '49460',
     expected: 'Olive Township:Ottawa County'
   },
   {
-    street: '414 Washington Ave',
+    street: 'Washington Ave',
+    streetNumber: '414',
     city: 'Room 115, Grand Haven',
     state: 'MI',
     postcode: '49417',
     expected: 'Grand Haven City:Ottawa County'
   },
   {
-    street: '3920 Baldwin Rd',
+    street: 'Baldwin Rd',
+    streetNumber: '3920',
     city: 'Orion Charter Township',
     state: 'MI',
     postcode: '48359',
     expected: 'Orion Township:Oakland County'
   },
   {
-    street: '5464 Waterford Rd',
+    street: 'Waterford Rd',
+    streetNumber: '5464',
     city: 'Independence Charter Township',
     state: 'MI',
     postcode: '48346',
     expected: 'Independence Township:Oakland County'
   },
   {
-    street: '1000 S Canal Rd',
+    street: 'Canal Rd',
+    streetNumber: '1000 S',
     city: 'Lansing',
     state: 'MI',
     postcode: '48917',
     expected: 'Delta Charter Township:Eaton County'
   },
   {
-    street: '4313 Corunna Rd',
+    street: 'Corunna Rd',
+    streetNumber: '4313',
     city: 'Flint',
     state: 'MI',
     postcode: '48532',
     expected: 'Flint Township:Genesee County'
   },
   {
-    street: '8970 Jackman Rd',
+    street: 'Jackman Rd',
+    streetNumber: '8970',
     city: 'Temperance',
     state: 'MI',
     postcode: '48182',
     expected: 'Bedford Township:Monroe County'
   },
   {
-    street: '6390 Belmont Ave NE',
+    street: 'Belmont Ave NE',
+    streetNumber: '6390',
     city: 'Belmont',
     state: 'MI',
     postcode: '49306',
     expected: 'Plainfield Township:Kent County'
   },
   {
-    street: '4411 Plainfield Ave NE',
+    street: 'Plainfield Ave NE',
+    streetNumber: '4411',
     city: 'Grand Rapids',
     state: 'MI',
     postcode: '49525',
     expected: 'Plainfield Township:Kent County'
   },
   {
-    street: '21516 Telegraph Rd',
+    street: 'Telegraph Rd',
+    streetNumber: '21516',
     city: 'Brownstown Charter Twp',
     state: 'MI',
     postcode: '48183',
     expected: 'Brownstown Township:Wayne County'
   },
   {
-    street: '32414 W Jefferson Ave',
+    street: 'Jefferson Ave',
+    streetNumber: '32414 W',
     city: 'Rockwood',
     state: 'MI',
     postcode: '48173',
     expected: 'Brownstown Township:Wayne County'
   },
   {
-    street: '1730 Mead Ln',
+    street: 'Mead Ln',
+    streetNumber: '1730',
     city: 'White Lake',
     state: 'MI',
     postcode: '48386',
     expected: 'White Lake Township:Oakland County'
   },
   {
-    street: '2376 Westbrooke Cir N',
+    street: 'Westbrooke Cir N',
+    streetNumber: '2376',
     city: 'Ann Arbor',
     state: 'MI',
     postcode: '48105',
     expected: 'Ann Arbor Township:Washtenaw County'
   },
   {
-    street: '21385 Glen Lodge Rd',
+    street: 'Glen Lodge Rd',
+    streetNumber: '21385',
     city: 'Ferndale',
     state: 'MI',
     postcode: '48220',
     expected: 'Royal Oak Township:Oakland County'
   },
   {
-    street: '10995 W Jefferson Ave',
+    street: 'Jefferson Ave',
+    streetNumber: '10995 W',
     city: 'River Rouge',
     state: 'MI',
     postcode: '48229',
     expected: 'River Rouge City:Wayne County'
   },
   {
-    street: '916 Parkview Ave',
+    street: 'Parkview Ave',
+    streetNumber: '916',
     city: 'Battle Creek',
     state: 'MI',
     postcode: '49017',
     expected: 'Pennfield Township:Calhoun County'
   },
   {
-    street: '117 W Prudence Ln',
+    street: 'Prudence Ln',
+    streetNumber: '117 W',
     city: 'Battle Creek',
     state: 'MI',
     postcode: '49037',
     expected: 'Bedford Township:Calhoun County'
   },
   {
-    street: '954 Baldwin St',
+    street: 'Baldwin St',
+    streetNumber: '954',
     city: 'Traverse City',
     state: 'MI',
     postcode: '49686',
