@@ -7,8 +7,11 @@ export const fillVirginia = (
 ) => fillFormWrapper(
   'Virginia.pdf',
   async ({check, text, placeImage}) => {
-
     const { nameParts } = stateInfo
+    const { addressParts } = stateInfo.address
+    if (!addressParts) {
+      throw(`Address.addressParts should've been defined by this point.`)
+    }
 
     // First name.
     text(nameParts.first, 0, 410, 60)
@@ -51,18 +54,17 @@ export const fillVirginia = (
     check(0, 409, 134)
 
     // Street and street number.
-    const streetAddress = stateInfo.address.streetNumber + ' ' + stateInfo.address.street
-    text(streetAddress, 0, 170, 178)
+    text(addressParts.street, 0, 170, 178)
     // Apt/suite
-    text(stateInfo.address.unit ? stateInfo.address.unit : '', 0, 540, 178)
+    text(addressParts.unit ? addressParts.unit : '', 0, 540, 178)
     // City
-    text(stateInfo.address.city ? stateInfo.address.city : ' ', 0, 170, 196)
+    text(addressParts.city ? addressParts.city : ' ', 0, 170, 196)
     // Zip code.
-    text(stateInfo.address.postcode[0], 0, 409, 196)
-    text(stateInfo.address.postcode[1], 0, 431, 196)
-    text(stateInfo.address.postcode[2], 0, 453, 196)
-    text(stateInfo.address.postcode[3], 0, 475, 196)
-    text(stateInfo.address.postcode[4], 0, 497, 196)
+    text(addressParts.postcode[0], 0, 409, 196)
+    text(addressParts.postcode[1], 0, 431, 196)
+    text(addressParts.postcode[2], 0, 453, 196)
+    text(addressParts.postcode[3], 0, 475, 196)
+    text(addressParts.postcode[4], 0, 497, 196)
 
     // Mailing address.
     if (stateInfo.mailingAddress) {

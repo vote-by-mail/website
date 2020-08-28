@@ -7,17 +7,20 @@ export const fillKansas = (
 ) => fillFormWrapper(
   'Kansas.pdf',
   async ({text, placeImage}) => {
+    const { addressParts } = stateInfo.address
+    if (!addressParts) {
+      throw(`Address.addressParts should've been defined by this point.`)
+    }
 
     text(stateInfo.address.county || '', 0, 210, 119)
     text('Kansas', 0, 100, 132)
     text(stateInfo.address.county || '', 0, 240, 132)
-    
+
     text(stateInfo.name, 0, 60, 385)
-    const streetAddress = ((stateInfo.address.streetNumber || '') + ' ' + (stateInfo.address.street || ''))
-    text(streetAddress || '', 0, 60, 410)
-    text(stateInfo.address.city || '', 0, 300, 410)
+    text(addressParts.street || '', 0, 60, 410)
+    text(addressParts.city || '', 0, 300, 410)
     text('KS', 0, 450, 410)
-    text(stateInfo.address.postcode || '', 0, 520, 410)
+    text(addressParts.postcode || '', 0, 520, 410)
     text(stateInfo.birthdate, 0, 450, 385)
     text(stateInfo.phone, 0, 450, 672)
     if(!stateInfo.mailingAddress) {
