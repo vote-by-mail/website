@@ -51,11 +51,14 @@ const handleDefault = (
   }
 }
 
-const useFields = () => {
+/**
+ * @param initialFieldsValue Used for testing purposes
+ */
+const useFields = (initialFieldsValue: AddressInputParts | null = null) => {
   const { path, query } = useAppHistory()
   const { address } = AddressContainer.useContainer()
 
-  const [ _fields, _setField ] = React.useState<AddressInputParts>({
+  const [ _fields, _setField ] = React.useState<AddressInputParts>(initialFieldsValue ?? {
     city: handleDefault('city', address, path, query),
     postcode: handleDefault('postcode', address, path, query),
     state: getState(handleDefault('state', address, path, query)) ?? '',

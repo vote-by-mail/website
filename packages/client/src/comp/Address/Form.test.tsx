@@ -6,6 +6,7 @@ import { client } from '../../lib/trpc'
 import { pageView } from '../../lib/analytics'
 import { mocked } from 'ts-jest/utils'
 import { AddressInputParts } from '../../common'
+import { AddressInputPartContainer } from './Container'
 
 jest.mock('../../lib/analytics')
 jest.mock('../../lib/trpc')
@@ -30,7 +31,9 @@ test('AddressForm works', async () => {
   })
 
   const { getByTestId } = render(
-    <RawAddressForm rawState='Florida'/>,
+    <AddressInputPartContainer.Provider initialState={mailingAddress}>
+      <RawAddressForm rawState='Florida'/>
+    </AddressInputPartContainer.Provider>,
     { wrapper: UnstatedContainer }
   )
 
