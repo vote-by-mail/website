@@ -289,7 +289,10 @@ export class FirestoreService {
     const stateInfos = this.db.collection('StateInfo')
     // We only select 'created' when doing these queries, to avoid fetching
     // needless information.
-    const query = stateInfos.where('created', '>', lastQueryTime).select('created')
+    const query = stateInfos.where(
+      // Using only the numeric value of lastQueryTime doesn't work
+      'created', '>', admin.firestore.Timestamp.fromMillis(lastQueryTime),
+    ).select('created')
     return query.get()
   }
 }
