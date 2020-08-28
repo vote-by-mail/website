@@ -22,7 +22,11 @@ const findByType = (
 // Helping function for rawGeocode
 const geocodeQuery = (addr: AddressInputParts | string) => {
   if (typeof addr === 'object') {
-    return encodeURIComponent(formatAddressInputParts(addr))
+    // Using address + component only to filter for results in the US
+    // https://developers.google.com/maps/documentation/geocoding/overview#component-filtering
+    const address = formatAddressInputParts(addr)
+    const components = `&components=country:us`
+    return encodeURIComponent(`${address}${components}`)
   }
   return encodeURIComponent(addr)
 }
@@ -43,7 +47,11 @@ const rawGeocode = async (addr: AddressInputParts | string): Promise<google.maps
 }
 
 const rawZipSearch = async (zip: string): Promise<google.maps.GeocoderResult | null> => {
-  const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(zip)}&key=${apiKey}`
+  // Because maps API uses ccTLD (https://developers.google.com/maps/documentation/geocoding/overview#RegionCodes)
+  // since .io is assigned to the British Indian Ocean Territory we ensure
+  // the usage of component filtering to avoid issues related to ccTLD.
+  const query = `components=country:us|postal_code:${zip}`
+  const url = `https://maps.googleapis.com/maps/api/geocode/json?${query}&key=${apiKey}`
   const response = (await axios.get(url)).data as GMResults
   if (response.status != 'OK') return null
   return response.results[0]
