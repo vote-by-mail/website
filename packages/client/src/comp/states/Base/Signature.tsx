@@ -4,6 +4,7 @@ import { StatelessInfo, Base, BaseProps } from '.'
 import { toast } from 'react-toastify'
 import { Signature } from '../../util/Signature'
 import { ExperimentContainer } from '../../../lib/unstated'
+import { trackEvent } from '../../../lib/analytics'
 
 export type NoSignature<Info extends StateInfo> = Omit<Info, 'signature'>
 
@@ -13,7 +14,7 @@ export const SignatureBase = <Info extends StateInfo>(
   const { experimentGroup } = ExperimentContainer.useContainer()
   const signatureTypeExperiment = experimentGroup('SignatureType')
 
-  useEffect(() => {
+  React.useEffect(() => {
     trackEvent('Experiment', 'Signature Type', signatureTypeExperiment)
   }, [signatureTypeExperiment])
 

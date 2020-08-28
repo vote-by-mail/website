@@ -12,7 +12,7 @@ import { AddressInputPartContainer } from '.'
 import { AddressInput } from './Input'
 import { RoundedButton } from '../util/Button'
 import { AddressModal } from './Modal'
-import { trackEvent } from '../lib/analytics'
+import { trackEvent } from '../../lib/analytics'
 
 // pulled out for testing
 export const RawAddressForm: React.FC<{rawState: string, zip?: string}> = ({rawState}) => {
@@ -25,7 +25,7 @@ export const RawAddressForm: React.FC<{rawState: string, zip?: string}> = ({rawS
   const { experimentGroup } = ExperimentContainer.useContainer()
   const addressC2a = experimentGroup('AddressC2a')
 
-  useEffect(() => {
+  React.useEffect(() => {
     trackEvent('Experiment', 'AddressC2a', addressC2a)
   }, [addressC2a])
 
