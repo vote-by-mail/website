@@ -22,17 +22,7 @@ const findByType = (
 // Helping function for rawGeocode
 const geocodeQuery = (addr: AddressInputParts | string) => {
   if (typeof addr === 'object') {
-    // Using component filtering to ensure more precise results
-    // https://developers.google.com/maps/documentation/geocoding/overview#component-filtering
-    const queryParts = [
-      'country:us',
-      `street:${addr.street}`,
-      `state:${addr.state}`,
-      `city:${addr.city}`,
-      `postcode:${addr.postcode}`,
-    ]
-    if (addr.unit) queryParts.push(`unit:${addr.unit}`)
-    return encodeURIComponent(queryParts.join(('|')))
+    return encodeURIComponent(formatAddressInputParts(addr))
   }
   return encodeURIComponent(addr)
 }
@@ -53,11 +43,7 @@ const rawGeocode = async (addr: AddressInputParts | string): Promise<google.maps
 }
 
 const rawZipSearch = async (zip: string): Promise<google.maps.GeocoderResult | null> => {
-  // Because maps API uses ccTLD (https://developers.google.com/maps/documentation/geocoding/overview#RegionCodes)
-  // since .io is assigned to the British Indian Ocean Territory we ensure
-  // the usage of component filtering to avoid issues related to ccTLD.
-  const query = `country:us|postcode:${zip}`
-  const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(query)}&key=${apiKey}`
+  const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(zip)}&key=${apiKey}`
   const response = (await axios.get(url)).data as GMResults
   if (response.status != 'OK') return null
   return response.results[0]
