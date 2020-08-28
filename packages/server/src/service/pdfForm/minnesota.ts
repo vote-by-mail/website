@@ -9,6 +9,11 @@ export const fillMinnesota = (
   async ({check, text, placeImage}) => {
     check(0, 410, 161) // General and primary elections
 
+    const { addressParts } = stateInfo.address
+    if (!addressParts) {
+      throw(`Address.addressParts should've been defined by this point.`)
+    }
+
     text(stateInfo.nameParts.last, 0, 60, 225)
     text(stateInfo.nameParts.first, 0, 240, 225)
     if (stateInfo.nameParts.middle) {
@@ -37,12 +42,10 @@ export const fillMinnesota = (
       check(0, 64, 372)
     }
 
-    const streetAddress = ((stateInfo.address.streetNumber ? stateInfo.address.streetNumber : '')
-                           + ' ' + (stateInfo.address.street ? stateInfo.address.street : ''))
-    text(streetAddress, 0, 60, 422)
-    text(stateInfo.address.unit ? stateInfo.address.unit : '', 0, 300, 422)
-    text(stateInfo.address.city ? stateInfo.address.city : '', 0, 380, 422)
-    text(stateInfo.address.postcode ? stateInfo.address.postcode : '', 0, 520, 422)
+    text(addressParts.street, 0, 60, 422)
+    text(addressParts.unit ? addressParts.unit : '', 0, 300, 422)
+    text(addressParts.city ? addressParts.city : '', 0, 380, 422)
+    text(addressParts.postcode ? addressParts.postcode : '', 0, 520, 422)
 
     // Sic: we want 'Same as above' even when stateInfo.mailingAddress === ''
     if(!stateInfo.mailingAddress) {

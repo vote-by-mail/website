@@ -46,3 +46,19 @@ export const addressPartsToAddress = (addr: AddressInputParts): Address => ({
   stateAbbr: getStateAbbr(addr.state as State),
   unit: addr.unit,
 })
+
+export const splitStreetAndNumber = (street: string): {
+  street: string
+  number: string | null
+} => {
+  // Finds only numbers between spacing or at the end/beginning of sentences,
+  // safely ignoring cases like `1/2` in `1/2 mile from`
+  const pattern = /(( +)|^)([0-9]+)(( +)|$)/
+  const match = street.match(pattern)
+  const number = match ? match[0].trim() : null
+
+  return {
+    street: match ? street.replace(pattern, '') : street,
+    number,
+  }
+}

@@ -30,6 +30,13 @@ const baseStateInfo: Omit<BaseInfo, 'contact'> = {
   address: {
     queryAddr: '35 Mount Vernon St Apt 3C, Vernon, NJ 00000',
     fullAddr: '35 Mount Vernon St Apt 3C, Vernon, NJ 00000',
+    addressParts: {
+      street: '35 Mount Vernon St',
+      unit: 'Apt 3C',
+      city: 'Vernon',
+      postcode: '01234',
+      state: 'New Jersey',
+    },
     streetNumber: '35',
     street: 'Mount Vernon St',
     unit: 'Apt 3C',
