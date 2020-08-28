@@ -7,7 +7,6 @@ import { useParams } from 'react-router-dom'
 import { useAppHistory } from '../../lib/path'
 import { getState } from '../../common'
 import { AppForm } from '../util/Form'
-import { Unidentified } from '../status/Status'
 import { toast } from 'react-toastify'
 import { AddressInputPartContainer } from '.'
 import { AddressInput } from './Input'
@@ -16,14 +15,16 @@ import { RoundedButton } from '../util/Button'
 // pulled out for testing
 export const RawAddressForm: React.FC<{rawState: string, zip?: string}> = ({rawState}) => {
   const { fields, setField } = AddressInputPartContainer.useContainer()
-  const { pushState } = useAppHistory()
+  const { pushState, pushStartSection } = useAppHistory()
   const { setAddress } = AddressContainer.useContainer()
   const { setContact } = ContactContainer.useContainer()
   const { fetchingData, setFetchingData } = FetchingDataContainer.useContainer()
 
   const state = getState(rawState)
-  if (!state) {
-    return <Unidentified state={rawState}/>
+  // Goes back to starting section if no state was found
+  if (!state || !getState(fields.state)) {
+    pushStartSection('start')
+    return null
   }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -88,6 +89,6 @@ export const RawAddressForm: React.FC<{rawState: string, zip?: string}> = ({rawS
 
 export const AddressForm = () => {
   const { state, zip } = useParams()
-  if (!state) throw Error('state not set in AddressForm')
+
   return <RawAddressForm rawState={state} zip={zip} />
 }
