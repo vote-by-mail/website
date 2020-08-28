@@ -1,4 +1,4 @@
-import { NorthCarolinaInfo } from '../../common'
+import { NorthCarolinaInfo, formatStreetInputParts } from '../../common'
 import { fillFormWrapper  } from '.'
 import { toSignatureBuffer } from './util'
 
@@ -7,6 +7,11 @@ export const fillNorthCarolina = (
 ) => fillFormWrapper(
   'North_Carolina.pdf',
   async ({check, text, placeImage}) => {
+    const { addressParts } = stateInfo.address
+    if (!addressParts) {
+      throw(`Address.addressParts should've been defined by this point.`)
+    }
+
     text(stateInfo.nameParts.last, 2, 56, 90)
     text(stateInfo.nameParts.first, 2, 226, 90)
     if (stateInfo.nameParts.middle) {
@@ -33,13 +38,13 @@ export const fillNorthCarolina = (
       text(stateInfo.idData[3], 2, 566, 134)
     }
 
-    const streetAddress = ((stateInfo.address.streetNumber ? stateInfo.address.streetNumber : '')
-                           + ' ' + (stateInfo.address.street ? stateInfo.address.street : '')
-                           + ' ' + (stateInfo.address.unit ? stateInfo.address.unit : ''))
+    const streetAddress = addressParts.unit
+      ? `${formatStreetInputParts(addressParts)} #${addressParts.unit}`
+      : formatStreetInputParts(addressParts)
     text(streetAddress, 2, 60, 175)
-    text(stateInfo.address.city ? stateInfo.address.city : '', 2, 55, 207)
-    text(stateInfo.address.stateAbbr ? stateInfo.address.stateAbbr : '', 2, 134, 207, 9)
-    text(stateInfo.address.postcode ? stateInfo.address.postcode : '', 2, 158, 207, 9)
+    text(addressParts.city ? addressParts.city : '', 2, 55, 207)
+    text('NC', 2, 134, 207, 9)
+    text(addressParts.postcode ? addressParts.postcode : '', 2, 158, 207, 9)
 
     if(stateInfo.dateMoved) {
       check(2, 396, 170)

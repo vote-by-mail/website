@@ -26,10 +26,16 @@ export interface AddressInputParts {
   unit?: string
 }
 
-export const formatAddressInputParts = (addr: AddressInputParts): string => {
-  const street = addr.streetNumber
+
+/** Formats only street and street number */
+export const formatStreetInputParts = (addr: AddressInputParts): string => {
+  return addr.streetNumber
     ? `${addr.streetNumber} ${addr.street}`
     : addr.street
+}
+
+export const formatAddressInputParts = (addr: AddressInputParts): string => {
+  const street = formatStreetInputParts(addr)
   return addr.unit
     ? `${street} #${addr.unit}, ${addr.city}, ${addr.state} ${addr.postcode}`
     : `${street}, ${addr.city}, ${addr.state} ${addr.postcode}`
