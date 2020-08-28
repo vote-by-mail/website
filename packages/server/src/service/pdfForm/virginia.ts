@@ -73,16 +73,18 @@ export const fillVirginia = (
 
     // Phone number.
     const phoneNumber = cleanPhoneNumber(stateInfo.phone)
-    text(phoneNumber[0], 0, 184, 268)
-    text(phoneNumber[1], 0, 206, 268)
-    text(phoneNumber[2], 0, 228, 268)
-    text(phoneNumber[3], 0, 269, 268)
-    text(phoneNumber[4], 0, 291, 268)
-    text(phoneNumber[5], 0, 313, 268)
-    text(phoneNumber[6], 0, 352, 268)
-    text(phoneNumber[7], 0, 374, 268)
-    text(phoneNumber[8], 0, 396, 268)
-    text(phoneNumber[9], 0, 418, 268)
+    if (phoneNumber) {
+      text(phoneNumber[0], 0, 184, 268)
+      text(phoneNumber[1], 0, 206, 268)
+      text(phoneNumber[2], 0, 228, 268)
+      text(phoneNumber[3], 0, 269, 268)
+      text(phoneNumber[4], 0, 291, 268)
+      text(phoneNumber[5], 0, 313, 268)
+      text(phoneNumber[6], 0, 352, 268)
+      text(phoneNumber[7], 0, 374, 268)
+      text(phoneNumber[8], 0, 396, 268)
+      text(phoneNumber[9], 0, 418, 268)
+    }
 
     // Email.
     text(stateInfo.email, 0, 184, 284)
