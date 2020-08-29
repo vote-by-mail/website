@@ -1,64 +1,7 @@
-export const allStates = [
-  "Alabama",
-  "Alaska",
-  "Arizona",
-  "Arkansas",
-  "California",
-  "Colorado",
-  "Connecticut",
-  "Delaware",
-  "District of Columbia",
-  "Florida",
-  "Georgia",
-  "Hawaii",
-  "Idaho",
-  "Illinois",
-  "Indiana",
-  "Iowa",
-  "Kansas",
-  "Kentucky",
-  "Louisiana",
-  "Maine",
-  "Maryland",
-  "Massachusetts",
-  "Michigan",
-  "Minnesota",
-  "Mississippi",
-  "Missouri",
-  "Montana",
-  "Nebraska",
-  "Nevada",
-  "New Hampshire",
-  "New Jersey",
-  "New Mexico",
-  "New York",
-  "North Carolina",
-  "North Dakota",
-  "Ohio",
-  "Oklahoma",
-  "Oregon",
-  "Pennsylvania",
-  "Rhode Island",
-  "South Carolina",
-  "South Dakota",
-  "Tennessee",
-  "Texas",
-  "Utah",
-  "Vermont",
-  "Virginia",
-  "Washington",
-  "West Virginia",
-  "Wisconsin",
-  "Wyoming",
-] as const
 
-export type State = (typeof allStates)[number]
-// We can't use set here because it seems Google Translator deplays the DOM loading and therefore the resulting set will be empty
-export const isState = (x: string): x is State => allStates.some(state => state === x)
-export type StateField = {state: State}
-export type ExtendsState<T extends State> = T extends State ? T : never
-
-const stateAbbreviations: Record<string, State> = {
+// We don't use Record<StateAbbreviation, State> to avoid type issues on
+// getState below
+const stateAbbreviations = {
   'AZ': 'Arizona',
   'AL': 'Alabama',
   'AK': 'Alaska',
@@ -110,15 +53,31 @@ const stateAbbreviations: Record<string, State> = {
   'WV': 'West Virginia',
   'WI': 'Wisconsin',
   'WY': 'Wyoming',
-}
+} as const
+
+type KeysOf <R> = R extends Record<infer K, unknown> ? K : never
+export type StateAbbreviation = KeysOf<typeof stateAbbreviations>
+
+export const allStates = Object.values(stateAbbreviations)
+
+export type State = (typeof allStates)[number]
+// We can't use set here because it seems Google Translator deplays the DOM loading and therefore the resulting set will be empty
+export const isState = (x: string): x is State => allStates.some(state => state === x)
+export type StateField = {state: State}
+export type ExtendsState<T extends State> = T extends State ? T : never
 
 const caseInsensitiveStates: Record<string, State> = Object.fromEntries(
   Object.values(stateAbbreviations)
     .map(state => [state.toUpperCase(), state])
 )
-  
 
 export const getState = (key: string): State | undefined => {
   const upperKey = key.toUpperCase()
-  return stateAbbreviations[upperKey] ?? caseInsensitiveStates[upperKey] ?? undefined
+  return stateAbbreviations[upperKey as StateAbbreviation] ?? caseInsensitiveStates[upperKey] ?? undefined
+}
+
+export const getStateAbbr = (value: State): StateAbbreviation | undefined => {
+  return (Object.keys(stateAbbreviations) as StateAbbreviation[]).find(
+    key => stateAbbreviations[key] === value
+  )
 }
