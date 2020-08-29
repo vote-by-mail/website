@@ -34,6 +34,11 @@ app.get('/', (_, res: Response) => {
   res.render('index')
 })
 
+app.post('/mailgun_logging_webhook', (req, res) => {
+  console.log(req)
+  res.send(200)
+})
+
 registerExpressHandler<IVbmRpc>(app, new VbmRpc(), { bodyParserOptions: { limit: '3MB' } })
 registerPassportEndpoints(app)
 

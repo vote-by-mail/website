@@ -2,6 +2,7 @@ import mailgun from 'mailgun-js'
 
 import { Letter } from './letter'
 import { processEnvOrThrow } from '../common'
+import Logging from '@google-cloud/logging'
 
 export const mg = mailgun({
   domain: processEnvOrThrow('MG_DOMAIN'),
@@ -84,4 +85,12 @@ export const sendSignupEmail = async (
 
   const emailData = toSignupEmailData(letter, voterEmail, officialEmails, { pdfBuffer, force })
   return mg.messages().send(emailData)
+}
+
+export const logMailgunLogToGCP = async (req: Request): Promise<void> => {
+  // Don't bother logging from dev or staging.
+  
+
+  const logging = new Logging({ proccesEnvOrThrow('GCLOUD_PROJECT') });
+  return
 }

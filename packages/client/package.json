@@ -43,7 +43,7 @@
     "serve": "^11.3.0",
     "source-map-explorer": "^2.4.1",
     "ts-jest": "^24.3.0",
-    "typescript": "~3.7.2"
+    "typescript": "~3.9.7"
   },
   "scripts": {
     "gulp": "gulp",
