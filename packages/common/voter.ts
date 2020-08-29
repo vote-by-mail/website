@@ -52,6 +52,7 @@ export interface RegistrationArgs {
   postcode: string
   street: string
   streetNumber: string
+  unit?: string
 }
 
 export interface AlloyResponse {

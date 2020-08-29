@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { BaseInfo, StateInfo, isImplementedLocale, RegistrationStatus, fullName, formatAddressInputParts } from '../../../common'
+import { BaseInfo, StateInfo, isImplementedLocale, RegistrationStatus, fullName, formatAddressInputParts, getStateAbbr, State, StateAbbreviation } from '../../../common'
 import { client } from '../../../lib/trpc'
 import { RoundedButton } from '../../util/Button'
 import { BaseInput, PhoneInput, EmailInput, NameInput, BirthdateInput } from '../../util/Input'
@@ -135,11 +135,11 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: B
       const result = await client.isRegistered({
         nameParts: nameParts,
         birthdate: fields.birthdate.value,
-        city: address?.city ?? '',
-        postcode: address?.postcode ?? '',
-        stateAbbr: address?.stateAbbr ?? '',
-        street: address?.street ?? '',
-        streetNumber: address?.streetNumber ?? '',
+        city: addressFields.city,
+        postcode: addressFields.postcode,
+        stateAbbr: getStateAbbr(addressFields.state as State) as StateAbbreviation,
+        street: addressFields.street,
+        streetNumber: addressFields.streetNumber,
       })
       if (result.type === 'data') {
         setAlloy(result.data)

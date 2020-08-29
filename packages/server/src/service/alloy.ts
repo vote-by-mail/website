@@ -1,4 +1,4 @@
-import { processEnvOrThrow, RegistrationStatus, RegistrationArgs, allRegistrationStatus, AlloyResponse } from '../common'
+import { processEnvOrThrow, RegistrationStatus, RegistrationArgs, allRegistrationStatus, AlloyResponse, formatStreetInputParts, AddressInputParts, formatUnit } from '../common'
 import axios, { AxiosResponse } from 'axios'
 import rax from 'retry-axios'
 import { cache } from './util'
@@ -39,7 +39,7 @@ export const toAlloyDate = (vbmBirthdate: string) => {
 export const isRegistered = async ({
   nameParts, birthdate,
   stateAbbr, city, postcode,
-  street, streetNumber,
+  street, streetNumber, unit,
 }: RegistrationArgs): Promise<AlloyResponse> => {
   if (alloyMock) {
     // Allows for case insensitive names when testing, since Alloy API returns
@@ -55,7 +55,14 @@ export const isRegistered = async ({
     return { status: 'Active', id: '00000000-0000-0000-0000-000000000000', }
   }
 
-  const address = `${streetNumber} ${street}`
+  const formattedStreet = formatStreetInputParts(
+    { street, streetNumber } as AddressInputParts,
+  )
+  const formattedUnit = unit ? formatUnit(unit) : null
+  const address = unit
+    ? `${formattedStreet} ${formattedUnit}`
+    : formattedStreet
+
   const query = [
     `first_name=${nameParts.first}`,
     nameParts.middle ? `middle_name=${nameParts.middle}` : null,

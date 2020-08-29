@@ -1,4 +1,4 @@
-import { NorthCarolinaInfo } from '../../common'
+import { NorthCarolinaInfo, formatUnit } from '../../common'
 import { fillFormWrapper  } from '.'
 import { toSignatureBuffer } from './util'
 
@@ -39,7 +39,7 @@ export const fillNorthCarolina = (
     }
 
     const streetAddress = addressParts.unit
-      ? `${addressParts.street} #${addressParts.unit}`
+      ? `${addressParts.street} #${formatUnit(addressParts.unit)}`
       : addressParts.street
     text(streetAddress, 2, 60, 175)
     text(addressParts.city ? addressParts.city : '', 2, 55, 207)
