@@ -45,7 +45,7 @@ const base = removeNullValues({
   REACT_APP_FEEDBACK_ADDR: 'feedback@votebymail.io',
   REACT_APP_ELECTION_OFFICIAL_ADDR: 'elections@votebymail.io',
   REACT_APP_SUPPORT_ADDR: 'support@votebymail.io',
-  MG_DOMAIN: 'email.votebymail.io',
+  MG_DOMAIN: 'email.dev.votebymail.io',
   MG_FROM_ADDR: 'Vote by Mail Application <application@email.votebymail.io>',
   MG_REPLY_TO_ADDR: 'Vote by Mail Application <application@votebymail.io>',
   ELECTION_OFFICIAL_DATA_VERSION: 'data/2020-08-07',
@@ -108,6 +108,7 @@ const staging = removeNullValues({
   REACT_APP_MOCK: 1,
   REACT_APP_TIMEOUT: 10000,
   ALLOY_MOCK: 1,
+  MG_DOMAIN: 'email.staging.votebymail.io',
 })
 
 const production = removeNullValues({
@@ -134,6 +135,7 @@ const production = removeNullValues({
   ALLOY_MOCK: undefined,
   ALLOY_API_KEY,
   ALLOY_API_SECRET,
+  MG_DOMAIN: 'email.votebymail.io',
 })
 
 const test = removeNullValues((() => {
