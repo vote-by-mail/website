@@ -14,6 +14,7 @@ import { toPath, SuccessPath, parseQS } from '../../../lib/path'
 import { AddressContainer, ContactContainer } from '../../../lib/unstated'
 import { ContactData, StateInfo, formatAddressInputParts, AddressInputParts } from '../../../common'
 import { isE164 } from '../../../../../common/util'
+import { AddressInputPartContainer } from '../../Address'
 jest.mock('../../../lib/trpc')
 
 const mailingAddress: AddressInputParts = {
@@ -144,7 +145,9 @@ test('State Form Without Signature (Wisconsin) works', async () => {
     <Router history={history}>
       <AddressContainer.Provider initialState={wisconsinAddress}>
         <ContactContainer.Provider initialState={wisconsinContact}>
-          <Wisconsin/>
+          <AddressInputPartContainer.Provider initialState={wisconsinAddress}>
+            <Wisconsin/>
+          </AddressInputPartContainer.Provider>
         </ContactContainer.Provider>
       </AddressContainer.Provider>
     </Router>,
@@ -177,7 +180,9 @@ test('State Form shows Unregistered modal warning', async () => {
     <Router history={history}>
       <AddressContainer.Provider initialState={wisconsinAddress}>
         <ContactContainer.Provider initialState={wisconsinContact}>
-          <Wisconsin/>
+          <AddressInputPartContainer.Provider initialState={wisconsinAddress}>
+            <Wisconsin/>
+          </AddressInputPartContainer.Provider>
         </ContactContainer.Provider>
       </AddressContainer.Provider>
     </Router>,
