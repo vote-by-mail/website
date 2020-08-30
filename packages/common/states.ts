@@ -60,7 +60,7 @@ export type StateAbbreviation = KeysOf<typeof stateAbbreviations>
 export const allStates = Object.values(stateAbbreviations)
 
 export type State = (typeof allStates)[number]
-// We can't use set here because it seems Google Translator deplays the DOM loading and therefore the resulting set will be empty
+// We can't use set here because it seems Google Translator delays the DOM loading and therefore the resulting set will be empty
 export const isState = (x: string): x is State => allStates.some(state => state === x)
 export type StateField = {state: State}
 export type ExtendsState<T extends State> = T extends State ? T : never

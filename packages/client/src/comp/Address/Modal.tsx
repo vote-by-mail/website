@@ -27,7 +27,7 @@ export const AddressModal: React.FC<Props> = ({ isOpen, setOpen }) => {
   const { setContact } = ContactContainer.useContainer()
   const { pushState } = useAppHistory()
   const [ contacts, setContacts ] = React.useState<readonly string[] | undefined | null>()
-  const [ newContact, setNewContact ] = React.useState<string>()
+  const [ selectedContact, setSelectedContact ] = React.useState<string>()
   const [ width, setWidth ] = React.useState<number | string>(0)
   const [ top, setTop ] = React.useState<number | string>(0)
   const [ left, setLeft ] = React.useState<number | string>(0)
@@ -44,7 +44,7 @@ export const AddressModal: React.FC<Props> = ({ isOpen, setOpen }) => {
         const resp = await client.fetchContacts(state)
         if (resp.type === 'data') {
           setContacts(resp.data)
-          setNewContact(resp.data[0])
+          setSelectedContact(resp.data[0])
         }
         setFetchingData(false)
       })()
@@ -53,9 +53,9 @@ export const AddressModal: React.FC<Props> = ({ isOpen, setOpen }) => {
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.persist()
-    if (newContact) {
+    if (selectedContact) {
       setFetchingData(true)
-      const resp = await client.getContact(state, newContact)
+      const resp = await client.getContact(state, selectedContact)
       if (resp.type === 'data') {
         setContact(resp.data)
         const address = addressPartsToAddress(fields)
@@ -116,8 +116,8 @@ export const AddressModal: React.FC<Props> = ({ isOpen, setOpen }) => {
         label='Election Official'
         data-testid='address-error-modal-contact'
         optionsLabeler={o => o.replace(/:/g, '')}
-        value={newContact}
-        onChange={v => setNewContact(v)}
+        value={selectedContact}
+        onChange={v => setSelectedContact(v)}
       />
     </AfterModalAnimation>}
   </>
