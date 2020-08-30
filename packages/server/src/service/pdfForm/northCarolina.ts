@@ -1,4 +1,4 @@
-import { NorthCarolinaInfo, formatUnit } from '../../common'
+import { NorthCarolinaInfo, formatUnit, getStateAbbr, State } from '../../common'
 import { fillFormWrapper  } from '.'
 import { toSignatureBuffer } from './util'
 
@@ -43,7 +43,7 @@ export const fillNorthCarolina = (
       : addressParts.street
     text(streetAddress, 2, 60, 175)
     text(addressParts.city ? addressParts.city : '', 2, 55, 207)
-    text('NC', 2, 134, 207, 9)
+    text(getStateAbbr(addressParts.state as State) ?? '', 2, 134, 207, 9)
     text(addressParts.postcode ? addressParts.postcode : '', 2, 158, 207, 9)
 
     if(stateInfo.dateMoved) {
