@@ -91,9 +91,9 @@ export const AddressModal: React.FC<Props> = ({ isOpen, setOpen }) => {
   return <>
     <StyledModal isOpen={isOpen} data-testid='address-error-modal'>
       <AfterModalAnimation>
-        <h3>Unable to locate your Election Official</h3>
-        <p>Some addresses are not covered by our Geocode API, but don&apos;t worry this just means we wont&apos;t be able to automatically find your election official.</p>
-        <p>Please select your election official from the list below.</p>
+        <h3>Could not locate your local election official</h3>
+        <p>This step is automatic for the majority of voters.  Unfortunately, we were unable to automatically locate your election jurisdiction.</p>
+        <p>Please select it from the list below.</p>
 
         <div ref={positionRef} style={{ width: '100%', height: 67 }}/>
 
