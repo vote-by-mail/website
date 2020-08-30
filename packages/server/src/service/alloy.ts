@@ -1,4 +1,4 @@
-import { processEnvOrThrow, RegistrationStatus, RegistrationArgs, allRegistrationStatus, AlloyResponse, formatStreetInputParts, AddressInputParts, formatUnit } from '../common'
+import { processEnvOrThrow, RegistrationStatus, RegistrationArgs, allRegistrationStatus, AlloyResponse, formatUnit } from '../common'
 import axios, { AxiosResponse } from 'axios'
 import rax from 'retry-axios'
 import { cache } from './util'
@@ -55,10 +55,10 @@ export const isRegistered = async ({
     return { status: 'Active', id: '00000000-0000-0000-0000-000000000000', }
   }
 
-  const formattedStreet = formatStreetInputParts(
-    { street, streetNumber } as AddressInputParts,
-  )
   const formattedUnit = unit ? formatUnit(unit) : null
+  const formattedStreet = streetNumber
+    ? `${streetNumber} ${street}`
+    : street
   const address = unit
     ? `${formattedStreet} ${formattedUnit}`
     : formattedStreet
