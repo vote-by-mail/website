@@ -31,14 +31,17 @@ export interface AddressInputParts {
 export const formatUnit = (unit: string) => {
   // Users might use pounds erroneously, let this function decide whether
   // to use it or not.
-  const normalized = unit.replace(/#/g, '')
+  //
+  // We also remove unnecessary spacing, for example the double spacing
+  // in 'BLDG  3'
+  const normalized = unit.replace(/#/g, '').replace(/( +)/g, ' ')
 
   // Searchs for any abbreviation that don't require pounds
   //
   // https://pe.usps.com/text/pub28/28apc_003.htm#ep538629
   const dontUsePound = /\b(APT|BLDG|DEPT|FL|FRNT|HNGR|KEY|LBBY|LOT|LOWR|OFC|PH|PIER|REAR|RM|SIDE|SLIP|SPC|STOP|STE|TRLR|UNIT|UPPR)\b/g
   return !normalized.toUpperCase().match(dontUsePound)
-    ? `# ${normalized}`
+    ? `# ${normalized}`.replace(/( +)/g, ' ')
     : normalized
 }
 
