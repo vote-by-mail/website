@@ -69,14 +69,19 @@ export const splitStreetAndNumber = (street: string): {
   street: string
   number: string | null
 } => {
-  // Finds only numbers between spacing or at the end/beginning of sentences,
-  // safely ignoring cases like `1/2` in `1/2 mile from`
-  const pattern = /(( +)|^)([0-9]+)(( +)|$)/
+  // Splits street from street number, safely ignoring cases like `1/2`
+  // in `1/2 mile from` but not '1/2' in '267 1/2 Water St' as observed by
+  // https://nypost.com/2018/11/07/the-origins-of-new-york-citys-mysterious-fractional-addresses/
+  const pattern = /(( +)|^)(([0-9]+ [0-9]+\/[0-9]+)|([0-9]+\.[0-9]+)|([0-9]+))(( +(NE|N|NW|W|SW|S|SE|E)( +|$))|( +)|$)/
   const match = street.match(pattern)
-  const number = match ? match[0].trim() : null
+  // Removes unnecessary double and trailing spacing
+  const trim = (s: string) => s.replace(/( +)/g, ' ').trim()
+  const number = match ? trim(match[0]) : null
 
   return {
-    street: match ? street.replace(pattern, '') : street,
+    street: match
+      ? trim(street.replace(pattern, ''))
+      : street,
     number,
   }
 }
