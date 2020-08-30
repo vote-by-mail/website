@@ -25,7 +25,7 @@ const geocodeQuery = (addr: AddressInputParts | string) => {
     // Using address + component only to filter for results in the US
     // https://developers.google.com/maps/documentation/geocoding/overview#component-filtering
     const address = formatAddressInputParts(addr)
-    const components = `&components=country:us`
+    const components = `&components=country:US`
     return encodeURIComponent(`${address}${components}`)
   }
   return encodeURIComponent(addr)
@@ -50,7 +50,7 @@ const rawZipSearch = async (zip: string): Promise<google.maps.GeocoderResult | n
   // Because maps API uses ccTLD (https://developers.google.com/maps/documentation/geocoding/overview#RegionCodes)
   // since .io is assigned to the British Indian Ocean Territory we ensure
   // the usage of component filtering to avoid issues related to ccTLD.
-  const query = `components=country:us|postal_code:${zip}`
+  const query = `components=country:US|postal_code:${zip}`
   const url = `https://maps.googleapis.com/maps/api/geocode/json?${query}&key=${apiKey}`
   const response = (await axios.get(url)).data as GMResults
   if (response.status != 'OK') return null
