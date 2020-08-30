@@ -49,7 +49,6 @@ export const RawAddressForm: React.FC<{rawState: string, zip?: string}> = ({rawS
           break
         }
         case 'error': {
-          toast.error(<><b>Server Error:</b> {result.message}.  Try resubmitting.  If this persists, try again in a little while.</>)
           setOpen(true)
           return
         }
