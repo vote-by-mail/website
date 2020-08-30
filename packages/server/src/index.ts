@@ -5,12 +5,16 @@ import helmet from 'helmet'
 import { AddressInfo } from 'net'
 import cors from 'cors'
 import { registerExpressHandler } from '@tianhuil/simple-trpc/dist/handler/express'
+import crypto from 'crypto'
+import multer from 'multer'
+import bodyParser from 'body-parser'
 
 import { processEnvOrThrow, IVbmRpc } from './common'
 import { VbmRpc } from './service/trpc'
 import { registerPassportEndpoints } from './service/org'
 import { staticDir } from './service/util'
 import { updateTimeSeries } from './analytics/'
+import { logMailgunLogToGCP } from './service/mg'
 
 const app = Express()
 
@@ -19,6 +23,7 @@ app.use(Morgan('combined'))
 app.use(helmet())
 app.use('/static', Express.static(__dirname + '/static'))
 app.use(cors({ origin: true }))
+app.use(bodyParser.urlencoded({extended: false}));
 
 app.set('view engine', 'pug')
 app.set('views', staticDir('pug'))
@@ -45,9 +50,20 @@ app.get('/', (_, res: Response) => {
   res.render('index')
 })
 
-app.post('/mailgun_logging_webhook', (req, res) => {
-  console.log(req)
-  res.send(200)
+app.post('/mailgun_logging_webhook', multer().none(), (req, res) => {
+  // https://www.mailgun.com/blog/a-guide-to-using-mailguns-webhooks/.
+  const value = req.body.timestamp+req.body.token;
+  const hash = crypto.createHmac('sha256',
+    processEnvOrThrow('MG_API_KEY'))
+      .update(value)
+      .digest('hex');
+  if (hash !== req.body.signature) {
+    console.error('Invalid signature in request to Mailgun webook.');
+    return res.end();
+  }
+  logMailgunLogToGCP(req.body)
+  res.sendStatus(200)
+  return res.end()
 })
 
 registerExpressHandler<IVbmRpc>(app, new VbmRpc(), { bodyParserOptions: { limit: '3MB' } })

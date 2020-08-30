@@ -2,7 +2,7 @@ import mailgun from 'mailgun-js'
 
 import { Letter } from './letter'
 import { processEnvOrThrow } from '../common'
-import Logging from '@google-cloud/logging'
+import { Logging } from '@google-cloud/logging'
 
 export const mg = mailgun({
   domain: processEnvOrThrow('MG_DOMAIN'),
@@ -87,10 +87,34 @@ export const sendSignupEmail = async (
   return mg.messages().send(emailData)
 }
 
-export const logMailgunLogToGCP = async (req: Request): Promise<void> => {
-  // Don't bother logging from dev or staging.
-  
+const mailgunToGCPLogLevels = {
+  "info": "INFO",
+  "warn": "WARNING",
+  "temporary": "WARNING",
+  "error": "ERROR"
+}
+export const logMailgunLogToGCP = async (request: Object): Promise<void> => {
+  // if (request.body == null) {
+  //   return
+  // }
 
-  const logging = new Logging({ proccesEnvOrThrow('GCLOUD_PROJECT') });
+  const logging = new Logging({projectId: processEnvOrThrow('GCLOUD_PROJECT')})
+  const log = logging.log('mailgun-log')
+  // if (request.body.log_level instanceof string) {
+  //   throw new Error('test')
+  // }
+  // const logLevel: string = mailgunToGCPLogLevels[requestBody.log_level]
+  const metadata = {
+    resource: {type: 'global'},
+    // See: https://cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry#logseverity
+    severity: "INFO",
+  };
+  const entry = log.entry(metadata, "hello, world!");
+  async function writeLog() {
+    // Writes the log entry
+    await log.write(entry);
+  }
+  writeLog(); 
+  // console.log(req)
   return
 }
