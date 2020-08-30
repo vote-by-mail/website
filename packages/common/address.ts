@@ -27,6 +27,9 @@ export interface AddressInputParts {
   unit?: string
 }
 
+/** Removes unnecessary and trailing spacing */
+const trim = (s: string) => s.replace(/( +)/g, ' ').trim()
+
 /** Returns a formatted unit, using pound (#) only when necessary */
 export const formatUnit = (unit: string) => {
   // Users might use pounds erroneously, let this function decide whether
@@ -34,14 +37,14 @@ export const formatUnit = (unit: string) => {
   //
   // We also remove unnecessary spacing, for example the double spacing
   // in 'BLDG  3'
-  const normalized = unit.replace(/#/g, '').replace(/( +)/g, ' ')
+  const normalized = trim(unit.replace(/#/g, ''))
 
   // Searchs for any abbreviation that don't require pounds
   //
   // https://pe.usps.com/text/pub28/28apc_003.htm#ep538629
   const dontUsePound = /\b(APT|BLDG|DEPT|FL|FRNT|HNGR|KEY|LBBY|LOT|LOWR|OFC|PH|PIER|REAR|RM|SIDE|SLIP|SPC|STOP|STE|TRLR|UNIT|UPPR)\b/g
   return !normalized.toUpperCase().match(dontUsePound)
-    ? `# ${normalized}`.replace(/( +)/g, ' ')
+    ? trim(`# ${normalized}`)
     : normalized
 }
 
@@ -74,8 +77,6 @@ export const splitStreetAndNumber = (street: string): {
   // https://nypost.com/2018/11/07/the-origins-of-new-york-citys-mysterious-fractional-addresses/
   const pattern = /(( +)|^)(([0-9]+ [0-9]+\/[0-9]+)|([0-9]+\.[0-9]+)|([0-9]+))(( +(NE|N|NW|W|SW|S|SE|E)( +|$))|( +)|$)/
   const match = street.match(pattern)
-  // Removes unnecessary double and trailing spacing
-  const trim = (s: string) => s.replace(/( +)/g, ' ').trim()
   const number = match ? trim(match[0]) : null
 
   return {
