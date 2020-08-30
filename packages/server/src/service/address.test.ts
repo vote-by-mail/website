@@ -19,7 +19,7 @@ describe('formatUnit removes unnecessary pounds', () => {
 
 describe('splitStreetAndNumber works', () => {
   const street = [
-    {
+    {  // Old ciites have half addresses: https://nypost.com/2018/11/07/the-origins-of-new-york-citys-mysterious-fractional-addresses/
       raw: '267    1/2 Water St', // intentional spacing to test trimming
       expected: { street: 'Water St', number: '267 1/2' } },
     {
@@ -28,7 +28,7 @@ describe('splitStreetAndNumber works', () => {
     {
       raw: '123 W Midlands Dr',
       expected: { street: 'Midlands Dr', number: '123 W' } },
-    {
+    {  // famous buildings don't need street numbers: https://www.house.gov/doing-business-with-the-house/leases/contact-us
       raw: 'Ford House Office Building',
       expected: { street: 'Ford House Office Building', number: null },
     },
