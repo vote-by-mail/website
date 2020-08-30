@@ -20,7 +20,7 @@ describe('formatUnit removes unnecessary pounds', () => {
 describe('splitStreetAndNumber works', () => {
   const street = [
     {
-      raw: '267 1/2 Water St',
+      raw: '267    1/2 Water St', // intentional spacing to test trimming
       expected: { street: 'Water St', number: '267 1/2' } },
     {
       raw: '  267.5   Water St  ', // intentional spacing to test trimming
