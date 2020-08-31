@@ -19,7 +19,14 @@ export const fillNewHampshire = (
     }
     check(0, 112, 478) // General Election
 
-    text(stateInfo.name, 1, 86, 58)
+    text(stateInfo.nameParts.last, 1, 86, 58)
+    text(stateInfo.nameParts.first, 1, 230, 58)
+    if (stateInfo.nameParts.middle) {
+      text(stateInfo.nameParts.middle, 1, 370, 58)
+    }
+    if (stateInfo.nameParts.suffix) {
+      text(stateInfo.nameParts.suffix, 1, 500, 58)
+    }
     text(stateInfo.uspsAddress, 1, 86, 127)
     // Sic: we want 'Same as above' even when stateInfo.mailingAddress === ''
     text(stateInfo.mailingAddress ? stateInfo.mailingAddress : 'Same as above', 1, 86, 196)
