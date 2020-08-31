@@ -1,7 +1,7 @@
 import { v3 as gcm } from '@google-cloud/monitoring'
 import { AnalyticsStorage } from './storage'
 import { processEnvOrThrow } from '../common'
-import { analyticsLogic } from './logic'
+import { calculateSignups } from './logic'
 import { FirestoreService } from '../service/firestore'
 
 // Remember to allow monitoring on the Google Cloud Platform and also to
@@ -28,7 +28,11 @@ export const updateTimeSeries = async () => {
 
   const { lastQueryTime } = storage.data
   const snapshot = await firestore.getSignups(lastQueryTime)
-  const { todaySignups, totalSignups } = analyticsLogic.calculateSignups(storage.data, snapshot)
+  const { todaySignups, totalSignups } = calculateSignups(
+    storage.data,
+    snapshot,
+    now,
+  )
 
   await client.createTimeSeries({
     name: projectPath,
