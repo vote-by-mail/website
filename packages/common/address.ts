@@ -67,22 +67,3 @@ export const addressPartsToAddress = (addr: AddressInputParts): Address => ({
   stateAbbr: getStateAbbr(addr.state as State),
   unit: addr.unit,
 })
-
-export const splitStreetAndNumber = (street: string): {
-  street: string
-  number: string | null
-} => {
-  // Splits street from street number, safely ignoring cases like `1/2`
-  // in `1/2 mile from` but not '1/2' in '267 1/2 Water St' as observed by
-  // https://nypost.com/2018/11/07/the-origins-of-new-york-citys-mysterious-fractional-addresses/
-  const pattern = /(( +)|^)(([0-9]+( +)[0-9]+\/[0-9]+)|([0-9]+\.[0-9]+)|([0-9]+))(( +(NE|N|NW|W|SW|S|SE|E)( +|$))|( +)|$)/
-  const match = street.match(pattern)
-  const number = match ? trim(match[0]) : null
-
-  return {
-    street: match
-      ? trim(street.replace(pattern, ''))
-      : street,
-    number,
-  }
-}
