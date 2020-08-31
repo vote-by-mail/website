@@ -10,46 +10,52 @@ type SignupMock = { createTime: { seconds: number } }
 /**
  * Returns a snapshot that always has the desired amount of yesterday and total signups.
  *
- * @param yesterdayAmount The amount of signups for yesterday (day before lastQueryTime)
- * @param totalAmount The total amount of signups (inlcuding from yesterday)
- * @param lastQueryTime Numeric value of lastQueryTime or null (set as yesterday midnight)
+ * @param newSignups Amount of signups that should increment both metrics
+ * @param pastSignups The previous amount of signups not including new signups
+ * @param lastQueryTime Numeric value of lastQueryTime, if not null the snapshot
+ * will only be the same length as newSignups
  */
 const snapshot = (
-  yesterdayAmount: number,
-  totalAmount: number,
+  newSignups: number,
+  pastSignups: number,
   lastQueryTime: number | null,
 ): Snapshot => {
-
-  const yesterday = (() => {
-    if (lastQueryTime) {
-      const queryDateTime = new Date(lastQueryTime)
-      return new Date(
-        queryDateTime.getFullYear(),
-        queryDateTime.getMonth(),
-        queryDateTime.getDate() -1,
-      )
-    } else {
-      return analyticsLogic.midnightYesterday
-    }
-  })()
-  // Happens two days before the query
-  const inThePast = new Date(
-    yesterday.getFullYear(),
-    yesterday.getMonth(),
-    yesterday.getDate() - 1,
+  // The day when the query happened, results in this day should increment
+  // the daily metric
+  const queryToday = lastQueryTime
+    ? new Date(lastQueryTime)
+    : analyticsLogic.midnightToday
+  // One day before the query happened, these should not increment the
+  // daily metric
+  const queryYesterday = new Date(
+    queryToday.getFullYear(),
+    queryToday.getMonth(),
+    // Node.js handles 0 as the last day of the previous month without
+    // issues
+    queryToday.getDate() - 1,
   )
 
-  const signups: SignupMock[] = [
-    // Google timestamps uses seconds instead of ms (default JS stamp)
-    // we divide valueOf by 1000 to avoid issues, since logic.ts will expect
-    // google timestamps
-    ...Array<SignupMock>(yesterdayAmount).fill({
-      createTime: { seconds: yesterday.valueOf() / 1000 }
-    }),
-    ...Array<SignupMock>(totalAmount - yesterdayAmount).fill({
-      createTime: { seconds: inThePast.valueOf() / 1000 }
-    })
-  ]
+  // When lastQueryTime is provided the service is only going to fetch for
+  // new signups.
+  // To simulate that behavior here we only return an array with past results
+  // (those that do not increment the daily metric) when lastQueryTime is null
+  const signups: SignupMock[] = lastQueryTime
+    ? [
+      // Google timestamps uses seconds instead of ms (default JS stamp)
+      // we divide valueOf by 1000 to avoid issues, since logic.ts will expect
+      // google timestamps
+      ...Array<SignupMock>(newSignups).fill({
+        createTime: { seconds: queryToday.valueOf() / 1000 }
+      }),
+    ]
+    : [
+      ...Array<SignupMock>(newSignups).fill({
+        createTime: { seconds: queryToday.valueOf() / 1000 }
+      }),
+      ...Array<SignupMock>(pastSignups).fill({
+        createTime: { seconds: queryYesterday.valueOf() / 1000 }
+      })
+    ]
 
   return createMock<Snapshot>({
     forEach(cb: (el: SignupMock) => void) {
@@ -59,46 +65,55 @@ const snapshot = (
   })
 }
 
-test('analyticsLogic initializes the firstQuery with right results', () => {
+test('analyticsLogic initializes firstQuery with right results', () => {
   const storedData: AnalyticsStorageSchema = {
     id: 'onlyOne',
-    yesterdaySignups: 0,
-    yesterdayDate: 0,
     totalSignups: 0,
     lastQueryTime: 0,
+    todaySignups: 0,
   }
 
-  const { yesterdaySignups, totalSignups } = analyticsLogic.calculateSignups(
+  // Should increment both total and daily signups
+  const newSignups = 4
+  // Should increment only total signups
+  const pastSignups = 10
+
+  const { todaySignups, totalSignups } = analyticsLogic.calculateSignups(
     storedData,
-    snapshot(4, 10, null),
+    snapshot(newSignups, pastSignups, null),
   )
 
-  expect(yesterdaySignups).toBe(4)
-  expect(totalSignups).toBe(10)
+  expect(todaySignups).toBe(newSignups)
+  expect(totalSignups).toBe(newSignups + pastSignups)
 })
 
 test('analyticsLogic increments stored values correctly', () => {
-  const yesterday = analyticsLogic.midnightYesterday
-  const beforeYesterday = new Date(
-    yesterday.getFullYear(), yesterday.getMonth(), yesterday.getDate() - 2,
+  const today = analyticsLogic.midnightToday
+  // This query happened yesterday, so we can test if it ignores the previous
+  // value of todaySignups
+  const lastQueryTime = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate() - 1,
   )
+  // Should increment both daily and total signups
+  const newSignups = 5
+  // Should increment only total signups
+  const pastSignups = 10
+  const storedTodaySignups = 10
+
   const storedData: AnalyticsStorageSchema = {
     id: 'onlyOne',
-    yesterdayDate: beforeYesterday.valueOf(),
-    yesterdaySignups: 40, // Should be ignored
-    totalSignups: 500, // should be added to the new amount of total signups
-    lastQueryTime: yesterday.valueOf(),
+    totalSignups: pastSignups,
+    lastQueryTime: lastQueryTime.valueOf(),
+    todaySignups: storedTodaySignups,
   }
 
-  const today = new Date(
-    yesterday.getFullYear(), yesterday.getMonth(), yesterday.getDate() + 1,
-  )
-
-  const { yesterdaySignups, totalSignups } = analyticsLogic.calculateSignups(
+  const { todaySignups, totalSignups } = analyticsLogic.calculateSignups(
     storedData,
-    snapshot(10, 10, today.valueOf()), // 10 new signups
+    snapshot(newSignups, pastSignups, lastQueryTime.valueOf()),
   )
 
-  expect(yesterdaySignups).toBe(10)
-  expect(totalSignups).toBe(510) // stored + the total of new snapshot
+  expect(totalSignups).toBe(pastSignups + newSignups)
+  expect(todaySignups).toBe(newSignups)
 })

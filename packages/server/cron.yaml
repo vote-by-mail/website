@@ -1,5 +1,5 @@
 cron:
 - description: "Track total & daily sign ups"
   url: /cron/daily_total_sign_ups
-  schedule: every day 00:00
+  schedule: every 3 hours
   timezone: UTC
