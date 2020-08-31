@@ -28,12 +28,12 @@ export const updateTimeSeries = async () => {
 
   const { lastQueryTime } = storage.data
   const snapshot = await firestore.getSignups(lastQueryTime)
-  const { yesterdaySignups, totalSignups } = analyticsLogic.calculateSignups(storage.data, snapshot)
+  const { todaySignups, totalSignups } = analyticsLogic.calculateSignups(storage.data, snapshot)
 
   await client.createTimeSeries({
     name: projectPath,
     timeSeries: [{
-      metric: { type: `${baseMetricUrl}/past_day_sign_ups` },
+      metric: { type: `${baseMetricUrl}/daily_sign_ups` },
       resource: { type: 'global' },
       points: [{
         interval: {
@@ -41,7 +41,7 @@ export const updateTimeSeries = async () => {
           // we divide valueOf by 1000 to avoid issues
           endTime: { seconds: now.valueOf() / 1000 },
         },
-        value: { int64Value: yesterdaySignups },
+        value: { int64Value: todaySignups },
       }],
     }],
   })
@@ -62,5 +62,5 @@ export const updateTimeSeries = async () => {
     }],
   })
 
-  await storage.update(totalSignups, yesterdaySignups, now.valueOf())
+  await storage.update(totalSignups, todaySignups, now.valueOf())
 }

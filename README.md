@@ -213,18 +213,22 @@ When deploying your staging instance the app is going to automatically set up a 
 
 If you’ve deployed the application before these analytics were implemented, it will be needed to redeploy your staging instance so `crontab.yaml` is uploaded to the GCP App Engine.
 
-The monitoring analytics are executed at every midnight.
+The monitoring analytics are executed periodically after every 3 hours.
 
 ### Plotting the data
 Check that your analytics are working by visiting https://console.cloud.google.com/appengine/cronjobs?project=PROJECT-NAME and clicking on “Run now”, if no cron task is found verify that `crontab.yaml` was uploaded to the GCP App Engine. Clicking on "Run now" will ensure that the algorithm is working, it will also give us some initial data to plot on the GCP Monitoring dashboard.
 
+`Note: You can run this cron job every time you wish to update these metrics, it's useful to see if everything is working after performing one or two sign ups.`
+
 Visit https://console.cloud.google.com/monitoring/dashboards?project=PROJECT-NAME and create a new **dashboard**. A dashboard allows you to display a collection of **charts**, in this documentation you’ll get the instructions of how to set a single chart for each of the tracked values (total sign ups and daily sign ups), but it is possible to configure this dashboard as you see fit.
 
-Setting up charts are easy, first click on "Add chart" on the top right corner of the page, then type `custom/past_day_sign_ups` in the resource/metric name and give the appropriate title for this chart (e.g. "Daily sign ups"). After setting the title & the watched metric, set the period to `1 minute`, and click on "Show Advanced Options". Change the value on "Aligner" to `interpolate`, and write `Daily sign ups` on the "Legend Template" text field below.
+### Setting up Charts
 
-After this, focus your attention on the area to the right side of this configuration menu, the one displaying the chart. Above the chart there's a ruler displaying time units (`1M`, `1H`, `1D`, etc), click on `1W`, and be sure to choose "Stacked Bar" from the dropdown to the left of this ruler.
+Setting up charts is an easy task, first click on "Add chart" on the top right corner of the page, then type `custom/daily_sign_ups` in the resource/metric name and give the appropriate title for this chart (e.g. `Daily sign ups`). After setting the title and the watched metric set "Aggregator" to `sum`. Click on "Show Advanced Options", change "Aligner" to `max` and "Legend Template" to `Daily sign ups`.
 
-Repeat these steps for the "Total sign ups" chart, just remember to use `custom/total_sign_ups` instead of the previous metric and certify that you name the legends/titles accordingly.
+After this, focus your attention on the area to the right side of this configuration menu, the one displaying the chart. Above the chart there's a ruler displaying time units (`1M`, `1H`, `1D`, etc), as you populate this metric with data you'll be able to choose bigger time windows (e.g. `1W`) but for now leave it at `1H`.
+
+Repeat these steps for the "Total sign ups" chart, just remember to use `custom/total_sign_ups` instead of the previous metric and certify that you name the legends/titles accordingly. **It's very important** to choose `max` instead of `sum` on the "Aggregator" field for the total sign up metric.
 
 ## Advanced Topics
 
