@@ -224,9 +224,9 @@ Visit https://console.cloud.google.com/monitoring/dashboards?project=PROJECT-NAM
 
 ### Setting up Charts
 
-Setting up charts is an easy task, first click on "Add chart" on the top right corner of the page, then type `custom/daily_sign_ups` in the resource/metric name and give the appropriate title for this chart (e.g. `Daily sign ups`). After setting the title and the watched metric set "Aggregator" to `max`. Click on "Show Advanced Options", change "Aligner" to `max` and "Legend Template" to `Daily sign ups`.
+Setting up charts is an easy task, first click on "Add chart" on the top right corner of the page, then type `custom/daily_sign_ups` in the resource/metric name and give the appropriate title for this chart (e.g. `Daily sign ups`). After setting the title and the watched metric set "Aggregator" to `max` and "Period" to custom and `3 hours`. Click on "Show Advanced Options", change "Aligner" to `max` and "Legend Template" to `Daily sign ups`.
 
-After this, focus your attention on the area to the right side of this configuration menu, the one displaying the chart. Above the chart there's a ruler displaying time units (`1M`, `1H`, `1D`, etc), as you populate this metric with data you'll be able to choose bigger time windows (e.g. `1W`) but for now leave it at `1H`.
+After this, focus your attention on the area to the right side of this configuration menu, the one displaying the chart. Above the chart there's a ruler displaying time units (`1M`, `1H`, `1D`, etc), as you populate this metric with data you'll be able to choose bigger time windows (e.g. `1W`) but for now leave it at `1H`. If you don't see any data right after setting up the chart it's most likely to the fact that you don't have enough data in the period of `3 hours`, you can still verify that the metric is working by temporarily reducing the period to `1 minute` but remember to set it back to `3 hours` when leaving this page.
 
 Repeat these steps for the "Total sign ups" chart, just remember to use `custom/total_sign_ups` instead of the previous metric and certify that you name the legends/titles accordingly.
 
