@@ -20,7 +20,7 @@ export interface Address {
 }
 
 export interface AddressInputParts {
-  street: string
+  street: string // including street number, e.g. 100 S Biscayne Blvd
   city: string
   state: string
   postcode: string

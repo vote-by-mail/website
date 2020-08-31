@@ -1,6 +1,6 @@
 import { formatUnit } from '../common'
 
-describe('formatUnit removes unnecessary pounds', () => {
+describe('formatUnit correctly uses pounds', () => {
   const unit = [
     { raw: 'BLDG # 3', expected: 'BLDG 3' },
     { raw: '  APT #3  ', expected: 'APT 3' }, // intentional spacing to test trimming

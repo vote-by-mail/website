@@ -39,7 +39,7 @@ export const toAlloyDate = (vbmBirthdate: string) => {
 export const isRegistered = async ({
   nameParts, birthdate,
   stateAbbr, city, postcode,
-  street, streetNumber, unit,
+  street, unit,
 }: RegistrationArgs): Promise<AlloyResponse> => {
   if (alloyMock) {
     // Allows for case insensitive names when testing, since Alloy API returns
@@ -55,13 +55,9 @@ export const isRegistered = async ({
     return { status: 'Active', id: '00000000-0000-0000-0000-000000000000', }
   }
 
-  const formattedUnit = unit ? formatUnit(unit) : null
-  const formattedStreet = streetNumber
-    ? `${streetNumber} ${street}`
-    : street
   const address = unit
-    ? `${formattedStreet} ${formattedUnit}`
-    : formattedStreet
+    ? `${street} ${formatUnit(unit)}`
+    : street
 
   const query = [
     `first_name=${nameParts.first}`,
