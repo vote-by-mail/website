@@ -100,7 +100,8 @@ test('analyticsLogic increments stored values correctly', () => {
   const newSignups = 5
   // Should increment only total signups
   const pastSignups = 10
-  const storedTodaySignups = 10
+  // All the signups happened yesterday in this mock
+  const storedTodaySignups = pastSignups
 
   const storedData: AnalyticsStorageSchema = {
     id: 'onlyOne',
