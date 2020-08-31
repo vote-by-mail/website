@@ -139,7 +139,6 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: B
         postcode: addressFields.postcode,
         stateAbbr: getStateAbbr(addressFields.state as State) as StateAbbreviation,
         street: addressFields.street,
-        streetNumber: address?.streetNumber ?? '',
       })
       if (result.type === 'data') {
         setAlloy(result.data)

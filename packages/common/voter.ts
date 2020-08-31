@@ -51,7 +51,6 @@ export interface RegistrationArgs {
   city: string
   postcode: string
   street: string
-  streetNumber: string
   unit?: string
 }
 
