@@ -116,7 +116,7 @@ export class Letter {
           ? `cid:${this.idPhotoAttachment.filename}`
           : this.info.idPhoto,
       },
-    )
+    ).replace(/((\n|( +)\n|\n( +)){3})+/g, '\n')
   }
 
   /**
