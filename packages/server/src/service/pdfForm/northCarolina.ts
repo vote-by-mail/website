@@ -9,7 +9,7 @@ export const fillNorthCarolina = (
   async ({check, text, placeImage}) => {
     const { addressParts } = stateInfo.address
     if (!addressParts) {
-      throw(`Address.addressParts should've been defined by this point.`)
+      throw new Error(`Address.addressParts should've been defined by this point.`)
     }
 
     text(stateInfo.nameParts.last, 2, 56, 90)
