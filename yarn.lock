@@ -1567,7 +1567,7 @@
   integrity sha512-whPwSse8a5+ILce31W1iiwaFtPGsZCHa0B7vhl60OKMjkOYhCsTBDl4ZFgyhhbCjAqxH3OwRvYRhPvV5wAB6SQ==
   dependencies:
     google-gax "^2.1.0"
-"@google-cloud/logging@^4.7.0":
+"@google-cloud/logging@^8.0.5":
   version "8.0.5"
   resolved "https://registry.yarnpkg.com/@google-cloud/logging/-/logging-8.0.5.tgz#fe936570af2fd8d05710aff195a7edd5224faf08"
   integrity sha512-NGCOgnxfi/lqaHy4ngaiDs65CpjsWRvFBvwZmEqBCm+Hm/6g+g0m5w1/uOTsSvEZlMlVnDJQgQqPeo/XDYEJkw==

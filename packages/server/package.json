@@ -54,7 +54,7 @@
   "dependencies": {
     "@firebase/testing": "^0.18.1",
     "@google-cloud/connect-firestore": "^1.0.6",
-    "@google-cloud/logging": "^4.7.0",
+    "@google-cloud/logging": "^8.0.5",
     "@google-cloud/storage": "^4.7.0",
     "@google-cloud/monitoring": "^2.1.1",
     "@googlemaps/google-maps-services-js": "^2.6.0",
