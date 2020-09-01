@@ -41,8 +41,11 @@ export const formatUnit = (unit: string) => {
 
   // Searchs for any abbreviation that don't require pounds
   //
-  // https://pe.usps.com/text/pub28/28apc_003.htm#ep538629
-  const dontUsePound = /\b(APT|BLDG|DEPT|FL|FRNT|HNGR|KEY|LBBY|LOT|LOWR|OFC|PH|PIER|REAR|RM|SIDE|SLIP|SPC|STOP|STE|TRLR|UNIT|UPPR)\b/g
+  // The list of officially approved abbreviations can be found here: https://pe.usps.com/text/pub28/28apc_003.htm#ep538629
+  // But we'll remove pounds if any word is found in the Unit field, since users
+  // might not use the officially approved abbreviations or just commit a typo
+  // while filling this field, e.g. APY 303.
+  const dontUsePound = /( +|^)([a-z]+)( +|$)/i
   return !normalized.toUpperCase().match(dontUsePound)
     ? trim(`# ${normalized}`)
     : normalized
