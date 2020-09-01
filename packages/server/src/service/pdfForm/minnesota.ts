@@ -11,7 +11,7 @@ export const fillMinnesota = (
 
     const { addressParts } = stateInfo.address
     if (!addressParts) {
-      throw(`Address.addressParts should've been defined by this point.`)
+      throw new Error(`Address.addressParts should've been defined by this point.`)
     }
 
     text(stateInfo.nameParts.last, 0, 60, 225)

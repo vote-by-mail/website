@@ -10,7 +10,7 @@ export const fillVirginia = (
     const { nameParts } = stateInfo
     const { addressParts } = stateInfo.address
     if (!addressParts) {
-      throw(`Address.addressParts should've been defined by this point.`)
+      throw new Error(`Address.addressParts should've been defined by this point.`)
     }
 
     // First name.
