@@ -23,7 +23,7 @@ app.use(Morgan('combined'))
 app.use(helmet())
 app.use('/static', Express.static(__dirname + '/static'))
 app.use(cors({ origin: true }))
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({extended: false}))
 
 app.set('view engine', 'pug')
 app.set('views', staticDir('pug'))
@@ -52,14 +52,14 @@ app.get('/', (_, res: Response) => {
 
 app.post('/mailgun_logging_webhook', multer().none(), (req, res) => {
   // https://www.mailgun.com/blog/a-guide-to-using-mailguns-webhooks/.
-  const value = req.body.timestamp+req.body.token;
+  const value = req.body.timestamp+req.body.token
   const hash = crypto.createHmac('sha256',
     processEnvOrThrow('MG_API_KEY'))
       .update(value)
-      .digest('hex');
+      .digest('hex')
   if (hash !== req.body.signature) {
-    console.error('Invalid signature in request to Mailgun webook.');
-    return res.end();
+    console.error('Invalid signature in request to Mailgun webook.')
+    return res.end()
   }
   logMailgunLogToGCP(req.body)
   res.sendStatus(200)
