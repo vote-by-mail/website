@@ -41,22 +41,17 @@ app.get('/', (_, res: Response) => {
 
 app.post('/mailgun_logging_webhook', multer().none(), async (req, res) => {
   // Mailgun webhook posts are multipart requests, we need to manually stream
-  // data from the request to this variable--then when finished parse this as
-  // JSON
+  // data from the request to this array then parse its buffered content as JSON
   //
   // https://www.mailgun.com/blog/a-guide-to-using-mailguns-webhooks/.
   const rawBody: Uint8Array[] = []
 
-  req.addListener('data', (chunk) => {
-    rawBody.push(chunk)
-  })
-
   // Awaits for all req.body content
+  req.addListener('data', (chunk) => rawBody.push(chunk))
   await new Promise(resolve => req.addListener('end', () => resolve(true)))
 
   const buffer = Buffer.concat(rawBody)
   const body = JSON.parse(buffer.toString('utf-8'))
-  console.log(body)
 
   // More details about MG webhook security at
   // https://documentation.mailgun.com/en/latest/user_manual.html#webhooks
