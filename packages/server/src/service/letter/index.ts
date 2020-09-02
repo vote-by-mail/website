@@ -120,8 +120,8 @@ export class Letter {
       // possibly rendering a large amount of undesired empty lines. Albeit being
       // possible to fix this by tweaking said files, it is much easier to
       // use a regexp which looks for 3 or more consective empty lines and replaces them
-      // with just one.
-    ).replace(/(^( *)\n){3,}/gm, '\n')
+      // with two empty lines (so paragraph breaks are still possible).
+    ).replace(/(^( *)\n){3,}/gm, '\n\n')
   }
 
   /**
