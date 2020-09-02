@@ -116,7 +116,12 @@ export class Letter {
           ? `cid:${this.idPhotoAttachment.filename}`
           : this.info.idPhoto,
       },
-    ).replace(/((\n|( +)\n|\n( +)){3})+/g, '\n')
+      // Jinja will often use the whitespace in our views/*.md files, although
+      // possibly rendering a large amount of undesired empty lines. Albeit being
+      // possible to fix this by tweaking said files, it is much easier to
+      // use a regexp which looks for 3 or more consective empty lines and replaces them
+      // with just one.
+    ).replace(/(^( *)\n){3,}/gm, '\n')
   }
 
   /**
