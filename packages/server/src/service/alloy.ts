@@ -1,4 +1,4 @@
-import { processEnvOrThrow, RegistrationStatus, RegistrationArgs, allRegistrationStatus, AlloyResponse, formatUnit } from '../common'
+import { processEnvOrThrow, RegistrationStatus, RegistrationArgs, allRegistrationStatus, AlloyResponse } from '../common'
 import axios, { AxiosResponse } from 'axios'
 import rax from 'retry-axios'
 import { cache } from './util'
@@ -56,7 +56,7 @@ export const isRegistered = async ({
   }
 
   const address = unit
-    ? `${street} ${formatUnit(unit)}`
+    ? `${street} # ${unit}`
     : street
 
   const query = [
