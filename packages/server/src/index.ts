@@ -39,18 +39,37 @@ app.get('/', (_, res: Response) => {
   res.render('index')
 })
 
-app.post('/mailgun_logging_webhook', multer().none(), (req, res) => {
+app.post('/mailgun_logging_webhook', multer().none(), async (req, res) => {
+  // Mailgun webhook posts are multipart requests, we need to manually stream
+  // data from the request to this variable--then when finished parse this as
+  // JSON
+  //
   // https://www.mailgun.com/blog/a-guide-to-using-mailguns-webhooks/.
-  const value = req.body.timestamp+req.body.token
-  const hash = crypto.createHmac('sha256',
-    processEnvOrThrow('MG_API_KEY'))
+  const rawBody: Uint8Array[] = []
+
+  req.addListener('data', (chunk) => {
+    rawBody.push(chunk)
+  })
+
+  // Awaits for all req.body content
+  await new Promise(resolve => req.addListener('end', () => resolve(true)))
+
+  const buffer = Buffer.concat(rawBody)
+  const body = JSON.parse(buffer.toString('utf-8'))
+  console.log(body)
+
+  // More details about MG webhook security at
+  // https://documentation.mailgun.com/en/latest/user_manual.html#webhooks
+  const value = body.signature.timestamp + body.signature.token
+  const hash = crypto.createHmac('sha256', processEnvOrThrow('MG_API_KEY'))
       .update(value)
       .digest('hex')
-  if (hash !== req.body.signature) {
+  if (hash !== body.signature) {
     console.error('Invalid signature in request to Mailgun webook.')
     return res.end()
   }
-  logMailgunLogToGCP(req.body)
+
+  logMailgunLogToGCP(body)
   res.sendStatus(200)
   return res.end()
 })
