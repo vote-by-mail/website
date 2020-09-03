@@ -48,23 +48,25 @@ block content
     p.text-muted The dashed red border does not appear in your embed.
     div(
       id='vbm-iframe-wrapper'
-      style='width: 100%; height: 1024px; border: 2px dashed #dc0e52;'
+      style='width: 100%; border: 2px dashed #dc0e52;'
     )
-      iframe(
-        id='vbm-iframe'
-        src=`${env.REACT_APP_URL}/#/org/${richOrg.id}`
-        width='100%'
-        height='100%'
-        marginheight='0'
-        frameborder='0'
+      div(
+        style='display: flex; flex-direction: column; min-height: 600px; min-width: 340px;'
       )
-      script(
-        type='text/javascript'
-        src='//cdnjs.cloudflare.com/ajax/libs/iframe-resizer/3.5.3/iframeResizer.min.js'
-      )
-      //- More information about iFrameResize at
-      //- http://davidjbradshaw.github.io/iframe-resizer/
-      script iFrameResize({checkOrigin: false,scrolling: true,minHeight: 640,minWidth: 340,id: 'vbm-iframe'});
+        iframe(
+          id='vbm-iframe'
+          src=`${env.REACT_APP_URL}/#/org/${richOrg.id}`
+          style='flex: 1;'
+          marginheight='0'
+          frameborder='0'
+        )
+        script(
+          type='text/javascript'
+          src='//cdnjs.cloudflare.com/ajax/libs/iframe-resizer/3.5.3/iframeResizer.min.js'
+        )
+        //- More information about iFrameResize at
+        //- http://davidjbradshaw.github.io/iframe-resizer/
+        script iFrameResize({checkOrigin: false,scrolling: true,minHeight: 640,minWidth: 340,id: 'vbm-iframe'});
 
 
   script.
