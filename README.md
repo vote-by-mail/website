@@ -206,6 +206,18 @@ The shapefile used to create the Michigan ArcGIS server can be found here: http:
 7. On the bottom of the page click on the `Query` link
 8. You will be prompted to a page where you can visually input your query parameters, after you are done inputing them you can click on the `Query (GET)` button on the bottom of the page and you will navigate to your endpoint
 
+## Logging and Webhooks
+We use Google Cloud Logging and Mailgun Webhooks to log and keep track of sent emails. The instructions to enable and set up Google Cloud Logging can be found [here](https://cloud.google.com/logging/docs/setup/nodejs#before_you_begin), and an article for setting up Mailgun webhooks is available [here](https://www.mailgun.com/blog/a-guide-to-using-mailguns-webhooks/).
+
+  Mailgun webhooks used
+  ----------------------------------------------------------
+  type                | value
+  --------------------|-------------------------------------
+  **complained**      | BACKEND_URL/mailgun_logging_webhook
+  **permanent_fail**  | BACKEND_URL/mailgun_logging_webhook
+  **temporary_fail**  | BACKEND_URL/mailgun_logging_webhook
+  **complained**      | BACKEND_URL/mailgun_logging_webhook
+
 ## Advanced Topics
 
 ### Testing Server Build
