@@ -74,6 +74,7 @@ app.post('/mailgun_logging_webhook', multer().none(), async (req, res) => {
 
   if (hash !== body.signature.signature) {
     console.error('Invalid signature in request to Mailgun webook.')
+    res.sendStatus(401)
     return res.end()
   }
 
