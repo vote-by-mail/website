@@ -126,8 +126,8 @@ export const logMailgunLogToGCP = async (body: MailgunHookBody): Promise<void> =
     severity: gcpLogLevel,
   }
 
-  const logSummary = `Mailgun Hook reported incident for messageID ${messageID}`
-  const entry = log.entry(metadata, logSummary)
+  // Streams Mailgun webhook bodies to GCP
+  const entry = log.entry(metadata, body)
 
   await log.write(entry)
 }
