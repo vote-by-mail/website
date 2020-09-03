@@ -206,7 +206,6 @@ The shapefile used to create the Michigan ArcGIS server can be found here: http:
 7. On the bottom of the page click on the `Query` link
 8. You will be prompted to a page where you can visually input your query parameters, after you are done inputing them you can click on the `Query (GET)` button on the bottom of the page and you will navigate to your endpoint
 
-
 ## Monitoring
 
 When deploying your staging instance the app is going to automatically set up a routine to track the daily and total amount of sign ups.
@@ -229,6 +228,18 @@ Setting up charts is an easy task, first click on "Add chart" on the top right c
 After this, focus your attention on the area to the right side of this configuration menu, the one displaying the chart. Above the chart there's a ruler displaying time units (`1M`, `1H`, `1D`, etc), as you populate this metric with data you'll be able to choose bigger time windows (e.g. `1W`) but for now leave it at `1H`. If you don't see any data right after setting up the chart it's most likely to the fact that you don't have enough data in the period of `3 hours`, you can still verify that the metric is working by temporarily reducing the period to `1 minute` but remember to set it back to `3 hours` when leaving this page.
 
 Repeat these steps for the "Total sign ups" chart, just remember to use `custom/total_sign_ups` instead of the previous metric and certify that you name the legends/titles accordingly.
+
+## Logging and Webhooks
+We use Google Cloud Logging and Mailgun Webhooks to log and keep track of sent emails. The instructions to enable and set up Google Cloud Logging can be found [here](https://cloud.google.com/logging/docs/setup/nodejs#before_you_begin), and an article for setting up Mailgun webhooks is available [here](https://www.mailgun.com/blog/a-guide-to-using-mailguns-webhooks/).
+
+  Mailgun webhooks used
+  ----------------------------------------------------------
+  type                | value
+  --------------------|-------------------------------------
+  **complained**      | BACKEND_URL/mailgun_logging_webhook
+  **permanent_fail**  | BACKEND_URL/mailgun_logging_webhook
+  **temporary_fail**  | BACKEND_URL/mailgun_logging_webhook
+  **complained**      | BACKEND_URL/mailgun_logging_webhook
 
 ## Advanced Topics
 
