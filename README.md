@@ -239,7 +239,6 @@ List of Mailgun webhooks used by VoteByMail.io:
   **complained**      | REACT_APP_SERVER/mailgun_logging_webhook
   **permanent_fail**  | REACT_APP_SERVER/mailgun_logging_webhook
   **temporary_fail**  | REACT_APP_SERVER/mailgun_logging_webhook
-  **complained**      | REACT_APP_SERVER/mailgun_logging_webhook
 
 ## Advanced Topics
 
