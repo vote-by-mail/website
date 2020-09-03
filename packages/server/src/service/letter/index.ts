@@ -66,6 +66,17 @@ const template = (state: ImplementedState): string => {
   }
 }
 
+/**
+ * Jinja will often use the whitespace in our views/*.md files, rendering a
+ * large amount of undesired empty lines. Albeit being possible to fix this
+ * by tweaking said files, it is much easier to use a regexp which looks for
+ * 3 or more consective empty lines and replaces them with 2 empty lines
+ * (so paragraph breaks are still possible).
+ *
+ * @param s the content to be trimmed
+ */
+export const trimThreeOrMoreLines = (s: string) => s.replace(/(^( *)\n){3,}/gm, '\n\n')
+
 export class Letter {
   readonly confirmationId: string
   readonly subject: string
@@ -97,7 +108,7 @@ export class Letter {
    */
   md = (dest: 'email' | 'html') => {
     const method = this.method
-    return nunjucks.render(
+    const md = nunjucks.render(
       template(this.info.state),
       {
         ...this.info,
@@ -116,12 +127,9 @@ export class Letter {
           ? `cid:${this.idPhotoAttachment.filename}`
           : this.info.idPhoto,
       },
-      // Jinja will often use the whitespace in our views/*.md files, although
-      // possibly rendering a large amount of undesired empty lines. Albeit being
-      // possible to fix this by tweaking said files, it is much easier to
-      // use a regexp which looks for 3 or more consective empty lines and replaces them
-      // with two empty lines (so paragraph breaks are still possible).
-    ).replace(/(^( *)\n){3,}/gm, '\n\n')
+    )
+
+    return trimThreeOrMoreLines(md)
   }
 
   /**
