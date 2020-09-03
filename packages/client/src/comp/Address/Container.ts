@@ -71,7 +71,7 @@ const useFields = (initialFieldsValue: AddressInputParts | null = null) => {
   }
 
   // Used at WarningMsg, completely replaces the address
-  const setAddress = (address: AddressInputParts) => {
+  const setAddressParts = (address: AddressInputParts) => {
     _setField(address)
   }
 
@@ -81,7 +81,7 @@ const useFields = (initialFieldsValue: AddressInputParts | null = null) => {
   return {
     fields,
     setField,
-    setAddress,
+    setAddressParts,
   }
 }
 
