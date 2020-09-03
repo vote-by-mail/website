@@ -3,7 +3,7 @@ import mailgun from 'mailgun-js'
 import { Letter } from './letter'
 import { processEnvOrThrow } from '../common'
 import { Logging } from '@google-cloud/logging'
-import { Request } from 'express'
+import { MailgunLogLevel, GCPLogLevel, MailgunHookBody } from './webhooks'
 
 export const mg = mailgun({
   domain: processEnvOrThrow('MG_DOMAIN'),
@@ -88,9 +88,6 @@ export const sendSignupEmail = async (
   return mg.messages().send(emailData)
 }
 
-type MailgunLogLevel = 'info' | 'warn' | 'temporary' | 'error'
-type GCPLogLevel = 'INFO' | 'WARNING' | 'ERROR'
-
 const mailgunToGCPLogLevel = (mailgunLogLevel: MailgunLogLevel): GCPLogLevel => {
   switch (mailgunLogLevel) {
     case 'info': return 'INFO'
@@ -100,14 +97,10 @@ const mailgunToGCPLogLevel = (mailgunLogLevel: MailgunLogLevel): GCPLogLevel => 
   }
 }
 
-export const logMailgunLogToGCP = async (request: Request): Promise<void> => {
-  if (request.body == null) {
-    return
-  }
-
+export const logMailgunLogToGCP = async (body: MailgunHookBody): Promise<void> => {
   const logging = new Logging({projectId: processEnvOrThrow('GCLOUD_PROJECT')})
   const log = logging.log('mailgun-log')
-  const mgLogLevel = request.body.log_level as MailgunLogLevel
+  const mgLogLevel = body['event-data']['log-level']
   const gcpLogLevel = mailgunToGCPLogLevel(mgLogLevel)
 
   if (!gcpLogLevel) {
@@ -121,11 +114,5 @@ export const logMailgunLogToGCP = async (request: Request): Promise<void> => {
   }
 
   const entry = log.entry(metadata, "hello, world!")
-  async function writeLog() {
-    // Writes the log entry
-    await log.write(entry)
-  }
-  writeLog()
-  // console.log(req)
-  return
+  await log.write(entry)
 }

@@ -15,6 +15,7 @@ import { registerPassportEndpoints } from './service/org'
 import { staticDir } from './service/util'
 import { updateTimeSeries } from './analytics/'
 import { logMailgunLogToGCP } from './service/mg'
+import { MailgunHookBody } from './service/webhooks'
 
 const app = Express()
 
@@ -62,7 +63,7 @@ app.post('/mailgun_logging_webhook', multer().none(), async (req, res) => {
   await new Promise(resolve => req.addListener('end', () => resolve(true)))
 
   const buffer = Buffer.concat(rawBody)
-  const body = JSON.parse(buffer.toString('utf-8'))
+  const body = JSON.parse(buffer.toString('utf-8')) as MailgunHookBody
 
   // More details about MG webhook security at
   // https://documentation.mailgun.com/en/latest/user_manual.html#webhooks
@@ -70,7 +71,8 @@ app.post('/mailgun_logging_webhook', multer().none(), async (req, res) => {
   const hash = crypto.createHmac('sha256', processEnvOrThrow('MG_API_KEY'))
       .update(value)
       .digest('hex')
-  if (hash !== body.signature) {
+
+  if (hash !== body.signature.signature) {
     console.error('Invalid signature in request to Mailgun webook.')
     return res.end()
   }
