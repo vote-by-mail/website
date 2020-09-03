@@ -98,13 +98,26 @@ const mailgunToGCPLogLevel = (mailgunLogLevel: MailgunLogLevel): GCPLogLevel => 
 }
 
 export const logMailgunLogToGCP = async (body: MailgunHookBody): Promise<void> => {
-  const logging = new Logging({projectId: processEnvOrThrow('GCLOUD_PROJECT')})
+  const logging = new Logging({
+    projectId: processEnvOrThrow('GCLOUD_PROJECT'),
+    // If you're running this locally it might be needed to give the right IAM
+    // permissions to a service account and pass down the credentials in the
+    // lines below (uncomment and replace the example). When this project is
+    // deployed Google Cloud Platform automatically handles permissions for apps
+    // using these functions through GAE or GCE.
+
+    // credentials: {
+    //   'client_email': 'user@gmail.com',
+    //   'private_key': 'private_key',
+    // }
+  })
   const log = logging.log('mailgun-log')
   const mgLogLevel = body['event-data']['log-level']
   const gcpLogLevel = mailgunToGCPLogLevel(mgLogLevel)
+  const messageID = body['event-data'].id
 
   if (!gcpLogLevel) {
-    throw new Error('Could not get GCP log level')
+    throw new Error(`Could not get GCP log level for MG hook of messageID: ${messageID}`)
   }
 
   const metadata = {
@@ -113,6 +126,8 @@ export const logMailgunLogToGCP = async (body: MailgunHookBody): Promise<void> =
     severity: gcpLogLevel,
   }
 
-  const entry = log.entry(metadata, "hello, world!")
+  const logSummary = `Mailgun Hook reported incident for messageID ${messageID}`
+  const entry = log.entry(metadata, logSummary)
+
   await log.write(entry)
 }
