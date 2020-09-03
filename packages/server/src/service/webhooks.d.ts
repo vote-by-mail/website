@@ -6,6 +6,8 @@ export type GCPLogLevel = 'INFO' | 'WARNING' | 'ERROR'
 // rich information about the two interfaces here. These STUB definitions
 // will help us work around this limitation.
 
+// Based on the example at
+// https://documentation.mailgun.com/en/latest/user_manual.html#events
 export interface MailgunEventData {
   severity: string
   tags: string[]
@@ -27,13 +29,13 @@ export interface MailgunEventData {
     /** Example: me@mydomain.com */
     sender: string
     transport: 'smtp'
-    /** Example: bob@gmail.com */
-    targets: string
+    /** Example: 'alice@gmail.com' | ['bob@gmail.com', 'alice@gmail.com'] */
+    targets: string | string[]
   }
 
   /** Example: bob@gmail.com */
   recipient: string
-  /** Example: 'gmail.com' if envelope.target/recipient is 'bob@gmail.com' */
+  /** Example: 'gmail.com' if recipient is 'bob@gmail.com' */
   'recipient-domain': string
 
   message: {
@@ -57,6 +59,7 @@ export interface MailgunEventData {
   }
 }
 
+// https://documentation.mailgun.com/en/latest/user_manual.html#webhooks
 export interface MailgunHookBody {
   /**
    * Used to prove the authenticy of MG webhook requests
