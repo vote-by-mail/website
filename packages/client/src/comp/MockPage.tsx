@@ -17,7 +17,7 @@ const RawMockPage: React.FC<{}> = () => {
   const { state } = StateContainer.useContainer()
   const { setAddress } = AddressContainer.useContainer()
   const { setContact } = ContactContainer.useContainer()
-  const { setAddress: setAddressParts } = AddressInputPartContainer.useContainer()
+  const { setAddressParts } = AddressInputPartContainer.useContainer()
 
   React.useLayoutEffect(() => {
     (async () =>  {

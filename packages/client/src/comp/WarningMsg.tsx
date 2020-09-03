@@ -81,16 +81,16 @@ interface RawWarningProps {
 
 const RawWarningMsg: React.FC<RawWarningProps> = ({ toggleOpen }) => {
   const { state } = StateContainer.useContainer()
-  const { setAddress } = AddressInputPartContainer.useContainer()
+  const { setAddressParts } = AddressInputPartContainer.useContainer()
 
   const addresses = sampleAddresses[state]
 
   const fillData = async (address: AddressData) => {
     // Strangely, document.getElementById will only work if we
-    // use await setAddress (although it is not a async function)
-    // If we don't do this, the click event triggers before setAddress
+    // use await setAddressParts (although it is not a async function)
+    // If we don't do this, the click event triggers before setAddressParts
     // finishes.
-    await setAddress({
+    await setAddressParts({
       city: address.city,
       postcode: address.postcode,
       state: address.state,
