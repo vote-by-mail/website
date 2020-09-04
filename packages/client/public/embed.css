@@ -52,24 +52,34 @@
   margin-right: 8px;
 }
 
-/* Translation Button */
+/* Actions */
 
-.vote-by-mail__translation-button {
+.vote-by-mail__actions {
+  display: flex;
+}
+/* Shows close button when using modal */
+.vote-by-mail__modal .vote-by-mail__actions .modal-close {
+  display: inline-flex !important;
+}
+
+/* Bottom Button */
+
+.vote-by-mail__bottom-button {
   background: none;
   border: none;
   margin: 0;
   display: flex; align-items: center;
 }
-.vote-by-mail__translation-button:focus {
+.vote-by-mail__bottom-button:focus {
   outline: none;
 }
 
-.vote-by-mail__translation-button .chevron { margin-right: 2px; }
-.vote-by-mail__translation-button:hover { cursor: pointer; }
+.vote-by-mail__bottom-button .chevron { margin-right: 2px; }
+.vote-by-mail__bottom-button:hover { cursor: pointer; }
 
 /* Transitions */
-.vote-by-mail__translation-button path { transition: fill .3s; }
-.vote-by-mail__translation-button:hover path { fill: var(--primary); }
+.vote-by-mail__bottom-button { transition: fill .3s, color .3s; }
+.vote-by-mail__bottom-button:hover { fill: var(--primary); color: var(--primary); }
 
 /* Translation dropdown */
 @keyframes vote-by-mail__dropdown-opening {
