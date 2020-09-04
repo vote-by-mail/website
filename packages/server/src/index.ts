@@ -5,7 +5,6 @@ import helmet from 'helmet'
 import { AddressInfo } from 'net'
 import cors from 'cors'
 import { registerExpressHandler } from '@tianhuil/simple-trpc/dist/handler/express'
-import crypto from 'crypto'
 import multer from 'multer'
 import bodyParser from 'body-parser'
 
@@ -14,7 +13,7 @@ import { VbmRpc } from './service/trpc'
 import { registerPassportEndpoints } from './service/org'
 import { staticDir } from './service/util'
 import { updateTimeSeries } from './analytics/'
-import { logMailgunLogToGCP } from './service/mg'
+import { logMailgunLogToGCP, mg } from './service/mg'
 import { MailgunHookBody } from './service/webhooks'
 
 const app = Express()
@@ -56,23 +55,25 @@ app.post('/mailgun_logging_webhook', multer().none(), async (req, res) => {
   // data from the request to this array then parse its buffered content as JSON
   //
   // https://www.mailgun.com/blog/a-guide-to-using-mailguns-webhooks/.
-  const rawBody: Uint8Array[] = []
+  const body = await (async () => {
+    const rawBody: Uint8Array[] = []
+    // Awaits for all req.body content
+    req.addListener('data', (chunk) => rawBody.push(chunk))
+    await new Promise(resolve => req.addListener('end', () => resolve(true)))
 
-  // Awaits for all req.body content
-  req.addListener('data', (chunk) => rawBody.push(chunk))
-  await new Promise(resolve => req.addListener('end', () => resolve(true)))
-
-  const buffer = Buffer.concat(rawBody)
-  const body = JSON.parse(buffer.toString('utf-8')) as MailgunHookBody
+    const buffer = Buffer.concat(rawBody)
+    return JSON.parse(buffer.toString('utf-8')) as MailgunHookBody
+  })()
 
   // More details about MG webhook security at
   // https://documentation.mailgun.com/en/latest/user_manual.html#webhooks
-  const value = body.signature.timestamp + body.signature.token
-  const hash = crypto.createHmac('sha256', processEnvOrThrow('MG_API_KEY'))
-      .update(value)
-      .digest('hex')
+  const validWebhook = mg.validateWebhook(
+    body.signature.timestamp,
+    body.signature.token,
+    body.signature.signature,
+  )
 
-  if (hash !== body.signature.signature) {
+  if (!validWebhook) {
     console.error('Invalid signature in request to Mailgun webook.')
     res.sendStatus(401)
     return res.end()
