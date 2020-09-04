@@ -232,13 +232,7 @@ Repeat these steps for the "Total sign ups" chart, just remember to use `custom/
 ## Logging and Webhooks
 We use Google Cloud Logging and Mailgun Webhooks to log and keep track of sent emails. The instructions to enable and set up Google Cloud Logging can be found [here](https://cloud.google.com/logging/docs/setup/nodejs#before_you_begin), and an article for setting up Mailgun webhooks is available [here](https://www.mailgun.com/blog/a-guide-to-using-mailguns-webhooks/).
 
-List of Mailgun webhooks used by VoteByMail.io:
-
-  type                | value
-  --------------------|-------------------------------------
-  **complained**      | REACT_APP_SERVER/mailgun_logging_webhook
-  **permanent_fail**  | REACT_APP_SERVER/mailgun_logging_webhook
-  **temporary_fail**  | REACT_APP_SERVER/mailgun_logging_webhook
+For the above logging to work, set all Mailgun webhooks (except legacy ones) to the following address: `REACT_APP_SERVER/mailgun_logging_webhook`.
 
 ## Advanced Topics
 

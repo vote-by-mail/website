@@ -1,5 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export type MailgunLogLevel = 'info' | 'warn' | 'temporary' | 'error'
+// https://documentation.mailgun.com/en/latest/api-events.html?highlight=log-level#event-structure
+export type MailgunLogLevel = 'info'| 'warn' | 'temporary' | 'error'
+
+// https://cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry#logseverity
 export type GCPLogLevel = 'INFO' | 'WARNING' | 'ERROR'
 
 // Currently (at Sep 2nd 2020), @types/mailgun-js does not yet provide
