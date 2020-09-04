@@ -6,6 +6,7 @@ import { initializeAnalytics } from '../lib/analytics'
 import { UTM, processEnvOrThrow } from '../common'
 import { toast } from 'react-toastify'
 import { RoundedButton } from './util/Button'
+import { isIframeEmbedded } from '../lib/util'
 
 type SiteLanguage = 'es' | 'zh' | 'tl' | 'vi' | 'ar' | 'fr' | 'ko' | 'ru'
 
@@ -22,7 +23,7 @@ const getSecondLanguage  = (locales: readonly string[]): SiteLanguage | null => 
   if (indexOf === -1) return null
 
   // Removes the country from language, e.g. 'en-GB' becomes 'en', we do
-  // this in order to use SiteLanguage on google translator URLs
+  // this in order to use SiteLanguage on google translate URLs
   const language = locales[indexOf].match(supportedLanguages)
   return language ? language[0] as SiteLanguage : null
 }
@@ -56,6 +57,21 @@ export const Initialize: React.FC = () => {
   }, [oid, setInitialData])
 
   React.useEffect(() => {
+    // Google translation has some issues translating iframe embeds, we
+    // also store if users have clicked on this message using local storage
+    // which can also throw errors at embeds.
+    if (isIframeEmbedded()) {
+      return
+    }
+
+    // Only show this message if users are visiting the page for the first
+    // time, or if they have previously clicked on the translate button
+    // (If they ignore the toast the message is not shown again)
+    const ignoreTranslationToast = localStorage.getItem('ignoreTranslationToast')
+    if (ignoreTranslationToast) {
+      return
+    }
+
     const { languages } = navigator
     const secondLanguage = getSecondLanguage(languages)
     if (secondLanguage) {
@@ -85,6 +101,7 @@ export const Initialize: React.FC = () => {
             return '\u8be5\u7f51\u7ad9\u6709\u4e2d\u6587\u7248\u672c\uff0c\u8bf7\u70b9\u51fb\u4e0b\u9762\u7684\u6309\u94ae\u8fdb\u884c\u7ffb\u8bd1\u3002'
         }
       }
+
       // Translation of 'translate'
       const translateLabel = () => {
         switch (secondLanguage) {
@@ -103,13 +120,17 @@ export const Initialize: React.FC = () => {
         <a
           href={`https://translate.google.com/translate?hl=&sl=en&tl=${secondLanguage}&u=${url}`}
         >
-          <RoundedButton>
+          <RoundedButton
+            onClick={() => localStorage.removeItem('ignoreTranslationToast')}
+          >
             {translateLabel()}
           </RoundedButton>
         </a>
       )
 
       toast.info(<>{message()}<br/><Translate/></>)
+
+      localStorage.setItem('ignoreTranslationToast', 'true')
     }
   }, [])
 
