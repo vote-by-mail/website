@@ -1,4 +1,4 @@
-import { Letter } from '.'
+import { Letter, trimThreeOrMoreLines } from '.'
 import { sampleStateInfo, sampleMethod, sampleLetter } from './sample'
 import { implementedStates } from '../../common'
 
@@ -27,13 +27,48 @@ test('Letter for all states render correctly', async () => {
   })
 })
 
+test('trimThreeOrMoreLines works as intended', () => {
+  // Remember that some empty lines have spaces over them
+  const input =
+`zero empty lines
+one empty line
+
+two empty lines
+\t\t\t
+
+four empty lines
+
+\t\t
+
+\t\t
+ - First item
+
+
+ - Second item
+
+\t
+              \t
+ - Third item
+
+
+ - Fourth item
+`
+  const trimmed = trimThreeOrMoreLines(input)
+
+  // We still want two consecutive empty lines, since these are paragraph
+  // breaks, but never 3 or more empty consecutive lines
+  expect(trimmed.match(/(^(\s*)\n){2}/gm)).toBeTruthy()
+  expect(trimmed.match(/(^(\s*)\n){3,}/gm)).toBeNull()
+
+  // Check if the right spacing is preserved on list items
+  expect(trimmed.indexOf('\n - First item')).toBeGreaterThan(-1)
+})
+
 test('letter.md trims unnecessary empty lines without messing paragraphs', async () => {
   const florida = await sampleLetter('Florida')
   if (!florida) throw new Error('Test cannot be completed since sample letter is null')
   const md = florida.md('html')
 
-  // We still want two consecutive empty lines, since these are paragraph breaks
-  expect(md.match(/(^( *)\n){2}/gm)).toBeTruthy()
-  // We'll never want to have 3 or more consecutive empy lines
-  expect(md.match(/(^( *)\n){3,}/gm)).toBeNull()
+  expect(md.match(/(^(\s*)\n){2}/gm)).toBeTruthy()
+  expect(md.match(/(^(\s*)\n){3,}/gm)).toBeNull()
 })

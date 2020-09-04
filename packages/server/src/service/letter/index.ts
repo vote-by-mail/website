@@ -75,7 +75,7 @@ const template = (state: ImplementedState): string => {
  *
  * @param s the content to be trimmed
  */
-export const trimThreeOrMoreLines = (s: string) => s.replace(/(^( *)\n){3,}/gm, '\n\n')
+export const trimThreeOrMoreLines = (s: string) => s.replace(/(^(\s*)\n){3,}/gm, '\n\n')
 
 export class Letter {
   readonly confirmationId: string
