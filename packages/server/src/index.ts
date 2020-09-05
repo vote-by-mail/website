@@ -5,7 +5,6 @@ import helmet from 'helmet'
 import { AddressInfo } from 'net'
 import cors from 'cors'
 import { registerExpressHandler } from '@tianhuil/simple-trpc/dist/handler/express'
-import multer from 'multer'
 import bodyParser from 'body-parser'
 
 import { processEnvOrThrow, IVbmRpc } from './common'
@@ -13,8 +12,7 @@ import { VbmRpc } from './service/trpc'
 import { registerPassportEndpoints } from './service/org'
 import { staticDir } from './service/util'
 import { updateTimeSeries } from './analytics/'
-import { logMailgunLogToGCP, mg } from './service/mg'
-import { MailgunHookBody } from './service/webhooks'
+import { registerLogWebhooksEndpoints as registerLogMailgunWebhooksToGCP } from './service/webhooks'
 
 const app = Express()
 
@@ -50,42 +48,9 @@ app.get('/', (_, res: Response) => {
   res.render('index')
 })
 
-app.post('/mailgun_logging_webhook', multer().none(), async (req, res) => {
-  // Mailgun webhook posts are multipart requests, we need to manually stream
-  // data from the request to this array then parse its buffered content as JSON
-  //
-  // https://www.mailgun.com/blog/a-guide-to-using-mailguns-webhooks/.
-  const body = await (async () => {
-    const rawBody: Uint8Array[] = []
-    // Awaits for all req.body content
-    req.addListener('data', (chunk) => rawBody.push(chunk))
-    await new Promise(resolve => req.addListener('end', () => resolve(true)))
-
-    const buffer = Buffer.concat(rawBody)
-    return JSON.parse(buffer.toString('utf-8')) as MailgunHookBody
-  })()
-
-  // More details about MG webhook security at
-  // https://documentation.mailgun.com/en/latest/user_manual.html#webhooks
-  const validWebhook = mg.validateWebhook(
-    body.signature.timestamp,
-    body.signature.token,
-    body.signature.signature,
-  )
-
-  if (!validWebhook) {
-    console.error('Invalid signature in request to Mailgun webook.')
-    res.sendStatus(401)
-    return res.end()
-  }
-
-  logMailgunLogToGCP(body)
-  res.sendStatus(200)
-  return res.end()
-})
-
 registerExpressHandler<IVbmRpc>(app, new VbmRpc(), { bodyParserOptions: { limit: '3MB' } })
 registerPassportEndpoints(app)
+registerLogMailgunWebhooksToGCP(app)
 
 // https://github.com/GoogleCloudPlatform/nodejs-getting-started/tree/master/1-hello-world
 if (module === require.main) {
