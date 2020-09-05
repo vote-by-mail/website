@@ -34,7 +34,7 @@ test('trimThreeOrMoreLines works as intended', () => {
 one empty line
 
 two empty lines
-\t\t\t
+
 
 four empty lines
 
@@ -53,34 +53,30 @@ four empty lines
 
  - Fourth item
 `
-  // Should replace three or more consecutive empty lines with just two,
-  // while preserving indentation/leading spaces of the next line, eg.:
-  //
-  // ```
-  // first line
-  //
-  //
-  //
-  //
-  //   - second line
-  // ```
-  //
-  // Should become:
-  // ```
-  // first line
-  //
-  //
-  //   - second line
-  // ```
-  const trimmed = trimThreeOrMoreLines(input)
 
-  // We still want two consecutive empty lines, since these are paragraph
-  // breaks, but never 3 or more empty consecutive lines
-  expect(trimmed.match(/(^(\s*)\n){2}/gm)).toBeTruthy()
-  expect(trimmed.match(/(^(\s*)\n){3,}/gm)).toBeNull()
+  const output =
+`zero empty lines
+one empty line
 
-  // Check if the right spacing is preserved after trimming
-  expect(trimmed.indexOf('\n - First item')).toBeGreaterThan(-1)
+two empty lines
+
+
+four empty lines
+
+
+ - First item
+
+
+ - Second item
+
+
+ - Third item
+
+
+ - Fourth item
+`
+
+  expect(trimThreeOrMoreLines(input)).toBe(output)
 })
 
 test('letter.md trims unnecessary empty lines without messing paragraphs', async () => {
