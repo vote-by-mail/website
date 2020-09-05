@@ -84,7 +84,7 @@ export class FirestoreService {
 
   private async getAll<T extends {}>(refs: DocumentReference[], trans?: Transaction): Promise<Array<WithId<T> | null>> {
     if (refs.length === 0) return []
-    const snaps = await (trans ? trans.getAll<T>(...refs) : this.db.getAll(...refs))
+    const snaps = await (trans ? trans.getAll(...refs) : this.db.getAll(...refs))
     return snaps.map(snap => this.withId<T>(snap))
   }
 
