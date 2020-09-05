@@ -12,7 +12,7 @@ import { VbmRpc } from './service/trpc'
 import { registerPassportEndpoints } from './service/org'
 import { staticDir } from './service/util'
 import { updateTimeSeries } from './analytics/'
-import { registerLogWebhooksEndpoints as registerLogMailgunWebhooksToGCP } from './service/webhooks'
+import { registerLogWebhooksEndpoints } from './service/webhooks'
 
 const app = Express()
 
@@ -50,7 +50,7 @@ app.get('/', (_, res: Response) => {
 
 registerExpressHandler<IVbmRpc>(app, new VbmRpc(), { bodyParserOptions: { limit: '3MB' } })
 registerPassportEndpoints(app)
-registerLogMailgunWebhooksToGCP(app)
+registerLogWebhooksEndpoints(app)
 
 // https://github.com/GoogleCloudPlatform/nodejs-getting-started/tree/master/1-hello-world
 if (module === require.main) {
