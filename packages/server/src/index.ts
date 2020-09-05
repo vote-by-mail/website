@@ -27,13 +27,18 @@ app.get('/_ah/warmup', (_, res) => {
   res.status(200).send('')
 })
 
-app.get('/cron/daily_total_sign_ups', async (_, res) => {
-  try {
-    await updateTimeSeries()
-    res.status(200).send('')
-  } catch(e) {
-    console.error(e)
-    res.status(500).send('')
+app.get('/cron/daily_total_sign_ups', async (req, res) => {
+  // https://cloud.google.com/appengine/docs/standard/nodejs/scheduling-jobs-with-cron-yaml#validating_cron_requests
+  if (req.get('X-Appengine-Cron')) {
+    try {
+      await updateTimeSeries()
+      res.status(200).send('')
+    } catch(e) {
+      console.error(e)
+      res.status(500).send('')
+    }
+  } else {
+    res.status(401).send('')
   }
 })
 
