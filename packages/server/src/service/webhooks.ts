@@ -1,3 +1,7 @@
+import Express from 'express'
+import multer from 'multer'
+import { logMailgunLogToGCP, mg } from './mg'
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // https://documentation.mailgun.com/en/latest/api-events.html?highlight=log-level#event-structure
 export type MailgunLogLevel = 'info'| 'warn' | 'temporary' | 'error'
@@ -78,4 +82,40 @@ export interface MailgunHookBody {
   }
 
   'event-data': MailgunEventData
+}
+
+export const registerLogWebhooksEndpoints = (app: Express.Application) => {
+  app.post('/mailgun_logging_webhook', multer().none(), async (req, res) => {
+    // Mailgun webhook posts are multipart requests, we need to manually stream
+    // data from the request to this array then parse its buffered content as JSON
+    //
+    // https://www.mailgun.com/blog/a-guide-to-using-mailguns-webhooks/.
+    const body = await (async () => {
+      const rawBody: Uint8Array[] = []
+      // Awaits for all req.body content
+      req.addListener('data', (chunk) => rawBody.push(chunk))
+      await new Promise(resolve => req.addListener('end', () => resolve(true)))
+
+      const buffer = Buffer.concat(rawBody)
+      return JSON.parse(buffer.toString('utf-8')) as MailgunHookBody
+    })()
+
+    // More details about MG webhook security at
+    // https://documentation.mailgun.com/en/latest/user_manual.html#webhooks
+    const validWebhook = mg.validateWebhook(
+      body.signature.timestamp,
+      body.signature.token,
+      body.signature.signature,
+    )
+
+    if (!validWebhook) {
+      console.error('Invalid signature in request to Mailgun webook.')
+      res.sendStatus(401)
+      return res.end()
+    }
+
+    logMailgunLogToGCP(body)
+    res.sendStatus(200)
+    return res.end()
+  })
 }
