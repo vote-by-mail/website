@@ -70,12 +70,12 @@ const template = (state: ImplementedState): string => {
  * Jinja will often use the whitespace in our views/*.md files, rendering a
  * large amount of undesired empty lines. Albeit being possible to fix this
  * by tweaking said files, it is much easier to use a regexp which looks for
- * 3 or more consective empty lines and replaces them with 2 empty lines
+ * 2 or more consective empty lines and replaces them with 1 empty lines
  * (so paragraph breaks are still possible).
  *
  * @param s the content to be trimmed
  */
-export const trimThreeOrMoreLines = (s: string) => s.replace(/(^(\s*)\n){3,}/gm, '\n\n')
+export const trimTwoOrMoreLines = (s: string) => s.replace(/(^(\s*)\n){2,}/gm, '\n')
 
 export class Letter {
   readonly confirmationId: string
@@ -129,7 +129,7 @@ export class Letter {
       },
     )
 
-    return trimThreeOrMoreLines(md)
+    return trimTwoOrMoreLines(md)
   }
 
   /**
