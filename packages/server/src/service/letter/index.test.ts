@@ -1,4 +1,4 @@
-import { Letter, trimThreeOrMoreLines } from '.'
+import { Letter, trimTwoOrMoreLines } from '.'
 import { sampleStateInfo, sampleMethod, sampleLetter } from './sample'
 import { implementedStates } from '../../common'
 
@@ -27,7 +27,7 @@ test('Letter for all states render correctly', async () => {
   })
 })
 
-test('trimThreeOrMoreLines works as intended', () => {
+test('trimTwoOrMoreLines works as intended', () => {
   // Remember that some empty lines have spaces over them
   const input =
 `zero empty lines
@@ -60,23 +60,18 @@ one empty line
 
 two empty lines
 
-
 four empty lines
-
 
  - First item
 
-
  - Second item
 
-
  - Third item
-
 
  - Fourth item
 `
 
-  expect(trimThreeOrMoreLines(input)).toBe(output)
+  expect(trimTwoOrMoreLines(input)).toBe(output)
 })
 
 test('letter.md trims unnecessary empty lines without messing paragraphs', async () => {
@@ -84,6 +79,10 @@ test('letter.md trims unnecessary empty lines without messing paragraphs', async
   if (!florida) throw new Error('Test cannot be completed since sample letter is null')
   const md = florida.md('html')
 
-  expect(md.match(/(^(\s*)\n){2}/gm)).toBeTruthy()
-  expect(md.match(/(^(\s*)\n){3,}/gm)).toBeNull()
+  // We still want to have single empty lines over the letters, since these
+  // are made of `\n\n` and represent a line break.
+  expect(md.match(/(^(\s*)\n){1}/gm)).toBeTruthy()
+  // We never want 2 or more consecutive empty lines, since these add undesired
+  // extra space.
+  expect(md.match(/(^(\s*)\n){2,}/gm)).toBeNull()
 })
