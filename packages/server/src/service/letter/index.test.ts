@@ -53,6 +53,25 @@ four empty lines
 
  - Fourth item
 `
+  // Should replace three or more consecutive empty lines with just two,
+  // while preserving indentation/leading spaces of the next line, eg.:
+  //
+  // ```
+  // first line
+  //
+  //
+  //
+  //
+  //   - second line
+  // ```
+  //
+  // Should become:
+  // ```
+  // first line
+  //
+  //
+  //   - second line
+  // ```
   const trimmed = trimThreeOrMoreLines(input)
 
   // We still want two consecutive empty lines, since these are paragraph
@@ -60,7 +79,7 @@ four empty lines
   expect(trimmed.match(/(^(\s*)\n){2}/gm)).toBeTruthy()
   expect(trimmed.match(/(^(\s*)\n){3,}/gm)).toBeNull()
 
-  // Check if the right spacing is preserved on list items
+  // Check if the right spacing is preserved after trimming
   expect(trimmed.indexOf('\n - First item')).toBeGreaterThan(-1)
 })
 
