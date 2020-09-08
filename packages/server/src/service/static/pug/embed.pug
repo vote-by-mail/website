@@ -32,6 +32,11 @@ block content
                   value=state
                 )= state
 
+          h4.text-primary Modal
+          .form-check
+            input(type="checkbox" onChange='toggleAsModal()' name="Embed as modal" class="form-check-input")
+            label(for="Embed as modal" class="form-check-label") Embed as modal
+
         .col.col-md-6.col-sm-12.mt-3
           h4.text-primary Widget Code
           textarea(
@@ -45,10 +50,31 @@ block content
 
     br
     h3 Preview
-    p.text-muted The dashed red border does not appear in your embed.
+
+    //- We have two possible previews in this page, one for modal embeds
+    //- another for just embedded iframes, by default the page loads the
+    //- later and that's the reason of why we set `display: none` on the
+    //- modal preview (so only one preview is always shown). When users
+    //- toggle the modal option the script at the end of this pug file
+    //- updates which preview is rendered.
+
+    //- Embed modal preview
+    div(id='vbm-modal-preview')
+      link(rel='stylesheet', href=`${env.REACT_APP_URL}/embed.css`)
+      button(
+        class='vote-by-mail__modal-button'
+        id='vbm-modal-button'
+        style='display: none;'
+      )
+        img(src=`${env.REACT_APP_URL}/favicon-32x32.png`, alt="VoteByMail.io")
+        b Vote By Mail
+      script(type='text/javascript' src=`${env.REACT_APP_URL}/embed.js`)
+      link(rel="stylesheet", href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap")
+
+    //- Embed iframe preview
     div(
-      id='vbm-iframe-wrapper'
-      style='width: 100%; height: 1024px; border: 2px dashed #dc0e52;'
+      id='vbm-iframe-preview'
+      style='width: 100%;'
     )
       iframe(
         id='vbm-iframe'
@@ -58,6 +84,7 @@ block content
         marginheight='0'
         frameborder='0'
       )
+
       script(
         type='text/javascript'
         src='//cdnjs.cloudflare.com/ajax/libs/iframe-resizer/3.5.3/iframeResizer.min.js'
@@ -68,15 +95,25 @@ block content
 
 
   script.
-    const iframeWrapper = document.getElementById('vbm-iframe-wrapper');
+    // We'll use the insides of the Previews to update the embed code
+    const modalPreview = document.getElementById('vbm-modal-preview');
+    const iframePreview = document.getElementById('vbm-iframe-preview');
+
+    // If users are opting for modals, the button that toggles VoteByMail modal
+    const modalButton = document.getElementById('vbm-modal-button');
+    // If users are opting for embeds, the actual iframe used in this page
     const iframe = document.getElementById('vbm-iframe');
+
+    // The element holding the embed code, which users can select to copy
     const code = document.getElementById('vbm-iframe-code');
+
     // The initial value of code is env.REACT_APP_URL + orgId (we can't access these here)
     const baseUrl = code.value;
     let state = '';
+    let modal = false;
 
-    // When the iframe loads it might scroll to the address form, stealing
-    // window focus, we don't want that.
+    // When the iframe loads/refreshes it might scroll to the address form,
+    // stealing window focus, we don't want that.
     let lockScroll = false;
     let lockScrollPosition = 0;
 
@@ -107,7 +144,24 @@ block content
       code.disabled = true;
     }
 
-    // scrollY must be a number, and if present it will lock scrolling the
+    // Updates the code used by embed modals
+    function updateModalCode() {
+      const targetUrl = `${baseUrl}${state}`
+      modalButton.onclick = function() {
+        vbmUtils.toggleModal(targetUrl);
+      }
+
+      // note that innerHTML/outerHTML does not save the onclick attribute,
+      // we'll need to manually add it back.
+      const newCode = modalPreview.innerHTML.replace(
+        '<button',
+        `<button onclick="vbmUtils.toggleModal('${targetUrl}')"`
+      );
+
+      code.value = newCode;
+    }
+
+    // scrollY can be a number, if present it will lock scrolling the
     // screen to the given position.
     function updateCode(scrollY) {
       // This is why our widget wasn't always updating, to see the changes
@@ -117,11 +171,16 @@ block content
       setTimeout(
         function() {
           iframe.src = `${baseUrl}${state}`;
-          code.value = iframeWrapper.innerHTML;
+          code.value = iframePreview.innerHTML;
           // we'll lock scrolling if scrollY is provided (when users change
-          // default states).
-          lockScroll = scrollY !== undefined
-          lockScrollPosition = scrollY
+          // default states). If users have selected to embed a modal this
+          // is not needed since the modal won't steal attention
+          if (!modal) {
+            lockScroll = scrollY !== undefined;
+            lockScrollPosition = scrollY;
+          } else {
+            updateModalCode();
+          }
         },
         50,
       );
@@ -131,6 +190,20 @@ block content
       anchor = '';
       state = s !== 'No default state' ? `/address/${s}` : '';
       updateCode(window.scrollY);
+    }
+
+    // Handles which preview to render in the page
+    function toggleAsModal() {
+      modal = !modal;
+      if (modal) {
+        iframePreview.style.display = 'none';
+        modalButton.style.display = 'flex';
+        updateModalCode();
+      } else {
+        iframePreview.style.display = 'initial';
+        modalButton.style.display = 'none';
+        updateCode();
+      }
     }
 
     // Initializes default values

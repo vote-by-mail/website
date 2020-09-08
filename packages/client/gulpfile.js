@@ -1,5 +1,6 @@
 const gulp = require('gulp')
 const csso = require('gulp-csso')
+const terser = require('gulp-terser')
 const minimist = require('minimist')
 const run = require('@tianhuil/gulp-run-command').default
 const envs = require('../../env/env.js')
@@ -26,18 +27,27 @@ gulp.task('start',
   )
 )
 
-// compile and minify public css files
-gulp.task('minify-css', async () => {
-  return gulp.src('./public/*.css')
-    .pipe(csso())
-    .pipe(gulp.dest('./build'))
+// compile public js/css files
+gulp.task('minify-public', async () => {
+  await new Promise(
+    resolve => gulp.src('./public/*.css')
+      .pipe(csso())
+      .pipe(gulp.dest('./build'))
+      .on('end', resolve())
+  )
+  await new Promise(
+    resolve => gulp.src('./public/*.js')
+      .pipe(terser())
+      .pipe(gulp.dest('./build'))
+      .on('end', resolve())
+  )
 })
 
 // build
 gulp.task('build', gulp.series(
   envRequired,
   runEnv('react-app-rewired build'),
-  'minify-css',
+  'minify-public',
 ))
 
 // test

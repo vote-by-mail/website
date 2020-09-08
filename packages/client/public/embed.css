@@ -1,0 +1,136 @@
+/* When gulp finishes task 'build' this file is automatically minified */
+
+*[class^="vote-by-mail"] {
+  font-family: 'Open Sans', sans-serif;
+}
+
+.vote-by-mail__wrapper {
+  --primary: #2193f9;
+  --danger: #dc0e52;
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 3px 4px -2px #0003;
+  background-color: #fff;
+  border-radius: 4px;
+
+  /*
+    These are also set by iFrameResizer, just setting this here since
+    the .css file might load faster than the script when minified.
+  */
+  min-height: 600px;
+  min-width: 320px;
+}
+
+.vote-by-mail__wrapper iframe {
+  flex-grow: 1;
+  border-top-right-radius: 4px;
+  border-top-left-radius: 4px;
+}
+
+/* Bottom bar shown below the iframe */
+.vote-by-mail__bottom-bar {
+  height: 50px;
+  border-top: 1px solid var(--danger);
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 0 20px;
+}
+
+.vote-by-mail__branding {
+  display: flex;
+  align-items: center;
+}
+.vote-by-mail__branding p { margin: 0; opacity: 0.5; transition: opacity ease .3s; }
+.vote-by-mail__branding p:hover { opacity: 1; }
+
+.vote-by-mail__branding img {
+  width: 24px; height: 24px;
+  margin-right: 8px;
+}
+
+/* Actions */
+
+.vote-by-mail__actions {
+  display: flex;
+}
+/* Shows close button when using modal */
+.vote-by-mail__modal .vote-by-mail__actions .modal-close {
+  display: inline-flex !important;
+}
+
+/* Bottom Button */
+
+.vote-by-mail__bottom-button {
+  background: none;
+  border: none;
+  margin: 0;
+  display: flex; align-items: center;
+}
+.vote-by-mail__bottom-button:focus {
+  outline: none;
+}
+
+.vote-by-mail__bottom-button:hover { cursor: pointer; }
+
+/* Transitions */
+.vote-by-mail__bottom-button { transition: fill .3s, color .3s; }
+.vote-by-mail__bottom-button:hover { fill: var(--primary); color: var(--primary); }
+
+/* Modal button */
+.vote-by-mail__modal-button {
+  width: 170px;
+  height: 50px;
+  font-size: 16px;
+  border: none;
+  border-radius: 4px;
+
+  background: none;
+  background-color: #fff;
+  box-shadow: 2px 2px 4px #0003;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.vote-by-mail__modal-button:hover { background-color: #fafafa; }
+.vote-by-mail__modal-button:active { background-color: #f1f1f1; }
+
+.vote-by-mail__modal-button img {
+  width: 20px; height: 20px;
+  margin-right: 8px;
+}
+
+/* Modal changes to the content */
+
+.vote-by-mail__modal {
+  display: flex;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: #0009;
+  width: 100vw;
+  height: 100vh;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+@keyframes vote-by-mail__modal-opening {
+  from { transform: translateY(-100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.vote-by-mail__modal .vote-by-mail__wrapper {
+  width: 95vw;
+  height: 80vh;
+  max-width: 1152px;
+  max-height: 700px;
+  animation: vote-by-mail__modal-opening .3s ease both;
+}
+
+.vote-by-mail__modal iframe { min-height: 400px !important; }
