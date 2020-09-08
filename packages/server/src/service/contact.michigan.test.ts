@@ -326,6 +326,8 @@ const addresses: AddressExpected[] = [
 test.each(addresses)(
   'Checking Michigan Geocoding %s',
   async (addr) => {
+    jest.setTimeout(10000)
+
     // This function breaks up geocoding into it's parts so that we can cache and get errMsg
     const geoResult = await cacheGeocode(addr)
     expect(geoResult).toBeTruthy()
