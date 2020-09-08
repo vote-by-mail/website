@@ -124,5 +124,6 @@ test('Alloy date conversion', () => {
 })
 
 test.each(voters)('Alloy %s Voter', async (voter) => {
+  jest.setTimeout(10000)
   expect((await cacheIsRegistered(voter)).status).toBe(voter.status)
 })
