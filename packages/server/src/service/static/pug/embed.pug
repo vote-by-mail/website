@@ -45,26 +45,34 @@ block content
 
     br
     h3 Preview
-    p.text-muted The dashed red border does not appear in your embed.
     div(
       id='vbm-iframe-wrapper'
-      style='width: 100%; height: 1024px; border: 2px dashed #dc0e52;'
+      style='width: 100%;'
     )
-      iframe(
-        id='vbm-iframe'
-        src=`${env.REACT_APP_URL}/#/org/${richOrg.id}`
-        width='100%'
-        height='100%'
-        marginheight='0'
-        frameborder='0'
-      )
-      script(
-        type='text/javascript'
-        src='//cdnjs.cloudflare.com/ajax/libs/iframe-resizer/3.5.3/iframeResizer.min.js'
-      )
-      //- More information about iFrameResize at
-      //- http://davidjbradshaw.github.io/iframe-resizer/
-      script iFrameResize({checkOrigin: false,scrolling: true,minHeight: 640,minWidth: 340,id: 'vbm-iframe'});
+      link(rel='stylesheet' href=`${env.REACT_APP_URL}/embed.css`)
+      .vote-by-mail__wrapper
+        //- Actual iframe
+        iframe(
+          id='vbm-iframe'
+          src=`${env.REACT_APP_URL}/#/org/${richOrg.id}`
+          width='100%'
+          height='100%'
+          marginheight='0'
+          frameborder='0'
+        )
+
+        //- Bottom bar
+        .vote-by-mail__bottom-bar
+          .vote-by-mail__branding
+            img(src=`${env.REACT_APP_URL}/favicon-32x32.png`)
+
+        script(
+          type='text/javascript'
+          src='//cdnjs.cloudflare.com/ajax/libs/iframe-resizer/3.5.3/iframeResizer.min.js'
+        )
+        //- More information about iFrameResize at
+        //- http://davidjbradshaw.github.io/iframe-resizer/
+        script iFrameResize({checkOrigin: false,scrolling: true,minHeight: 640,minWidth: 340,id: 'vbm-iframe'});
 
 
   script.

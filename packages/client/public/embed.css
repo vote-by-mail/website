@@ -1,0 +1,55 @@
+/* When gulp runs task 'build' this file is automatically minified so */
+/* users never need to download all the comments/spacing below. */
+
+*[class^="vote-by-mail"] {
+  font-family: 'Open Sans', sans-serif;
+}
+
+.vote-by-mail__wrapper {
+  --primary: #2193f9;
+  --danger: #dc0e52;
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 3px 4px -2px #0003;
+  background-color: #fff;
+  border-radius: 4px;
+
+  /*
+    These are also set by iFrameResizer, just setting this here since
+    the .css file might load faster than the script when minified.
+  */
+  min-height: 600px;
+  min-width: 320px;
+}
+
+.vote-by-mail__wrapper iframe {
+  flex-grow: 1;
+  border-top-right-radius: 4px;
+  border-top-left-radius: 4px;
+}
+
+/* Bottom bar shown below the iframe */
+.vote-by-mail__bottom-bar {
+  height: 50px;
+  border-top: 1px solid var(--danger);
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 0 20px;
+}
+
+.vote-by-mail__branding {
+  display: flex;
+  align-items: center;
+}
+.vote-by-mail__branding p { margin: 0; opacity: 0.5; transition: opacity ease .3s; }
+.vote-by-mail__branding p:hover { opacity: 1; }
+
+.vote-by-mail__branding img {
+  width: 24px; height: 24px;
+  margin-right: 8px;
+}

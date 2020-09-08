@@ -1,4 +1,5 @@
 const gulp = require('gulp')
+const csso = require('gulp-csso')
 const minimist = require('minimist')
 const run = require('@tianhuil/gulp-run-command').default
 const envs = require('../../env/env.js')
@@ -25,12 +26,20 @@ gulp.task('start',
   )
 )
 
+// compile public embed files
+gulp.task('embed', () => {
+  return gulp.src('./public/embed.css')
+    .pipe(csso())
+    .pipe(gulp.dest('./build'))
+})
+
 // build
 gulp.task('build', gulp.series(
   envRequired,
-  runEnv('react-app-rewired build')
+  runEnv('react-app-rewired build'),
+  'embed',
 ))
-  
+
 // test
 gulp.task('test', async () => {
   const watch = options.watch ? '' : '--watchAll=false'
