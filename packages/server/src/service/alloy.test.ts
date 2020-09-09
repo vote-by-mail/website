@@ -2,6 +2,7 @@ import { cacheIsRegistered, toAlloyDate } from './alloy'
 import { RegistrationArgs, RegistrationStatus } from '../common'
 
 
+jest.setTimeout(10000)
 const alloyMock = process.env.ALLOY_MOCK
 
 type RegistrationArgsWithStatus = RegistrationArgs & { status: RegistrationStatus }
@@ -124,6 +125,5 @@ test('Alloy date conversion', () => {
 })
 
 test.each(voters)('Alloy %s Voter', async (voter) => {
-  jest.setTimeout(10000)
   expect((await cacheIsRegistered(voter)).status).toBe(voter.status)
 })
