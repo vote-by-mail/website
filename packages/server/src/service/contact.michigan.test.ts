@@ -2,7 +2,6 @@ import { getMichiganContact } from './contact'
 import { cacheGeocode, toAddress } from './gm'
 import { AddressInputParts } from '../common'
 
-jest.setTimeout(10000)
 type AddressExpected = AddressInputParts & { expected: string }
 
 // from: https://en.wikipedia.org/wiki/List_of_municipalities_in_Michigan
@@ -323,6 +322,8 @@ const addresses: AddressExpected[] = [
     expected: 'Traverse City City:Grand Traverse County'
   },
 ]
+
+beforeAll(() => jest.setTimeout(10000))
 
 test.each(addresses)(
   'Checking Michigan Geocoding %s',

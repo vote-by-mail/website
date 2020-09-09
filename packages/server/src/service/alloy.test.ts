@@ -119,6 +119,8 @@ const voters: RegistrationArgsWithStatus[] = [
   })
 ]
 
+beforeAll(() => jest.setTimeout(10000))
+
 test('Alloy date conversion', () => {
   expect(toAlloyDate('07/31/2020')).toBe('2020-07-31')
   expect(toAlloyDate('02/29/2020')).toBe('2020-02-29')
