@@ -1,5 +1,6 @@
 const gulp = require('gulp')
 const csso = require('gulp-csso')
+const terser = require('gulp-terser')
 const minimist = require('minimist')
 const run = require('@tianhuil/gulp-run-command').default
 const envs = require('../../env/env.js')
@@ -27,10 +28,19 @@ gulp.task('start',
 )
 
 // compile public embed files
-gulp.task('embed', () => {
-  return gulp.src('./public/embed.css')
-    .pipe(csso())
-    .pipe(gulp.dest('./build'))
+gulp.task('embed', async () => {
+  await new Promise(
+    resolve => gulp.src('./public/embed.css')
+      .pipe(csso())
+      .pipe(gulp.dest('./build'))
+      .on('end', resolve())
+  )
+  await new Promise(
+    resolve => gulp.src('./public/embed.js')
+      .pipe(terser())
+      .pipe(gulp.dest('./build'))
+      .on('end', resolve())
+  )
 })
 
 // build

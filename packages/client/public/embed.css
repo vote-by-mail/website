@@ -1,5 +1,4 @@
-/* When gulp runs task 'build' this file is automatically minified so */
-/* users never need to download all the comments/spacing below. */
+/* When gulp finishes task 'build' this file is automatically minified */
 
 *[class^="vote-by-mail"] {
   font-family: 'Open Sans', sans-serif;
