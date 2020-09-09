@@ -170,7 +170,7 @@ const translateButtonLabel = (langCode: LanguageCode) => {
   }
 }
 
-export const useLanguageSuggestion = () => {
+export const suggestLanguageToast = () => {
   // Google translation has some issues translating iframe embeds, we
   // also store if users have clicked on this message using local storage
   // which can also throw errors at embeds.
