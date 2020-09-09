@@ -26,8 +26,8 @@ gulp.task('start',
   )
 )
 
-// compile public css files
-gulp.task('minify', async () => {
+// compile and minify public css files
+gulp.task('minify-css', async () => {
   return gulp.src('./public/*.css')
     .pipe(csso())
     .pipe(gulp.dest('./build'))
@@ -37,7 +37,7 @@ gulp.task('minify', async () => {
 gulp.task('build', gulp.series(
   envRequired,
   runEnv('react-app-rewired build'),
-  'minify',
+  'minify-css',
 ))
 
 // test
