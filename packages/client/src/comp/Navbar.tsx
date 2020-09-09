@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom'
 import { useAppHistory, StartSectionPath } from '../lib/path'
 import { cssQuery } from './util/cssQuery'
 import { processEnvOrThrow } from '../common'
+import { isIframeEmbedded } from '../lib/util'
 
 
 interface NavExpanded {
@@ -269,6 +270,8 @@ const NavLinks = styled.div<NavExpanded>`
   }
 `
 
+const isEmbedded = isIframeEmbedded()
+
 export const Navbar = () => {
   const { pushStartSection } = useAppHistory()
   const [expanded, setExpanded] = React.useState<NavExpanded['expanded']>(null)
@@ -331,36 +334,60 @@ export const Navbar = () => {
         <i className="fa fa-globe"/>
         <i className="fa fa-chevron-down"/>
       </NavToggleButton>
-      {/* Top 5 non-English languages, in order https://en.wikipedia.org/wiki/Languages_of_the_United_States#Most_common_languages */}
+      {/* Top 8 non-English languages, in order https://en.wikipedia.org/wiki/Languages_of_the_United_States#Most_common_languages */}
       <div className='picker' onClick={() => toggleExpanded('translation')}>
-        <a href={`https://translate.google.com/translate?hl=&sl=en&tl=es&u=${url}`}>
+        <a
+          href={`https://translate.google.com/translate?hl=&sl=en&tl=es&u=${url}`}
+          target={isEmbedded ? '_blank' : undefined}
+        >
           <Button translate='no' variant='flat'>Espa&ntilde;ol</Button>
         </a>
-        <a href={`https://translate.google.com/translate?hl=&sl=en&tl=zh-CN&u=${url}`}>
+        <a
+          href={`https://translate.google.com/translate?hl=&sl=en&tl=zh-CN&u=${url}`}
+          target={isEmbedded ? '_blank' : undefined}
+        >
           <Button translate='no' variant='flat'>{'\u7b80\u4f53\u4e2d\u6587'}</Button>
         </a>
-        <a href={`https://translate.google.com/translate?hl=&sl=en&tl=tl&u=${url}`}>
+        <a
+          href={`https://translate.google.com/translate?hl=&sl=en&tl=tl&u=${url}`}
+          target={isEmbedded ? '_blank' : undefined}
+        >
           <Button translate='no' variant='flat'>Filipino</Button>
         </a>
-        <a href={`https://translate.google.com/translate?sl=en&tl=vi&u=${url}`}>
+        <a
+          href={`https://translate.google.com/translate?sl=en&tl=vi&u=${url}`}
+          target={isEmbedded ? '_blank' : undefined}
+        >
           <Button translate='no' variant='flat'>Ti{'\u1ebf'}ng Vi{'\u1ec7'}t</Button>
         </a>
-        <a href={`https://translate.google.com/translate?hl=&sl=en&tl=ar&u=${url}`}>
+        <a
+          href={`https://translate.google.com/translate?hl=&sl=en&tl=ar&u=${url}`}
+          target={isEmbedded ? '_blank' : undefined}
+        >
           <Button translate='no' variant='flat'>
             {'\u0627\u0644\u0639\u0631\u0628\u064a\u0629'}
           </Button>
         </a>
-        <a href={`https://translate.google.com/translate?hl=&sl=en&tl=fr&u=${url}`}>
+        <a
+          href={`https://translate.google.com/translate?hl=&sl=en&tl=fr&u=${url}`}
+          target={isEmbedded ? '_blank' : undefined}
+        >
           <Button translate='no' variant='flat'>
             Fran{'\u00e7'}ais
           </Button>
         </a>
-        <a href={`https://translate.google.com/translate?hl=&sl=en&tl=ko&u=${url}`}>
+        <a
+          href={`https://translate.google.com/translate?hl=&sl=en&tl=ko&u=${url}`}
+          target={isEmbedded ? '_blank' : undefined}
+        >
           <Button translate='no' variant='flat'>
             {'\ud55c\uad6d\uc5b4'}
           </Button>
         </a>
-        <a href={`https://translate.google.com/translate?hl=&sl=en&tl=ru&u=${url}`}>
+        <a
+          href={`https://translate.google.com/translate?hl=&sl=en&tl=ru&u=${url}`}
+          target={isEmbedded ? '_blank' : undefined}
+        >
           <Button translate='no' variant='flat'>
             {'\u0440\u0443\u0441\u0441\u043a\u0438\u0439'}
           </Button>
