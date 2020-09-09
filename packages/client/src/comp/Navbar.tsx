@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom'
 import { useAppHistory, StartSectionPath } from '../lib/path'
 import { cssQuery } from './util/cssQuery'
 import { processEnvOrThrow } from '../common'
+import { isIframeEmbedded } from '../lib/util'
 
 
 interface NavExpanded {
@@ -140,13 +141,17 @@ const NavLinksToggle = styled(NavToggleButton)<NavExpanded>`
   }
 `
 
-const LocaleToggle = styled.div<NavExpanded>`
+// We won't render LocaleToggle if isEmbedded is true, since Google Translate
+// has issues with embedded iframes
+const LocaleToggle = styled.div<NavExpanded & { isEmbedded: boolean }>`
   --rowWidth: 170px;
   --rowHeight: 50px;
   overflow: visible;
 
   /* Keeps as the last item on Navbar */
   ${cssQuery.large} { order: 2; }
+
+  display: ${p => p.isEmbedded ? 'none' : 'initial'};
 
   /* Decreases chevron size */
   button i {
@@ -322,7 +327,7 @@ export const Navbar = () => {
       expanded={expanded}
       onClick={() => setExpanded(null)}
     />
-    <LocaleToggle expanded={expanded}>
+    <LocaleToggle expanded={expanded} isEmbedded={isIframeEmbedded()}>
       <NavToggleButton
         onClick={() => toggleExpanded('translation')}
         expanded={expanded}
@@ -331,7 +336,7 @@ export const Navbar = () => {
         <i className="fa fa-globe"/>
         <i className="fa fa-chevron-down"/>
       </NavToggleButton>
-      {/* Top 5 non-English languages, in order https://en.wikipedia.org/wiki/Languages_of_the_United_States#Most_common_languages */}
+      {/* Top 8 non-English languages, in order https://en.wikipedia.org/wiki/Languages_of_the_United_States#Most_common_languages */}
       <div className='picker' onClick={() => toggleExpanded('translation')}>
         <a href={`https://translate.google.com/translate?hl=&sl=en&tl=es&u=${url}`}>
           <Button translate='no' variant='flat'>Espa&ntilde;ol</Button>

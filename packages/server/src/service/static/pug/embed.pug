@@ -66,6 +66,44 @@ block content
           .vote-by-mail__branding
             img(src=`${env.REACT_APP_URL}/favicon-32x32.png`)
 
+          .vote-by-mail__actions
+            //- Translation toggle button
+            button(
+              class='vote-by-mail__bottom-button'
+              onClick='vbmUtils.toggleTranslationDropdown()'
+            )
+              svg(xmlns='http://www.w3.org/2000/svg' version='1.1' width='8' height='8' viewbox='0 0 448 448' style='margin-right: 2px;')
+                path(class='vote-by-mail__chevron')
+              svg(xmlns='http://www.w3.org/2000/svg' version='1.1' width='14' height='16' viewbox='0 0 384 448')
+                path(class='vote-by-mail__globe')
+
+        //- Renders a translation-dropdown very similar to the one found
+        //- on our website.
+        div(class='vote-by-mail__translation-dropdown dismissed' id='vbm-translation-dropdown')
+          button(
+            onClick=`vbmUtils.translate('es', '${env.REACT_APP_URL}/#/org/${richOrg.id}')`
+          ) Espa&ntilde;ol
+          button(
+            onClick=`vbmUtils.translate('zh-CN', '${env.REACT_APP_URL}/#/org/${richOrg.id}')`
+          ) #{'\u7b80\u4f53\u4e2d\u6587'}
+          button(
+            onClick=`vbmUtils.translate('tl', '${env.REACT_APP_URL}/#/org/${richOrg.id}')`
+          ) Filipino
+          button(
+            onClick=`vbmUtils.translate('vi', '${env.REACT_APP_URL}/#/org/${richOrg.id}')`
+          ) Ti#{'\u1ebf'}ng Vi#{'\u1ec7'}t
+          button(
+            onClick=`vbmUtils.translate('ar', '${env.REACT_APP_URL}/#/org/${richOrg.id}')`
+          ) #{'\u0627\u0644\u0639\u0631\u0628\u064a\u0629'}
+          button(
+            onClick=`vbmUtils.translate('fr', '${env.REACT_APP_URL}/#/org/${richOrg.id}')`
+          ) Fran#{'\u00e7'}ais
+          button(
+            onClick=`vbmUtils.translate('ko', '${env.REACT_APP_URL}/#/org/${richOrg.id}')`
+          ) #{'\ud55c\uad6d\uc5b4'}
+          button(
+            onClick=`vbmUtils.translate('ru', '${env.REACT_APP_URL}/#/org/${richOrg.id}')`
+          ) #{'\u0440\u0443\u0441\u0441\u043a\u0438\u0439'}
 
         //- Scripts
         script(
