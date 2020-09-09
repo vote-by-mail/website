@@ -171,17 +171,16 @@ const translateButtonLabel = (langCode: LanguageCode) => {
 }
 
 export const suggestLanguageToast = () => {
-  // Google translation has some issues translating iframe embeds, we
-  // also store if users have clicked on this message using local storage
-  // which can also throw errors at embeds.
-  if (isIframeEmbedded()) {
-    return
-  }
-
+  const isEmbedded = isIframeEmbedded()
   // Only show this message if users are visiting the page for the first
   // time, or if they have previously clicked on the translate button
   // (If they ignore the toast the message is not shown again)
-  const ignoreTranslationToast = localStorage.getItem('ignoreTranslationToast')
+  //
+  // We ignore the local storage if the user is visiting an embedded page.
+  const ignoreTranslationToast = isEmbedded
+    ? false
+    : localStorage.getItem('ignoreTranslationToast')
+
   if (ignoreTranslationToast) {
     return
   }
@@ -194,9 +193,10 @@ export const suggestLanguageToast = () => {
   if (langName && langName !== 'English') {
     const message = messageForLanguage(langName)
     const TranslateButton = () => (
-      <a href={
-        `https://translate.google.com/translate?hl=&sl=en&tl=${langCode}&u=${url}`
-      }>
+      <a
+        href={`https://translate.google.com/translate?hl=&sl=en&tl=${langCode}&u=${url}`}
+        target={isEmbedded ? '_blank' : undefined}
+      >
         <RoundedButton
           onClick={() => localStorage.removeItem('ignoreTranslationToast')}
         >
@@ -206,6 +206,8 @@ export const suggestLanguageToast = () => {
     )
 
     toast.info(<>{message}<br/><TranslateButton/></>)
-    localStorage.setItem('ignoreTranslationToast', 'true')
+    if (!isEmbedded) {
+      localStorage.setItem('ignoreTranslationToast', 'true')
+    }
   }
 }
