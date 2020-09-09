@@ -33,6 +33,7 @@
     "@types/styled-components": "^5.0.1",
     "@types/styled-react-modal": "^1.2.0",
     "gulp": "^4.0.2",
+    "gulp-csso": "^4.0.1",
     "jest-canvas-mock": "^2.2.0",
     "minimist": "^1.2.5",
     "node-sass": "^4.14.1",
