@@ -2,7 +2,6 @@ import { cacheIsRegistered, toAlloyDate } from './alloy'
 import { RegistrationArgs, RegistrationStatus } from '../common'
 
 
-jest.setTimeout(10000)
 const alloyMock = process.env.ALLOY_MOCK
 
 type RegistrationArgsWithStatus = RegistrationArgs & { status: RegistrationStatus }
