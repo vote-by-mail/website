@@ -4,7 +4,7 @@ import { useAppHistory } from '../lib/path'
 import { InitialDataContainer, VoterContainer, useDeepMemoize } from '../lib/unstated'
 import { initializeAnalytics } from '../lib/analytics'
 import { UTM } from '../common'
-import { useLanguageSuggestion } from '../lib/languages'
+import { suggestLanguageToast } from '../lib/languages'
 
 export const Initialize: React.FC = () => {
   const { oid } = useAppHistory()
@@ -32,7 +32,7 @@ export const Initialize: React.FC = () => {
     })()
   }, [oid, setInitialData])
 
-  React.useEffect(useLanguageSuggestion, [])
+  React.useEffect(suggestLanguageToast, [])
 
   React.useEffect(() => {
     conservativeUpdateVoter(utm)
