@@ -279,6 +279,22 @@ export class FirestoreService {
     return true
   }
 
+  async updateOrgRegistrationUrl(uid: string, oid: string, registrationUrl: string): Promise<boolean> {
+    const org = await this.fetchOrg(oid)
+    if (!org) return false
+    if (!org.user.admins.includes(uid)) return false
+
+    try {
+      // Invalid urls are going to be thrown
+      new URL(registrationUrl)
+    } catch {
+      return false
+    }
+
+    await this.orgRef(oid).update({ registrationUrl })
+    return true
+  }
+
   ////////////////////////////////////////////
   // Cloud Analytics
 

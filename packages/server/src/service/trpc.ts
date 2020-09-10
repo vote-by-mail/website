@@ -40,6 +40,7 @@ export class VbmRpc implements ImplRpc<IVbmRpc, Request> {
       org: {
         name: orgObj?.name,
         privacyUrl: orgObj?.privacyUrl,
+        registrationUrl: orgObj?.registrationUrl,
       },
     })
   }

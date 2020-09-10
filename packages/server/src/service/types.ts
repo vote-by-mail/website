@@ -20,6 +20,7 @@ export interface Org extends _Id {
   privacyUrl?: string
   facebookId?: string
   googleId?: string
+  registrationUrl?: string
   user: {
     owner: string     // Only single owner (creator)
     admins: string[]   // Owner always admin

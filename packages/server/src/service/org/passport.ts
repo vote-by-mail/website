@@ -83,6 +83,7 @@ const editUrl = (oid: string) => `/dashboard/${oid}`
 const downloadUrl = (oid: string) => `/download/${oid}`
 const updateAnalyticsUrl = (oid: string) => `/dashboard/${oid}/updateAnalytics`
 const updateOrgDetailsUrl = (oid: string) => `/dashboard/${oid}/updateOrgDetails`
+const updateOrgRegistrationUrl = (oid: string) => `/dashboard/${oid}/updateOrgRegistrationUrl`
 
 const enrichOrg = (org: Org, uid: string) => ({
   ...org,
@@ -93,6 +94,7 @@ const enrichOrg = (org: Org, uid: string) => ({
   downloadUrl: downloadUrl(org.id ?? ''),
   updateAnalyticsUrl: updateAnalyticsUrl(org.id ?? ''),
   updateOrgDetailsUrl: updateOrgDetailsUrl(org.id ?? ''),
+  updateOrgRegistrationUrl: updateOrgRegistrationUrl(org.id ?? '')
 })
 
 export const registerPassportEndpoints = (app: Express.Application) => {
@@ -204,6 +206,20 @@ export const registerPassportEndpoints = (app: Express.Application) => {
         req.flash('success', `Updated org details for "${oid}".`)
       } else {
         req.flash('danger', `Failed to update org details for "${oid}", please check your privileges or try again in a few minutes.`)
+      }
+      return res.redirect(editUrl(oid))
+    }
+  )
+
+  app.post('/dashboard/:oid/updateOrgRegistrationUrl', validSession, orgPermissions('admins'),
+    async (req, res) => {
+      const { oid } = req.params
+      const uid = getUid(req)
+      const { registrationUrl } = req.body
+      if (await firestoreService.updateOrgRegistrationUrl(uid, oid, registrationUrl)) {
+        req.flash('success', `Updated voters registration URL for "${oid}".`)
+      } else {
+        req.flash('danger', `Failed to update voters registration URL for "${oid}", please check your privileges or try again in a few minutes.`)
       }
       return res.redirect(editUrl(oid))
     }
