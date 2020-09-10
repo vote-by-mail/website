@@ -195,7 +195,8 @@ export const suggestLanguageToast = () => {
     const TranslateButton = () => (
       <a
         href={`https://translate.google.com/translate?hl=&sl=en&tl=${langCode}&u=${url}`}
-        target={isEmbedded ? '_blank' : undefined}
+        target='_blank'
+        rel='noopener noreferrer'
       >
         <RoundedButton
           onClick={() => localStorage.removeItem('ignoreTranslationToast')}
