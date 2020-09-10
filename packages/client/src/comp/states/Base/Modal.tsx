@@ -3,7 +3,7 @@ import { StyledModal } from '../../util/StyledModal'
 import { BaseRegistrationStatus } from './Registration'
 import { RoundedButton } from '../../util/Button'
 import styled from 'styled-components'
-import { AddressContainer } from '../../../lib/unstated'
+import { AddressContainer, InitialDataContainer } from '../../../lib/unstated'
 import { getStatePortal } from '../../../common/statePortal'
 
 interface Props {
@@ -37,13 +37,23 @@ const statusMessage = (registrationStatus: BaseRegistrationStatus) => {
 
   const state = locale?.state
   const statePortal = state ? getStatePortal(state) : null
+  const { initialData } = InitialDataContainer.useContainer()
+  const { registrationUrl, name } = initialData.org
+
+  const RegistrationMessage = () => {
+    if (!statePortal) return null
+    return registrationUrl
+      ? <p>
+        You can register to vote online for {state} through <a href={registrationUrl}>{name ?? 'your org'}</a>, or using <a href={statePortal}>{state}&apos;s State Portal</a>.
+      </p>
+      : <p>
+        You can register to vote online for {state} <a href={statePortal}>here</a>.
+      </p>
+  }
 
   return <>
     <p>Based on our search of public records, you are not currently registered to vote at this address.</p>
-    {
-      statePortal &&
-      <p>You can register to vote online for <a href={statePortal}>{state}</a> here.</p>
-    }
+    <RegistrationMessage/>
     {doubleCheck}
   </>
 }
