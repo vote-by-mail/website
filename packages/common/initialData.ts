@@ -1,6 +1,7 @@
 export interface OrgDetails {
   name?: string
   privacyUrl?: string
+  registrationUrl?: string
 }
 
 export interface FeatureFlags {
