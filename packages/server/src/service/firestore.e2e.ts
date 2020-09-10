@@ -127,4 +127,20 @@ describe('roles and permissions', () => {
     await expect(fs.updateOrgDetails(uids[0], oid, details)).resolves.toBe(true)
     await expect(fs.updateOrgDetails(uids[1], oid, details)).resolves.toBe(false)
   })
+
+  test('only privileged users can update org registration URL', async () => {
+    const url = 'https://www.example.com'
+    await expect(fs.updateOrgRegistrationUrl(uids[0], oid, url)).resolves.toBe(true)
+    await expect(fs.updateOrgRegistrationUrl(uids[1], oid, url)).resolves.toBe(false)
+  })
+
+  test('only valid URLs are accepted as orgs registration URLs', async () => {
+    const validUrlHTTPS = 'https://www.example.com/some/page/php.php'
+    const validUrlHTTP = 'http://www.example.com/other/page/dot.aspx'
+    const invalidUrl = 'foo.bar'
+
+    await expect(fs.updateOrgRegistrationUrl(uids[0], oid, validUrlHTTPS)).resolves.toBe(true)
+    await expect(fs.updateOrgRegistrationUrl(uids[0], oid, validUrlHTTP)).resolves.toBe(true)
+    await expect(fs.updateOrgRegistrationUrl(uids[0], oid, invalidUrl)).resolves.toBe(false)
+  })
 })

@@ -29,6 +29,17 @@ block content
               button.btn.btn-primary(type='submit') Update
 
         .card.mt-5.p-3
+          h4.text-primary Org Registration URL
+          form(action=richOrg.updateOrgRegistrationUrl method='post')
+            .form-group
+              input(type='url' class='form-control' id='registrationUrl' name='registrationUrl' placeholder='URL where voters can register to vote' value=richOrg.registrationUrl)
+              small.form-text.text-muted(id='registrationUrl').
+                Set a custom destination where users can register to vote.
+
+            .d-flex.justify-content-end
+              button.btn.btn-primary(type='submit') Update
+
+        .card.mt-5.p-3
           h4.text-primary Analytics Ids
           form(action=richOrg.updateAnalyticsUrl method='post')
             .form-group
