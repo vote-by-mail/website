@@ -9,7 +9,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [12.x]
+        node-version: [12.x, 14.x]
 
     steps:
     - uses: actions/checkout@v2
@@ -17,6 +17,7 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+      if: matrix.node-version == '12.x'
 
     # Cache node_modules
     - name: Cache ~/.npm
@@ -24,41 +25,57 @@ jobs:
       with:
         path: ~/.npm  # npm cache files are stored in `~/.npm` on Linux/macOS
         key: npm--${{ runner.os }}-${{ matrix.node-version }}
+      if: matrix.node-version == '12.x'
     - name: cache node_modules/
       uses: actions/cache@v2
       with:
         path: node_modules
         key: node-modules--${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('yarn.lock') }}
+      if: matrix.node-version == '12.x'
+
     - name: cache packages/client/node_modules/
       uses: actions/cache@v2
       with:
         path: packages/client/node_modules
         key: packages/client/node-modules--${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('yarn.lock') }}
+      if: matrix.node-version == '12.x'
+
     - name: cache packages/common/node_modules/
       uses: actions/cache@v2
       with:
         path: packages/common/node_modules
         key: packages/common/node-modules--${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('yarn.lock') }}
+      if: matrix.node-version == '12.x'
+
     - name: cache packages/server/node_modules/
       uses: actions/cache@v2
       with:
         path: packages/server/node_modules
         key: packages/server/node-modules--${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('yarn.lock') }}
+      if: matrix.node-version == '12.x'
+
     - name: cache packages/server/src/service/cache
       uses: actions/cache@v2
       with:
         path: packages/server/src/service/cache
         key: packages/server/src/service/cache-2
+      if: matrix.node-version == '12.x'
+
     - name: Install Lerna
       run: npm install --global lerna
+      if: matrix.node-version == '12.x'
+
     - name: Boostrap
       run: yarn bootstrap
+      if: matrix.node-version == '12.x'
 
     # Back to doing real work
     - name: Build
       run: yarn build
+      if: matrix.node-version == '12.x'
     - name: Lint
       run: yarn lint
+      if: matrix.node-version == '12.x'
     - name: Test
       run: yarn test
       env:
@@ -66,3 +83,4 @@ jobs:
         GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_KEY }}
         ALLOY_SANDBOX_API_KEY: ${{ secrets.ALLOY_SANDBOX_API_KEY }}
         ALLOY_SANDBOX_API_SECRET: ${{ secrets.ALLOY_SANDBOX_API_SECRET }}
+      if: matrix.node-version == '12.x'
