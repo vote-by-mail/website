@@ -284,11 +284,13 @@ export class FirestoreService {
     if (!org) return false
     if (!org.user.admins.includes(uid)) return false
 
-    try {
-      // Invalid urls are going to be thrown
-      new URL(registrationUrl)
-    } catch {
-      return false
+    if (registrationUrl) {
+      try {
+        // Invalid urls are going to be thrown
+        new URL(registrationUrl)
+      } catch {
+        return false
+      }
     }
 
     await this.orgRef(oid).update({ registrationUrl })
