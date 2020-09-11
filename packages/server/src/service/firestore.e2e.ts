@@ -137,10 +137,12 @@ describe('roles and permissions', () => {
   test('only valid URLs are accepted as orgs registration URLs', async () => {
     const validUrlHTTPS = 'https://www.example.com/some/page/php.php'
     const validUrlHTTP = 'http://www.example.com/other/page/dot.aspx'
+    const validEmptyUrl = ''
     const invalidUrl = 'foo.bar'
 
     await expect(fs.updateOrgRegistrationUrl(uids[0], oid, validUrlHTTPS)).resolves.toBe(true)
     await expect(fs.updateOrgRegistrationUrl(uids[0], oid, validUrlHTTP)).resolves.toBe(true)
+    await expect(fs.updateOrgRegistrationUrl(uids[0], oid, validEmptyUrl)).resolves.toBe(true)
     await expect(fs.updateOrgRegistrationUrl(uids[0], oid, invalidUrl)).resolves.toBe(false)
   })
 })

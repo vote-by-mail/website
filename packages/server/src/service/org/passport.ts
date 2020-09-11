@@ -217,7 +217,7 @@ export const registerPassportEndpoints = (app: Express.Application) => {
       const uid = getUid(req)
       const { registrationUrl } = req.body
       if (await firestoreService.updateOrgRegistrationUrl(uid, oid, registrationUrl)) {
-        req.flash('success', `Updated voters registration URL for "${oid}".`)
+        req.flash('success', `${registrationUrl ? 'Updated' : 'Removed'} voters registration URL for "${oid}".`)
       } else {
         req.flash('danger', `Failed to update voters registration URL for "${oid}", please check your privileges or try again in a few minutes.`)
       }
