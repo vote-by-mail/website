@@ -38,17 +38,13 @@ const statusMessage = (registrationStatus: BaseRegistrationStatus) => {
   const state = locale?.state
   const statePortal = state ? getStatePortal(state) : null
   const { initialData } = InitialDataContainer.useContainer()
-  const { registrationUrl, name } = initialData.org
+  const { registrationUrl } = initialData.org
 
   const RegistrationMessage = () => {
     if (!statePortal) return null
-    return registrationUrl
-      ? <p>
-        You can register to vote online for {state} through <a href={registrationUrl}>{name ?? 'your org'}</a>, or using <a href={statePortal}>{state}&apos;s State Portal</a>.
-      </p>
-      : <p>
-        You can register to vote online for {state} <a href={statePortal}>here</a>.
-      </p>
+    return <p>
+      You can register to vote online for {state} <a href={registrationUrl || statePortal}>here</a>.
+    </p>
   }
 
   return <>
