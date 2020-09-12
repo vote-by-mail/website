@@ -31,7 +31,7 @@ export const sendAndStoreSignup = async (
     { pdfBuffer, id },
   )
   if (!mgResponse || mgResponse.message !== 'Queued. Thank you.') {
-    console.error('Error sending email for ' + info.id + '. Exiting.')
+    console.error('Error sending email for ' + info.id + '.')
     console.error(mgResponse)
     return
   }
@@ -47,7 +47,13 @@ export const sendAndStoreSignup = async (
     await file.upload(pdfBuffer)
   } else {
     file = storageFileFromId(id)
-    await file.upload(pdfBuffer)
+    // We have scripts that tests registering in batches, these scripts use
+    // fake_voter@votebymail.io as a fake email address; to avoid storing
+    // needless amount of files we only upload/save files when voters'
+    // email are different from this
+    if (info.email !== 'fake_voter@votebymail.io') {
+      await file.upload(pdfBuffer)
+    }
   }
 
   // Send faxes
@@ -58,16 +64,16 @@ export const sendAndStoreSignup = async (
     twilioResponses = resposnes.map(({url, sid, status}) => ({url, sid, status}))
 
     for (const twilioResponse of twilioResponses) {
-      if (twilioResponse.status !== "queued") {
-        console.error(`Error sending faxes for ${info.id ?? id}. Exiting.`)
+      if (twilioResponse.status !== 'queued') {
+        console.error(`Error sending faxes for ${info.id ?? id}.`)
         console.error(twilioResponse)
         return
       }
     }
   }
 
+  // Update voter data in firestore.
   if (isResend) {
-    // Update voter data in firestore.
     const resend = { dateTime: new Date().getTime(), reason: resendReasonAndOriginalDate }
     await firestoreService
       .db
@@ -77,6 +83,5 @@ export const sendAndStoreSignup = async (
         resends: admin.firestore.FieldValue.arrayUnion(resend)
       })
   }
-
   await firestoreService.updateRegistration(id, mgResponse, twilioResponses)
 }
