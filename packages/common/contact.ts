@@ -99,6 +99,32 @@ const toAllowableMethod = (contact: ContactData): PartialContactMethod => {
 }
 
 /**
+ * It's possible to decide whether to increment old emails or replace them
+ * entirely
+ */
+interface ContactDataOverride extends Partial<ContactData> {
+  /** Defaults to replace when undefined */
+  emailOverrideMethod?: 'increment' | 'replace'
+}
+
+export const contactOverride: Record<string, ContactDataOverride> = {
+  ':apache county': {
+    emailOverrideMethod: 'increment',
+    emails: [
+      'voterreg@co.apache.az.us',
+      'budall@co.apache.az.us',
+    ],
+  },
+  ':erie county': {
+    emailOverrideMethod: 'replace',
+    emails: [
+      'boeabsentee@erie.gov',
+    ],
+  },
+}
+
+
+/**
  * Returns a ContactMethod or null.
  * Always returns null if no email or fax numbers allowed.
  **/

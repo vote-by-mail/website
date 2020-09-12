@@ -1,5 +1,5 @@
 import { RawContact } from './type'
-import { Locale, isAvailableState, ContactData, AvailableState } from '../../common'
+import { Locale, isAvailableState, ContactData, AvailableState, contactOverride } from '../../common'
 import { keys } from './search'
 import { contactRecords, michiganRecords } from './loader'
 import { michiganFipsCode } from '../michiganFipsCode'
@@ -53,7 +53,27 @@ export const toContact = async (locale: Locale): Promise<ContactData | null> => 
 
   for (const key of keys(locale as Locale<AvailableState>)) {
     const result = await getContact(state, key)
-    if (result) return result
+    if (result) {
+      if (contactOverride[result.key]) {
+        const override = {...contactOverride[result.key]}
+        if (override.emails) {
+          const { emailOverrideMethod } = override
+          override.emails = emailOverrideMethod === 'increment' && result.emails
+            ? [...override.emails, ...result.emails]
+            : override.emails
+        }
+
+        // So we don't store this on our servers
+        delete override.emailOverrideMethod
+
+        return {
+          ...result,
+          ...override,
+        }
+      }
+
+      return result
+    }
   }
   return null
 }
