@@ -1,6 +1,8 @@
 import { contactRecords, michiganRecords } from './loader'
 import { availableStates } from '../../common'
 
+beforeAll(() => jest.setTimeout(10000))
+
 describe('Contact loader', () => {
   test.each(availableStates)(
     `Non-trivial normalized records for %i`,

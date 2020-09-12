@@ -2,6 +2,7 @@ import { Address, sampleAddresses, toLocale, toContactMethod, AvailableState, is
 import { toContact } from '.'
 import { cacheGeocode, toAddress } from '../gm'
 
+beforeAll(() => jest.setTimeout(10000))
 
 describe('Google Maps is returning stable results', () => {
   const table: AddressData[] = Object
