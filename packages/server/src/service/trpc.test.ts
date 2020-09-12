@@ -5,11 +5,13 @@ import { Request } from 'express'
 import { sendFaxes as unmockedSendFaxes } from './twilio'
 import { isE164 } from '../common'
 import { createMock } from 'ts-auto-mock'
+import { sendSignupEmail } from './mg'
 
 // To avoid doing actual requests (and setting a lot of new envs for tests),
 // we mock the majority of functions/modules related to trpc.
 
 jest.mock('./mg')
+mocked(sendSignupEmail).mockResolvedValue({ message: 'Queued. Thank you.', id: 'foobar' })
 jest.mock('./twilio')
 jest.mock('./firestore')
 jest.mock('./pdf')
@@ -44,10 +46,7 @@ test('trpc.register uses e164 number on sendFaxes', async () => {
       remoteAddress: '127.0.0.1',
     }
   })
-  const res = await trpc.register(stateInfo, { uid: 'abcdefghij' }, req)
-  // Ensures res.data is processed
-  const cont = res?.continuation as () => Promise<void>
-  await cont()
+  await trpc.register(stateInfo, { uid: 'abcdefghij' }, req)
 
   expect(sendFaxes).toHaveBeenCalledTimes(1)
   // [ [ 'url', [ '+12078763198' ] ] ]
