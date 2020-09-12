@@ -71,7 +71,7 @@ const development = removeNullValues({
   GOOGLE_STORAGE_BUCKET: 'vbm-dev-281822.appspot.com',
   DEV_SERVER_PORT: 8080,
   REACT_APP_DEFAULT_ADDRESS: 1,
-  REACT_APP_TIMEOUT: 2000,
+  REACT_APP_TIMEOUT: 10000,
   DEV_EMAIL: 'email@example.com',
   NUNJUNKS_DISABLE_CACHE: 1,
   REACT_APP_MOCK: 1,
@@ -146,7 +146,7 @@ const test = removeNullValues((() => {
     FIRESTORE_URL: 'http://localhost:8081',  // for e2e tests with firestore emulator
     NODE_ENV: 'test',
     REACT_APP_SERVER: 'https://example.com',
-    REACT_APP_TIMEOUT: 2000,
+    REACT_APP_TIMEOUT: 10000,
     FIRESTORE_EMULATOR_HOST: 'localhost:8081',
     MG_DISABLE: 1,
     TWILIO_DISABLE: 1,
