@@ -55,20 +55,9 @@ export const toContact = async (locale: Locale): Promise<ContactData | null> => 
     const result = await getContact(state, key)
     if (result) {
       if (contactOverride[result.key]) {
-        const override = {...contactOverride[result.key]}
-        if (override.emails) {
-          const { emailOverrideMethod } = override
-          override.emails = emailOverrideMethod === 'increment' && result.emails
-            ? [...override.emails, ...result.emails]
-            : override.emails
-        }
-
-        // So we don't store this on our servers
-        delete override.emailOverrideMethod
-
         return {
           ...result,
-          ...override,
+          ...contactOverride[result.key],
         }
       }
 
