@@ -284,7 +284,7 @@ export class FirestoreService {
     if (!org) return false
     if (!org.user.admins.includes(uid)) return false
 
-    if (registrationUrl) {
+    if (registrationUrl) { // allow empty URLs
       try {
         // Invalid urls are going to be thrown
         new URL(registrationUrl)
