@@ -1,26 +1,18 @@
 import React from 'react'
 
-import Select from 'muicss/lib/react/select'
-import Option from 'muicss/lib/react/option'
-
-
-import { ArizonaInfo, isArizonaParty, arizonaParty, arizonaIdentityType, isArizonaIdentity, primaryEligible } from '../../common'
+import { Select } from '../util/Select'
+import { ArizonaInfo, arizonaParty, arizonaIdentityType, primaryEligible, ArizonaParty, ArizonaIdentityType } from '../../common'
 import { Base } from './Base'
-import { useControlRef } from '../util/ControlRef'
 import { BaseInput } from '../util/Input'
 
 export const Arizona = () => {
   const arizonaPrimary = primaryEligible('Arizona')
-  const partyRef = useControlRef<Select>()
-  const idTypeRef = useControlRef<Select>()
-  const idDataRef = useControlRef<Select>()
+  const [ party, setParty ] = React.useState<ArizonaParty>(arizonaParty[0])
+  const [ idType, setIdType ] = React.useState<ArizonaIdentityType>(arizonaIdentityType[0])
+  const [ idData, setIdData ] = React.useState<string>('')
 
   return <Base<ArizonaInfo>
     enrichValues={(info) => {
-      const idType  = idTypeRef.value()
-      if (!isArizonaIdentity(idType)) return null
-
-      const idData = idDataRef.value()
       if (!idData) return null
 
       const base: ArizonaInfo = {
@@ -31,31 +23,34 @@ export const Arizona = () => {
       }
 
       if (arizonaPrimary) {
-        const party  = partyRef.value()
-        if (!isArizonaParty(party)) return null
         base.party = party
       }
 
       return base
     }}
   >
-    {arizonaPrimary && <Select ref={partyRef} label='Party for Primary Ballot' defaultValue='Select' {...{required: true}}>
-      <Option key={0} hidden={true}/>
-      {[...arizonaParty].sort().map((value, key) => {
-        return <Option value={value} key={key+1} label={value}/>
-      })}
-    </Select>}
+    {arizonaPrimary &&
+      <Select
+        label='Party for Primary Ballot'
+        value={party}
+        onChange={v => setParty(v)}
+        options={[...arizonaParty]}
+        {...{required: true}}
+      />
+    }
     <p>Arizona requires voters to confirm their identify using one of the following types of identification</p>
-    <Select ref={idTypeRef} label='Identification Type' defaultValue='Select' {...{required: true}}>
-      <Option key={0} hidden={true}/>
-      {[...arizonaIdentityType].sort().map((value, key) => {
-        return <Option value={value} key={key+1} label={value}/>
-      })}
-    </Select>
+    <Select
+      label='Identification Type'
+      value={idType}
+      onChange={v => setIdType(v)}
+      options={[...arizonaIdentityType]}
+      {...{required: true}}
+    />
     <BaseInput
       id='identityData'
-      ref={idDataRef}
       label='Identity Information'
+      value={idData}
+      onChange={e => setIdData(e.currentTarget.value)}
       required={true}
     />
   </Base>

@@ -92,11 +92,9 @@ interface SignatureBaseInfo extends BaseInfo {
 
 export const arizonaParty = ['Democratic Party', 'Republican Party', 'Non-Partisan', 'Green Party (Pima County only)'] as const
 export type ArizonaParty = (typeof arizonaParty)[number]
-export const isArizonaParty = (x: string | null): x is ArizonaParty => arizonaParty.includes(x as ArizonaParty)
 
 export const arizonaIdentityType = ['Arizona License Number', 'Last 4 numbers of SSN', 'Place of Birth'] as const
 export type ArizonaIdentityType = (typeof arizonaIdentityType)[number]
-export const isArizonaIdentity = (x: string | null): x is ArizonaIdentityType => arizonaIdentityType.includes(x as ArizonaIdentityType)
 
 export interface ArizonaInfo extends _Id, BaseInfo{
   state: 'Arizona'
@@ -116,7 +114,6 @@ export interface MichiganInfo extends _Id, SignatureBaseInfo {
 
 export const georgiaParty = ['Democratic Party', 'Republican Party', 'Non-Partisan'] as const
 export type GeorgiaParty = (typeof georgiaParty)[number]
-export const isGeorgiaParty = (x: string | null): x is GeorgiaParty => georgiaParty.includes(x as GeorgiaParty)
 
 export interface GeorgiaInfo extends _Id, SignatureBaseInfo {
   // mailingAddress must be in a different county
@@ -152,7 +149,6 @@ export interface MassachusettsInfo extends _Id, SignatureBaseInfo {
 
 export const minnesotaIdentityType = ['Minnesota Issued Driver\'s License or ID Card', 'Last 4 numbers of SSN', 'None'] as const
 export type MinnesotaIdentityType = (typeof minnesotaIdentityType)[number]
-export const isMinnesotaIdentity = (x: string | null): x is MinnesotaIdentityType => minnesotaIdentityType.includes(x as MinnesotaIdentityType)
 
 export interface MinnesotaInfo extends _Id, SignatureBaseInfo {
   state: 'Minnesota'
@@ -171,9 +167,6 @@ export interface NevadaInfo extends _Id, SignatureBaseInfo {
 
 export const newHampshirePrimaryParty = ['No Primary', 'Democratic Party', 'Republican Party'] as const
 export type NewHampshirePrimaryParty = (typeof newHampshirePrimaryParty)[number]
-export const isNewHampshirePrimaryParty = (
-  x: string | null
-): x is NewHampshirePrimaryParty => newHampshirePrimaryParty.includes(x as NewHampshirePrimaryParty)
 
 export interface NewHampshireInfo extends _Id, SignatureBaseInfo {
   state: 'New Hampshire'
@@ -184,9 +177,8 @@ export interface NewYorkInfo extends _Id, BaseInfo {
   state: 'New York'
 }
 
-export const northCarolinaIdentityType = ['North Carolina License Number', 'Last 4 numbers of SSN'] as const
+export const northCarolinaIdentityType = ['Last 4 numbers of SSN', 'North Carolina License Number'] as const
 export type NorthCarolinaIdentityType = (typeof northCarolinaIdentityType)[number]
-export const isNorthCarolinaIdentity = (x: string | null): x is NorthCarolinaIdentityType => northCarolinaIdentityType.includes(x as NorthCarolinaIdentityType)
 
 export interface NorthCarolinaInfo extends _Id, SignatureBaseInfo {
   state: 'North Carolina'

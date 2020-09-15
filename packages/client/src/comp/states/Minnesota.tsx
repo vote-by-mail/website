@@ -1,22 +1,15 @@
 import React from 'react'
 
-import Select from 'muicss/lib/react/select'
-import Option from 'muicss/lib/react/option'
-
-import { MinnesotaInfo, minnesotaIdentityType, isMinnesotaIdentity} from '../../common'
+import { Select } from '../util/Select'
+import { MinnesotaInfo, minnesotaIdentityType, MinnesotaIdentityType } from '../../common'
 import { SignatureBase, StatelessInfo, NoSignature } from './Base'
-import { useControlRef } from '../util/ControlRef'
 import { BaseInput } from '../util/Input'
 
 export const Minnesota = () => {
-  const idTypeRef = useControlRef<Select>()
-  const idDataRef = useControlRef<Select>()
+  const [ idType, setIdType ] = React.useState<MinnesotaIdentityType>(minnesotaIdentityType[0])
+  const [ idData, setIdData ] = React.useState<string>('')
 
   const enrichValues = (baseInfo: StatelessInfo): NoSignature<MinnesotaInfo> | null => {
-    const idType  = idTypeRef.value()
-    if (!isMinnesotaIdentity(idType)) return null
-
-    const idData = idDataRef.value()
     if (!idData) return null
 
     return {
@@ -29,20 +22,25 @@ export const Minnesota = () => {
 
   return <SignatureBase<MinnesotaInfo>enrichValues={enrichValues}>
     <p>Minnesota requires voters to confirm their identify using one of the following types of identification</p>
-    <Select ref={idTypeRef} label='Identification Type' defaultValue='Select' {...{required: true}}>
-      <Option key={0} hidden={true}/>
-      {[...minnesotaIdentityType].sort().map((value, key) => {
-        return <Option value={value} key={key+1} label={value}/>
-      })}
-    </Select>
-    <p>Enter the relevant information based on your choice above.  If &apos;None&apos; 
+    <Select
+      label='Identification Type'
+      value={idType}
+      options={[...minnesotaIdentityType]}
+      onChange={v => setIdType(v)}
+      {...{required: true}}
+    />
+    <p>Enter the relevant information based on your choice above.  If &apos;None&apos;
       please confirm by typing &apos;None&apos;:
     </p>
     <BaseInput
       id='identityData'
-      ref={idDataRef}
       label='Identity Information'
+      value={idData}
+      onChange={e => setIdData(e.currentTarget.value)}
       required={true}
+      // HTML patterns are never case insensitive, manually creating a regexp
+      // that allows users to ignore case here
+      pattern={idType === 'None' ? '^(\\s*)(N|n)(O|o)(N|n)(E|e)(\\s*)$' : undefined}
     />
   </SignatureBase>
 }
