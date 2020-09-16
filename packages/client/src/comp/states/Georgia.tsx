@@ -6,7 +6,7 @@ import { SignatureBase, StatelessInfo, NoSignature } from './Base'
 import { Select } from '../util/Select'
 
 export const Georgia = () => {
-  const [ party, setParty ] = React.useState<GeorgiaParty>(georgiaParty[0])
+  const [ party, setParty ] = React.useState<GeorgiaParty>('Democratic Party')
   const georgiaPrimary = primaryEligible('Georgia')
 
   const enrichValues = (baseInfo: StatelessInfo): NoSignature<GeorgiaInfo> | null => {
@@ -27,10 +27,9 @@ export const Georgia = () => {
     return <SignatureBase<GeorgiaInfo> enrichValues={enrichValues}>
       <Select
         label='Party for Primary Ballot'
-        options={[...georgiaParty]}
+        options={georgiaParty}
         value={party}
         onChange={v => setParty(v)}
-        {...{required: true}}
       />
     </SignatureBase>
   }

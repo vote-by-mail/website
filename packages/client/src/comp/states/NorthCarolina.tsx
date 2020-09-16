@@ -8,7 +8,7 @@ import { BaseInput, DateInput } from '../util/Input'
 import { Togglable } from '../util/Togglable'
 
 export const NorthCarolina = () => {
-  const [ idType, setIdType ] = React.useState<NorthCarolinaIdentityType>(northCarolinaIdentityType[0])
+  const [ idType, setIdType ] = React.useState<NorthCarolinaIdentityType>('Last 4 numbers of SSN')
   const [ idData, setIdData ] = React.useState<string>('')
   const [ dateMoved, setDateMoved ] = React.useState<string>('')
 
@@ -28,17 +28,16 @@ export const NorthCarolina = () => {
     <p>North Carolina requires voters to confirm their identify using one of the following types of identification</p>
     <Select
       label='Identification Type'
-      options={[...northCarolinaIdentityType]}
+      options={northCarolinaIdentityType}
       value={idType}
       onChange={v => setIdType(v)}
-      {...{required: true}}
     />
     <BaseInput
       id='identityData'
       value={idData}
       onChange={e => setIdData(e.currentTarget.value)}
       label='Identity Information'
-      pattern='\d\d\d\d+'
+      pattern='\d{4,}'
       required={true}
     />
     <Togglable
