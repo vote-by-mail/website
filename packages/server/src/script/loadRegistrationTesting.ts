@@ -65,7 +65,7 @@ const loadRegistrationTesting = async (qps: number, duration: number): Promise<Q
           }
         } catch(error) {
           return {
-            error,
+            error: `${error}`, // Always converts errors to strings
             duration,
             ms,
             qps,
