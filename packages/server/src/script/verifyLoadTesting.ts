@@ -60,7 +60,7 @@ timestamp >= "${isoTimeString}"`
 `Of all ${total} emails sent, we successfully got from trpc ${ids.length} IDs.
 In our logs (Google Logging) ${total - inOurLogs} are absent (Mailgun hasn't send these emails yet).
 
-Detailed results:
+Details of messages sent and stored in Google Logging:
 accepted: ${result['accepted']}
 rejected: ${result['rejected']}
 delivered: ${result['delivered']}
