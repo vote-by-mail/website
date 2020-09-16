@@ -30,7 +30,6 @@ timestamp >= "${isoTimeString}"`
   console.log('Querying cycle results, this might take a while...\n')
   const entries = await logging.log('mailgun-log').getEntries({ filter })
 
-  // Logging entries might be nested
   const result: Record<MailgunEventType, number> = {
     accepted: 0,
     rejected: 0,
