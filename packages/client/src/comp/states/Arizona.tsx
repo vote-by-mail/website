@@ -7,8 +7,8 @@ import { BaseInput } from '../util/Input'
 
 export const Arizona = () => {
   const arizonaPrimary = primaryEligible('Arizona')
-  const [ party, setParty ] = React.useState<ArizonaParty>(arizonaParty[0])
-  const [ idType, setIdType ] = React.useState<ArizonaIdentityType>(arizonaIdentityType[0])
+  const [ party, setParty ] = React.useState<ArizonaParty>('Democratic Party')
+  const [ idType, setIdType ] = React.useState<ArizonaIdentityType>('Arizona License Number')
   const [ idData, setIdData ] = React.useState<string>('')
 
   return <Base<ArizonaInfo>
@@ -34,8 +34,7 @@ export const Arizona = () => {
         label='Party for Primary Ballot'
         value={party}
         onChange={v => setParty(v)}
-        options={[...arizonaParty]}
-        {...{required: true}}
+        options={arizonaParty}
       />
     }
     <p>Arizona requires voters to confirm their identify using one of the following types of identification</p>
@@ -43,8 +42,7 @@ export const Arizona = () => {
       label='Identification Type'
       value={idType}
       onChange={v => setIdType(v)}
-      options={[...arizonaIdentityType]}
-      {...{required: true}}
+      options={arizonaIdentityType}
     />
     <BaseInput
       id='identityData'

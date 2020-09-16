@@ -5,7 +5,7 @@ import { NewHampshireInfo, newHampshirePrimaryParty, primaryEligible, NewHampshi
 import { SignatureBase } from './Base'
 
 export const NewHampshire = () => {
-  const [ primaryParty, setPrimaryParty ] = React.useState<NewHampshirePrimaryParty>(newHampshirePrimaryParty[0])
+  const [ primaryParty, setPrimaryParty ] = React.useState<NewHampshirePrimaryParty>('Democratic Party')
   const newHampshirePrimary = primaryEligible('New Hampshire')
 
   return <SignatureBase<NewHampshireInfo>
@@ -26,10 +26,9 @@ export const NewHampshire = () => {
     {newHampshirePrimary &&
       <Select
         label='Party for Primary Ballot'
-        options={[...newHampshirePrimaryParty]}
+        options={newHampshirePrimaryParty}
         value={primaryParty}
         onChange={v => setPrimaryParty(v)}
-        {...{required: true}}
       />
     }
   </SignatureBase>
