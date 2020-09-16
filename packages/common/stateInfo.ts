@@ -22,6 +22,7 @@ export const implementedStates = [
   'New Hampshire',
   'New York',
   'North Carolina',
+  'North Dakota',
   'Oklahoma',
   'Virginia',
   'West Virginia',
@@ -53,6 +54,7 @@ const stateSignatureType: StateSignatureType = {
   'New Hampshire': 'upload',
   'New York': 'both',
   'North Carolina': 'both',
+  'North Dakota': 'both',
   'Oklahoma': 'both',
   'Virginia': 'both',
   'West Virginia': 'both',
@@ -189,6 +191,21 @@ export interface NorthCarolinaInfo extends _Id, SignatureBaseInfo {
   dateMoved?: string
 }
 
+export const northDakotaIdentityType = ['North Dakota License Number', 'Non Driver ID', 'Tribal ID Number'] as const
+export type NorthDakotaIdentityType = (typeof northDakotaIdentityType)[number]
+export const isNorthDakotaIdentity = (x: string | null): x is NorthDakotaIdentityType => northDakotaIdentityType.includes(x as NorthDakotaIdentityType)
+
+export const northDakotaElectionType = ['Primary', 'General', 'Both', 'City', 'School', 'Special'] as const
+export type NorthDakotaElectionType = (typeof northDakotaElectionType)[number]
+export const isNorthDakotaElectionType = (x: string | null): x is NorthDakotaElectionType => northDakotaElectionType.includes(x as NorthDakotaElectionType)
+
+export interface NorthDakotaInfo extends _Id, SignatureBaseInfo {
+  state: 'North Dakota'
+  electionType: NorthDakotaElectionType // one of these options must be selected
+  idType: NorthDakotaIdentityType // only handling case where an applicant has an ID number
+  idNumber: string
+}
+
 export interface OklahomaInfo extends _Id, SignatureBaseInfo {
   state: 'Oklahoma'
 }
@@ -242,6 +259,7 @@ export type StateInfo = (
   | NewYorkInfo
   | NewHampshireInfo
   | NorthCarolinaInfo
+  | NorthDakotaInfo
   | OklahomaInfo
   | VirginiaInfo
   | WestVirginiaInfo

@@ -14,6 +14,7 @@ import { Nevada } from './Nevada'
 import { NewHampshire } from './NewHampshire'
 import { NewYork } from './NewYork'
 import { NorthCarolina } from './NorthCarolina'
+import { NorthDakota } from './NorthDakota'
 import { Oklahoma } from './Oklahoma'
 import { Virginia } from './Virginia'
 import { WestVirginia} from './WestVirginia'
@@ -49,6 +50,7 @@ const StateFormSwitch: React.FC<SwitchProps> = ({
     case 'New Hampshire': return <NewHampshire />
     case 'New York': return <NewYork />
     case 'North Carolina': return <NorthCarolina />
+    case 'North Dakota': return <NorthDakota />
     case 'Oklahoma': return <Oklahoma />
     case 'Virginia': return <Virginia />
     case 'West Virginia': return <WestVirginia />

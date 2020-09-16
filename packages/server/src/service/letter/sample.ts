@@ -160,6 +160,13 @@ const getSampleStateInfo = async (): Promise<StateInfoRecord> => {
         party: 'Democratic Party',
         election: 'Federal/State/County',
         electionType: 'General'
+    },
+    'North Dakota': {
+       ...await commonStateInfo('North Dakota'),
+       signature,
+       electionType: 'Special',
+       idType: 'Tribal ID Number',
+       idNumber: '12345'
     }
   }
 }

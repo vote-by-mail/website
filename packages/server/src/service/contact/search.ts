@@ -70,6 +70,7 @@ export const keys = (
     case 'New Hampshire':
     case 'New York':
     case 'North Carolina':
+    case 'North Dakota':
     case 'Oklahoma':
     case 'West Virginia':
     case 'Wyoming': {
