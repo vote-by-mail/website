@@ -14,8 +14,12 @@ export const sendAndStoreSignup = async (
   info: StateInfo,
   method: ContactMethod,
   id: string,
-  resendReasonAndOriginalDate?: string,
+  options: {
+    resendReasonAndOriginalDate?: string
+    noUpload?: boolean
+  } = {},
 ) => {
+  const { resendReasonAndOriginalDate, noUpload } = options
   const letter = new Letter(info, method, id, resendReasonAndOriginalDate)
   const pdfBuffer = await toPdfBuffer(letter.render('html'), await letter.form)
   const isResend = resendReasonAndOriginalDate !== undefined
@@ -47,11 +51,7 @@ export const sendAndStoreSignup = async (
     await file.upload(pdfBuffer)
   } else {
     file = storageFileFromId(id)
-    // We have scripts that tests registering in batches, these scripts use
-    // fake_voter@votebymail.io as a fake email address; to avoid storing
-    // needless amount of files we only upload/save files when voters'
-    // email are different from this
-    if (info.email !== 'fake_voter@votebymail.io') {
+    if (noUpload) {
       await file.upload(pdfBuffer)
     }
   }
