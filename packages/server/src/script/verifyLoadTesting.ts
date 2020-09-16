@@ -1,16 +1,19 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { Logging } from '@google-cloud/logging'
 import { processEnvOrThrow } from '../common'
-import { safeReadFile } from '../service/util'
 import { MailgunHookBody, MailgunEventType } from '../service/webhooks'
+import { promises as fs } from 'fs'
 
 // We don't export/share these between verifyLoadTesting and loadEmailTesting.ts because
 // each file has its own main()--so just by importing anything from a file will call
 // the main function again.
-interface StoredFile {
-  total: number
-  ids: string[]
+interface StoredInfo {
   startTime: string
+  results: Array<{
+    response?: { type: 'error' | 'data', data?: string }
+    error?: string
+    qps: number
+  }>
 }
 
 interface EntryResponse {
@@ -27,7 +30,7 @@ export const fetchIdStatuses = async (total: number, ids: string[], isoTimeStrin
 
 timestamp >= "${isoTimeString}"`
 
-  console.log('Querying cycle results, this might take a while...\n')
+  console.log('Querying load test results, this might take a while...\n')
   const entries = await logging.log('mailgun-log').getEntries({ filter })
 
   const result: Record<MailgunEventType, number> = {
@@ -54,7 +57,7 @@ timestamp >= "${isoTimeString}"`
   })
 
   console.log(
-`Of all ${total} emails sent, we successfully stored the IDs for ${ids.length} in our file.
+`Of all ${total} emails sent, we successfully got from trpc ${ids.length} IDs.
 In our logs (Google Logging) ${total - inOurLogs} are absent (Mailgun hasn't send these emails yet).
 
 Detailed results:
@@ -72,20 +75,43 @@ list_member_upload_error: ${result['list_member_upload_error']}
 list_uploaded: ${result['list_uploaded']}\n\n`)
 }
 
-const fetchResultOfQPSFile = async (qps: number) => {
-  const rawFile = await safeReadFile(`${__dirname}/data/loadEmailTesting_QPS${qps}.json`)
-  const stored = JSON.parse(rawFile.toString('utf-8')) as StoredFile
+/**
+ * Fetches detailed information about registration sending statuses, returning
+ * for example, how many email were delivered to an inbox, or how many failed
+ * or are still absent from sending.
+ *
+ * By default this function defaults to the latest log from the load Registration Testings,
+ * but it is possible to fetch for a specific file by passing its name.
+ *
+ * @param customFileName instead of fetching the result from the latest
+ * load test execution, fetches information of the given file, e.g.
+ * `loadRegistrationTesting-1600289555.json`
+ */
+const main = async (customFile?: string) => {
+  let file: string
+  if (customFile) {
+    file = customFile
+  } else {
+    // Get last log from loadRegistrationTesting
+    const dirFiles = await fs.readdir(`${__dirname}/data/`)
+    const loadTestingLogs = dirFiles.filter(f => f.match(/loadRegistrationTesting-/))
+    const length = loadTestingLogs.length
 
-  await fetchIdStatuses(stored.total, stored.ids, stored.startTime)
-}
-
-// Fetches batch results for all the given QPS values used in the previous
-// execution
-const main = async (qpsCycles: number[]) => {
-  for (const qps of qpsCycles) {
-    await fetchResultOfQPSFile(qps)
+    file = loadTestingLogs[length - 1]
   }
+
+  const fileContent = await fs.readFile(`${__dirname}/data/${file}`, { encoding: 'utf-8' })
+  const storedInfo = JSON.parse(fileContent) as StoredInfo
+  const ids = storedInfo.results.map(r => {
+    if (r.response?.data) return r.response.data
+    return null
+  }).filter(str => !!str) as string[] // Removes empty/null elements
+
+  await fetchIdStatuses(
+    storedInfo.results.length,
+    ids,
+    storedInfo.startTime,
+  )
 }
 
-// The same QPS used at loadEmailTesting.ts
-main([1, 3, 10])
+main()
