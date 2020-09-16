@@ -81,10 +81,10 @@ const resendSignups = async (registrations: WithId<RichStateInfo>[], resendReaso
         method.emails = Object.values(method.emails)
 
         const createdFriendlyString = info.created.toDate().toISOString().split('T')[0]
-        const resendReasonAndOriginalSignupDate = resendReason
+        const resendReasonAndOriginalDate = resendReason
             .concat(` Voter originally signed up for VoteByMail.io on ${createdFriendlyString}`)
 
-        await sendAndStoreSignup(info, method, info.id, resendReasonAndOriginalSignupDate)
+        await sendAndStoreSignup(info, method, info.id, { resendReasonAndOriginalDate })
         console.log('Successfully sent emails for ' + info.id)
     }
 }
