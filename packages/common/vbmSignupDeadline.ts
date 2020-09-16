@@ -35,6 +35,7 @@ const vbmSignupDeadline: StateDeadline = {
   "New Mexico": deadline(5, 28),
   "New York": deadline(6, 16),
   "North Carolina": null, // Couldn't find
+  "North Dakota": deadline(6,2),
   Ohio: deadline(4, 25),
   Oklahoma: deadline(6, 23),
   "Rhode Island": deadline(8, 18),

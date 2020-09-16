@@ -4,7 +4,7 @@ import { sampleStateInfo, pdfForm } from '../letter'
 
 
 const main = async () => {
-  const info = await sampleStateInfo('West Virginia')
+  const info = await sampleStateInfo('North Dakota')
   const buffer = await pdfForm(info)
   fs.writeFileSync('/tmp/Foo.pdf', buffer)
   const signatureBuffer = await toSignatureBuffer(info.signature, 200, 50)

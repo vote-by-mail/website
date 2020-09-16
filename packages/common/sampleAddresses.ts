@@ -372,6 +372,21 @@ export const sampleAddresses: Record<ImplementedState, AddressData[]> = {
     street: '111 W February 1 Pl',
     state: 'North Carolina',
   }],
+  'North Dakota': [{
+    address: '600 E Boulevard Ave, Bismarck, ND 58505',
+    city: 'Bismarck',
+    county: 'Burleigh County',
+    postcode: '58505',
+    street: '600 E Boulevard Ave',
+    state: 'North Dakota',
+  }, {
+    address: '219 7th St S, Fargo, ND 58103',
+    city: 'Fargo',
+    county: 'Cass County',
+    postcode: '58103',
+    street: '219 7th St S',
+    state: 'North Dakota',
+  }],
   'Oklahoma': [
     {
       address: '330 NE 10th St, Oklahoma City, OK 73104',
