@@ -106,4 +106,6 @@ const main = async (customFile?: string) => {
   )
 }
 
-main()
+if (require.main === module) {
+  main()
+}
