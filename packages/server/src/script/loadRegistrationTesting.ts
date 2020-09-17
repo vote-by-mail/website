@@ -41,17 +41,11 @@ const loadRegistrationTesting = async (qps: number, duration: number): Promise<Q
   const startTimes = Array(duration * qps).fill(0).map((_, index) => index * (1000 / qps))
   console.log(`Starting sending cycle of ${qps * duration} registrations (queries per second: ${qps}, duration: ${duration} seconds) to test MG limits.`)
 
-  let counter = 0
-
   return Promise.all(
-    startTimes.map(ms => delay(
+    startTimes.map((ms, key) => delay(
       async () => {
-        // Indicates that something is happening in the CLI
-        counter += 1
-        if (counter === qps * duration) {
+        if (key === (qps * duration) -1) {
           console.log(`Finished sending cycle.`)
-        } else if (counter && (counter % (qps * 5) === 0)) {
-          console.log(`${counter / qps} seconds have passed since the beginning of this cycle...`)
         }
 
         // We need to catch any error since a single uncaught exception (like a timeout)
@@ -77,6 +71,12 @@ const loadRegistrationTesting = async (qps: number, duration: number): Promise<Q
   )
 }
 
+
+export interface LoadTestStoredInfo {
+  startTime: string
+  results: Array<QueryResponse>
+}
+
 const main = async () => {
   // Prevents contact message from showing in the middle of one of the above
   // functions.
@@ -94,14 +94,18 @@ const main = async () => {
   console.log('Cycles completed, saving logs')
 
   const file = `${__dirname}/data/loadRegistrationTesting-${timeStamp}.json`
-  const content = JSON.stringify({
+  const storedInfo: LoadTestStoredInfo = {
     startTime: startTime.toISOString(),
     results,
-  })
+  }
+  // Formats the content of the file (it's very likely that the file is going to be read by humans)
+  const content = JSON.stringify(storedInfo, null, 2)
 
   await fs.writeFile(file, content, { encoding: 'utf-8' })
 
   console.log(`Saved logs to ${file}`)
 }
 
-main()
+if (require.main === module) {
+  main()
+}
