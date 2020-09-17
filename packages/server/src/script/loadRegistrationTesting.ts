@@ -1,3 +1,6 @@
+// To test this script for faxes run it using --faxes on the CLI, or by
+// manually passing `forceFaxes = true` on `main`
+
 import { sampleStateInfo } from '../service/letter'
 import { contactRecords } from '../service/contact'
 import { makeClient, httpConnector } from '@tianhuil/simple-trpc/dist/client'
@@ -14,6 +17,13 @@ export const client = makeClient<IVbmRpc>(
 )
 
 const fakeEmail = 'fake_voter@votebymail.io'
+
+const npmConfig = process.env['npm_config_argv'] ? JSON.parse(process.env['npm_config_argv']) : null
+
+/**
+ * Returns true if this script is being run with the flag `--faxes`
+ */
+const hasFaxesFlag = npmConfig?.original?.indexOf('--faxes') >= 0
 
 const delay = async <T>(fn: () => Promise<T>, ms: number): Promise<T> => {
   await wait(ms)
@@ -34,8 +44,8 @@ interface QueryResponse {
  * @param qps Amount of registrations to be sent per seconds
  * @param duration Duration of this cycle in seconds
  */
-const loadRegistrationTesting = async (qps: number, duration: number): Promise<QueryResponse[]> => {
-  const stateInfo = await sampleStateInfo('Florida')
+const loadRegistrationTesting = async (qps: number, duration: number, forceFaxes?: boolean): Promise<QueryResponse[]> => {
+  const stateInfo = await sampleStateInfo((forceFaxes || hasFaxesFlag) ? 'Oklahoma' : 'Florida')
   stateInfo.email = fakeEmail
   // Creates an array that allow us to serialize N amount of queries per second through the given duration
   const startTimes = Array(duration * qps).fill(0).map((_, index) => index * (1000 / qps))
@@ -60,9 +70,9 @@ const loadRegistrationTesting = async (qps: number, duration: number): Promise<Q
         } catch(error) {
           return {
             error: `${error}`, // Always converts errors to strings
-            duration,
             ms,
             qps,
+            duration,
           }
         }
       },
@@ -74,10 +84,11 @@ const loadRegistrationTesting = async (qps: number, duration: number): Promise<Q
 
 export interface LoadTestStoredInfo {
   startTime: string
+  method: 'fax' | 'email'
   results: Array<QueryResponse>
 }
 
-const main = async () => {
+const main = async (forceFaxes?: boolean) => {
   // Prevents contact message from showing in the middle of one of the above
   // functions.
   await contactRecords
@@ -86,9 +97,9 @@ const main = async () => {
   const timeStamp = Math.floor(startTime.getTime() / 1000)
 
   const results = [
-    ...await loadRegistrationTesting(1, 20),  // One query per second
-    ...await loadRegistrationTesting(3, 20),  // Three queries per second
-    ...await loadRegistrationTesting(10, 20), // Ten queries per second
+    ...await loadRegistrationTesting(1, 20, forceFaxes),  // One query per second
+    ...await loadRegistrationTesting(3, 20, forceFaxes),  // Three queries per second
+    ...await loadRegistrationTesting(10, 20, forceFaxes), // Ten queries per second
   ]
 
   console.log('Cycles completed, saving logs')
@@ -96,6 +107,7 @@ const main = async () => {
   const file = `${__dirname}/data/loadRegistrationTesting-${timeStamp}.json`
   const storedInfo: LoadTestStoredInfo = {
     startTime: startTime.toISOString(),
+    method: (forceFaxes || hasFaxesFlag) ? 'fax' : 'email',
     results,
   }
   // Formats the content of the file (it's very likely that the file is going to be read by humans)
