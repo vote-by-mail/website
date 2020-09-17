@@ -9,17 +9,20 @@ import { TwilioResponse, RichStateInfo } from './types'
 import { sendFaxes } from './twilio'
 const firestoreService = new FirestoreService()
 
+interface Options {
+  resendReasonAndOriginalDate?: string
+  noUpload?: boolean
+}
 
 export const sendAndStoreSignup = async (
   info: StateInfo,
   method: ContactMethod,
   id: string,
-  options: {
-    resendReasonAndOriginalDate?: string
-    noUpload?: boolean
-  } = {},
+  {
+    resendReasonAndOriginalDate,
+    noUpload,
+  }: Options = {},
 ) => {
-  const { resendReasonAndOriginalDate, noUpload } = options
   const letter = new Letter(info, method, id, resendReasonAndOriginalDate)
   const pdfBuffer = await toPdfBuffer(letter.render('html'), await letter.form)
   const isResend = resendReasonAndOriginalDate !== undefined
