@@ -51,7 +51,7 @@ export const sendAndStoreSignup = async (
     await file.upload(pdfBuffer)
   } else {
     file = storageFileFromId(id)
-    if (noUpload) {
+    if (!noUpload) {
       await file.upload(pdfBuffer)
     }
   }
