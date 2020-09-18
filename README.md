@@ -229,6 +229,10 @@ After this, focus your attention on the area to the right side of this configura
 
 Repeat these steps for the "Total sign ups" chart, just remember to use `custom/total_sign_ups` instead of the previous metric and certify that you name the legends/titles accordingly.
 
+### Per state charts
+
+We also support plotting per state metrics, the steps to set up these are the same for the regular metrics, the only difference is that instead of `custom/daily_sign_ups` and `custom/total_sign_ups` we now have `custom/STATE_ABBREVIATION/daily_sign_ups` and `custom/STATE_ABBREVIATION/total_sign_ups`. We recommending plotting each of these groups (per-state daily/total sign ups) in the same chart to avoid oversaturating your own dashboard.
+
 ## Logging and Webhooks
 We use Google Cloud Logging and Mailgun Webhooks to log and keep track of sent emails. The instructions to enable and set up Google Cloud Logging can be found [here](https://cloud.google.com/logging/docs/setup/nodejs#before_you_begin), and an article for setting up Mailgun webhooks is available [here](https://www.mailgun.com/blog/a-guide-to-using-mailguns-webhooks/).
 
