@@ -66,7 +66,9 @@ export const calculateSignups = (
     queryDateTime.getDate(),
   )
 
-  const getImplementedState = (str: string) => {
+  const getImplementedState = (str: string | undefined) => {
+    if (!str) return null
+
     const state = getState(str)
     if (!state) return null
     if (isImplementedState(state)) return state

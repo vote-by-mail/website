@@ -319,7 +319,7 @@ export class FirestoreService {
     // needless information.
     const query = stateInfos.where(
       // Using only the numeric value of lastQueryTime doesn't work
-      'created', '>', admin.firestore.Timestamp.fromMillis(queriedStateBefore ? 0 : lastQueryTime),
+      'created', '>', admin.firestore.Timestamp.fromMillis(queriedStateBefore ? lastQueryTime : 0),
     ).select('created', 'address.state')
     return query.get()
   }
