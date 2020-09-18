@@ -40,7 +40,7 @@ export const Minnesota = () => {
             required={true}
           />
 
-        default:
+        case 'None':
           return <AppCheckbox
             label={'I confirm that I do not have a Minnesota-issued driver’s license, Minnesota-issued ID card or a social security number'}
             required={true}
