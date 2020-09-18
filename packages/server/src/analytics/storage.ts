@@ -1,4 +1,5 @@
 import { FirestoreService } from '../service/firestore'
+import { ImplementedState, implementedStates } from '../common'
 
 const firestore = new FirestoreService()
 
@@ -8,6 +9,21 @@ export interface AnalyticsStorageSchema {
   lastQueryTime: number
   totalSignups: number
   todaySignups: number
+  state: {
+    /**
+     * Backward compatibility flag so we can use the same storage file
+     * for tracking per-state values.
+     */
+    queriedStatesBefore: boolean
+    totalSignups: Record<ImplementedState, number>
+    todaySignups: Record<ImplementedState, number>
+  }
+}
+
+export const makeStateStorageRecord = () => {
+  return Object.fromEntries(
+    implementedStates.map(s => [s, 0])
+  ) as Record<ImplementedState, number>
 }
 
 /**
@@ -30,6 +46,11 @@ export class AnalyticsStorage {
     lastQueryTime: 0,
     totalSignups: 0,
     todaySignups: 0,
+    state: {
+      queriedStatesBefore: false,
+      totalSignups: makeStateStorageRecord(),
+      todaySignups: makeStateStorageRecord(),
+    }
   }
 
   /**
@@ -60,12 +81,18 @@ export class AnalyticsStorage {
   }
 
   /** Updates the in-memory and firestore values of analytics functions */
-  async update(totalSignups: number, todaySignups: number, lastQueryTime: number) {
+  async update(
+    totalSignups: number,
+    todaySignups: number,
+    perState: AnalyticsStorageSchema['state'],
+    lastQueryTime: number,
+  ) {
     this.storage = {
       id: 'onlyOne',
       totalSignups,
       lastQueryTime,
       todaySignups,
+      state: perState,
     }
 
     await this.doc.set(this.storage, { merge: true })

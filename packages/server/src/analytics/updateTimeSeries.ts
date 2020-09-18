@@ -1,6 +1,6 @@
 import { v3 as gcm } from '@google-cloud/monitoring'
 import { AnalyticsStorage } from './storage'
-import { processEnvOrThrow } from '../common'
+import { processEnvOrThrow, implementedStates, getStateAbbr } from '../common'
 import { calculateSignups } from './logic'
 import { FirestoreService } from '../service/firestore'
 
@@ -27,8 +27,9 @@ export const updateTimeSeries = async () => {
   const now = new Date()
 
   const { lastQueryTime } = storage.data
-  const snapshot = await firestore.getSignups(lastQueryTime)
-  const { todaySignups, totalSignups } = calculateSignups(
+  const { queriedStatesBefore } = storage.data.state
+  const snapshot = await firestore.getSignups(lastQueryTime, queriedStatesBefore)
+  const { todaySignups, totalSignups, state } = calculateSignups(
     storage.data,
     snapshot,
     now,
@@ -66,5 +67,45 @@ export const updateTimeSeries = async () => {
     }],
   })
 
-  await storage.update(totalSignups, todaySignups, now.valueOf())
+  for (const _state of implementedStates) {
+    const stateAbbr = getStateAbbr(_state)?.toLowerCase
+    if (!stateAbbr) {
+      console.warn('Expected stateAbbr not to be undefined when populating per-state metric data')
+      continue
+    }
+
+    await client.createTimeSeries({
+      name: projectPath,
+      timeSeries: [{
+        metric: { type: `${baseMetricUrl}/${stateAbbr}/daily_sign_ups` },
+        resource: { type: 'global' },
+        points: [{
+          interval: {
+            // Google timestamps uses seconds instead of ms (default JS stamp)
+            // we divide valueOf by 1000 to avoid issues
+            endTime: { seconds: now.valueOf() / 1000 },
+          },
+          value: { int64Value: state.todaySignups[_state] },
+        }],
+      }],
+    })
+
+    await client.createTimeSeries({
+      name: projectPath,
+      timeSeries: [{
+        metric: { type: `${baseMetricUrl}/${stateAbbr}/total_sign_ups` },
+        resource: { type: 'global' },
+        points: [{
+          interval: {
+            // Google timestamps uses seconds instead of ms (default JS stamp)
+            // we divide valueOf by 1000 to avoid issues
+            endTime: { seconds: now.valueOf() / 1000 },
+          },
+          value: { int64Value: state.totalSignups[_state] },
+        }],
+      }],
+    })
+  }
+
+  await storage.update(totalSignups, todaySignups, state, now.valueOf())
 }

@@ -302,15 +302,25 @@ export class FirestoreService {
 
   /**
    * Fetches the minimal fields (created) of all signups since lastQueryTime.
+   *
+   * @param lastQueryTime Will only query entries after this timestamp, unless
+   * `queriedStateBefore` is `false`--then we'll query all the signups again
+   *
+   * @param queriedStateBefore Backward compatibility param that allow us to
+   * fetch state data without having to reset the storage file (we didn't always
+   * used to query per-state data).
    */
-  async getSignups(lastQueryTime: number): Promise<FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData>> {
+  async getSignups(
+    lastQueryTime: number,
+    queriedStateBefore: boolean,
+  ): Promise<FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData>> {
     const stateInfos = this.db.collection('StateInfo')
     // We only select 'created' when doing these queries, to avoid fetching
     // needless information.
     const query = stateInfos.where(
       // Using only the numeric value of lastQueryTime doesn't work
-      'created', '>', admin.firestore.Timestamp.fromMillis(lastQueryTime),
-    ).select('created')
+      'created', '>', admin.firestore.Timestamp.fromMillis(queriedStateBefore ? 0 : lastQueryTime),
+    ).select('created', 'address.state')
     return query.get()
   }
 }
