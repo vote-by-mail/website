@@ -68,11 +68,7 @@ export const updateTimeSeries = async () => {
   })
 
   for (const _state of implementedStates) {
-    const stateAbbr = getStateAbbr(_state)?.toLowerCase
-    if (!stateAbbr) {
-      console.warn('Expected stateAbbr not to be undefined when populating per-state metric data')
-      continue
-    }
+    const stateAbbr = getStateAbbr(_state)?.toLowerCase() as string
 
     await client.createTimeSeries({
       name: projectPath,

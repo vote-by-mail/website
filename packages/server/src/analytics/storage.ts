@@ -68,6 +68,17 @@ export class AnalyticsStorage {
         ...data as AnalyticsStorageSchema,
         id: 'onlyOne',
       }
+
+      // Backward compatibility layer, on older versions of this script
+      // storage.state would be undefined, adding this here in case the
+      // spread operator above erases this value
+      if (!this.storage.state) {
+        this.storage.state = {
+          queriedStatesBefore: false,
+          totalSignups: makeStateStorageRecord(),
+          todaySignups: makeStateStorageRecord(),
+        }
+      }
     }
 
     this.synced = true
