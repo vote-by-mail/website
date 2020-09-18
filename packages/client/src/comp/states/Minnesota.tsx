@@ -42,7 +42,7 @@ export const Minnesota = () => {
 
         default:
           return <AppCheckbox
-            label={'You confirm to be sending no Identity Information'}
+            label={'I confirm that I do not have a Minnesota-issued driver’s license, Minnesota-issued ID card or a social security number'}
             required={true}
           />
       }
