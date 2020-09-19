@@ -14,7 +14,7 @@ export interface AnalyticsStorageSchema {
      * Backward compatibility flag so we can use the same storage file
      * for tracking per-state values.
      */
-    queriedStatesBefore: boolean
+    lastQueryTime: number
     totalSignups: Record<ImplementedState, number>
     todaySignups: Record<ImplementedState, number>
   }
@@ -47,7 +47,7 @@ export class AnalyticsStorage {
     totalSignups: 0,
     todaySignups: 0,
     state: {
-      queriedStatesBefore: false,
+      lastQueryTime: 0,
       totalSignups: makeStateStorageRecord(),
       todaySignups: makeStateStorageRecord(),
     }
@@ -74,7 +74,7 @@ export class AnalyticsStorage {
       // spread operator above erases this value
       if (!this.storage.state) {
         this.storage.state = {
-          queriedStatesBefore: false,
+          lastQueryTime: 0,
           totalSignups: makeStateStorageRecord(),
           todaySignups: makeStateStorageRecord(),
         }
@@ -95,7 +95,7 @@ export class AnalyticsStorage {
   async update(
     totalSignups: number,
     todaySignups: number,
-    perState: AnalyticsStorageSchema['state'],
+    state: AnalyticsStorageSchema['state'],
     lastQueryTime: number,
   ) {
     this.storage = {
@@ -103,7 +103,7 @@ export class AnalyticsStorage {
       totalSignups,
       lastQueryTime,
       todaySignups,
-      state: perState,
+      state: state,
     }
 
     await this.doc.set(this.storage, { merge: true })

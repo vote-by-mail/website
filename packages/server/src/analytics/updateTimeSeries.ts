@@ -27,8 +27,8 @@ export const updateTimeSeries = async () => {
   const now = new Date()
 
   const { lastQueryTime } = storage.data
-  const { queriedStatesBefore } = storage.data.state
-  const snapshot = await firestore.getSignups(lastQueryTime, queriedStatesBefore)
+  const { lastQueryTime: stateLastQueriedTime } = storage.data.state
+  const snapshot = await firestore.getSignups(lastQueryTime, stateLastQueriedTime)
   const { todaySignups, totalSignups, state } = calculateSignups(
     storage.data,
     snapshot,
