@@ -1,8 +1,8 @@
 import { AnalyticsStorageSchema, AnalyticsMetricPair } from "./storage"
 import { RichStateInfo } from "../service/types"
 
-const notRepeated = (entryTimeSeconds: number, lastQueryTimeMillis: number) => {
-  return entryTimeSeconds >= (lastQueryTimeMillis / 1000)
+const notRepeated = (entryTimeMillis: number, lastQueryTimeMillis: number) => {
+  return entryTimeMillis >= lastQueryTimeMillis
 }
 
 const incrementMetricPair = <S extends Record<string, AnalyticsMetricPair>>(
