@@ -3,6 +3,11 @@ import { ImplementedState, implementedStates } from '../common'
 
 const firestore = new FirestoreService()
 
+export interface AnalyticsMetricPair {
+  todaySignups: number
+  totalSignups: number
+}
+
 // Used to save the document
 export interface AnalyticsStorageSchema {
   readonly id: 'onlyOne'
@@ -15,15 +20,14 @@ export interface AnalyticsStorageSchema {
      * for tracking per-state values.
      */
     lastQueryTime: number
-    totalSignups: Record<ImplementedState, number>
-    todaySignups: Record<ImplementedState, number>
+    values: Record<ImplementedState, AnalyticsMetricPair>
   }
 }
 
 export const makeStateStorageRecord = () => {
   return Object.fromEntries(
-    implementedStates.map(s => [s, 0])
-  ) as Record<ImplementedState, number>
+    implementedStates.map(s => [s, { todaySignups: 0, totalSignups: 0 }])
+  ) as Record<ImplementedState, AnalyticsMetricPair>
 }
 
 /**
@@ -48,8 +52,7 @@ export class AnalyticsStorage {
     todaySignups: 0,
     state: {
       lastQueryTime: 0,
-      totalSignups: makeStateStorageRecord(),
-      todaySignups: makeStateStorageRecord(),
+      values: makeStateStorageRecord(),
     }
   }
 
@@ -75,8 +78,7 @@ export class AnalyticsStorage {
       if (!this.storage.state) {
         this.storage.state = {
           lastQueryTime: 0,
-          totalSignups: makeStateStorageRecord(),
-          todaySignups: makeStateStorageRecord(),
+          values: makeStateStorageRecord(),
         }
       }
     }

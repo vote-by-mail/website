@@ -81,7 +81,7 @@ export const updateTimeSeries = async () => {
             // we divide valueOf by 1000 to avoid issues
             endTime: { seconds: now.valueOf() / 1000 },
           },
-          value: { int64Value: state.todaySignups[_state] },
+          value: { int64Value: state.values[_state].todaySignups },
         }],
       }],
     })
@@ -97,7 +97,7 @@ export const updateTimeSeries = async () => {
             // we divide valueOf by 1000 to avoid issues
             endTime: { seconds: now.valueOf() / 1000 },
           },
-          value: { int64Value: state.totalSignups[_state] },
+          value: { int64Value: state.values[_state].totalSignups },
         }],
       }],
     })
