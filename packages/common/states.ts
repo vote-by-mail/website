@@ -1,3 +1,5 @@
+import { isImplementedState } from './stateInfo'
+
 // We don't use Record<StateAbbreviation, State> to avoid type issues on
 // getState below
 const stateAbbreviations = {
@@ -74,6 +76,13 @@ export const getState = (key: string): State | undefined => {
   const upperKey = key.toUpperCase()
   return stateAbbreviations[upperKey as StateAbbreviation] ?? caseInsensitiveStates[upperKey] ?? undefined
 }
+
+export const getImplementedState = (key: string) => {
+  const state = getState(key)
+  if (!state) return null
+  return isImplementedState(state) ? state : null
+}
+
 
 export const getStateAbbr = (value: State): StateAbbreviation | undefined => {
   return (Object.keys(stateAbbreviations) as StateAbbreviation[]).find(
