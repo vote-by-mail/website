@@ -1,10 +1,35 @@
-import { AnalyticsStorageSchema, makeStateStorageRecord } from "./storage"
+import { AnalyticsStorageSchema, AnalyticsMetricPair } from "./storage"
 import { getImplementedState } from "../common"
 
 interface CalculatedSignups {
   totalSignups: number
   todaySignups: number
   state: AnalyticsStorageSchema['state']
+}
+
+/**
+ * Automates creating a record of <string, AnalyticsMetricPair> that automatically
+ * resets todaySignups to 0 when needed.
+ */
+const makeAnalyticsPairForRecord = <S extends Record<string, AnalyticsMetricPair>>(
+  values: S,
+  lastQueryTime: number,
+  currentQueryTime: Date,
+) => {
+  // In JS copying objects will just create a reference, we'll use JSON's
+  // stringify/parse to manually create a copy of the given values that
+  // doesn't affect the original object.
+  const valuesDeepCopy = JSON.parse(JSON.stringify(values)) as S
+
+  if (new Date(lastQueryTime).getDate() !== currentQueryTime.getDate()) {
+    for (const key of Object.keys(values)) {
+      if (valuesDeepCopy[key]) {
+        valuesDeepCopy[key].todaySignups = 0
+      }
+    }
+  }
+
+  return valuesDeepCopy
 }
 
 /**
@@ -37,12 +62,7 @@ export const calculateSignups = (
   let totalSignups = storedTotalSignups
   const state: CalculatedSignups['state'] = {
     lastQueryTime: storedState.lastQueryTime,
-    totalSignups: {...storedState.totalSignups},
-    // Like we did for todaySignups, we need to check whether to increment
-    // todaySignups on a per-state basis or to reset the counter if needed.
-    todaySignups: incrementDaily()
-      ? {...storedState.todaySignups}
-      : makeStateStorageRecord(),
+    values: makeAnalyticsPairForRecord(storedState.values, lastQueryTime, queryDateTime),
   }
   const { lastQueryTime: stateLastQueryTime } = state
 
@@ -80,12 +100,12 @@ export const calculateSignups = (
           todaySignups += 1
         }
         if (entryState) {
-          state.totalSignups[entryState] += 1
-          state.todaySignups[entryState] += 1
+          state.values[entryState].totalSignups += 1
+          state.values[entryState].todaySignups += 1
         }
       } else {
         if (notRepeated) totalSignups += 1
-        if (entryState) state.totalSignups[entryState] += 1
+        if (entryState) state.values[entryState].totalSignups += 1
       }
     })
   } else {
@@ -94,8 +114,8 @@ export const calculateSignups = (
       totalSignups += 1
       todaySignups += 1
       if (entryState) {
-        state.todaySignups[entryState] += 1
-        state.totalSignups[entryState] += 1
+        state.values[entryState].todaySignups += 1
+        state.values[entryState].totalSignups += 1
       }
     })
   }

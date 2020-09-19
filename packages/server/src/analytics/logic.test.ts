@@ -51,16 +51,13 @@ const inThePast = new Date(2020, 6, 30)
 
 /** Automates the creation of per-state storage object */
 const makeStateStorage = (storedToday: number, storedTotal: number, lastQueryTime: number) => {
-  const totalSignups = makeStateStorageRecord()
-  const todaySignups = makeStateStorageRecord()
+  const values = makeStateStorageRecord()
 
-  todaySignups[queriedState] = storedToday
-  totalSignups[queriedState] = storedTotal
+  values[queriedState] = { todaySignups: storedToday, totalSignups: storedTotal }
 
   return {
     lastQueryTime,
-    todaySignups,
-    totalSignups,
+    values,
   }
 }
 
@@ -137,8 +134,8 @@ test('calculateSignups return the right results on first query', () => {
   expect(todaySignups).toBe(newSignups)
   expect(totalSignups).toBe(newSignups + pastSignups)
   expect(state.lastQueryTime).toBeTruthy()
-  expect(state.todaySignups[queriedState]).toBe(newSignups)
-  expect(state.totalSignups[queriedState]).toBe(newSignups + pastSignups)
+  expect(state.values[queriedState].todaySignups).toBe(newSignups)
+  expect(state.values[queriedState].totalSignups).toBe(newSignups + pastSignups)
 })
 
 test('calculateSignups increments stored values of the same day correctly', () => {
@@ -164,8 +161,8 @@ test('calculateSignups increments stored values of the same day correctly', () =
 
   expect(todaySignups).toBe(storedDailySignups + newSignups)
   expect(totalSignups).toBe(storedTotalSignups + newSignups)
-  expect(state.todaySignups[queriedState]).toBe(storedDailySignups + newSignups)
-  expect(state.totalSignups[queriedState]).toBe(storedTotalSignups + newSignups)
+  expect(state.values[queriedState].todaySignups).toBe(storedDailySignups + newSignups)
+  expect(state.values[queriedState].totalSignups).toBe(storedTotalSignups + newSignups)
 })
 
 test('calculateSignups increments stored values of different dates correctly', () => {
@@ -192,8 +189,8 @@ test('calculateSignups increments stored values of different dates correctly', (
 
   expect(todaySignups).toBe(newSignups)
   expect(totalSignups).toBe(storedTotalSignups + newSignups)
-  expect(state.todaySignups[queriedState]).toBe(newSignups)
-  expect(state.totalSignups[queriedState]).toBe(storedTotalSignups + newSignups)
+  expect(state.values[queriedState].todaySignups).toBe(newSignups)
+  expect(state.values[queriedState].totalSignups).toBe(storedTotalSignups + newSignups)
 })
 
 test('calculateSignups works when initializing perState data with backward compatibility', () => {
@@ -220,6 +217,6 @@ test('calculateSignups works when initializing perState data with backward compa
   expect(todaySignups).toBe(newSignups + storedDailySignups)
   expect(totalSignups).toBe(storedTotalSignups + newSignups)
   expect(state.lastQueryTime).toBeTruthy()
-  expect(state.todaySignups[queriedState]).toBe(newSignups + storedDailySignups)
-  expect(state.totalSignups[queriedState]).toBe(storedTotalSignups + newSignups)
+  expect(state.values[queriedState].todaySignups).toBe(newSignups + storedDailySignups)
+  expect(state.values[queriedState].totalSignups).toBe(storedTotalSignups + newSignups)
 })
