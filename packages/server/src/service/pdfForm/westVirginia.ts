@@ -1,4 +1,4 @@
-import { WestVirginiaInfo } from '../../common'
+import { WestVirginiaInfo, getStateAbbr, State } from '../../common'
 import { fillFormWrapper  } from '.'
 import { cleanPhoneNumber, toSignatureBuffer } from './util'
 
@@ -30,7 +30,7 @@ export const fillWestVirginia = (
     text(birthMonth, 0, 480, 154)
     text(birthDay, 0, 515, 154)
     text(birthYear, 0, 547, 154)
-   
+
     // 'in the city/county of:' (locale)
     text(stateInfo.county ? stateInfo.county : '', 0, 460, 137)
 
@@ -45,14 +45,17 @@ export const fillWestVirginia = (
     text(stateInfo.address.city ? stateInfo.address.city : ' ', 0, 130, 154)
     // Zip code.
     text(stateInfo.address.postcode, 0, 367, 154)
-   
-    // Mailing address.
-    // TODO: This s currently operating on the assumption that the mailing and regular address
-    // are the same. This is likely an unsafe assumption. mailingAddress should also be 
-    // an object of type address in stateInfo
+
     const mailingAddressStart = 150
-    if (stateInfo.mailingAddress) {
-        text(stateInfo.mailingAddress, 0, mailingAddressStart, 175)
+    if (stateInfo.mailingAddressParts) {
+        // Mailing address.
+        const { city, street, unit, postcode, state } = stateInfo.mailingAddressParts
+        const mailingStateAbbr = getStateAbbr(state as State)
+        const address = unit ? `${street} # ${unit}` : street
+        text(address, 0, mailingAddressStart, 175)
+        text(city, 0, mailingAddressStart * 0.95, 192)
+        text(mailingStateAbbr ?? state ?? '', 0, mailingAddressStart * 2, 192)
+        text(postcode, 0, 367, 192)
     } else {
         text(streetAddress, 0, mailingAddressStart, 175)
         // Apt/suite
@@ -65,7 +68,7 @@ export const fillWestVirginia = (
         // Zip code.
         text(stateInfo.address.postcode, 0, 367, 192)
     }
-    
+
     // Phone number.
     text(cleanPhoneNumber(stateInfo.phone), 0, 460, 175)
 
