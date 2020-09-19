@@ -109,7 +109,8 @@ export const updateTimeSeries = async () => {
   for (const org of Object.keys(newValues.org.values)) {
     const orgData = newValues.org.values[org]
     if (orgData) {
-      await updateMetric(org, orgData.todaySignups, orgData.totalSignups, now)
+      // Prefixing 'org_' before oid in case we have entries with oid like 'az' or 'fl'
+      await updateMetric(`org_${org}`, orgData.todaySignups, orgData.totalSignups, now)
     }
   }
 
