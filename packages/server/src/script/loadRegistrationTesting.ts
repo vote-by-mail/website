@@ -17,7 +17,7 @@ export const client = makeClient<IVbmRpc>(
   httpConnector(serverUrl, { timeout, fetch })
 )
 
-const fakeEmail = 'fake_voter@votebymail.io'
+const fakeEmail = processEnvOrThrow('DIVERT_EMAIL')
 
 /**
  * Returns true if this script is being run with the flag `--faxes`
