@@ -21,18 +21,10 @@ export const WestVirginia = () => {
   const westVirginiaPrimary = primaryEligible('West Virginia')
 
   const enrichValues = (baseInfo: StatelessInfo): NoSignature<WestVirginiaInfo> => {
-    if (westVirginiaPrimary) {
-      return {
-        ...baseInfo,
-        state: 'West Virginia',
-        party,
-        election,
-        electionType
-      }
-    }
     return {
       ...baseInfo,
       state: 'West Virginia',
+      ...(westVirginiaPrimary ? {party} : {}),
       election,
       electionType
     }
