@@ -50,7 +50,7 @@ const yesterday = new Date(2020, 7, 30)
 const inThePast = new Date(2020, 6, 30)
 
 /** Automates the creation of per-state storage object */
-const makePerStateStorage = (storedToday: number, storedTotal: number, queriedStatesBefore: boolean) => {
+const makeStateStorage = (storedToday: number, storedTotal: number, lastQueryTime: number) => {
   const totalSignups = makeStateStorageRecord()
   const todaySignups = makeStateStorageRecord()
 
@@ -58,7 +58,7 @@ const makePerStateStorage = (storedToday: number, storedTotal: number, queriedSt
   totalSignups[queriedState] = storedTotal
 
   return {
-    queriedStatesBefore,
+    lastQueryTime,
     todaySignups,
     totalSignups,
   }
@@ -120,7 +120,7 @@ test('calculateSignups return the right results on first query', () => {
     totalSignups: 0,
     lastQueryTime: 0,
     todaySignups: 0,
-    state: makePerStateStorage(0, 0, false),
+    state: makeStateStorage(0, 0, 0),
   }
 
   // Should increment both total and daily signups
@@ -136,7 +136,7 @@ test('calculateSignups return the right results on first query', () => {
 
   expect(todaySignups).toBe(newSignups)
   expect(totalSignups).toBe(newSignups + pastSignups)
-  expect(state.queriedStatesBefore).toBe(true)
+  expect(state.lastQueryTime).toBeTruthy()
   expect(state.todaySignups[queriedState]).toBe(newSignups)
   expect(state.totalSignups[queriedState]).toBe(newSignups + pastSignups)
 })
@@ -153,7 +153,7 @@ test('calculateSignups increments stored values of the same day correctly', () =
     totalSignups: storedTotalSignups,
     lastQueryTime: todayNoon.valueOf(),
     todaySignups: storedDailySignups,
-    state: makePerStateStorage(storedDailySignups, storedTotalSignups, true),
+    state: makeStateStorage(storedDailySignups, storedTotalSignups, todayNoon.valueOf()),
   }
 
   const { todaySignups, totalSignups, state } = calculateSignups(
@@ -181,7 +181,7 @@ test('calculateSignups increments stored values of different dates correctly', (
     totalSignups: storedTotalSignups,
     lastQueryTime: yesterday.valueOf(),
     todaySignups: storedDailySignups,
-    state: makePerStateStorage(storedDailySignups, storedTotalSignups, true)
+    state: makeStateStorage(storedDailySignups, storedTotalSignups, yesterday.valueOf())
   }
 
   const { todaySignups, totalSignups, state } = calculateSignups(
@@ -208,7 +208,7 @@ test('calculateSignups works when initializing perState data with backward compa
     totalSignups: storedTotalSignups,
     lastQueryTime: todayNoon.valueOf(),
     todaySignups: storedDailySignups,
-    state: makePerStateStorage(0, 0, false)
+    state: makeStateStorage(0, 0, 0)
   }
 
   const { todaySignups, totalSignups, state } = calculateSignups(
@@ -219,7 +219,7 @@ test('calculateSignups works when initializing perState data with backward compa
 
   expect(todaySignups).toBe(newSignups + storedDailySignups)
   expect(totalSignups).toBe(storedTotalSignups + newSignups)
-  expect(state.queriedStatesBefore).toBe(true)
+  expect(state.lastQueryTime).toBeTruthy()
   expect(state.todaySignups[queriedState]).toBe(newSignups + storedDailySignups)
   expect(state.totalSignups[queriedState]).toBe(storedTotalSignups + newSignups)
 })
