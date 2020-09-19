@@ -1,10 +1,27 @@
 import { AnalyticsStorageSchema, AnalyticsMetricPair } from "./storage"
 import { RichStateInfo } from "../service/types"
 
-interface CalculatedSignups {
-  totalSignups: number
-  todaySignups: number
-  state: AnalyticsStorageSchema['state']
+const notRepeated = (entryTimeSeconds: number, lastQueryTimeMillis: number) => {
+  return entryTimeSeconds >= (lastQueryTimeMillis / 1000)
+}
+
+const incrementMetricPair = <S extends Record<string, AnalyticsMetricPair>>(
+  values: S,
+  key: keyof S,
+  increment: 'both' | 'total',
+) => {
+  if (!values[key]) {
+    // Strangely, we need this as S[keyof S] typecast here or eslint will complain
+    // (setting key as string will not resolve this issue too)
+    values[key] = { todaySignups: 0, totalSignups: 0 } as S[keyof S]
+  }
+
+  if (increment === 'both') {
+    if (values[key].todaySignups) values[key].todaySignups += 1
+    else values[key].todaySignups = 1
+  }
+  if (values[key].totalSignups) values[key].totalSignups += 1
+  else values[key].totalSignups = 1
 }
 
 const getMillis = (e: Partial<RichStateInfo>) => e?.created?.toMillis() ?? 0
@@ -43,11 +60,12 @@ export const calculateSignups = (
   storage: AnalyticsStorageSchema,
   snapshot: Partial<RichStateInfo>[],
   queryDateTime: Date,
-): CalculatedSignups => {
+): AnalyticsStorageSchema => {
   const {
     totalSignups: storedTotalSignups,
     todaySignups: storedTodaySignups,
     state: storedState,
+    org: storedOrg,
     lastQueryTime
   } = storage
 
@@ -61,11 +79,18 @@ export const calculateSignups = (
 
   let todaySignups = incrementDaily() ? storedTodaySignups : 0
   let totalSignups = storedTotalSignups
-  const state: CalculatedSignups['state'] = {
+
+  const state = {
     lastQueryTime: storedState.lastQueryTime,
     values: makeAnalyticsPairForRecord(storedState.values, !incrementDaily()),
   }
   const { lastQueryTime: stateLastQueryTime } = state
+
+  const org = {
+    lastQueryTime: storedOrg.lastQueryTime,
+    values: makeAnalyticsPairForRecord(storedOrg.values, !incrementDaily()),
+  }
+  const { lastQueryTime: orgLastQueryTime } = org
 
   // There are two possible cases where we fetch for all entries in our DB.
   //
@@ -73,13 +98,13 @@ export const calculateSignups = (
   // simply calculate the values based of whether they happened today or not.
   //
   // The second case is more complicated, it happens when we have never queried
-  // for per-state-signups (but have already queried something before). This scenario
+  // for per-state/org signups (but have already queried something before). This scenario
   // didn't always exist, and to keep backward compatibility with the previous version
-  // of this script we query all entries again but pay attention to repeated values.
+  // of this script we query all entries again but pay attention to not commit repeated values.
   //
   // To avoid incrementing repeated entries when looping from the beginning,
   // we always check for the respective `lastQueryTime`
-  const firstQuery = !storage.lastQueryTime || !stateLastQueryTime
+  const firstQuery = !storage.lastQueryTime || !stateLastQueryTime || !orgLastQueryTime
   const todayMidnight = new Date(
     queryDateTime.getFullYear(),
     queryDateTime.getMonth(),
@@ -88,38 +113,56 @@ export const calculateSignups = (
 
   if (firstQuery) {
     snapshot.forEach(entry => {
-      if (entry.state) {
+      if (entry.state && entry.oid) {
         // Since there are two cases where this loop might happen, we want
         // to make sure it is not querying repeated data (for total/today signups)
-        const notRepeated = getMillis(entry) >= lastQueryTime
+        const notRepeatedGlobal = notRepeated(getMillis(entry), lastQueryTime)
+        const notRepeatedState = notRepeated(getMillis(entry), stateLastQueryTime)
+        const notRepeatedOrg = notRepeated(getMillis(entry), orgLastQueryTime)
 
-        // Google timestamps uses seconds instead of ms (default JS stamp)
-        // we divide valueOf by 1000 to avoid issues
         if (getMillis(entry) >= todayMidnight.valueOf()) {
-          state.values[entry.state].totalSignups += 1
-          state.values[entry.state].todaySignups += 1
-          if (notRepeated) {
+          // Entry happened today, increment both total and today
+          if (notRepeatedState) incrementMetricPair(state.values, entry.state, 'both')
+          if (notRepeatedOrg) incrementMetricPair(org.values, entry.oid, 'both')
+          if (notRepeatedGlobal) {
             totalSignups += 1
             todaySignups += 1
           }
         } else {
-          if (notRepeated) totalSignups += 1
-          state.values[entry.state].totalSignups += 1
+          // Only increment total sign ups since the entry is from another day
+          if (notRepeatedState) incrementMetricPair(state.values, entry.state, 'total')
+          if (notRepeatedOrg) incrementMetricPair(org.values, entry.oid, 'total')
+          if (notRepeatedGlobal) totalSignups += 1
         }
       }
     })
   } else {
     snapshot.forEach(entry => {
-      if (entry.state) {
-        totalSignups += 1
-        todaySignups += 1
-        state.values[entry.state].todaySignups += 1
-        state.values[entry.state].totalSignups += 1
+      if (entry.state && entry.oid) {
+        const notRepeatedGlobal = notRepeated(getMillis(entry), lastQueryTime)
+        const notRepeatedState = notRepeated(getMillis(entry), stateLastQueryTime)
+        const notRepeatedOrg = notRepeated(getMillis(entry), orgLastQueryTime)
+
+        if (notRepeatedState) incrementMetricPair(state.values, entry.state, 'both')
+        if (notRepeatedOrg) incrementMetricPair(org.values, entry.oid, 'both')
+        if (notRepeatedGlobal) {
+          totalSignups += 1
+          todaySignups += 1
+        }
       }
     })
   }
 
-  state.lastQueryTime = queryDateTime.valueOf()
+  const newLastQueryTime = queryDateTime.valueOf()
+  state.lastQueryTime = newLastQueryTime
+  org.lastQueryTime = newLastQueryTime
 
-  return { totalSignups, todaySignups, state }
+  return {
+    id: 'onlyOne',
+    lastQueryTime: newLastQueryTime,
+    totalSignups,
+    todaySignups,
+    state,
+    org,
+  }
 }

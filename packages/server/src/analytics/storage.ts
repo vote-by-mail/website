@@ -16,11 +16,19 @@ export interface AnalyticsStorageSchema {
   todaySignups: number
   state: {
     /**
-     * Backward compatibility flag so we can use the same storage file
+     * Backward compatibility value so we can use the same storage file
      * for tracking per-state values.
      */
     lastQueryTime: number
     values: Record<ImplementedState, AnalyticsMetricPair>
+  }
+  org: {
+    /**
+     * Backward compatibility value so we can use the same storage file
+     * for tracking org values.
+     */
+    lastQueryTime: number
+    values: Record<string, AnalyticsMetricPair>
   }
 }
 
@@ -53,7 +61,11 @@ export class AnalyticsStorage {
     state: {
       lastQueryTime: 0,
       values: makeStateStorageRecord(),
-    }
+    },
+    org: {
+      lastQueryTime: 0,
+      values: {},
+    },
   }
 
   /**
@@ -81,6 +93,12 @@ export class AnalyticsStorage {
           values: makeStateStorageRecord(),
         }
       }
+      if (!this.storage.org) {
+        this.storage.org = {
+          lastQueryTime: 0,
+          values: {},
+        }
+      }
     }
 
     this.synced = true
@@ -94,21 +112,10 @@ export class AnalyticsStorage {
   }
 
   /** Updates the in-memory and firestore values of analytics functions */
-  async update(
-    totalSignups: number,
-    todaySignups: number,
-    state: AnalyticsStorageSchema['state'],
-    lastQueryTime: number,
-  ) {
-    this.storage = {
-      id: 'onlyOne',
-      totalSignups,
-      lastQueryTime,
-      todaySignups,
-      state: state,
-    }
+  async update(storage: AnalyticsStorageSchema) {
+    this.storage = storage
 
-    await this.doc.set(this.storage, { merge: true })
+    await this.doc.set(storage, { merge: true })
   }
 
   /** Returns true if this storage has no record of previous queries */
