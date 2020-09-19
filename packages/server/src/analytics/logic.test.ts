@@ -1,6 +1,6 @@
 import FirebaseFirestore from '@google-cloud/firestore'
 import { calculateSignups } from './logic'
-import { AnalyticsStorageSchema, makeStateStorageRecord } from './storage'
+import { AnalyticsStorageSchema, makeStateStorageRecord, AnalyticsMetricPair } from './storage'
 import { RichStateInfo } from '../service/types'
 
 jest.mock('./storage', () => ({
@@ -8,6 +8,7 @@ jest.mock('./storage', () => ({
   makeStateStorageRecord: jest.requireActual('./storage').makeStateStorageRecord,
 }))
 
+const defaultOrg = 'default'
 const queriedState = 'Florida'
 
 // The analytics metrics work by storing and logging the amount of daily
@@ -31,7 +32,7 @@ const queriedState = 'Florida'
 //   happened on another date than than the current time we're querying
 //   for new sign ups.
 //
-// 4. calculateSignups works when initializing per-state values for the
+// 4. calculateSignups works when initializing per-state/org values for the
 //   first time. In this scenario we must verify that daily/total signups
 //   are not incremented repeatedly.
 
@@ -44,15 +45,30 @@ const yesterday = new Date(2020, 7, 30)
 /** Should never be used as lastQueryTime, used only for checking first time queries */
 const inThePast = new Date(2020, 6, 30)
 
-/** Automates the creation of per-state storage object */
-const makeStateStorage = (storedToday: number, storedTotal: number, lastQueryTime: number) => {
-  const values = makeStateStorageRecord()
+/** Automates the creation of per-state/per-org storages */
+const makeSubMetricStorage = <S extends 'state' | 'org'>(
+  type: S,
+  storedToday: number,
+  storedTotal: number,
+  lastQueryTime: number,
+): AnalyticsStorageSchema[S] => {
+  if (type === 'org') {
+    const values: Record<string, AnalyticsMetricPair> = {
+      [defaultOrg]: { todaySignups: storedToday, totalSignups: storedTotal }
+    }
+    return {
+      lastQueryTime,
+      values,
+    }
+  } else {
+    const values = makeStateStorageRecord()
 
-  values[queriedState] = { todaySignups: storedToday, totalSignups: storedTotal }
+    values[queriedState] = { todaySignups: storedToday, totalSignups: storedTotal }
 
-  return {
-    lastQueryTime,
-    values,
+    return {
+      lastQueryTime,
+      values,
+    }
   }
 }
 
@@ -61,7 +77,7 @@ const makeStateStorage = (storedToday: number, storedTotal: number, lastQueryTim
  * signups.
  *
  * @param newSignups Amount of signups that should increment both metrics
- * @param storedTodaySignups Should only be present when testing ongoing per-state
+ * @param storedTodaySignups Should only be present when testing ongoing per-state/org
  * metrics initialization (when the app already has data from previous metrics and is
  * now going to start querying for per-state data). These always happen a bit before
  * lastQueryTime so we can test if initializing per-state sign ups do not repeat
@@ -83,6 +99,7 @@ const snapshot = (
     ...Array<Partial<RichStateInfo>>(newSignups).fill({
       created: new FirebaseFirestore.Timestamp(lastQueryTime / 1000, 0),
       state: queriedState,
+      oid: defaultOrg,
     }),
     ...Array<Partial<RichStateInfo>>(storedTodaySignups).fill({
       // Should happen a bit before lastQueryTime, so we can test that when
@@ -92,11 +109,13 @@ const snapshot = (
       // Using Math.floor since Firebase requires integers
       created: new FirebaseFirestore.Timestamp(Math.floor((lastQueryTime - 20) / 1000), 0),
       state: queriedState,
+      oid: defaultOrg,
     }),
     // Subtracted by storedTodaySignups since these two happened in the past
     ...Array<Partial<RichStateInfo>>(pastSignups - storedTodaySignups).fill({
       created: new FirebaseFirestore.Timestamp(inThePast.valueOf() / 1000, 0),
       state: queriedState,
+      oid: defaultOrg,
     }),
   ]
 
@@ -109,7 +128,8 @@ test('calculateSignups return the right results on first query', () => {
     totalSignups: 0,
     lastQueryTime: 0,
     todaySignups: 0,
-    state: makeStateStorage(0, 0, 0),
+    state: makeSubMetricStorage('state', 0, 0, 0),
+    org: makeSubMetricStorage('org', 0, 0, 0),
   }
 
   // Should increment both total and daily signups
@@ -117,7 +137,7 @@ test('calculateSignups return the right results on first query', () => {
   // Should increment only total signups
   const pastSignups = 10
 
-  const { todaySignups, totalSignups, state } = calculateSignups(
+  const { todaySignups, totalSignups, state, org } = calculateSignups(
     storedData,
     snapshot(newSignups, 0, pastSignups, todayNight.valueOf()),
     todayNight,
@@ -125,9 +145,14 @@ test('calculateSignups return the right results on first query', () => {
 
   expect(todaySignups).toBe(newSignups)
   expect(totalSignups).toBe(newSignups + pastSignups)
+
   expect(state.lastQueryTime).toBeTruthy()
   expect(state.values[queriedState].todaySignups).toBe(newSignups)
   expect(state.values[queriedState].totalSignups).toBe(newSignups + pastSignups)
+
+  expect(org.lastQueryTime).toBeTruthy()
+  expect(org.values[defaultOrg].todaySignups).toBe(newSignups)
+  expect(org.values[defaultOrg].totalSignups).toBe(newSignups + pastSignups)
 })
 
 test('calculateSignups increments stored values of the same day correctly', () => {
@@ -142,10 +167,11 @@ test('calculateSignups increments stored values of the same day correctly', () =
     totalSignups: storedTotalSignups,
     lastQueryTime: todayNoon.valueOf(),
     todaySignups: storedDailySignups,
-    state: makeStateStorage(storedDailySignups, storedTotalSignups, todayNoon.valueOf()),
+    state: makeSubMetricStorage('state', storedDailySignups, storedTotalSignups, todayNoon.valueOf()),
+    org: makeSubMetricStorage('org', storedDailySignups, storedTotalSignups, todayNoon.valueOf()),
   }
 
-  const { todaySignups, totalSignups, state } = calculateSignups(
+  const { todaySignups, totalSignups, state, org } = calculateSignups(
     storedData,
     snapshot(newSignups, 0, 0, todayNight.valueOf()),
     todayNight,
@@ -153,8 +179,12 @@ test('calculateSignups increments stored values of the same day correctly', () =
 
   expect(todaySignups).toBe(storedDailySignups + newSignups)
   expect(totalSignups).toBe(storedTotalSignups + newSignups)
+
   expect(state.values[queriedState].todaySignups).toBe(storedDailySignups + newSignups)
   expect(state.values[queriedState].totalSignups).toBe(storedTotalSignups + newSignups)
+
+  expect(org.values[defaultOrg].todaySignups).toBe(storedDailySignups + newSignups)
+  expect(org.values[defaultOrg].totalSignups).toBe(storedTotalSignups + newSignups)
 })
 
 test('calculateSignups increments stored values of different dates correctly', () => {
@@ -170,10 +200,11 @@ test('calculateSignups increments stored values of different dates correctly', (
     totalSignups: storedTotalSignups,
     lastQueryTime: yesterday.valueOf(),
     todaySignups: storedDailySignups,
-    state: makeStateStorage(storedDailySignups, storedTotalSignups, yesterday.valueOf())
+    state: makeSubMetricStorage('state', storedDailySignups, storedTotalSignups, yesterday.valueOf()),
+    org: makeSubMetricStorage('org', storedDailySignups, storedTotalSignups, yesterday.valueOf())
   }
 
-  const { todaySignups, totalSignups, state } = calculateSignups(
+  const { todaySignups, totalSignups, state, org } = calculateSignups(
     storedData,
     snapshot(newSignups, 0, 0, todayNoon.valueOf()),
     todayNoon,
@@ -181,11 +212,15 @@ test('calculateSignups increments stored values of different dates correctly', (
 
   expect(todaySignups).toBe(newSignups)
   expect(totalSignups).toBe(storedTotalSignups + newSignups)
+
   expect(state.values[queriedState].todaySignups).toBe(newSignups)
   expect(state.values[queriedState].totalSignups).toBe(storedTotalSignups + newSignups)
+
+  expect(org.values[defaultOrg].todaySignups).toBe(newSignups)
+  expect(org.values[defaultOrg].totalSignups).toBe(storedTotalSignups + newSignups)
 })
 
-test('calculateSignups works when initializing perState data with backward compatibility', () => {
+test('calculateSignups works when initializing perState data after the script was already running', () => {
   // Should increment both daily and total signups
   const newSignups = 5
   const storedDailySignups = 5
@@ -197,10 +232,12 @@ test('calculateSignups works when initializing perState data with backward compa
     totalSignups: storedTotalSignups,
     lastQueryTime: todayNoon.valueOf(),
     todaySignups: storedDailySignups,
-    state: makeStateStorage(0, 0, 0)
+    state: makeSubMetricStorage('state', 0, 0, 0),
+    // per-org data was already initialized in this test
+    org: makeSubMetricStorage('org', storedDailySignups, storedTotalSignups, todayNoon.valueOf()),
   }
 
-  const { todaySignups, totalSignups, state } = calculateSignups(
+  const { todaySignups, totalSignups, state, org } = calculateSignups(
     storedData,
     snapshot(newSignups, storedDailySignups, storedTotalSignups, todayNoon.valueOf()),
     todayNight,
@@ -208,7 +245,47 @@ test('calculateSignups works when initializing perState data with backward compa
 
   expect(todaySignups).toBe(newSignups + storedDailySignups)
   expect(totalSignups).toBe(storedTotalSignups + newSignups)
+
   expect(state.lastQueryTime).toBeTruthy()
   expect(state.values[queriedState].todaySignups).toBe(newSignups + storedDailySignups)
   expect(state.values[queriedState].totalSignups).toBe(storedTotalSignups + newSignups)
+
+  expect(org.lastQueryTime).toBeTruthy()
+  expect(org.values[defaultOrg].todaySignups).toBe(newSignups + storedDailySignups)
+  expect(org.values[defaultOrg].totalSignups).toBe(storedTotalSignups + newSignups)
+})
+
+test('calculateSignups works when initializing perOrg data after the script was already running', () => {
+  // Should increment both daily and total signups
+  const newSignups = 5
+  const storedDailySignups = 5
+  // Should increment only total signups
+  const storedTotalSignups = 10
+
+  const storedData: AnalyticsStorageSchema = {
+    id: 'onlyOne',
+    totalSignups: storedTotalSignups,
+    lastQueryTime: todayNoon.valueOf(),
+    todaySignups: storedDailySignups,
+    // per-state data was already initialized in this test
+    state: makeSubMetricStorage('state', storedDailySignups, storedTotalSignups, todayNoon.valueOf()),
+    org: makeSubMetricStorage('org', 0, 0, 0),
+  }
+
+  const { todaySignups, totalSignups, state, org } = calculateSignups(
+    storedData,
+    snapshot(newSignups, storedDailySignups, storedTotalSignups, todayNoon.valueOf()),
+    todayNight,
+  )
+
+  expect(todaySignups).toBe(newSignups + storedDailySignups)
+  expect(totalSignups).toBe(storedTotalSignups + newSignups)
+
+  expect(state.lastQueryTime).toBeTruthy()
+  expect(state.values[queriedState].todaySignups).toBe(newSignups + storedDailySignups)
+  expect(state.values[queriedState].totalSignups).toBe(storedTotalSignups + newSignups)
+
+  expect(org.lastQueryTime).toBeTruthy()
+  expect(org.values[defaultOrg].todaySignups).toBe(newSignups + storedDailySignups)
+  expect(org.values[defaultOrg].totalSignups).toBe(storedTotalSignups + newSignups)
 })

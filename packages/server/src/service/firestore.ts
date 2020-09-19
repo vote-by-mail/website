@@ -306,23 +306,25 @@ export class FirestoreService {
    * @param lastQueryTime Will only query entries after this timestamp, unless
    * `queriedStateBefore` is `false`--then we'll query all the signups again
    *
-   * @param stateLastQueryTime Backward compatibility param that allow us to
-   * fetch state data without having to reset the storage file (we didn't always
-   * used to query per-state data).
+   * @param stateLastQueryTime The last time we queried for per-state metric data
+   * @param orgLastQueryTime The last time we queried for per-org metric data
    */
   async getSignups(
     lastQueryTime: number,
     stateLastQueryTime: number,
+    orgLastQueryTime: number,
   ): Promise<Partial<RichStateInfo>[]> {
     const stateInfos = this.db.collection('StateInfo')
+    const queryEntriesFrom = Math.min(lastQueryTime, stateLastQueryTime, orgLastQueryTime)
+
     // We only select 'created' when doing these queries, to avoid fetching
     // needless information.
     const query = stateInfos
       .where(
         // Using only the numeric value of lastQueryTime doesn't work
-        'created', '>', admin.firestore.Timestamp.fromMillis(stateLastQueryTime ? lastQueryTime : 0),
+        'created', '>', admin.firestore.Timestamp.fromMillis(queryEntriesFrom),
       )
-      .select('created', 'state')
+      .select('created', 'state', 'oid')
     return this.query<Partial<RichStateInfo>[]>(query)
   }
 }

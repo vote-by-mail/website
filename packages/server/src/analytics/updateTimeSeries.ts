@@ -37,24 +37,26 @@ const retry = async <T>(promise: () => Promise<T>, times = 4): Promise<T> => {
   throw new Error('Could not complete request')
 }
 
-export const updateTimeSeries = async () => {
-  const storage = new AnalyticsStorage()
-  await storage.initializeOrSync()
-  const now = new Date()
-
-  const { lastQueryTime } = storage.data
-  const { lastQueryTime: stateLastQueriedTime } = storage.data.state
-  const snapshot = await firestore.getSignups(lastQueryTime, stateLastQueriedTime)
-  const { todaySignups, totalSignups, state } = calculateSignups(
-    storage.data,
-    snapshot,
-    now,
-  )
-
+/**
+ * Updates a metric with the given values.
+ *
+ * @param pathPrefix Allows to update a sub-metric, i.e. per-state/orgs metrics,
+ * by appending the prefix before the path. If null defaults to update the
+ * default metric.
+ * @param todaySignups New value for the metric today sign ups.
+ * @param totalSignups New value for the metric total sign ups.
+ * @param now The time this query was executed.
+ */
+const updateMetric = async (
+  pathPrefix: string | null,
+  todaySignups: number,
+  totalSignups: number,
+  now: Date,
+) => {
   await retry(() => client.createTimeSeries({
     name: projectPath,
     timeSeries: [{
-      metric: { type: `${baseMetricUrl}/daily_sign_ups` },
+      metric: { type: `${baseMetricUrl}/${pathPrefix ? `${pathPrefix}/` : ''}daily_sign_ups` },
       resource: { type: 'global' },
       points: [{
         interval: {
@@ -70,7 +72,7 @@ export const updateTimeSeries = async () => {
   await retry(() => client.createTimeSeries({
     name: projectPath,
     timeSeries: [{
-      metric: { type: `${baseMetricUrl}/total_sign_ups` },
+      metric: { type: `${baseMetricUrl}/${pathPrefix ? `${pathPrefix}/` : ''}total_sign_ups` },
       resource: { type: 'global' },
       points: [{
         interval: {
@@ -82,42 +84,34 @@ export const updateTimeSeries = async () => {
       }],
     }],
   }))
+}
 
-  for (const _state of implementedStates) {
-    const stateAbbr = getStateAbbr(_state)?.toLowerCase() as string
+export const updateTimeSeries = async () => {
+  const storage = new AnalyticsStorage()
+  await storage.initializeOrSync()
+  const now = new Date()
 
-    await retry(() => client.createTimeSeries({
-      name: projectPath,
-      timeSeries: [{
-        metric: { type: `${baseMetricUrl}/${stateAbbr}/daily_sign_ups` },
-        resource: { type: 'global' },
-        points: [{
-          interval: {
-            // Google timestamps uses seconds instead of ms (default JS stamp)
-            // we divide valueOf by 1000 to avoid issues
-            endTime: { seconds: now.valueOf() / 1000 },
-          },
-          value: { int64Value: state.values[_state].todaySignups },
-        }],
-      }],
-    }))
+  const { lastQueryTime } = storage.data
+  const { lastQueryTime: stateLastQueryTime } = storage.data.state
+  const { lastQueryTime: orgLastQueryTime } = storage.data.org
+  const snapshot = await firestore.getSignups(lastQueryTime, stateLastQueryTime, orgLastQueryTime)
+  const newValues = calculateSignups(storage.data, snapshot, now)
 
-    await retry(() => client.createTimeSeries({
-      name: projectPath,
-      timeSeries: [{
-        metric: { type: `${baseMetricUrl}/${stateAbbr}/total_sign_ups` },
-        resource: { type: 'global' },
-        points: [{
-          interval: {
-            // Google timestamps uses seconds instead of ms (default JS stamp)
-            // we divide valueOf by 1000 to avoid issues
-            endTime: { seconds: now.valueOf() / 1000 },
-          },
-          value: { int64Value: state.values[_state].totalSignups },
-        }],
-      }],
-    }))
+  await updateMetric(null, newValues.todaySignups, newValues.totalSignups, now)
+
+  for (const state of implementedStates) {
+    const stateAbbr = getStateAbbr(state)?.toLowerCase() as string
+    const { todaySignups, totalSignups } = newValues.state.values[state]
+
+    await updateMetric(stateAbbr, todaySignups, totalSignups, now)
   }
 
-  await storage.update(totalSignups, todaySignups, state, now.valueOf())
+  for (const org of Object.keys(newValues.org.values)) {
+    const orgData = newValues.org.values[org]
+    if (orgData) {
+      await updateMetric(org, orgData.todaySignups, orgData.totalSignups, now)
+    }
+  }
+
+  await storage.update(newValues)
 }
