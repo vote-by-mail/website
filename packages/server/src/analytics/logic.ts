@@ -13,15 +13,14 @@ interface CalculatedSignups {
  */
 const makeAnalyticsPairForRecord = <S extends Record<string, AnalyticsMetricPair>>(
   values: S,
-  lastQueryTime: number,
-  currentQueryTime: Date,
+  resetTodaySignups: boolean,
 ) => {
   // In JS copying objects will just create a reference, we'll use JSON's
   // stringify/parse to manually create a copy of the given values that
   // doesn't affect the original object.
   const valuesDeepCopy = JSON.parse(JSON.stringify(values)) as S
 
-  if (new Date(lastQueryTime).getDate() !== currentQueryTime.getDate()) {
+  if (resetTodaySignups) {
     for (const key of Object.keys(values)) {
       if (valuesDeepCopy[key]) {
         valuesDeepCopy[key].todaySignups = 0
@@ -62,7 +61,7 @@ export const calculateSignups = (
   let totalSignups = storedTotalSignups
   const state: CalculatedSignups['state'] = {
     lastQueryTime: storedState.lastQueryTime,
-    values: makeAnalyticsPairForRecord(storedState.values, lastQueryTime, queryDateTime),
+    values: makeAnalyticsPairForRecord(storedState.values, !incrementDaily()),
   }
   const { lastQueryTime: stateLastQueryTime } = state
 
