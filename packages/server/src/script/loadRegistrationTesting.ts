@@ -8,6 +8,7 @@ import { IVbmRpc, processEnvOrThrow, wait } from '../common'
 import { promises as fs } from 'fs'
 import fetch from 'node-fetch'
 import { RpcRet } from '@tianhuil/simple-trpc/dist/type'
+import yargs from 'yargs'
 
 const serverUrl = processEnvOrThrow('REACT_APP_SERVER')
 const timeout = parseInt(processEnvOrThrow('REACT_APP_TIMEOUT'))
@@ -18,12 +19,10 @@ export const client = makeClient<IVbmRpc>(
 
 const fakeEmail = 'fake_voter@votebymail.io'
 
-const npmConfig = process.env['npm_config_argv'] ? JSON.parse(process.env['npm_config_argv']) : null
-
 /**
  * Returns true if this script is being run with the flag `--faxes`
  */
-const hasFaxesFlag = npmConfig?.original?.indexOf('--faxes') >= 0
+const hasFaxesFlag = yargs.argv.faxes ?? false
 
 const delay = async <T>(fn: () => Promise<T>, ms: number): Promise<T> => {
   await wait(ms)
