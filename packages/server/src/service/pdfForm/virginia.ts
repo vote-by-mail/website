@@ -1,4 +1,4 @@
-import { VirginiaInfo } from '../../common'
+import { VirginiaInfo, getStateAbbr, State } from '../../common'
 import { fillFormWrapper  } from '.'
 import { cleanPhoneNumber, toSignatureBuffer } from './util'
 
@@ -67,8 +67,19 @@ export const fillVirginia = (
     text(addressParts.postcode[4], 0, 497, 196)
 
     // Mailing address.
-    if (stateInfo.mailingAddress) {
-        text(stateInfo.mailingAddress, 0, 170, 228)
+    if (stateInfo.mailingAddressParts) {
+        const { city, postcode, state, street, unit } = stateInfo.mailingAddressParts
+        const stateAbbr = getStateAbbr(state as State)
+
+        text(street, 0, 170, 228)
+        text(unit ?? '', 0, 545, 228)
+        text(city, 0, 170, 246)
+        text(stateAbbr ?? state, 0, 330, 246)
+        text(postcode[0], 0, 419, 246)
+        text(postcode[1], 0, 437, 246)
+        text(postcode[2], 0, 459, 246)
+        text(postcode[3], 0, 475, 246)
+        text(postcode[4], 0, 497, 246)
     } else {
         text('Same as above', 0, 170, 228)
     }
