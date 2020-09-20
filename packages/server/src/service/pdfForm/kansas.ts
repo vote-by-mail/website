@@ -24,10 +24,16 @@ export const fillKansas = (
     text(addressParts.postcode || '', 0, 520, 410)
     text(stateInfo.birthdate, 0, 450, 385)
     text(stateInfo.phone, 0, 450, 672)
-    if(!stateInfo.mailingAddress) {
+    if(!stateInfo.mailingAddressParts) {
       text('Same as above', 0, 60, 485)
     } else {
-      text(stateInfo.mailingAddress, 0, 60, 485)
+      const { street, city, postcode, state, unit } = stateInfo.mailingAddressParts
+      const address = unit ? `${street} # ${unit}` : street
+      const stateAbbr = getStateAbbr(state as State)
+      text(address, 0, 60, 485)
+      text(city, 0, 300, 485)
+      text(stateAbbr ?? state ?? '', 0, 450, 485)
+      text(postcode, 0, 520, 485)
     }
 
     if (stateInfo.idNumber) {
