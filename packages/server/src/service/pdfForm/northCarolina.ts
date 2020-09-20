@@ -65,10 +65,16 @@ export const fillNorthCarolina = (
     check(2, 498, 272) // General election
 
     // Sic: we want 'Same as above' even when stateInfo.mailingAddress === ''
-    if(!stateInfo.mailingAddress) {
+    if(!stateInfo.mailingAddressParts) {
       text('Same as above', 2, 56, 300)
     } else {
-      text(stateInfo.mailingAddress, 2, 56, 300, 9)
+      const { city, postcode, state, street, unit } = stateInfo.mailingAddressParts
+      const address = unit ? `${street} # ${unit}` : street
+      const stateAbbr = getStateAbbr(state as State)
+      text(address, 2, 60, 300, 9)
+      text(city, 2, 60, 335, 9)
+      text(stateAbbr ?? state, 2, 210, 335, 9)
+      text(postcode, 2, 250, 335, 9)
     }
 
     text(stateInfo.phone, 2, 420, 240)
