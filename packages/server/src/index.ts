@@ -11,7 +11,7 @@ import { processEnvOrThrow, IVbmRpc } from './common'
 import { VbmRpc } from './service/trpc'
 import { registerPassportEndpoints } from './service/org'
 import { staticDir } from './service/util'
-import { updateTimeSeries } from './analytics/'
+import { updateTimeSeries, createOrUpdateAnalyticsDashboard } from './analytics/'
 import { registerLogWebhooksEndpoints } from './service/webhooks'
 import { crossCheckRegistrationsCronjob } from './service/alloy/cronjob'
 
@@ -36,6 +36,7 @@ app.get('/cron/daily_total_sign_ups', async (req, res) => {
   if (req.get('X-Appengine-Cron')) {
     try {
       await updateTimeSeries()
+      await createOrUpdateAnalyticsDashboard()
       res.status(200).send('')
     } catch(e) {
       console.error(e)

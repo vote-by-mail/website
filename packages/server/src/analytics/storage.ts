@@ -14,6 +14,11 @@ export interface AnalyticsStorageSchema {
   lastQueryTime: number
   totalSignups: number
   todaySignups: number
+  /**
+   * Allows us to update instead of create a dashboard when using the script
+   * that automatically creates a dashboard
+   */
+  dashboardPath?: string | null
   state: {
     /**
      * Backward compatibility value so we can use the same storage file
@@ -58,6 +63,7 @@ export class AnalyticsStorage {
     lastQueryTime: 0,
     totalSignups: 0,
     todaySignups: 0,
+    dashboardPath: null,
     state: {
       lastQueryTime: 0,
       values: makeStateStorageRecord(),
@@ -124,5 +130,10 @@ export class AnalyticsStorage {
       throw('Needs to synchronize AnalyticsStorage first')
     }
     return this.storage.lastQueryTime === 0
+  }
+
+  async updateDashboard(dashboardPath: string) {
+    this.storage.dashboardPath = dashboardPath
+    return this.doc.set(this.storage, { merge: true })
   }
 }
