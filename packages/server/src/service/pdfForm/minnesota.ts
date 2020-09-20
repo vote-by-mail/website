@@ -1,6 +1,6 @@
-import { MinnesotaInfo } from '../../common'
+import { MinnesotaInfo, getStateAbbr, State } from '../../common'
 import { fillFormWrapper  } from '.'
-import { toSignatureBuffer } from './util'
+import { toSignatureBuffer, cleanPhoneNumber } from './util'
 
 export const fillMinnesota = (
   stateInfo: MinnesotaInfo
@@ -28,11 +28,14 @@ export const fillMinnesota = (
     // Get county data from contact.
     text(stateInfo.contact.county ? stateInfo.contact.county.split(' ')[0] : '', 0, 240, 263)
 
-    text(stateInfo.phone, 0, 425, 262)
+    const cleanNumber = cleanPhoneNumber(stateInfo.phone)
+    text(cleanNumber.slice(0, 3), 0, 450, 262)
+    text(cleanNumber.slice(3, 6), 0, 490, 262)
+    text(cleanNumber.slice(6), 0, 527, 262)
+
     text(stateInfo.email, 0, 60, 295)
 
     if (stateInfo.idType == 'Minnesota Issued Driver\'s License or ID Card') {
-      // text('License', 0, 65, 400)
       check(0, 64, 337)
       text(stateInfo.idData, 0, 400, 334)
     } else if (stateInfo.idType == 'Last 4 numbers of SSN') {
@@ -48,10 +51,17 @@ export const fillMinnesota = (
     text(addressParts.postcode ? addressParts.postcode : '', 0, 520, 422)
 
     // Sic: we want 'Same as above' even when stateInfo.mailingAddress === ''
-    if(!stateInfo.mailingAddress) {
+    if(!stateInfo.mailingAddressParts) {
       text('Same as above', 0, 60, 462)
     } else {
-      text(stateInfo.mailingAddress, 0, 60, 462)
+      const { city, postcode, state, street, unit } = stateInfo.mailingAddressParts
+      const stateAbbr = getStateAbbr(state as State)
+
+      text(street, 0, 60, 462)
+      text(unit ?? '', 0, 300, 462)
+      text(city ?? '', 0, 380, 462)
+      text(stateAbbr ?? state, 0, 460, 462)
+      text(postcode ?? '', 0, 520, 462)
     }
 
     const dateSplit = new Date().toISOString().split('T')[0].split('-')
