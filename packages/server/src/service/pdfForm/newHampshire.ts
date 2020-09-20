@@ -1,6 +1,6 @@
 import { NewHampshireInfo } from '../../common'
 import { fillFormWrapper } from '.'
-import { toSignatureBuffer } from './util'
+import { toSignatureBuffer, cleanPhoneNumber } from './util'
 
 export const fillNewHampshire = (
   stateInfo: NewHampshireInfo
@@ -31,7 +31,10 @@ export const fillNewHampshire = (
     // Sic: we want 'Same as above' even when stateInfo.mailingAddress === ''
     text(stateInfo.mailingAddress ? stateInfo.mailingAddress : 'Same as above', 1, 86, 196)
 
-    text(stateInfo.phone, 1, 280, 237)
+    const cleanNumber = cleanPhoneNumber(stateInfo.phone)
+    text(cleanNumber.slice(0, 3), 1, 235, 237)
+    text(cleanNumber.slice(3, 6), 1, 270, 237)
+    text(cleanNumber.slice(6), 1, 320, 237)
     const emailSplit = stateInfo.email.split('@')
     text(emailSplit[0], 1, 230, 275)
     text(emailSplit[1], 1, 368, 275)
