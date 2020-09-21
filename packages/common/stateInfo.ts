@@ -193,11 +193,9 @@ export interface NorthCarolinaInfo extends _Id, SignatureBaseInfo {
 
 export const northDakotaIdentityType = ['North Dakota License Number', 'Non Driver ID', 'Tribal ID Number'] as const
 export type NorthDakotaIdentityType = (typeof northDakotaIdentityType)[number]
-export const isNorthDakotaIdentity = (x: string | null): x is NorthDakotaIdentityType => northDakotaIdentityType.includes(x as NorthDakotaIdentityType)
 
 export const northDakotaElectionType = ['Primary', 'General', 'Both', 'City', 'School', 'Special'] as const
 export type NorthDakotaElectionType = (typeof northDakotaElectionType)[number]
-export const isNorthDakotaElectionType = (x: string | null): x is NorthDakotaElectionType => northDakotaElectionType.includes(x as NorthDakotaElectionType)
 
 export interface NorthDakotaInfo extends _Id, SignatureBaseInfo {
   state: 'North Dakota'
