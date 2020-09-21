@@ -69,7 +69,7 @@ export const fillNorthCarolina = (
       text('Same as above', 2, 56, 300)
     } else {
       const { city, postcode, state, street, unit } = stateInfo.mailingAddressParts
-      const address = unit ? `${street} # ${unit}` : street
+      const address = unit ? `${street} #${unit}` : street
       const stateAbbr = getStateAbbr(state as State)
       text(address, 2, 60, 300, 9)
       text(city, 2, 60, 335, 9)
