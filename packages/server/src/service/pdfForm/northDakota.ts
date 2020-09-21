@@ -1,4 +1,4 @@
-import { NorthDakotaInfo } from '../../common'
+import { NorthDakotaInfo, getStateAbbr, State } from '../../common'
 import { fillFormWrapper } from '.'
 import { cleanPhoneNumber, toSignatureBuffer } from './util'
 
@@ -26,9 +26,11 @@ export const fillNorthDakota = ( stateInfo: NorthDakotaInfo) => fillFormWrapper(
         }
     }
     // Name.
-    const name = `${nameParts.first} ${nameParts.middle} ${nameParts.last} ${nameParts.suffix}`
+    const { first, middle, last, suffix } = nameParts
+    // ignores undefined/empty name parts
+    const name = [first, middle, last, suffix].filter(e => !!e).join(' ')
     text(name, 0, 25, 220)
- 
+
     // Birthdate.
     text(stateInfo.birthdate, 0, 340, 220)
 
@@ -48,24 +50,40 @@ export const fillNorthDakota = ( stateInfo: NorthDakotaInfo) => fillFormWrapper(
     // ID Number
     text(stateInfo.idNumber, 0, 25, 300)
 
-    const streetAddress = stateInfo.address.unit 
-                            ? `${stateInfo.address.streetNumber} ${stateInfo.address.street}, ${stateInfo.address.unit}`
-                            : `${stateInfo.address.streetNumber} ${stateInfo.address.street}` 
-    text(streetAddress, 0,25, 325)
+    // It will always be defined since this state was implemented after the changes
+    // that introduced addressParts
+    if (stateInfo.address.addressParts) {
+        const { city, postcode, state, street, unit } = stateInfo.address.addressParts
+
+        const stateAbbr = getStateAbbr(state as State)
+        const address = unit
+            ? `${street} #${unit}`
+            : `${street}`
+
+        text(address, 0, 25, 325)
+        text(city, 0, 320, 325)
+        text(stateAbbr ?? state, 0, 450, 325)
+        text(postcode, 0, 500, 325)
+    }
 
     // using mailing address parts because mailing address is of type string instead of Address
-    if(stateInfo.mailingAddress && stateInfo.mailingAddressParts) {
-        const deliveryAddress = stateInfo.mailingAddressParts.unit 
-        ? `${stateInfo.mailingAddressParts.street}, ${stateInfo.mailingAddressParts.unit}`
-        : `${stateInfo.mailingAddressParts.street}`
+    if(stateInfo.mailingAddressParts) {
+        const { city, postcode, state, street, unit } = stateInfo.mailingAddressParts
+        const stateAbbr = getStateAbbr(state as State)
+        const address = unit
+            ? `${street} #${unit}`
+            : `${street}`
 
-        text(deliveryAddress, 0,25, 350)
+        text(address, 0, 25, 353)
+        text(city, 0, 320, 353)
+        text(stateAbbr ?? state, 0, 450, 353)
+        text(postcode, 0, 500, 353)
     }
 
     //  // Signed date.
      const signedDate = new Date().toISOString().split('T')[0]
      text(signedDate, 0, 450, 403)
- 
+
      const signatureBuffer = await toSignatureBuffer(stateInfo.signature, 150, 30)
      await placeImage(new Uint8Array(signatureBuffer.buffer), 0, 148, 406)
 })
