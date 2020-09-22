@@ -21,6 +21,8 @@ export const allRegistrationStatus = [
   // null on these cases
   'Not Found',
   'Denied',
+  // Not from the Alloy API, used when requests fails to complete
+  'Error',
   'Inactive',
   'Pending',
   'Confirmation',
