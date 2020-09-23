@@ -1,5 +1,5 @@
-import { cacheIsRegistered, toAlloyDate } from './alloy'
-import { RegistrationArgs, RegistrationStatus } from '../common'
+import { cacheIsRegistered, toAlloyDate } from './'
+import { RegistrationArgs, RegistrationStatus } from '../../common'
 
 
 const alloyMock = process.env.ALLOY_MOCK

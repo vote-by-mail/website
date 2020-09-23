@@ -1,7 +1,7 @@
-import { processEnvOrThrow, RegistrationStatus, RegistrationArgs, allRegistrationStatus, AlloyResponse } from '../common'
+import { processEnvOrThrow, RegistrationStatus, RegistrationArgs, allRegistrationStatus, AlloyResponse } from '../../common'
 import axios, { AxiosResponse, AxiosRequestConfig } from 'axios'
 import rax from 'retry-axios'
-import { cache } from './util'
+import { cache } from '../util'
 
 // Env & axios refactoring
 
