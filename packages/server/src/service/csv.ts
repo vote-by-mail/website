@@ -64,6 +64,7 @@ const compoundKeys: string[] = [
   'voter.utmTerm',
   'voter.utmContent',
   'mgResponse.id',
+  'alloy.status',
 ]
 
 export const toCSVSting = (infos: RichStateInfo[]) => {

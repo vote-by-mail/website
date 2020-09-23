@@ -122,6 +122,24 @@ export class FirestoreService {
     await this.db.collection('StateInfo').doc(id).update(update)
   }
 
+  async batchUpdateRegistrations(
+    data: Array<Partial<RichStateInfo> & { id: string }>
+  ): Promise<void> {
+    // batch can only take up to 500 operations, slicing data array accordingly
+    // https://firebase.google.com/docs/firestore/manage-data/transactions#batched-writes
+    for (let i = 0; i < data.length; i += 500) {
+      const chunk = data.slice(i, i + 500)
+      const batch = this.db.batch()
+
+      for (const update of chunk) {
+        const ref = this.db.collection('StateInfo').doc(update.id)
+        batch.update(ref, update)
+      }
+
+      await batch.commit()
+    }
+  }
+
   async getRegistration(id: string): Promise<RichStateInfo | null> {
     return this.get(this.db.collection('StateInfo').doc('' + id))
   }

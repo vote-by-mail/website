@@ -64,6 +64,17 @@ export const eligibleSignatureType = (state: ImplementedState) => {
   return stateSignatureType[state]
 }
 
+export interface StateInfoAlloy {
+  id?: string
+  status: RegistrationStatus
+  /**
+   * Timestamp in MS of the last time this request was made, we only
+   * update this value if 24 hours have passed, since it appears that
+   * registration statuses take some time to update.
+   */
+  timestamp?: number
+}
+
 export interface BaseInfo extends Locale {
   state: ImplementedState
   name: string
@@ -82,10 +93,7 @@ export interface BaseInfo extends Locale {
   signature?: string
   signatureType?: SignatureType
   contact: ContactData
-  alloy?: {
-    id?: string
-    status: RegistrationStatus | 'Error'
-  }
+  alloy?: StateInfoAlloy
 }
 
 interface SignatureBaseInfo extends BaseInfo {
