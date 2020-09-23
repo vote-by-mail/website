@@ -88,31 +88,31 @@ export const calculateSignups = (
 
   if (firstQuery) {
     snapshot.forEach(entry => {
-      // Since there are two cases where this loop might happen, we want
-      // to make sure it is not querying repeated data (for total/today signups)
-      const notRepeated = getMillis(entry) >= lastQueryTime
+      if (entry.state) {
+        // Since there are two cases where this loop might happen, we want
+        // to make sure it is not querying repeated data (for total/today signups)
+        const notRepeated = getMillis(entry) >= lastQueryTime
 
-      // Google timestamps uses seconds instead of ms (default JS stamp)
-      // we divide valueOf by 1000 to avoid issues
-      if (getMillis(entry) >= todayMidnight.valueOf()) {
-        if (notRepeated) {
-          totalSignups += 1
-          todaySignups += 1
-        }
-        if (entry.state) {
+        // Google timestamps uses seconds instead of ms (default JS stamp)
+        // we divide valueOf by 1000 to avoid issues
+        if (getMillis(entry) >= todayMidnight.valueOf()) {
           state.values[entry.state].totalSignups += 1
           state.values[entry.state].todaySignups += 1
+          if (notRepeated) {
+            totalSignups += 1
+            todaySignups += 1
+          }
+        } else {
+          if (notRepeated) totalSignups += 1
+          state.values[entry.state].totalSignups += 1
         }
-      } else {
-        if (notRepeated) totalSignups += 1
-        if (entry.state) state.values[entry.state].totalSignups += 1
       }
     })
   } else {
     snapshot.forEach(entry => {
-      totalSignups += 1
-      todaySignups += 1
       if (entry.state) {
+        totalSignups += 1
+        todaySignups += 1
         state.values[entry.state].todaySignups += 1
         state.values[entry.state].totalSignups += 1
       }
