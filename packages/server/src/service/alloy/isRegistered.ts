@@ -27,7 +27,7 @@ const lowercaseStatuses = allRegistrationStatus.map(x => x.toLowerCase())
  * 429 means we are firing more requests than our maximum rate per second,
  * to avoid alerting users about this, we use retry-axios on this request
  */
-const repeatAxios = async (requestConfig: AxiosRequestConfig): Promise<AxiosAlloyResponse> => {
+const retryRequest = async (requestConfig: AxiosRequestConfig): Promise<AxiosAlloyResponse> => {
   const axiosInstance = axios.create()
   rax.attach(axiosInstance)
   const response = await axiosInstance({
@@ -96,7 +96,7 @@ export const isRegistered = async ({
   ].filter(str => !!str).join('&')
   const url = `${apiUrl}/verify?${query}`
 
-  const response = await repeatAxios({...commonAxiosSettings, url})
+  const response = await retryRequest({...commonAxiosSettings, url})
 
   const id = response.data.id
   // When not found Alloy API returns null, we default this to Not Found
@@ -117,7 +117,7 @@ export const isRegisteredByAlloyId = async (id: string): Promise<RegistrationSta
   const url = `${apiUrl}/voters/${id}`
 
   try {
-    const response = await repeatAxios({...commonAxiosSettings, url})
+    const response = await retryRequest({...commonAxiosSettings, url})
     // When not found Alloy API returns null, we default this to Not Found
     return response.data.registration_status ?? 'Not Found'
   } catch(error) {

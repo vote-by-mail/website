@@ -108,7 +108,7 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: B
       contact,
       address,
       ...(alloy.id && alloy.status // Avoids type checking issues
-        ? {alloy: { id: alloy.id, status: alloy.status as RegistrationStatus }}
+        ? {alloyStatus: { id: alloy.id, status: alloy.status as RegistrationStatus }}
         : {}),
     }
 
