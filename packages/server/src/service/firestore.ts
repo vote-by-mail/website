@@ -313,14 +313,16 @@ export class FirestoreService {
   async getSignups(
     lastQueryTime: number,
     stateLastQueryTime: number,
-  ): Promise<FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData>> {
+  ): Promise<Partial<RichStateInfo>[]> {
     const stateInfos = this.db.collection('StateInfo')
     // We only select 'created' when doing these queries, to avoid fetching
     // needless information.
-    const query = stateInfos.where(
-      // Using only the numeric value of lastQueryTime doesn't work
-      'created', '>', admin.firestore.Timestamp.fromMillis(stateLastQueryTime ? lastQueryTime : 0),
-    ).select('created', 'address.state')
-    return query.get()
+    const query = stateInfos
+      .where(
+        // Using only the numeric value of lastQueryTime doesn't work
+        'created', '>', admin.firestore.Timestamp.fromMillis(stateLastQueryTime ? lastQueryTime : 0),
+      )
+      .select('created', 'state')
+    return this.query<Partial<RichStateInfo>[]>(query)
   }
 }

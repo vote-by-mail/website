@@ -1,6 +1,7 @@
+import FirebaseFirestore from '@google-cloud/firestore'
 import { calculateSignups } from './logic'
-import { createMock } from 'ts-auto-mock'
 import { AnalyticsStorageSchema, makeStateStorageRecord } from './storage'
+import { RichStateInfo } from '../service/types'
 
 jest.mock('./storage', () => ({
   AnalyticsStorage() { return function () {/* do nothing */}},
@@ -8,12 +9,6 @@ jest.mock('./storage', () => ({
 }))
 
 const queriedState = 'Florida'
-
-type Snapshot = FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData>
-type SignupMock = {
-  createTime: { seconds: number }
-  get(state: string): 'Florida'
-}
 
 // The analytics metrics work by storing and logging the amount of daily
 // total sign ups. To ensure we don't lose track of these values, and to
@@ -80,35 +75,32 @@ const snapshot = (
   storedTodaySignups: number,
   pastSignups: number,
   lastQueryTime: number,
-): Snapshot => {
-  const signups: SignupMock[] = [
+) => {
+  const signups: Partial<RichStateInfo>[] = [
     // Google timestamps uses seconds instead of ms (default JS stamp) we
     // divide valueOf by 1000 to avoid issues, since logic.ts will expect
     // google timestamps
-    ...Array<SignupMock>(newSignups).fill({
-      createTime: { seconds: lastQueryTime / 1000 },
-      get(_: string) { return queriedState },
+    ...Array<Partial<RichStateInfo>>(newSignups).fill({
+      created: new FirebaseFirestore.Timestamp(lastQueryTime / 1000, 0),
+      state: queriedState,
     }),
-    ...Array<SignupMock>(storedTodaySignups).fill({
+    ...Array<Partial<RichStateInfo>>(storedTodaySignups).fill({
       // Should happen a bit before lastQueryTime, so we can test that when
       // initializing per-state values for the first time these won't appear
       // repeatedly at `todaySignups`.
-      createTime: { seconds: (lastQueryTime - 20) / 1000 },
-      get(_: string) { return queriedState },
+      //
+      // Using Math.floor since Firebase requires integers
+      created: new FirebaseFirestore.Timestamp(Math.floor((lastQueryTime - 20) / 1000), 0),
+      state: queriedState,
     }),
     // Subtracted by storedTodaySignups since these two happened in the past
-    ...Array<SignupMock>(pastSignups - storedTodaySignups).fill({
-      createTime: { seconds: inThePast.valueOf() / 1000 },
-      get(_: string) { return queriedState },
+    ...Array<Partial<RichStateInfo>>(pastSignups - storedTodaySignups).fill({
+      created: new FirebaseFirestore.Timestamp(inThePast.valueOf() / 1000, 0),
+      state: queriedState,
     }),
   ]
 
-  return createMock<Snapshot>({
-    forEach(cb: (el: SignupMock) => void) {
-      signups.forEach(cb)
-    },
-    size: signups.length,
-  })
+  return signups
 }
 
 test('calculateSignups return the right results on first query', () => {
