@@ -21,6 +21,22 @@ const projectName = processEnvOrThrow('GCLOUD_PROJECT')
 const projectPath = client.projectPath(projectName)
 const baseMetricUrl = 'custom.googleapis.com'
 
+// Not using RAX (Retry Axios) since the request is done through @google-cloud/monitoring
+//
+// Monitoring seems to be throwing a lot of internal errors as our metrics increase in
+// size.
+const retry = async <T>(promise: () => Promise<T>, times = 4): Promise<T> => {
+  for (let i = 0; i < times; i++) {
+    try {
+      return promise()
+    } catch(e) {
+      console.error(e)
+    }
+  }
+
+  throw new Error('Could not complete request')
+}
+
 export const updateTimeSeries = async () => {
   const storage = new AnalyticsStorage()
   await storage.initializeOrSync()
@@ -35,7 +51,7 @@ export const updateTimeSeries = async () => {
     now,
   )
 
-  await client.createTimeSeries({
+  await retry(() => client.createTimeSeries({
     name: projectPath,
     timeSeries: [{
       metric: { type: `${baseMetricUrl}/daily_sign_ups` },
@@ -49,9 +65,9 @@ export const updateTimeSeries = async () => {
         value: { int64Value: todaySignups },
       }],
     }],
-  })
+  }))
 
-  await client.createTimeSeries({
+  await retry(() => client.createTimeSeries({
     name: projectPath,
     timeSeries: [{
       metric: { type: `${baseMetricUrl}/total_sign_ups` },
@@ -65,12 +81,12 @@ export const updateTimeSeries = async () => {
         value: { int64Value: totalSignups },
       }],
     }],
-  })
+  }))
 
   for (const _state of implementedStates) {
     const stateAbbr = getStateAbbr(_state)?.toLowerCase() as string
 
-    await client.createTimeSeries({
+    await retry(() => client.createTimeSeries({
       name: projectPath,
       timeSeries: [{
         metric: { type: `${baseMetricUrl}/${stateAbbr}/daily_sign_ups` },
@@ -84,9 +100,9 @@ export const updateTimeSeries = async () => {
           value: { int64Value: state.values[_state].todaySignups },
         }],
       }],
-    })
+    }))
 
-    await client.createTimeSeries({
+    await retry(() => client.createTimeSeries({
       name: projectPath,
       timeSeries: [{
         metric: { type: `${baseMetricUrl}/${stateAbbr}/total_sign_ups` },
@@ -100,7 +116,7 @@ export const updateTimeSeries = async () => {
           value: { int64Value: state.values[_state].totalSignups },
         }],
       }],
-    })
+    }))
   }
 
   await storage.update(totalSignups, todaySignups, state, now.valueOf())

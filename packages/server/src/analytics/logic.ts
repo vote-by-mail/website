@@ -1,11 +1,13 @@
 import { AnalyticsStorageSchema, AnalyticsMetricPair } from "./storage"
-import { getImplementedState } from "../common"
+import { RichStateInfo } from "../service/types"
 
 interface CalculatedSignups {
   totalSignups: number
   todaySignups: number
   state: AnalyticsStorageSchema['state']
 }
+
+const getMillis = (e: Partial<RichStateInfo>) => e?.created?.toMillis() ?? 0
 
 /**
  * Automates creating a record of <string, AnalyticsMetricPair> that automatically
@@ -39,7 +41,7 @@ const makeAnalyticsPairForRecord = <S extends Record<string, AnalyticsMetricPair
  */
 export const calculateSignups = (
   storage: AnalyticsStorageSchema,
-  snapshot: FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData>,
+  snapshot: Partial<RichStateInfo>[],
   queryDateTime: Date,
 ): CalculatedSignups => {
   const {
@@ -77,44 +79,42 @@ export const calculateSignups = (
   //
   // To avoid incrementing repeated entries when looping from the beginning,
   // we always check for the respective `lastQueryTime`
-  const loopingFromTheStart = !storage.lastQueryTime || !stateLastQueryTime
+  const firstQuery = !storage.lastQueryTime || !stateLastQueryTime
   const todayMidnight = new Date(
     queryDateTime.getFullYear(),
     queryDateTime.getMonth(),
     queryDateTime.getDate(),
   )
 
-  if (loopingFromTheStart) {
+  if (firstQuery) {
     snapshot.forEach(entry => {
-      const entryState = getImplementedState(entry.get('address.state') ?? '')
       // Since there are two cases where this loop might happen, we want
       // to make sure it is not querying repeated data (for total/today signups)
-      const notRepeated = entry.createTime.seconds >= (lastQueryTime / 1000)
+      const notRepeated = getMillis(entry) >= lastQueryTime
 
       // Google timestamps uses seconds instead of ms (default JS stamp)
       // we divide valueOf by 1000 to avoid issues
-      if (entry.createTime.seconds >= (todayMidnight.valueOf() / 1000)) {
+      if (getMillis(entry) >= todayMidnight.valueOf()) {
         if (notRepeated) {
           totalSignups += 1
           todaySignups += 1
         }
-        if (entryState) {
-          state.values[entryState].totalSignups += 1
-          state.values[entryState].todaySignups += 1
+        if (entry.state) {
+          state.values[entry.state].totalSignups += 1
+          state.values[entry.state].todaySignups += 1
         }
       } else {
         if (notRepeated) totalSignups += 1
-        if (entryState) state.values[entryState].totalSignups += 1
+        if (entry.state) state.values[entry.state].totalSignups += 1
       }
     })
   } else {
     snapshot.forEach(entry => {
-      const entryState = getImplementedState(entry.get('address.state'))
       totalSignups += 1
       todaySignups += 1
-      if (entryState) {
-        state.values[entryState].todaySignups += 1
-        state.values[entryState].totalSignups += 1
+      if (entry.state) {
+        state.values[entry.state].todaySignups += 1
+        state.values[entry.state].totalSignups += 1
       }
     })
   }
