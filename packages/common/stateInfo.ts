@@ -66,7 +66,7 @@ export const eligibleSignatureType = (state: ImplementedState) => {
   return stateSignatureType[state]
 }
 
-export interface StateInfoAlloy {
+export interface AlloyStatus {
   id?: string
   status: RegistrationStatus
   /**
@@ -95,7 +95,7 @@ export interface BaseInfo extends Locale {
   signature?: string
   signatureType?: SignatureType
   contact: ContactData
-  alloy?: StateInfoAlloy
+  alloyStatus?: AlloyStatus
 }
 
 interface SignatureBaseInfo extends BaseInfo {

@@ -254,12 +254,12 @@ export const registerPassportEndpoints = (app: Express.Application) => {
         // for updates.
         const updatedAlloyData = await recheckRegistration(stateInfos[i])
         if (updatedAlloyData) {
-          stateInfos[i].alloy = updatedAlloyData
+          stateInfos[i].alloyStatus = updatedAlloyData
           updatedRegistrations[i] = {
             // Safe to type-cast this since recheckRegistration would've
             // thrown if otherwise
             id: stateInfos[i].id as string,
-            alloy: updatedAlloyData,
+            alloyStatus: updatedAlloyData,
           }
         }
       }
