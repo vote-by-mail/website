@@ -31,6 +31,7 @@ const removeNullValues = (obj) => {
 const base = removeNullValues({
   ALLOY_API_KEY: ALLOY_SANDBOX_API_KEY,
   ALLOY_API_SECRET: ALLOY_SANDBOX_API_SECRET,
+  ALLOY_RECHECK_INTERVAL: 1000 * 60 * 60 * 24,
   MG_API_KEY,
   TWILIO_SID,
   TWILIO_TOKEN,

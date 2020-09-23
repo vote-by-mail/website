@@ -1,6 +1,8 @@
 import { RichStateInfo } from '../types'
 import { isRegistered, isRegisteredByAlloyId } from './isRegistered'
-import { getStateAbbr, State, NameParts, AlloyStatus, Address, RegistrationStatus } from '../../common'
+import { getStateAbbr, State, NameParts, AlloyStatus, Address, RegistrationStatus, processEnvOrThrow } from '../../common'
+
+const alloyRecheckInterval: number = + processEnvOrThrow('ALLOY_RECHECK_INTERVAL')
 
 const extractNameParts = (id: string, name: string): NameParts => {
   const splitName = name.split(' ')
@@ -98,8 +100,7 @@ const shouldRecheck = (
     return false
   }
 
-  const twentyFourHours = 1000 * 60 * 60 * 24 // 24 hours in milliseconds
-  return (nowTimestamp - (alloy?.timestamp ?? 0)) > twentyFourHours
+  return (nowTimestamp - (alloy?.timestamp ?? 0)) > alloyRecheckInterval
 }
 
 /**
