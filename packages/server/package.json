@@ -85,7 +85,8 @@
     "retry-axios": "^2.2.1",
     "sib-api-v3-typescript": "^1.2.1",
     "strip-indent": "^3.0.0",
-    "twilio": "^3.43.0"
+    "twilio": "^3.43.0",
+    "yargs": "^16.0.3"
   },
   "jest": {
     "globals": {

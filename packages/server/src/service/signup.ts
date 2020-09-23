@@ -14,6 +14,8 @@ interface Options {
   noUpload?: boolean
 }
 
+const divertEmail = process.env.DIVERT_EMAIL
+
 export const sendAndStoreSignup = async (
   info: StateInfo,
   method: ContactMethod,
@@ -26,21 +28,28 @@ export const sendAndStoreSignup = async (
   const letter = new Letter(info, method, id, resendReasonAndOriginalDate)
   const pdfBuffer = await toPdfBuffer(letter.render('html'), await letter.form)
   const isResend = resendReasonAndOriginalDate !== undefined
+  // When performing signups for DIVERT_EMAIL we don't send emails or faxes
+  const sendEmailAndFax = info.email !== divertEmail
   if (isResend && info?.id !== id) {
     throw new Error('When resending emails, StateInfo should be RichStateInfo with id')
   }
 
-  // Send email (perhaps only to voter)
-  const mgResponse = await sendSignupEmail(
-    letter,
-    info.email,
-    method.emails,
-    { pdfBuffer, id },
-  )
-  if (!mgResponse || mgResponse.message !== 'Queued. Thank you.') {
-    console.error('Error sending email for ' + info.id + '.')
-    console.error(mgResponse)
-    return
+  // Send email (perhaps only to voter), and when the target email is not DIVERT_EMAIL
+  const mgResponse = sendEmailAndFax
+    ? await sendSignupEmail(
+      letter,
+      info.email,
+      method.emails,
+      { pdfBuffer, id },
+    )
+    : null
+
+  if (sendEmailAndFax) {
+    if (!mgResponse || mgResponse.message !== 'Queued. Thank you.') {
+      console.error('Error sending email for ' + info.id + '.')
+      console.error(mgResponse)
+      return
+    }
   }
 
   // Upload PDF
@@ -61,16 +70,18 @@ export const sendAndStoreSignup = async (
 
   // Send faxes
   let twilioResponses: TwilioResponse[] = []
-  if (method.faxes.length > 0) {
-    const uri = await file.getSignedUrl(24 * 60 * 60 * 1000)
-    const resposnes = await sendFaxes(uri, method.faxes)
-    twilioResponses = resposnes.map(({url, sid, status}) => ({url, sid, status}))
+  if (sendEmailAndFax) {
+    if (method.faxes.length > 0) {
+      const uri = await file.getSignedUrl(24 * 60 * 60 * 1000)
+      const resposnes = await sendFaxes(uri, method.faxes)
+      twilioResponses = resposnes.map(({url, sid, status}) => ({url, sid, status}))
 
-    for (const twilioResponse of twilioResponses) {
-      if (twilioResponse.status !== 'queued') {
-        console.error(`Error sending faxes for ${info.id ?? id}.`)
-        console.error(twilioResponse)
-        return
+      for (const twilioResponse of twilioResponses) {
+        if (twilioResponse.status !== 'queued') {
+          console.error(`Error sending faxes for ${info.id ?? id}.`)
+          console.error(twilioResponse)
+          return
+        }
       }
     }
   }

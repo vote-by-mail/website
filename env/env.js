@@ -36,6 +36,7 @@ const base = removeNullValues({
   TWILIO_TOKEN,
   TWILIO_FAX_NUMBER,
   DIVERT_FAX_NUMBER,
+  DIVERT_EMAIL: 'fake_voter@votebymail.io',
   SENDINBLUE_API_KEY,   // We are using the v3 API
   SENDINBLUE_LIST_ID: 4,  // This is just a fake testing list -- no emails will be sent
   USER_MAX_ORGS: 50,
@@ -131,6 +132,7 @@ const production = removeNullValues({
   GOOGLE_CLIENT_CALLBACK: 'https://app.votebymail.io/auth/google/callback',
   GOOGLE_STORAGE_BUCKET: 'vbm-prod-281822.appspot.com',
   EMAIL_FAX_OFFICIALS: 1,
+  DIVERT_EMAIL: undefined,
   DIVERT_FAX_NUMBER: undefined,
   RECORDS_ADDR: 'records@votebymail.io',
   ALLOY_MOCK: undefined,

@@ -99,6 +99,14 @@ const main = async (customFile?: string) => {
     return null
   }).filter(str => !!str) as string[] // Removes empty/null elements
 
+  if (storedInfo.method === 'fax') {
+    console.log(
+      'The last test was executed targetting faxes. ' +
+      'Unfortunately our fax API doesn\'t support detailed information for outbound faxes status.'
+    )
+    console.log('We\'ll still be able to track status of outbound email (for voters) in this script...')
+  }
+
   await fetchIdStatuses(
     storedInfo.results.length,
     ids,
