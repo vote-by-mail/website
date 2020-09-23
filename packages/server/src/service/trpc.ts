@@ -18,9 +18,11 @@ interface HostInfo {
 }
 
 const hostInfo = (request: Request): HostInfo => {
-  // https://stackoverflow.com/questions/10849687/express-js-how-to-get-remote-client-address
+  // https://cloud.google.com/appengine/docs/flexible/nodejs/reference/request-headers
   return {
-    ip: request.connection.remoteAddress,
+    ip: process.env.NODE_ENV !== 'development'
+      ? request.headers['x-forwarded-for'] as string
+      : request.connection.remoteAddress, // The above won't work on dev builds
     userAgent: request.headers['user-agent'],
   }
 }
