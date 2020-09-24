@@ -20,9 +20,8 @@ interface HostInfo {
 const hostInfo = (request: Request): HostInfo => {
   // https://cloud.google.com/appengine/docs/flexible/nodejs/reference/request-headers
   return {
-    ip: process.env.NODE_ENV !== 'development'
-      ? request.headers['x-forwarded-for'] as string
-      : request.connection.remoteAddress, // The above won't work on dev builds
+    // 'x-forwarded-for' will not work on dev builds
+    ip: (request.headers['x-forwarded-for'] ?? request.connection.remoteAddress) as string,
     userAgent: request.headers['user-agent'],
   }
 }
