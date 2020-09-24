@@ -13,6 +13,7 @@ import { registerPassportEndpoints } from './service/org'
 import { staticDir } from './service/util'
 import { updateTimeSeries } from './analytics/'
 import { registerLogWebhooksEndpoints } from './service/webhooks'
+import { crossCheckCronjob } from './service/alloy'
 
 const app = Express()
 
@@ -35,6 +36,21 @@ app.get('/cron/daily_total_sign_ups', async (req, res) => {
   if (req.get('X-Appengine-Cron')) {
     try {
       await updateTimeSeries()
+      res.status(200).send('')
+    } catch(e) {
+      console.error(e)
+      res.status(500).send('')
+    }
+  } else {
+    res.status(401).send('')
+  }
+})
+
+app.get('/cron/cross_check', async (req, res) => {
+  // https://cloud.google.com/appengine/docs/standard/nodejs/scheduling-jobs-with-cron-yaml#validating_cron_requests
+  if (req.get('X-Appengine-Cron')) {
+    try {
+      await crossCheckCronjob()
       res.status(200).send('')
     } catch(e) {
       console.error(e)

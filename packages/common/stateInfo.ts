@@ -69,7 +69,7 @@ export interface AlloyStatus {
   status: RegistrationStatus
   /**
    * Timestamp in MS of the last time this request was made, we only
-   * update this value if 24 hours have passed, since it appears that
+   * update this value if ALLOY_RECHECK_INTERVAL hours have passed, since it appears that
    * registration statuses take some time to update.
    */
   timestamp?: number

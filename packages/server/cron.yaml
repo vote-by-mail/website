@@ -3,3 +3,7 @@ cron:
   url: /cron/daily_total_sign_ups
   schedule: every 3 hours synchronized
   timezone: UTC
+- description: "Passively fetches voter registration statuses"
+  url: /cron/cross_check
+  schedule: every 1 hours synchronized
+  timezone: UTC

@@ -5,6 +5,7 @@ import { Profile } from 'passport'
 import { User, RichStateInfo, Org, TwilioResponse } from './types'
 import { Analytics } from '../common/'
 import Mailgun = require('mailgun-js')
+import { CrossCheckStateInfo } from './alloy'
 
 type DocumentReference = admin.firestore.DocumentReference<admin.firestore.DocumentData>
 type Query = admin.firestore.Query<admin.firestore.DocumentData>
@@ -330,5 +331,31 @@ export class FirestoreService {
       'created', '>', admin.firestore.Timestamp.fromMillis(lastQueryTime),
     ).select('created')
     return query.get()
+  }
+
+  /**
+   * Fetches up to 500 users registrations to cross check their registration status
+   * with Alloy API.
+   */
+  async fetchUsersForCrossCheckByCreatedTime(createdAt: number): Promise<CrossCheckStateInfo[]> {
+    const stateInfos = this.db.collection('StateInfo')
+    const query = stateInfos
+      .where('created', '>=', admin.firestore.Timestamp.fromMillis(createdAt))
+      .select('id', 'name', 'created', 'nameParts', 'birthdate', 'address', 'alloyStatus')
+      .orderBy('created', 'asc')
+      .limit(500)
+
+    return this.query<CrossCheckStateInfo>(query)
+  }
+
+  async fetchUsersForCrossCheckByVotersId(votersId: string[]): Promise<CrossCheckStateInfo[]> {
+    const stateInfos = this.db.collection('StateInfo')
+    const query = stateInfos
+      .where('id', 'in', votersId)
+      .select('id', 'name', 'created', 'nameParts', 'birthdate', 'address', 'alloyStatus')
+      .orderBy('created', 'asc')
+      .limit(500)
+
+    return this.query<CrossCheckStateInfo>(query)
   }
 }
