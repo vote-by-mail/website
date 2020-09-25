@@ -15,6 +15,7 @@ mocked(sendSignupEmail).mockResolvedValue({ message: 'Queued. Thank you.', id: '
 jest.mock('./twilio')
 jest.mock('./firestore')
 jest.mock('./pdf')
+jest.mock('./alloy/storage')
 jest.mock('./storage', () => {
   // Classes are only automatically mocked if they are using default exports
   const StorageFile = jest.fn().mockImplementation((_: string) => ({
