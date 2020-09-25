@@ -78,4 +78,29 @@ export class CrossCheckStorage {
 
     await this.doc.set(this.storage, { merge: true })
   }
+
+  /**
+   * Static method that is only used when adding voters to the queue
+   * during the sign up.
+   */
+  static async addToQueue(id: string, timestamp: number) {
+    const doc = firestore.db.collection('CrossCheck').doc('storage')
+    let data = (await doc.get()).data() as CrossCheckStorageSchema | undefined
+
+    if (!data) {
+      // Initialize the data if enqueueing an user who registered to vote
+      // before the cronjob for cross-check registration has run for the
+      // first time.
+      data = {
+        id: 'onlyOne',
+        currentCreatedTime: 0,
+        firstAnalysis: true,
+        queue: {[id]: timestamp},
+      }
+    } else {
+      data.queue[id] = timestamp
+    }
+
+    await doc.set(data)
+  }
 }

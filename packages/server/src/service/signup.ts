@@ -7,6 +7,7 @@ import { FirestoreService } from './firestore'
 import { storageFileFromId, StorageFile } from './storage'
 import { TwilioResponse, RichStateInfo } from './types'
 import { sendFaxes } from './twilio'
+import { shouldCrossCheck, CrossCheckStorage } from './alloy'
 const firestoreService = new FirestoreService()
 
 interface Options {
@@ -87,4 +88,10 @@ export const sendAndStoreSignup = async (
       })
   }
   await firestoreService.updateRegistration(id, mgResponse, twilioResponses)
+
+  // If without a definite registration status from alloy, enqueue the voter
+  if (shouldCrossCheck(null, info.alloyStatus)) {
+    const now = new Date()
+    await CrossCheckStorage.addToQueue(id, now.valueOf())
+  }
 }
