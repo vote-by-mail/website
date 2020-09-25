@@ -333,6 +333,9 @@ export class FirestoreService {
     return query.get()
   }
 
+  ////////////////////////////////////////////
+  // Cross check cron job
+
   /**
    * Fetches up to 500 users registrations to cross check their registration status
    * with Alloy API.

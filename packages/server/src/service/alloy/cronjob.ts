@@ -36,6 +36,10 @@ const updateQueue = (
 )
 
 const recheckDocuments = async (nowTimestamp: number, storage: CrossCheckStorage, documents: CrossCheckStateInfo[]) => {
+  if (!documents.length) {
+    return
+  }
+
   // This map is updated as we recheck registrations, and if we get a definite
   // answer from alloy (i.e. 'Active', 'Rejected', etc.) we update the entry
   // with `null` so it can be deleted from the queue.
@@ -85,31 +89,59 @@ const recheckDocuments = async (nowTimestamp: number, storage: CrossCheckStorage
   })
 }
 
-const firstAnalysisLogic = async (nowTimestamp: number, storage: CrossCheckStorage) => {
-  const documents = await firestore.fetchUsersForCrossCheckByCreatedTime(storage.data.currentCreatedTime)
+export class CrossCheckLogic {
+  // Externally acquired from the constructor so it is already initialized
+  private readonly storage: CrossCheckStorage
 
-  // If we didn't get any new entry to scan then the first analysis is completed.
-  if (documents.length === 0) {
-    await storage.update({...storage.data, firstAnalysis: false})
-    return
+  /**
+   * @param storage A already initialized CrossCheckStorage
+   */
+  constructor(storage: CrossCheckStorage) {
+    // Checks if the storage is already initialized/synced
+    try {
+      storage.data
+    } catch(e) {
+      console.error(e)
+      throw new Error('CrossCheckLogic needs to have a already initialized CrossCheckStorage')
+    }
+    this.storage = storage
   }
 
-  await recheckDocuments(nowTimestamp, storage, documents)
-}
+  /**
+   * The initial analysis done when the logic to cross check registrations
+   * hasn't finished iterating through the existing sign ups yet in order
+   * to enqueue/recheck their statuses.
+   */
+  async firstAnalysis(nowTimestamp: number) {
+    const documents = await firestore.fetchUsersForCrossCheckByCreatedTime(this.storage.data.currentCreatedTime)
 
-const enqueuedLogic = async (nowTimestamp: number, storage: CrossCheckStorage) => {
-  // Creates a array containing the oldest 500 entries that can be cross-checked
-  // right now
-  const oldestIdsFromQueue = Object.entries(storage.data.queue)
-    // Sort by the timestamp in ascending order
-    .sort((a, b) => a[1] - b[1])
-    .slice(0, 500)
-    .filter(entry => nowTimestamp - entry[1] >= alloyRecheckInterval)
-    .map(entry => entry[0]) // returns only the IDs
+    // If we didn't get any new entry to scan then the first analysis is completed.
+    if (documents.length === 0) {
+      await this.storage.update({...this.storage.data, firstAnalysis: false})
+      return
+    }
 
-  if (oldestIdsFromQueue.length) {
-    const documents = await firestore.fetchUsersForCrossCheckByVotersId(oldestIdsFromQueue)
-    await recheckDocuments(nowTimestamp, storage, documents)
+    await recheckDocuments(nowTimestamp, this.storage, documents)
+  }
+
+  /**
+   * The logic that is used when we've completed the firstAnalysis and we are
+   * now only rechecking for registrations in the queue.
+   */
+  async enqueued(nowTimestamp: number) {
+    // Creates a array containing the oldest 500 entries that can be cross-checked
+    // right now
+    const oldestIdsFromQueue = Object.entries(this.storage.data.queue)
+      // Sort by the timestamp in ascending order
+      .sort((a, b) => a[1] - b[1])
+      .slice(0, 500)
+      .filter(entry => nowTimestamp - entry[1] >= alloyRecheckInterval)
+      .map(entry => entry[0]) // returns only the IDs
+
+    if (oldestIdsFromQueue.length) {
+      const documents = await firestore.fetchUsersForCrossCheckByVotersId(oldestIdsFromQueue)
+      await recheckDocuments(nowTimestamp, this.storage, documents)
+    }
   }
 }
 
@@ -117,10 +149,11 @@ export const crossCheckCronjob = async () => {
   const now = new Date()
   const storage = new CrossCheckStorage()
   await storage.initializeOrSync()
+  const logic = new CrossCheckLogic(storage)
 
   if (!storage.data.firstAnalysis) {
-    await firstAnalysisLogic(now.valueOf(), storage)
+    await logic.firstAnalysis(now.valueOf())
   } else {
-    await enqueuedLogic(now.valueOf(), storage)
+    await logic.enqueued(now.valueOf())
   }
 }
