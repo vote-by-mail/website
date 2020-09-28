@@ -9,10 +9,9 @@ import { processEnvOrThrow, implementedStates, toStateMethod } from '../../commo
 import { FirestoreService } from '../firestore'
 import { FirestoreStore } from '@google-cloud/connect-firestore'
 import { toCSVSting } from '../csv'
-import { Org, RichStateInfo } from '../types'
+import { Org } from '../types'
 import { storageFileFromId } from '../storage'
 import { router as letterRouter } from '../letter/router'
-import { recheckRegistration } from '../alloy'
 
 const scope = [
   'https://www.googleapis.com/auth/userinfo.email',
@@ -246,38 +245,10 @@ export const registerPassportEndpoints = (app: Express.Application) => {
       const uid = getUid(req)
       const stateInfos = await firestoreService.fetchRegistrations(uid, oid) || []
 
-      // This array will be used to batch update registrations
-      const updatedRegistrations: Array<Partial<RichStateInfo> & { id: string }> = []
-
-      for (let i = 0; i < stateInfos.length; i++) {
-        // Note that recheckRegistration can return null if there's no need
-        // for updates.
-        const updatedAlloyData = await recheckRegistration(stateInfos[i])
-        if (updatedAlloyData) {
-          stateInfos[i].alloyStatus = updatedAlloyData
-          updatedRegistrations[i] = {
-            // Safe to type-cast this since recheckRegistration would've
-            // thrown if otherwise
-            id: stateInfos[i].id as string,
-            alloyStatus: updatedAlloyData,
-          }
-        }
-      }
-
       const csvString = toCSVSting(stateInfos)
       res.contentType('text/csv')
       res.setHeader('Content-Disposition', `attachment; filename=${oid}-data.csv`)
       res.send(csvString)
-
-      // Updates the batch in firestore after sending organizers the response.
-      // This is done so they can download the file faster -- and if any error
-      // happens while updating (but not while processing the request) we
-      // don't bother them.
-      if (updatedRegistrations.length) {
-        await firestoreService.batchUpdateRegistrations(
-          updatedRegistrations.filter(r => !!r) // Removes empty entries
-        )
-      }
     }
   )
 

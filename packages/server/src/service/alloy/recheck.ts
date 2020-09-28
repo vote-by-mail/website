@@ -1,8 +1,16 @@
-import { RichStateInfo } from '../types'
 import { isRegistered, isRegisteredByAlloyId } from './isRegistered'
 import { getStateAbbr, State, NameParts, AlloyStatus, Address, RegistrationStatus, processEnvOrThrow } from '../../common'
 
 const alloyRecheckInterval: number = + processEnvOrThrow('ALLOY_RECHECK_INTERVAL')
+
+export interface StateInfoForAlloy {
+  id: string
+  birthdate: string
+  name: string
+  nameParts?: NameParts
+  address: Address
+  alloy: AlloyStatus
+}
 
 const extractNameParts = (id: string, name: string): NameParts => {
   const splitName = name.split(' ')
@@ -81,6 +89,11 @@ const checkRegistrationByAlloyId = async (timestamp: number, alloydId: string): 
   }
 }
 
+/** Registration status that are still susceptible for changes */
+export const unfinishedRegistrationStatus: Array<RegistrationStatus | undefined> = [
+  'Inactive', 'Not Found', 'Pending', 'Error', undefined,
+]
+
 /**
  * Returns true if the data from StateInfo indicates that a cross-check
  * update is available.
@@ -93,9 +106,8 @@ const shouldRecheck = (
   alloy: AlloyStatus | undefined,
 ) => {
   // These are the statuses that can trigger rechecks
-  const unfinishedStatus: Array<RegistrationStatus | undefined> = ['Pending', 'Error', 'Not Found', undefined]
 
-  if (!unfinishedStatus.includes(alloy?.status)) {
+  if (!unfinishedRegistrationStatus.includes(alloy?.status)) {
     // If the status is not one of the unfinished we don't have to recheck
     return false
   }
@@ -108,8 +120,8 @@ const shouldRecheck = (
  * will only perform requests when needed, returning null if there's no need
  * to recheck registration.
  */
-export const recheckRegistration = async (info: RichStateInfo): Promise<AlloyStatus | null> => {
-  const { id, address, name, nameParts, birthdate, alloyStatus: alloy } = info
+export const recheckRegistration = async (info: StateInfoForAlloy): Promise<AlloyStatus | null> => {
+  const { id, address, name, nameParts, birthdate, alloy } = info
   if (!id) {
     throw new Error('Voter ID should be defined by this point')
   }
