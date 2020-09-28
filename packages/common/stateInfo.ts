@@ -95,7 +95,7 @@ export interface BaseInfo extends Locale {
   signature?: string
   signatureType?: SignatureType
   contact: ContactData
-  alloyStatus?: AlloyStatus
+  alloy?: AlloyStatus
 }
 
 interface SignatureBaseInfo extends BaseInfo {
