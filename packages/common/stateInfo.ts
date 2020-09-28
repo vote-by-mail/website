@@ -65,7 +65,7 @@ export const eligibleSignatureType = (state: ImplementedState) => {
 }
 
 export interface AlloyStatus {
-  id?: string
+  id?: string | null
   status: RegistrationStatus
   /**
    * Timestamp in MS of the last time this request was made, we only

@@ -91,7 +91,7 @@ const checkRegistrationByAlloyId = async (timestamp: number, alloydId: string): 
 
 /** Registration status that are still susceptible for changes */
 export const unfinishedRegistrationStatus: Array<RegistrationStatus | undefined> = [
-  'Inactive', 'Not Found', 'Pending', 'Error', undefined,
+  'Inactive', 'Not Found', 'Pending', 'Error',
 ]
 
 /**

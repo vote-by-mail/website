@@ -16,7 +16,7 @@ const shouldScan = async () => {
     .where('alloy.timestamp', '>', 0)
     .limit(1)
     .get()
-  return query.size !== 0
+  return query.size === 0
 }
 
 /**
@@ -27,13 +27,13 @@ const shouldScan = async () => {
  */
 export const scanSignupsForAlloyTimestamp = async () => {
   if (await shouldScan()) {
-    const collection = await firestore.db.collection('StateInfo').select('id', 'alloy').orderBy('created', 'asc').get()
+    const collection = await firestore.db.collection('StateInfo').select('id', 'alloy').get()
     const updates: Array<Partial<RichStateInfo> & { id: string }> = collection.docs.map(entry => {
       const data = entry.data() as RichStateInfo
       return {
         id: entry.id,
         alloy: {
-          id: data.alloy?.id,
+          id: data.alloy?.id ?? null,
           status: data.alloy?.status ?? 'Not Found',
           // If this is undefined we won't be able to do comparison queries
           // of the last 24 hours
