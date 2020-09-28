@@ -14,10 +14,9 @@ export const crossCheckRegistrationsCronjob = async () => {
   const inInterval = now.valueOf() - alloyRecheckInterval
   const registrations = await firestore.db.collection('StateInfo')
     .where('alloy.status', 'in', unfinishedRegistrationStatus)
-    .where('alloy.timestamp', '<', inInterval)
+    .where('alloy.timestamp', '<=', inInterval)
     .select('id', 'alloy', 'name', 'nameParts', 'address', 'birthdate')
     .limit(500)
-    .orderBy('created', 'asc')
     .get()
 
   const updates: Array<Partial<RichStateInfo> & { id: string }> = []
@@ -27,7 +26,11 @@ export const crossCheckRegistrationsCronjob = async () => {
     if (alloy) {
       updates[i] = {
         id: data.id,
-        alloy,
+        alloy: {
+          ...alloy,
+          // It will throw errors if undefined
+          id: alloy.id ?? null,
+        },
       }
     }
   }
