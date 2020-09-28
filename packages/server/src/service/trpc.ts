@@ -108,6 +108,13 @@ export class VbmRpc implements ImplRpc<IVbmRpc, Request> {
     const method = toContactMethod(info.contact)
     if (!method) return error('Unable to find contact details for local official')
 
+    // Adds timestamp to new sign ups
+    info.alloy = {
+      id: info.alloy?.id,
+      status: info.alloy?.status ?? 'Not Found',
+      timestamp: new Date().valueOf(),
+    }
+
     const id = await firestoreService.addRegistration({
       ...info,
       ...hostInfo(request),
