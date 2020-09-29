@@ -1,7 +1,7 @@
-import { makeResendEmailsConditions } from '../resendSignupEmails'
+import { makeResendEmailsConditions, whereFromCSV } from '../resendSignupEmails'
 
 export const conditions = makeResendEmailsConditions(
-  'New York emails needed to be resent.',
-  ['state', '==', 'New York'],
+  'Emails of 14 states needed to be resent.',
+  whereFromCSV('sample.csv', 'in', s => s),
   ['email', '==', 'email@votebymail.io'],
 )
