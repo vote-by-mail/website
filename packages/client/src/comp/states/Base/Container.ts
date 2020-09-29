@@ -13,13 +13,14 @@ const telephonePattern = /[0-9]{3}-?[0-9]{3}-?[0-9]{4}/
 type InputId =
   | 'birthdate'
   | 'email'
+  | 'confirmEmail'
   | 'firstName'
   | 'lastName'
   | 'middleName'
   | 'suffix'
   | 'telephone'
 
-const isInputValid = (id: InputId, value: string): boolean => {
+const isInputValid = (id: InputId, value: string, payload?: string | null): boolean => {
   switch (id) {
     case 'birthdate': return datePattern.test(value)
     case 'firstName':
@@ -37,6 +38,7 @@ const isInputValid = (id: InputId, value: string): boolean => {
       return /^([^0-9]*)$/.test(value)
     }
     case 'email': return emailPattern.test(value)
+    case 'confirmEmail': return emailPattern.test(value) && value === payload
     case 'telephone': {
       return value ? telephonePattern.test(value) : true
     }
@@ -90,6 +92,7 @@ const useFields = () => {
     suffix: defaultInputData('suffix', query.suffix, true),
     birthdate: defaultInputData('birthdate', query.birthdate, false),
     email: defaultInputData('email', query.email, false),
+    confirmEmail: defaultInputData('confirmEmail', undefined, false),
     telephone: defaultInputData('telephone', query.telephone, true),
   })
 
@@ -101,7 +104,19 @@ const useFields = () => {
   }
 
   const updateField = (id: InputId, value: string) => {
-    _updateValid({ ...fields, [id]: { valid: isInputValid(id, value), value } })
+    const payload = () => {
+      switch (id) {
+        case 'confirmEmail': return fields.email.value
+        default: return null
+      }
+    }
+
+    _updateValid({
+      ...fields, [id]: {
+        valid: isInputValid(id, value, payload()),
+        value,
+      },
+    })
   }
 
   const canCheckRegistration = () => (
