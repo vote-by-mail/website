@@ -2,14 +2,11 @@ import { FirestoreService } from '../firestore'
 import { unfinishedRegistrationStatus, StateInfoForAlloy, recheckRegistration } from './recheck'
 import { processEnvOrThrow } from '../../common'
 import { RichStateInfo } from '../types'
-import { scanSignupsForAlloyTimestamp } from './scanSignups'
 
 const alloyRecheckInterval: number = +processEnvOrThrow('ALLOY_RECHECK_INTERVAL')
 const firestore = new FirestoreService()
 
 export const crossCheckRegistrationsCronjob = async () => {
-  await scanSignupsForAlloyTimestamp()
-
   const now = new Date()
   const inInterval = now.valueOf() - alloyRecheckInterval
   const registrations = await firestore.db.collection('StateInfo')
@@ -27,9 +24,10 @@ export const crossCheckRegistrationsCronjob = async () => {
       updates[i] = {
         id: data.id,
         alloy: {
-          ...alloy,
+          status: alloy.status ?? 'Not Found',
           // It will throw errors if undefined
           id: alloy.id ?? null,
+          timestamp: alloy.timestamp ?? 0,
         },
       }
     }
