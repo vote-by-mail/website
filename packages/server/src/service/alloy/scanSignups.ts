@@ -4,19 +4,27 @@
 // statuses queued.
 import { FirestoreService } from '../firestore'
 import { RichStateInfo } from '../types'
+import { promises as fs } from 'fs'
 
 const firestore = new FirestoreService()
 
-/**
- * Returns true if we should scan the database in order to prepare the
- * collection for Alloy timestamps
- */
-const shouldScan = async () => {
-  const query = await firestore.db.collection('StateInfo')
-    .where('alloy.timestamp', '>', 0)
-    .limit(1)
-    .get()
-  return query.size === 0
+const readLastTimestamp = async (): Promise<number> => {
+  try {
+    const file = await fs.readFile(`${__dirname}/timestamp`, 'utf-8')
+    return +file.toString()
+  } catch(e) {
+    // When the error is not because the file doesn't exist we throw it,
+    // otherwise just return 0 (so we can build a very old Date timestamp)
+    if (e.code !== 'ENOENT') {
+      throw(e)
+    }
+
+    return 0
+  }
+}
+
+const saveLastTimestamp = async (timestamp: number) => {
+  await fs.writeFile(`${__dirname}/timestamp`, `${timestamp}`, { encoding: 'utf-8' })
 }
 
 /**
@@ -26,8 +34,17 @@ const shouldScan = async () => {
  * with a cronjob.
  */
 export const scanSignupsForAlloyTimestamp = async () => {
-  if (await shouldScan()) {
-    const collection = await firestore.db.collection('StateInfo').select('id', 'alloy').get()
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    const collection = await firestore.db.collection('StateInfo')
+      .select('id', 'alloy')
+      .where('created', '>=', new Date(await readLastTimestamp()))
+      .orderBy('created', 'asc')
+      .limit(500)
+      .get()
+
+    if(collection.size) console.log(`Updating the records for ${collection.size} sign ups.`)
+
     const updates: Array<Partial<RichStateInfo> & { id: string }> = collection.docs.map(entry => {
       const data = entry.data() as RichStateInfo
       return {
@@ -37,12 +54,21 @@ export const scanSignupsForAlloyTimestamp = async () => {
           status: data.alloy?.status ?? 'Not Found',
           // If this is undefined we won't be able to do comparison queries
           // of the last 24 hours
-          timestamp: 0,
+          timestamp: data.alloy?.timestamp ?? 0,
         }
       }
     })
 
     await firestore.batchUpdateRegistrations(updates)
+
+    if (collection.size !== 0) {
+      const lastIndex = collection.size - 1
+      await saveLastTimestamp(collection.docs[lastIndex].createTime.toMillis())
+      console.log('Update completed.')
+    } else {
+      console.log('Finished scanning the collection for Alloy timestamp.')
+      return
+    }
   }
 }
 

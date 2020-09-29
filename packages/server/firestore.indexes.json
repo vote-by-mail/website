@@ -13,6 +13,20 @@
           "order": "DESCENDING"
         }
       ]
+    },
+    {
+      "collectionGroup": "StateInfo",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "alloy.status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "alloy.timestamp",
+          "order": "ASCENDING"
+        }
+      ]
     }
   ],
   "fieldOverrides": []
