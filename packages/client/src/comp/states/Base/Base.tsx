@@ -246,6 +246,14 @@ const ContainerlessBase = <Info extends StateInfo>({ enrichValues, children }: B
       onChange={e => updateField('email', e.currentTarget.value)}
       required
     />
+    <EmailInput
+      id='confirmEmail'
+      label='Confirm Email'
+      value={fields.confirmEmail.value}
+      invalid={!fields.confirmEmail.valid}
+      onChange={e => updateField('confirmEmail', e.currentTarget.value)}
+      required
+    />
     <PhoneInput
       id='telephone'
       value={fields.telephone.value}
