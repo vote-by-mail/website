@@ -15,6 +15,8 @@ const limiter = new Bottleneck({
 
 type InfoWithId = RichStateInfo & { id: string }
 
+const throttleRecheckRegistration = limiter.wrap(recheckRegistration)
+
 export const crossCheckRegistrationsCronjob = async () => {
   const now = new Date()
   const inInterval = now.valueOf() - alloyRecheckInterval
@@ -27,24 +29,24 @@ export const crossCheckRegistrationsCronjob = async () => {
 
   const updates: Array<Partial<RichStateInfo> & { id: string }> = []
   const registrations = queryResult.docs.map(e => e.data() as InfoWithId)
-  await limiter.wrap(() => {
-    return Promise.all(registrations.map((info, index) => {
-      return recheckRegistration(info)
-        .then(alloy => {
-          if (alloy) {
-            updates[index] = {
-              id: info.id,
-              alloy: {
-                status: alloy.status ?? 'Not Found',
-                // It will throw errors if undefined
-                id: alloy.id ?? null,
-                timestamp: alloy.timestamp ?? 0,
-              },
-            }
+  const promises = registrations.map((info, index) => {
+    return throttleRecheckRegistration(info)
+      .then(alloy => {
+        if (alloy) {
+          updates[index] = {
+            id: info.id,
+            alloy: {
+              status: alloy.status ?? 'Not Found',
+              // It will throw errors if undefined
+              id: alloy.id ?? null,
+              timestamp: alloy.timestamp ?? 0,
+            },
           }
-        })
-    }))
-  })()
+        }
+      })
+  })
+
+  await Promise.all(promises)
 
   // The filter removes empty items
   await firestore.batchUpdateRegistrations(updates.filter(r => !!r))
