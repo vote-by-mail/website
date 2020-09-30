@@ -43,7 +43,7 @@ export const scanSignupsForAlloyTimestamp = async () => {
       .limit(500)
       .get()
 
-    if(collection.size) console.log(`Updating the records for ${collection.size} sign ups.`)
+    if(collection.size) console.log(`Updating records for ${collection.size} sign ups.`)
 
     const updates: Array<Partial<RichStateInfo> & { id: string }> = collection.docs.map(entry => {
       const data = entry.data() as RichStateInfo
