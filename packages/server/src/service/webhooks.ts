@@ -20,6 +20,8 @@ export type GCPLogLevel = 'INFO' | 'WARNING' | 'ERROR'
 // rich information about the two interfaces here. These STUB definitions
 // will help us work around this limitation.
 
+export type MailgunEventReason = 'generic' | 'bounce' | 'suppress-bounce'
+
 // Based on the example at
 // https://documentation.mailgun.com/en/latest/user_manual.html#events
 export interface MailgunEventData {
@@ -31,7 +33,7 @@ export interface MailgunEventData {
   'log-level': MailgunLogLevel
   id: string
   campaigns: string[]
-  reason: string
+  reason: MailgunEventReason
   'user-variables': any
   flags: {
     'is-routed': boolean
