@@ -38,7 +38,7 @@ export const scanSignupsForAlloyTimestamp = async () => {
   while (true) {
     const collection = await firestore.db.collection('StateInfo')
       .select('id', 'alloy')
-      .where('created', '>=', new Date(await readLastTimestamp()))
+      .where('created', '>', new Date(await readLastTimestamp()))
       .orderBy('created', 'asc')
       .limit(500)
       .get()
@@ -61,10 +61,12 @@ export const scanSignupsForAlloyTimestamp = async () => {
 
     await firestore.batchUpdateRegistrations(updates)
 
-    if (collection.size !== 0) {
+    if (collection.size > 0) { // There's still scanning to do
+      // The last item will have the most recent timestamp since we've sorted
+      // the query by ascending creation date.
       const lastIndex = collection.size - 1
       await saveLastTimestamp(collection.docs[lastIndex].createTime.toMillis())
-      console.log('Update completed.')
+      console.log('Update completed. Running next scan.')
     } else {
       console.log('Finished scanning the collection for Alloy timestamp.')
       return
