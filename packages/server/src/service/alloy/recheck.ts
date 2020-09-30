@@ -9,7 +9,7 @@ export interface StateInfoForAlloy {
   name: string
   nameParts?: NameParts
   address: Address
-  alloy: AlloyStatus
+  alloy?: AlloyStatus
 }
 
 const extractNameParts = (id: string, name: string): NameParts => {
