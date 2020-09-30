@@ -66,7 +66,7 @@ export const scanSignupsForAlloyTimestamp = async () => {
       // the query by ascending creation date.
       const lastIndex = collection.size - 1
       await saveLastTimestamp(collection.docs[lastIndex].createTime.toMillis())
-      console.log('Update completed. Running next scan.')
+      console.log(`Update completed for ${collection.size} sign ups. Running next scan.`)
     } else {
       console.log('Finished scanning the collection for Alloy timestamp.')
       return
