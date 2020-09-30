@@ -5,6 +5,7 @@ import { Profile } from 'passport'
 import { User, RichStateInfo, Org, TwilioResponse } from './types'
 import { Analytics } from '../common/'
 import Mailgun = require('mailgun-js')
+import _ from 'underscore'
 
 type DocumentReference = admin.firestore.DocumentReference<admin.firestore.DocumentData>
 type Query = admin.firestore.Query<admin.firestore.DocumentData>
@@ -127,8 +128,7 @@ export class FirestoreService {
   ): Promise<void> {
     // batch can only take up to 500 operations, slicing data array accordingly
     // https://firebase.google.com/docs/firestore/manage-data/transactions#batched-writes
-    for (let i = 0; i < data.length; i += 500) {
-      const chunk = data.slice(i, i + 500)
+    for (const chunk of _.chunk(data, 500)) {
       const batch = this.db.batch()
 
       for (const update of chunk) {
