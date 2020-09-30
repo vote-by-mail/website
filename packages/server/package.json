@@ -33,6 +33,7 @@
     "@types/passport": "^1.0.3",
     "@types/passport-google-oauth": "^1.0.41",
     "@types/supertest": "^2.0.8",
+    "@types/underscore": "^1.8.8",
     "data-forge": "^1.8.9",
     "firebase-tools": "^8.10.0",
     "gulp": "^4.0.2",
@@ -85,7 +86,8 @@
     "retry-axios": "^2.2.1",
     "sib-api-v3-typescript": "^1.2.1",
     "strip-indent": "^3.0.0",
-    "twilio": "^3.43.0"
+    "twilio": "^3.43.0",
+    "underscore": "^1.11.0"
   },
   "jest": {
     "globals": {
