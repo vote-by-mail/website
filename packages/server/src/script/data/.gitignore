@@ -1,3 +1,4 @@
 *
 !.gitignore
 !conditions.sample.ts
+!sample.csv

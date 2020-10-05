@@ -3,13 +3,16 @@ import { RichStateInfo } from '../service/types'
 import { WithId } from '../common'
 import { toContactMethod } from '../common'
 import { sendAndStoreSignup } from '../service/signup'
+import { safeReadFileSync } from '../service/util'
+import readline from 'readline'
+import _ from 'underscore'
 
 const firestoreService = new FirestoreService()
 
 interface ResendEmailsConditionData {
     reason: string
     previewFields: string[]
-    query: FirebaseFirestore.Query<FirebaseFirestore.DocumentData>
+    queries: FirebaseFirestore.Query<FirebaseFirestore.DocumentData>[]
 }
 
 /**
@@ -23,6 +26,31 @@ type Where = [
 ]
 
 /**
+ * Allows to construct a Where from a csv file. We automatically consider
+ * the first row of the csv to be the field being queried--e.g. if the first
+ * row is 'address.state' this function will return ['address.state', op, ...mappedRows]
+ *
+ * @param fileName the name of the csv file to be read, we infer that this
+ * file is located inside the `data` folder
+ * @param op the operation to be done with the data acquired
+ * @param map how each row (after the header) is processed, for example
+ * when querying for dates use map = `row => new Date(Number.parseInt(row))`
+ */
+export const whereFromCSV = <OP extends 'in' | 'array-contains-any'>(
+  fileName: string,
+  op: OP,
+  map: (s: string) => unknown,
+): [string, OP, unknown[]] => {
+    const file = safeReadFileSync(`${__dirname}/data/${fileName}`)
+    const rows = file.toString('utf8')
+        .replace(/\r\n/g, '\n') // Compatibility between Windows and Unix
+        .split('\n')
+        .filter(r => !!r) // Some editors might add a final empty line when saving the file
+
+    return [rows[0], op, rows.slice(1).map(map)]
+}
+
+/**
  * Automates creating queries, tracking the fields used for previewFields.
  *
  * Please remember that FirebaseFirestore only accepts Date objects when
@@ -34,22 +62,45 @@ type Where = [
  */
 export const makeResendEmailsConditions = (reason: string, ...where: Where[]): ResendEmailsConditionData => {
     const previewFields: string[] = []
-    let query: FirebaseFirestore.Query<FirebaseFirestore.DocumentData> | null = null
+    const queries: Array<FirebaseFirestore.Query<FirebaseFirestore.DocumentData>> = []
 
-    for (const [field, op, value] of where) {
-        // Initializes or compliment the query
-        query = query
-            ? query.where(field, op, value)
-            : firestoreService.db.collection('StateInfo').where(field, op, value)
-
-        previewFields.push(field)
+    // 'IN' operator only takes up to 10 items
+    const needsToSplitQuery = where.some(([_, op, val]) => {
+        return op === 'in' && (val as Array<unknown>)?.length > 10
+    })
+    let currentQueryIndex = 0
+    // Initializes or compliment the query
+    const pushWhereCondition = (where: Where) => {
+        queries[currentQueryIndex] = queries[currentQueryIndex]
+            ? queries[currentQueryIndex]?.where(where[0], where[1], where[2])
+            : firestoreService.db.collection('StateInfo').where(where[0], where[1], where[2])
     }
 
-    if (!query) {
+
+    if (needsToSplitQuery) {
+        const whereInIndex = where.findIndex(w => w[1] === 'in' || w[1] === 'array-contains-any')
+        const whereIn = where[whereInIndex] as [string, 'in' | 'array-contains-any', string[]]
+        previewFields.push(whereIn[0])
+        for (const chunk of _.chunk(whereIn[2], 10)) {
+            for (const w of where.filter((_, index) => index !== whereInIndex)) {
+                previewFields.push(w[0])
+                pushWhereCondition(w)
+            }
+            pushWhereCondition([whereIn[0], whereIn[1], chunk])
+            currentQueryIndex += 1
+        }
+    } else {
+        for (const w of where) {
+            pushWhereCondition(w)
+            previewFields.push(w[0])
+        }
+    }
+
+    if (queries.length === 0) {
         throw new Error('You should specify a query to resend emails')
     }
 
-    return { reason, previewFields, query }
+    return { reason, previewFields, queries }
 }
 
 
@@ -70,13 +121,16 @@ const resendSignups = async (registrations: WithId<RichStateInfo>[], resendReaso
     console.log('Sending emails...')
     for (const info of registrations) {
         // Setup.
+        // Reading from Firestore seems to convert the method.faxes/email array into an IterableIterator,
+        // so we need to convert it back into an Array for re-processing.
+        info.contact.faxes = info.contact.faxes ? Object.values(info.contact.faxes) : undefined
+        info.contact.emails = info.contact.emails ? Object.values(info.contact.emails) : undefined
+
         const method = toContactMethod(info.contact)
         if (method == null) {
             console.log(`No contact method found for ${info.id}.`)
             continue
         }
-        // Reading from Firestore seems to convert the method.faxes/email array into an IterableIterator,
-        // so we need to convert it back into an Array for re-processing.
         method.faxes = Object.values(method.faxes)
         method.emails = Object.values(method.emails)
 
@@ -118,7 +172,7 @@ const logRegistrationPreviews = (registrations: WithId<RichStateInfo>[]) => {
 
                 preview.set(field, value)
             } else {
-                preview.set(field, registrationMap.get('field'))
+                preview.set(field, registrationMap.get(field))
             }
         }
 
@@ -128,30 +182,45 @@ const logRegistrationPreviews = (registrations: WithId<RichStateInfo>[]) => {
 
 // Reads './data/conditions.ts' and resends emails to all voter sign ups that satisfy query.
 const main = async () => {
-    // Fetch registrations.
-    const registrations = await firestoreService.query<RichStateInfo>(conditions.query)
-    if (registrations == null || registrations.length == 0) {
-        console.log('No voters found for specified conditions.')
-        return
-    }
+    let hasConfirmed = false
+    for (const query of conditions.queries) {
+        // Fetch registrations.
+        const registrations = await firestoreService.query<RichStateInfo>(query)
+        if (registrations == null || registrations.length == 0) {
+            console.log('No voters found for specified conditions.')
+            return
+        }
 
-    // Display registration previews.
-    logRegistrationPreviews(registrations)
+        // Display registration previews.
+        logRegistrationPreviews(registrations)
 
-    // Get confirmation form user that emails should be sent.
-    const confirmation = 'Would you like to resend emails to all of these voters and their election officials? [\'Y\' | \'N\']'
-    const standardInput = process.stdin
-    standardInput.setEncoding('utf-8')
-    console.log(confirmation)
-    standardInput.on('data', async (data) => {
-        if (data.toString() != 'Y\n'){
-            console.log('You typed something other than \'Y\'. Exiting.')
-            process.exit()
+        // Get confirmation form user that emails should be sent.
+        const confirmation = `Would you like to resend emails to all of these voters and their election officials? ['Y' | 'N']\n`
+        const rl = readline.createInterface({
+            input: process.stdin,
+            output: process.stdout,
+        })
+        if (!hasConfirmed) {
+            await new Promise(resolveInput => rl.question(confirmation, async (data) => {
+                if (data.toString() !== 'Y'){
+                    console.log('You typed something other than \'Y\'. Exiting.')
+                    rl.close()
+                    rl.removeAllListeners()
+                    process.exit()
+                } else {
+                    await resendSignups(registrations, conditions.reason)
+                    rl.close()
+                    rl.removeAllListeners()
+                    hasConfirmed = true
+                    resolveInput()
+                }
+            }))
         } else {
             await resendSignups(registrations, conditions.reason)
-            process.exit()
         }
-    })
+    }
+
+    process.exit()
 }
 
 main()
