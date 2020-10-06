@@ -1,4 +1,4 @@
-import { VirginiaInfo, getStateAbbr, State } from '../../common'
+import { VirginiaInfo, getStateAbbr, State, backwardCompatibleAddressParts } from '../../common'
 import { fillFormWrapper  } from '.'
 import { cleanPhoneNumber, toSignatureBuffer } from './util'
 
@@ -8,10 +8,7 @@ export const fillVirginia = (
   'Virginia.pdf',
   async ({check, text, placeImage}) => {
     const { nameParts } = stateInfo
-    const { addressParts } = stateInfo.address
-    if (!addressParts) {
-      throw new Error(`Address.addressParts should've been defined by this point.`)
-    }
+    const addressParts = backwardCompatibleAddressParts(stateInfo.address)
 
     // First name.
     text(nameParts.first, 0, 410, 60)
@@ -80,6 +77,8 @@ export const fillVirginia = (
         text(postcode[2], 0, 459, 246)
         text(postcode[3], 0, 475, 246)
         text(postcode[4], 0, 497, 246)
+    } else if (stateInfo.mailingAddress) {
+        text(stateInfo.mailingAddress, 0, 170, 228)
     } else {
         text('Same as above', 0, 170, 228)
     }

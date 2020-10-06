@@ -56,6 +56,8 @@ export const fillWestVirginia = (
         text(city, 0, mailingAddressStart * 0.95, 192)
         text(mailingStateAbbr ?? state ?? '', 0, mailingAddressStart * 2, 192)
         text(postcode, 0, 367, 192)
+    } else if (stateInfo.mailingAddress) {
+        text(stateInfo.mailingAddress, 0, mailingAddressStart, 175)
     } else {
         text(streetAddress, 0, mailingAddressStart, 175)
         // Apt/suite
