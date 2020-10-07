@@ -215,23 +215,10 @@ If you’ve deployed the application before these analytics were implemented, it
 The monitoring analytics are executed periodically after every 3 hours.
 
 ### Plotting the data
-Check that your analytics are working by visiting https://console.cloud.google.com/appengine/cronjobs?project=PROJECT-NAME and clicking on “Run now”, if no cron task is found verify that `crontab.yaml` was uploaded to the GCP App Engine. Clicking on "Run now" will ensure that the algorithm is working, it will also give us some initial data to plot on the GCP Monitoring dashboard.
 
-`Note: You can run this cron job every time you wish to update these metrics, it's useful to see if everything is working after performing one or two sign ups.`
+Simply run the script `yarn server gulp script --env ENVIRONMENT script src/analytics/createDashboard.ts` to create the dashboard for your environment. In order for this script to work you must ensure that you've allowed [Monitoring Workspaces](https://cloud.google.com/monitoring/workspaces/create) on your Google Cloud Project.
 
-Visit https://console.cloud.google.com/monitoring/dashboards?project=PROJECT-NAME and create a new **dashboard**. A dashboard allows you to display a collection of **charts**, in this documentation you’ll get the instructions of how to set a single chart for each of the tracked values (total sign ups and daily sign ups), but it is possible to configure this dashboard as you see fit.
-
-### Setting up Charts
-
-Setting up charts is an easy task, first click on "Add chart" on the top right corner of the page, then type `custom/daily_sign_ups` in the resource/metric name and give the appropriate title for this chart (e.g. `Daily sign ups`). After setting the title and the watched metric set "Aggregator" to `max` and "Period" to custom and `3 hours`. Click on "Show Advanced Options", change "Aligner" to `max` and "Legend Template" to `Daily sign ups`.
-
-After this, focus your attention on the area to the right side of this configuration menu, the one displaying the chart. Above the chart there's a ruler displaying time units (`1M`, `1H`, `1D`, etc), as you populate this metric with data you'll be able to choose bigger time windows (e.g. `1W`) but for now leave it at `1H`. If you don't see any data right after setting up the chart it's most likely to the fact that you don't have enough data in the period of `3 hours`, you can still verify that the metric is working by temporarily reducing the period to `1 minute` but remember to set it back to `3 hours` when leaving this page.
-
-Repeat these steps for the "Total sign ups" chart, just remember to use `custom/total_sign_ups` instead of the previous metric and certify that you name the legends/titles accordingly.
-
-### Per state charts
-
-We also support plotting per state metrics, the steps to set up these are the same for the regular metrics, the only difference is that instead of `custom/daily_sign_ups` and `custom/total_sign_ups` we now have `custom/STATE_ABBREVIATION/daily_sign_ups` and `custom/STATE_ABBREVIATION/total_sign_ups` (note that in both cases the state abbreviation is in lowercase, if in doubt await for Google Cloud Monitoring dashboard autocomplete to pop in your screen when filling the fields related to these charts). We recommending plotting each of these groups (per-state daily/total sign ups) in the same chart to avoid oversaturating your own dashboard.
+This script is run automatically with the cron jobs for analytics metrics, removing the need to manually update the dashboard when new orgs are created.
 
 ## Logging and Webhooks
 We use Google Cloud Logging and Mailgun Webhooks to log and keep track of sent emails. The instructions to enable and set up Google Cloud Logging can be found [here](https://cloud.google.com/logging/docs/setup/nodejs#before_you_begin), and an article for setting up Mailgun webhooks is available [here](https://www.mailgun.com/blog/a-guide-to-using-mailguns-webhooks/).

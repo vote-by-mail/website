@@ -60,6 +60,7 @@
     "@google-cloud/logging": "^8.0.5",
     "@google-cloud/storage": "^4.7.0",
     "@google-cloud/monitoring": "^2.1.1",
+    "@google-cloud/monitoring-dashboards": "^2.1.1",
     "@googlemaps/google-maps-services-js": "^2.6.0",
     "@tianhuil/simple-trpc": "^1.8.1",
     "node-fetch": "^2.6.1",

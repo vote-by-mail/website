@@ -345,4 +345,10 @@ export class FirestoreService {
       .select('created', 'state', 'oid')
     return this.query<Partial<RichStateInfo>[]>(query)
   }
+
+  async getAllOids(): Promise<string[]> {
+    const orgs = this.db.collection('Org')
+    const resp = await orgs.select('id').get()
+    return resp.docs.map(e => e.id)
+  }
 }
