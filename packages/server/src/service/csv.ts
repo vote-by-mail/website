@@ -67,7 +67,7 @@ const compoundKeys: string[] = [
   'alloy.status',
 ]
 
-export const toCSVSting = (infos: RichStateInfo[]) => {
+export const toCSVString = (infos: RichStateInfo[]) => {
   // Need to convert firestore TimeStamp to milliseconds since Epoch
   // https://firebase.google.com/docs/reference/js/firebase.firestore.Timestamp#todate
   // manipulatable in Google Spreadsheets:
@@ -79,3 +79,35 @@ export const toCSVSting = (infos: RichStateInfo[]) => {
   } as Record<StateKeys, any>))
   return toCSVStingGeneral(records, (simpleKeys as string[]).concat(compoundKeys))
 }
+
+class CSVMailingQueue {
+  /**
+   * Contains the uids of all users who have requested to download the csv
+   * file, so they don't trigger this action multiple times until it is finished.
+   */
+  private readonly uidDownloadingCSV: Set<string> = new Set()
+
+  /**
+   * Indicates that the given uid is downloading a csv file, to ensure
+   * that users can download the csv file after an unknown error happened
+   * in the process, users are removed from the queue after 5 minutes.
+   */
+  add(uid: string) {
+    if (!this.uidDownloadingCSV.has(uid)) {
+      this.uidDownloadingCSV.add(uid)
+      setTimeout(() => this.remove(uid), 5 * 60 * 1000)
+    }
+  }
+
+  /** Removes an user from the downloading queue */
+  remove(uid: string) {
+    this.uidDownloadingCSV.delete(uid)
+  }
+
+  /** Returns true if the user is currently waiting for an email */
+  isDownloading(uid: string) {
+    return this.uidDownloadingCSV.has(uid)
+  }
+}
+
+export const csvMailingQueue = new CSVMailingQueue()

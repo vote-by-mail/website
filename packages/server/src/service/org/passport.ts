@@ -8,10 +8,11 @@ import { OAuth2Strategy as GoogleStrategy } from 'passport-google-oauth'
 import { processEnvOrThrow, implementedStates, toStateMethod } from '../../common'
 import { FirestoreService } from '../firestore'
 import { FirestoreStore } from '@google-cloud/connect-firestore'
-import { toCSVSting } from '../csv'
+import { csvMailingQueue, toCSVString } from '../csv'
 import { Org } from '../types'
 import { storageFileFromId } from '../storage'
 import { router as letterRouter } from '../letter/router'
+import { sendCSVEmail } from '../mg'
 
 const scope = [
   'https://www.googleapis.com/auth/userinfo.email',
@@ -243,12 +244,23 @@ export const registerPassportEndpoints = (app: Express.Application) => {
     async (req, res) => {
       const { oid } = req.params
       const uid = getUid(req)
-      const stateInfos = await firestoreService.fetchRegistrations(uid, oid) || []
+      const isDownloading = csvMailingQueue.isDownloading(uid)
+      const { name, emails } = await firestoreService.getOrgUser(uid)
+      if (!isDownloading) {
+        req.flash('success', `We're sending all the registrations in an attachment to your emails (${emails.join(', ')})`)
+      } else {
+        req.flash('success', `There seems to be already a request to send the registrations to your email, if you didn't receive a copy of the file please wait a few minutes and you will be able to make this request again.`)
+      }
+      res.redirect('/dashboard')
 
-      const csvString = toCSVSting(stateInfos)
-      res.contentType('text/csv')
-      res.setHeader('Content-Disposition', `attachment; filename=${oid}-data.csv`)
-      res.send(csvString)
+      // Mail the file after handling the request response, so don't have
+      // to await for long promises.
+      if (!isDownloading) {
+        csvMailingQueue.add(uid)
+        const stateInfos = await firestoreService.fetchRegistrations(uid, oid) || []
+        const csvString = toCSVString(stateInfos)
+        await sendCSVEmail(csvString, uid, name, emails, oid)
+      }
     }
   )
 
