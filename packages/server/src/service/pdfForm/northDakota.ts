@@ -78,6 +78,8 @@ export const fillNorthDakota = ( stateInfo: NorthDakotaInfo) => fillFormWrapper(
         text(city, 0, 320, 353)
         text(stateAbbr ?? state, 0, 450, 353)
         text(postcode, 0, 500, 353)
+    } else if (stateInfo.mailingAddress) {
+      text(stateInfo.mailingAddress, 0, 25, 353)
     }
 
     //  // Signed date.

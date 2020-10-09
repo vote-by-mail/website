@@ -46,3 +46,20 @@ export const addressPartsToAddress = (addr: AddressInputParts): Address => ({
   stateAbbr: getStateAbbr(addr.state as State),
   unit: addr.unit,
 })
+
+export const backwardCompatibleAddressParts = (address: Address): AddressInputParts => {
+  if (address.addressParts) return address.addressParts
+  const { city, postcode, state, street, streetNumber, unit } = address
+
+  if (!street || !city) {
+    throw new Error('Missing street and city fields from address')
+  }
+
+  return {
+    city,
+    postcode,
+    state,
+    street: streetNumber ? `${streetNumber} ${street}` : street,
+    unit,
+  }
+}
