@@ -4,6 +4,8 @@ import { Letter } from './letter'
 import { processEnvOrThrow } from '../common'
 import { Logging } from '@google-cloud/logging'
 import { MailgunLogLevel, GCPLogLevel, MailgunHookBody } from './webhooks'
+import { csvMailingQueue } from './csv'
+import { Buffer } from 'buffer'
 
 export const mg = mailgun({
   domain: processEnvOrThrow('MG_DOMAIN'),
@@ -52,7 +54,7 @@ export const toSignupEmailData = (
   const mgData = {
     from: processEnvOrThrow('MG_FROM_ADDR'),
     'h:Reply-To': [processEnvOrThrow('MG_REPLY_TO_ADDR'), voterEmail, ...officialEmails].join(','),
-    'v:metadata': { 
+    'v:metadata': {
       uid: id
     },
   }
@@ -91,6 +93,50 @@ export const sendSignupEmail = async (
   const emailData = toSignupEmailData(letter, voterEmail, officialEmails, { pdfBuffer, force, id })
   return mg.messages().send(emailData)
 }
+
+
+export const sendCSVEmail = async (
+  csv: string,
+  uid: string,
+  name: string | undefined,
+  emails: string[],
+  oid: string,
+) => {
+  try {
+    const attachment = [new mg.Attachment({
+      data: Buffer.from(csv),
+      contentType: 'text/csv',
+      filename: 'saved_sign_ups.csv',
+    })]
+    const mgData = {
+      from: processEnvOrThrow('MG_FROM_ADDR'),
+      'h:Reply-To': [processEnvOrThrow('MG_REPLY_TO_ADDR'), ...emails].join(','),
+      'v:metadata': { oid },
+    }
+    const email: mailgun.messages.SendData = {
+      to: emails,
+      subject: `VoteByMail.io ${oid} saved registrations`,
+      text:
+        `Hello ${name ?? 'Organizer'},
+
+        As per your request from the VoteByMail.io organizers dashboard, we've sent ${oid} registrations to your email address.  Please see attached CSV document.`.replace(/( ){2,}/, ''),
+      attachment,
+      ...mgData,
+    }
+
+    await mg.messages().send(email)
+  } catch(e) {
+    // Catching this error instead of throwing so we always
+    // remove uid from csvMailingQueue, still users are automatically
+    // removed after a period of 5 minutes.
+    console.error(e)
+  } finally {
+    csvMailingQueue.remove(uid)
+  }
+}
+
+///////////////////////////////////////
+// Web Hooks
 
 const mailgunToGCPLogLevel = (mailgunLogLevel: MailgunLogLevel): GCPLogLevel => {
   switch (mailgunLogLevel) {

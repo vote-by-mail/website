@@ -315,6 +315,25 @@ export class FirestoreService {
     return true
   }
 
+  /** Returns all the emails this user has associated to their account */
+  async getOrgUser(uid: string): Promise<{ name: string, emails: string[] }> {
+    // We don't store users ID on our collection, the only way of getting
+    // a specific user is by filtering by the resource path.
+    const users = await this.db.collection('User').get()
+    const queriedUser = users.docs
+      .filter(doc => doc.ref.path.includes(uid)) // returns only user == uid
+      .map(doc => {
+        const data = doc.data() as { emails: Array<{value: string}>, displayName: string }
+        const emails = data.emails.map(email => email.value)
+        return {
+          name: data.displayName ?? 'Organizer',
+          emails,
+        }
+      })[0]
+
+    return queriedUser
+  }
+
   ////////////////////////////////////////////
   // Cloud Analytics
 
