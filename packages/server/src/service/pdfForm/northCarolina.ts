@@ -1,4 +1,4 @@
-import { NorthCarolinaInfo, getStateAbbr, State } from '../../common'
+import { NorthCarolinaInfo, getStateAbbr, State, backwardCompatibleAddressParts } from '../../common'
 import { fillFormWrapper  } from '.'
 import { toSignatureBuffer } from './util'
 
@@ -7,10 +7,7 @@ export const fillNorthCarolina = (
 ) => fillFormWrapper(
   'North_Carolina.pdf',
   async ({check, text, placeImage}) => {
-    const { addressParts } = stateInfo.address
-    if (!addressParts) {
-      throw new Error(`Address.addressParts should've been defined by this point.`)
-    }
+    const addressParts = backwardCompatibleAddressParts(stateInfo.address)
 
     text(stateInfo.nameParts.last, 2, 56, 90)
     text(stateInfo.nameParts.first, 2, 226, 90)
@@ -65,16 +62,20 @@ export const fillNorthCarolina = (
     check(2, 498, 272) // General election
 
     // Sic: we want 'Same as above' even when stateInfo.mailingAddress === ''
-    if(!stateInfo.mailingAddressParts) {
+    if(!stateInfo.mailingAddressParts && !stateInfo.mailingAddress) {
       text('Same as above', 2, 56, 300)
     } else {
-      const { city, postcode, state, street, unit } = stateInfo.mailingAddressParts
-      const address = unit ? `${street} #${unit}` : street
-      const stateAbbr = getStateAbbr(state as State)
-      text(address, 2, 60, 300, 9)
-      text(city, 2, 60, 335, 9)
-      text(stateAbbr ?? state, 2, 210, 335, 9)
-      text(postcode, 2, 250, 335, 9)
+      if (stateInfo.mailingAddressParts) {
+        const { city, postcode, state, street, unit } = stateInfo.mailingAddressParts
+        const address = unit ? `${street} #${unit}` : street
+        const stateAbbr = getStateAbbr(state as State)
+        text(address, 2, 60, 300, 9)
+        text(city, 2, 60, 335, 9)
+        text(stateAbbr ?? state, 2, 210, 335, 9)
+        text(postcode, 2, 250, 335, 9)
+      } else {
+        text(stateInfo.mailingAddress ?? '', 2, 60, 300, 9)
+      }
     }
 
     text(stateInfo.phone, 2, 420, 240)

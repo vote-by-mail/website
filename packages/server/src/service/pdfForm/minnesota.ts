@@ -1,4 +1,4 @@
-import { MinnesotaInfo, getStateAbbr, State } from '../../common'
+import { MinnesotaInfo, getStateAbbr, State, backwardCompatibleAddressParts } from '../../common'
 import { fillFormWrapper  } from '.'
 import { toSignatureBuffer, cleanPhoneNumber } from './util'
 
@@ -8,11 +8,7 @@ export const fillMinnesota = (
   'Minnesota.pdf',
   async ({check, text, placeImage}) => {
     check(0, 410, 161) // General and primary elections
-
-    const { addressParts } = stateInfo.address
-    if (!addressParts) {
-      throw new Error(`Address.addressParts should've been defined by this point.`)
-    }
+    const addressParts = backwardCompatibleAddressParts(stateInfo.address)
 
     text(stateInfo.nameParts.last, 0, 60, 225)
     text(stateInfo.nameParts.first, 0, 240, 225)
@@ -51,17 +47,21 @@ export const fillMinnesota = (
     text(addressParts.postcode ? addressParts.postcode : '', 0, 520, 422)
 
     // Sic: we want 'Same as above' even when stateInfo.mailingAddress === ''
-    if(!stateInfo.mailingAddressParts) {
+    if(!stateInfo.mailingAddressParts && !stateInfo.mailingAddress) {
       text('Same as above', 0, 60, 462)
     } else {
-      const { city, postcode, state, street, unit } = stateInfo.mailingAddressParts
-      const stateAbbr = getStateAbbr(state as State)
+      if (stateInfo.mailingAddressParts) {
+        const { city, postcode, state, street, unit } = stateInfo.mailingAddressParts
+        const stateAbbr = getStateAbbr(state as State)
 
-      text(street, 0, 60, 462)
-      text(unit ?? '', 0, 300, 462)
-      text(city ?? '', 0, 380, 462)
-      text(stateAbbr ?? state, 0, 460, 462)
-      text(postcode ?? '', 0, 520, 462)
+        text(street, 0, 60, 462)
+        text(unit ?? '', 0, 300, 462)
+        text(city ?? '', 0, 380, 462)
+        text(stateAbbr ?? state, 0, 460, 462)
+        text(postcode ?? '', 0, 520, 462)
+      } else {
+        text(stateInfo.mailingAddress ?? '', 0, 60, 462)
+      }
     }
 
     const dateSplit = new Date().toISOString().split('T')[0].split('-')
