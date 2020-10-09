@@ -1548,6 +1548,13 @@
     through2 "^4.0.0"
     type-fest "^0.16.0"
 
+"@google-cloud/monitoring-dashboards@^2.1.1":
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/@google-cloud/monitoring-dashboards/-/monitoring-dashboards-2.1.1.tgz#4d889c1864b0b0baa5c7eb23a39e3b0739d9661e"
+  integrity sha512-5XRPjDd0ZgOI2CoMelvurnt5zoh/4RcLD+ClrnYRinDKDovrZEV6fF0v+JQmYzeZHWqY1AlRsTTFIZzkdkQoJQ==
+  dependencies:
+    google-gax "^2.1.0"
+
 "@google-cloud/monitoring@^2.1.1":
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/@google-cloud/monitoring/-/monitoring-2.1.1.tgz#950822cd8b2703feb6db3648140bb36f9477c200"
