@@ -143,11 +143,11 @@ export const sampleAddresses: Record<ImplementedState, AddressData[]> = {
     state: 'Kansas',
   }],
   'Wisconsin': [{
-    address: '756 N Milwaukee St, Milwaukee, WI 53202',
-    city: 'Milwaukee',
+    address: '7421 W National Ave, West Allis, WI 53214',
+    city: 'West Allis',
     county: 'Milwaukee County',
-    postcode: '53202',
-    street: '756 N Milwaukee St',
+    postcode: '53214',
+    street: '7421 W National Ave',
     state: 'Wisconsin',
   }, {
     address: '1 S Pinckney St, Madison, WI 53703',
