@@ -1,8 +1,8 @@
 import { RawContact } from './type'
 import { Locale, isAvailableState, ContactData, AvailableState, contactOverride } from '../../common'
 import { keys } from './search'
-import { contactRecords, michiganRecords } from './loader'
-import { michiganFipsCode } from '../michiganFipsCode'
+import { contactRecords, michiganRecords, wisconsinRecords } from './loader'
+import { getFipsCode } from '../fipsCode'
 import { normalizeLocaleKey } from './normalize'
 
 const enrichContact = (raw: RawContact, key: string, state: AvailableState): ContactData => {
@@ -26,29 +26,35 @@ export const getFirstContact = async (state: AvailableState): Promise<ContactDat
   return enrichContact(raw, key, state)
 }
 
-export const getMichiganContact = async (
+export const getArcGisContact = async (
   latLong: [number, number],
   county: string,
+  state: 'Michigan' | 'Wisconsin',
   {cacheQuery} = {cacheQuery: false},
 ): Promise<ContactData | null> => {
-  const fipscode = await michiganFipsCode(latLong, {cacheQuery})
+  const fipscode = await getFipsCode(latLong, state, {cacheQuery})
   if (!fipscode) return null
-  const records = await michiganRecords
+
+  const records = state === 'Michigan'
+    ? await michiganRecords
+    : await wisconsinRecords
   const record = records[fipscode + ':' + county.toLowerCase()]
   if (!record) return null
-  const key = normalizeLocaleKey({state: 'Michigan', county: record.county, city: record.city})
-  return enrichContact(record, key, 'Michigan') ?? null
+
+  const key = normalizeLocaleKey({state, county: record.county, city: record.city})
+  return enrichContact(record, key, state) ?? null
 }
 
 export const toContact = async (locale: Locale): Promise<ContactData | null> => {
-  const { state } = locale
+  const { state, latLong, county } = locale
   if (!isAvailableState(state)) return null
 
-  // Need to search for Michigan Directly
-  if (locale.state === 'Michigan' && locale.latLong && locale.county) {
-    const contact = await getMichiganContact(locale.latLong, locale.county)
+  // Need to search for Michigan and Wisconsin Directly
+  if ((state === 'Michigan' || state === 'Wisconsin') && latLong && county) {
+    const contact = await getArcGisContact(latLong, county, state)
     if (contact) return contact
-    console.warn(`Unable to directly geocode Michigan locale ${JSON.stringify(locale)}, fallback to inferring`)
+    console.warn(`Unable to directly geocode ${state} locale ${JSON.stringify(locale)}, fallback to users decision`)
+    return null
   }
 
   for (const key of keys(locale as Locale<AvailableState>)) {
