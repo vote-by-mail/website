@@ -197,6 +197,8 @@ First you need to make sure you have a ArcGIS Developer Account with credits and
 
 The shapefile used to create the Michigan ArcGIS server can be found here: http://gis-michigan.opendata.arcgis.com/datasets/minor-civil-divisions-cities-townships-v17a
 
+And the one for Wisconsin can be found here: https://data-ltsb.opendata.arcgis.com/datasets/wi-cities-towns-and-villages-july-2020
+
 1. Log into your ArcGIS Developer Account and go to your Dashboard (https://developers.arcgis.com/dashboard)
 2. Scroll down and find the Layers section and click on the `+ Create New Layer` square
 3. Click on the `Select a file` button and upload the file that has your layer

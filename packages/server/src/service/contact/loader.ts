@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-import { State, processEnvOrThrow, AvailableState, availableStates } from "../../common"
+import { State, processEnvOrThrow, AvailableState, availableStates, ImplementedState } from "../../common"
 import { RawContactRecord, RawContact, ContactRecord } from "./type"
 import { normalizeStates } from "./normalize"
 
@@ -29,16 +29,24 @@ export const loadStates = async (): Promise<RawContactRecord> => {
   return ret
 }
 
-export const loadMichigan = async (
-  data: Record<string, RawContact>
+export const loadStateCounties = async (
+  data: Record<string, RawContact>,
+  state: ImplementedState,
 ): Promise<Record<string, RawContact & { key: string }>> => {
   return Object.fromEntries(
     Object.entries(data)
       .map(([key, rec]) => {
-        if (!rec.county) throw Error('Encountered Michigan record without count field during loading')
+        // Since the ArcGIS for wisconsin has some data that the election
+        // officials data does not have (and vice versa) we can expect some
+        // lack of data regarding counties.
+        if (!rec.county && state !== 'Wisconsin') throw Error(`Encountered ${state} record without county field during loading`)
 
         return [
-          (rec as { fipscode: string }).fipscode + ':' + rec.county.toLowerCase(),
+          ...(
+            rec.county
+              ? [(rec as { fipscode: string }).fipscode + ':' + rec.county.toLowerCase()]
+              : []
+          ),
           {...rec, key}
         ]
       })
@@ -51,5 +59,9 @@ export const contactRecords: Promise<ContactRecord> = (async () => {
 })()
 
 export const michiganRecords: Promise<Record<string, RawContact & { key: string }>> = (async () => {
-  return loadMichigan((await contactRecords)['Michigan'])
+  return loadStateCounties((await contactRecords)['Michigan'], 'Michigan')
+})()
+
+export const wisconsinRecords: Promise<Record<string, RawContact & { key: string }>> = (async () => {
+  return loadStateCounties((await contactRecords)['Wisconsin'], 'Wisconsin')
 })()
