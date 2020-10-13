@@ -339,7 +339,7 @@ test.each(addresses)(
     expect(address?.latLong, errMsg).toBeTruthy()
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const contact = await getArcGisContact(address?.latLong!, 'Michigan', address?.county!, {cacheQuery: true})
+    const contact = await getArcGisContact(address?.latLong!, address?.county!, 'Michigan', {cacheQuery: true})
 
     expect(contact, errMsg).toBeTruthy()
     expect(

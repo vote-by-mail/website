@@ -74,7 +74,7 @@ const addresses: AddressExpected[] = [
     expected: 'City of Green Bay:Brown County',
   },
   {
-    street: '16771 S Main St',
+    street: '20037 Gibson St',
     city: 'Galesville',
     postcode: '54630',
     state: 'Wisconsin',
@@ -126,7 +126,7 @@ test.each(addresses)(
     expect(address?.latLong, errMsg).toBeTruthy()
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const contact = await getArcGisContact(address?.latLong!, 'Wisconsin', address?.county!, {cacheQuery: true})
+    const contact = await getArcGisContact(address?.latLong!, address?.county!, 'Wisconsin', {cacheQuery: true})
 
     expect(contact, errMsg).toBeTruthy()
     expect(
