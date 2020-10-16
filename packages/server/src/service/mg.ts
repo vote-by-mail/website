@@ -181,3 +181,36 @@ export const logMailgunLogToGCP = async (body: MailgunHookBody): Promise<void> =
 
   await log.write(entry)
 }
+
+///////////////////////////////////////////////////
+// Follow up emails
+
+type sendFollowUpEmailArgs = {
+  voterEmail: string
+  voterId: string
+  bodyHTML: string
+  bodyMarkdown: string
+}
+
+export const sendFollowUpEmail = async ({
+  voterEmail,
+  voterId,
+  bodyHTML,
+  bodyMarkdown,
+}: sendFollowUpEmailArgs): Promise<mailgun.messages.SendResponse | null> => {
+  const emailData: mailgun.messages.SendData = {
+    to: voterEmail,
+    from: processEnvOrThrow('MG_FROM_ADDR'),
+    'h:Reply-To': [processEnvOrThrow('MG_REPLY_TO_ADDR'), voterEmail].join(','),
+    // Unable to set this without this hack
+    ...({'v:metadata': {
+      followUpEmail: true, // so we can avoid querying this in the loggings
+      id: voterId
+    }}),
+    html: bodyHTML,
+    text: bodyMarkdown,
+    subject: 'VoteByMail.io registration follow up.'
+  }
+
+  return mg.messages().send(emailData)
+}

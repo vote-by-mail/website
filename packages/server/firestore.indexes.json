@@ -19,6 +19,20 @@
       "queryScope": "COLLECTION",
       "fields": [
         {
+          "fieldPath": "followUp.sent",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "created",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "StateInfo",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
           "fieldPath": "alloy.status",
           "order": "ASCENDING"
         },

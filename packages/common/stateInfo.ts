@@ -66,6 +66,17 @@ export const eligibleSignatureType = (state: ImplementedState) => {
   return stateSignatureType[state]
 }
 
+export interface FollowUpStatus {
+  /**
+   * Timestamp in MS of when this sign up follow up was sent, if 0 it is
+   * considered as not sent (since we can't query for undefined values
+   * using Firestore).
+   */
+  sent: number
+  /** The string sent back from MG on successful submissions. */
+  mgID?: string
+}
+
 export interface AlloyStatus {
   id?: string | null
   status: RegistrationStatus
@@ -96,6 +107,7 @@ export interface BaseInfo extends Locale {
   signatureType?: SignatureType
   contact: ContactData
   alloy?: AlloyStatus
+  followUp?: FollowUpStatus
 }
 
 interface SignatureBaseInfo extends BaseInfo {
