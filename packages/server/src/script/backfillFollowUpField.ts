@@ -47,9 +47,9 @@ export const backfillFollowUpField = async () => {
 
     const updates = collection.docs.map(entry => {
       const data = entry.data() as RichStateInfo
-      if (data.id) {
+      if (entry.id) {
         return {
-          id: data.id,
+          id: entry.id,
           followUp: { sent: data.followUp?.sent ?? 0 },
         }
       }

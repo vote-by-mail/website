@@ -57,7 +57,7 @@ export const sendFollowUpEmails = async () => {
 
       if (ignore10DaysInStorage || has10DaysInStorage) {
         return {
-          id: data.id,
+          id: e.id,
           email: data.email,
           followUpLetter: new GenerateFollowUpLetter(data),
         }
