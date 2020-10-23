@@ -4,6 +4,7 @@ import { RichStateInfo } from '../service/types'
 import Bottleneck from 'bottleneck'
 import { GenerateFollowUpLetter } from '../service/letter/generateFollowUpLetter'
 import { sendFollowUpEmail } from '../service/mg'
+import { writeFileSync } from 'fs'
 
 const forceFollowUpDate: string = processEnvOrThrow('FORCE_FOLLOW_UP_DATE')
 const firestore = new FirestoreService()
@@ -27,8 +28,12 @@ export const sendFollowUpEmails = async () => {
       : `Because we're not at FORCE_FOLLOW_UP_DATE (${forceFollowUpDate}) we're not going to send follow up emails for users who have not yet completed 10 days in storage`
   )
 
+  // A list of Sign up IDs that failed to be processed
+  const failures: Array<{id: string, error: unknown}> = []
+
   // eslint-disable-next-line no-constant-condition
-  while (true) {
+  let resend = true
+  while (resend) {
     const now = new Date()
     const queryResult = await firestore.db.collection('StateInfo')
       .where('followUp.sent', '==', 0)
@@ -37,30 +42,33 @@ export const sendFollowUpEmails = async () => {
       .limit(500)
       .get()
 
-
     if(queryResult.size) {
       console.log(`Queried ${queryResult.size} sign ups for follow up.`)
 
     } else {
-      return `Finished resending follow ups`
+      resend = false
+      console.log(`Finished resending follow ups`)
     }
 
     const registrations = queryResult.docs.map(e => {
       const data = e.data() as InfoWithIdAndLetter
+      try {
+        // We only send sign ups for voters who are stored for at least 10
+        // days in our records. Unless this job is running on FORCE_FOLLOW_UP_DATE,
+        // then we send it to all voters who have not yet acquired their follow up
+        // message.
+        const createdMillis = data.created.toMillis()
+        const has10DaysInStorage = now.valueOf() - createdMillis >= (1000 * 60 * 60 * 24 * 10)
 
-      // We only send sign ups for voters who are stored for at least 10
-      // days in our records. Unless this job is running on FORCE_FOLLOW_UP_DATE,
-      // then we send it to all voters who have not yet acquired their follow up
-      // message.
-      const createdMillis = data.created.toMillis()
-      const has10DaysInStorage = now.valueOf() - createdMillis >= (1000 * 60 * 60 * 24 * 10)
-
-      if (ignore10DaysInStorage || has10DaysInStorage) {
-        return {
-          id: e.id,
-          email: data.email,
-          followUpLetter: new GenerateFollowUpLetter(data),
+        if (ignore10DaysInStorage || has10DaysInStorage) {
+          return {
+            id: e.id,
+            email: data.email,
+            followUpLetter: new GenerateFollowUpLetter(data),
+          }
         }
+      } catch (error) {
+        failures.push({id: e.id, error})
       }
 
       return null
@@ -102,14 +110,37 @@ export const sendFollowUpEmails = async () => {
             }
             return null
           })
+          .catch((error) => {
+            failures.push({
+              id: info.id,
+              error
+            })
+            return null
+          })
       })
     )
 
     // The filter removes empty items, the typecast is needed since TS still
     // believes there are null elements.
-    const filteredUpdates = updates.filter(r => !!r) as Update[]
-    await firestore.batchUpdateRegistrations(filteredUpdates)
-    console.log(`Sent ${filteredUpdates.length} follow ups.`)
+    try {
+      const filteredUpdates = updates.filter(r => !!r) as Update[]
+      await firestore.batchUpdateRegistrations(filteredUpdates)
+      console.log(`Sent ${filteredUpdates.length} follow ups.`)
+    } catch(e) {
+      console.warn('Failed to update a batch of sign ups, users might get follow up emails twice.')
+      console.error(e)
+    }
+  }
+
+  if (failures.length) {
+    console.log(`Writing failures into a log file...`)
+    const fileName = `followUpErrors-${new Date().valueOf()}.json`
+    writeFileSync(
+      `${__dirname}/data/${fileName}`,
+      JSON.stringify(failures, null, 2),
+      { encoding: 'utf-8' },
+    )
+    console.log(`Saved errors to data/${fileName}`)
   }
 }
 
