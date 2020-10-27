@@ -24,7 +24,7 @@ export const RawAddressForm: React.FC<{rawState: string, zip?: string}> = ({rawS
 
   const state = getState(rawState)
   // Goes back to starting section if no state was found
-  if (!state || !getState(fields.state)) {
+  if (!state || !getState(fields.state) || process.env.REACT_APP_DISABLE_SIGNUP) {
     pushStartSection('start')
     return null
   }

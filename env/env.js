@@ -125,6 +125,7 @@ const production = removeNullValues({
   SENDINBLUE_LIST_ID: 3,  // This is the real list
   REACT_APP_BRAND_NAME: 'VoteByMail.io',
   REACT_APP_URL: 'https://votebymail.io/',
+  REACT_APP_DISABLE_SIGNUP: 1,
   FIRESTORE_URL: 'https://vbm-prod-281822.firebaseio.com',
   REACT_APP_SERVER: 'https://app.votebymail.io/',
   GOOGLE_CLIENT_ID: PROD.GOOGLE_CLIENT_ID,
