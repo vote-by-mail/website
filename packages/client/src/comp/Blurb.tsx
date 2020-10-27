@@ -10,6 +10,7 @@ import { EnterZip } from './util/EnterZip'
 import { MarketingWrapper } from './util/MarketingWrapper'
 
 const bgGradient = 'linear-gradient(to bottom right, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6))'
+const signUpDisabled = !!process.env.REACT_APP_DISABLE_SIGNUP
 
 const Wrapper = styled(MarketingWrapper)`
   position: relative;
@@ -99,13 +100,26 @@ export const Blurb: React.FC = () => {
   // manually).
   return <Wrapper columnChildContent={true} centerChildContent={true}>
     <Container>
-      <h4>
-        Sign up online for Vote by Mail in 2 minutes
-      </h4>
-      <h5 data-testid='blurb-call-to-action'>
-        Enter your voter registration ZIP code to get started.
-      </h5>
-      <EnterZip/>
+      {
+        !signUpDisabled
+        ? <>
+          <h4>
+            Sign up online for Vote by Mail in 2 minutes
+          </h4>
+          <h5 data-testid='blurb-call-to-action'>
+            Enter your voter registration ZIP code to get started.
+          </h5>
+          <EnterZip/>
+        </>
+        : <>
+          <h4>
+            We&apos;re done for this election, go out and vote!
+          </h4>
+          <h5>
+            Support for this election has ended, thanks for using our tool.
+          </h5>
+        </>
+      }
     </Container>
   </Wrapper>
 }

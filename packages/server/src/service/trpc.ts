@@ -106,6 +106,10 @@ export class VbmRpc implements ImplRpc<IVbmRpc, Request> {
     }
   }
   public register = async (info: StateInfo, voter: Voter, request: Request) => {
+    if (process.env.REACT_APP_DISABLE_SIGNUP) {
+      return error('Sign up is disabled.')
+    }
+
     const method = toContactMethod(info.contact)
     if (!method) return error('Unable to find contact details for local official')
 

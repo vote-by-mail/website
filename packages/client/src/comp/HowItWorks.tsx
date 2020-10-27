@@ -14,6 +14,8 @@ const Wrapper = styled(MarketingWrapper)`
   background-color: #fafafa;
 `
 
+const signUpDisabled = !!process.env.REACT_APP_DISABLE_SIGNUP
+
 const Headline = styled.div`
   text-align: center;
   h4 { margin-top: 0; }
@@ -62,8 +64,8 @@ const Steps = styled(Row)`
   }
 `
 
-const CallToAction = styled.div`
-  display: flex;
+const CallToAction = styled.div<{ disabled?: boolean }>`
+  display: ${p => p.disabled ? 'none' : 'flex' };
   flex-direction: column;
   align-items: center;
   ${cssQuery.onlyMedium} { width: 75%; }
@@ -114,7 +116,7 @@ export const HowItWorks: React.FC = () => {
           <p>Fill out your ballot from the comfort of your home and mail it back.</p>
         </Col>
       </Steps>
-      <CallToAction>
+      <CallToAction disabled={signUpDisabled}>
         <h5>
           Enter your voter registration ZIP code to get started.
         </h5>
