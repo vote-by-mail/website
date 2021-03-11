@@ -3,14 +3,23 @@ import { StateInfo, SignatureType } from '../../../common'
 import { StatelessInfo, Base, BaseProps } from '.'
 import { toast } from 'react-toastify'
 import { Signature } from '../../util/Signature'
+import { ExperimentContainer } from '../../../lib/unstated'
+import { trackEvent } from '../../../lib/analytics'
 
 export type NoSignature<Info extends StateInfo> = Omit<Info, 'signature'>
 
 export const SignatureBase = <Info extends StateInfo>(
   {enrichValues, children}: BaseProps<NoSignature<Info>>
 ) => {
+  const { experimentGroup } = ExperimentContainer.useContainer()
+  const signatureTypeExperiment = experimentGroup('SignatureType')
+
+  React.useEffect(() => {
+    trackEvent('Experiment', 'Signature Type', signatureTypeExperiment)
+  }, [signatureTypeExperiment])
+
   const [signature, setSignature] = React.useState<string | null>()
-  const [signatureType, setSignatureType] = React.useState<SignatureType>('upload')
+  const [signatureType, setSignatureType] = React.useState<SignatureType>(signatureTypeExperiment as SignatureType)
 
   const enrichValuesWithSignature = (baseInfo: StatelessInfo): Info | null => {
     const values = enrichValues(baseInfo)

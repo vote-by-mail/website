@@ -1,6 +1,6 @@
 import React from 'react'
 import { client } from '../../lib/trpc'
-import { AddressContainer, ContactContainer, FetchingDataContainer } from '../../lib/unstated'
+import { AddressContainer, ContactContainer, ExperimentContainer, FetchingDataContainer } from '../../lib/unstated'
 import { TimeoutError } from '@tianhuil/simple-trpc/dist/timedFetch'
 import { StatusReport } from '../status/StatusReport'
 import { useParams } from 'react-router-dom'
@@ -12,6 +12,7 @@ import { AddressInputPartContainer } from '.'
 import { AddressInput } from './Input'
 import { RoundedButton } from '../util/Button'
 import { AddressModal } from './Modal'
+import { trackEvent } from '../../lib/analytics'
 
 // pulled out for testing
 export const RawAddressForm: React.FC<{rawState: string, zip?: string}> = ({rawState}) => {
@@ -21,6 +22,12 @@ export const RawAddressForm: React.FC<{rawState: string, zip?: string}> = ({rawS
   const { setContact } = ContactContainer.useContainer()
   const { fetchingData, setFetchingData } = FetchingDataContainer.useContainer()
   const [ open, setOpen ] = React.useState(false)
+  const { experimentGroup } = ExperimentContainer.useContainer()
+  const addressC2a = experimentGroup('AddressC2a')
+
+  React.useEffect(() => {
+    trackEvent('Experiment', 'AddressC2a', addressC2a)
+  }, [addressC2a])
 
   const state = getState(rawState)
   // Goes back to starting section if no state was found
@@ -72,8 +79,11 @@ export const RawAddressForm: React.FC<{rawState: string, zip?: string}> = ({rawS
     <StatusReport state={state}>
       <AppForm onSubmit={handleSubmit}>
         <p>
-          Enter your <b>voter-registration address</b> to find your local election official.
-          (<a target='_blank' rel='noopener noreferrer' href='https://www.vote.org/am-i-registered-to-vote/'>Unsure if you are registered?</a>)
+          {
+            addressC2a === 'FindOfficial'
+              ? ' find your local election official'
+              : ' sign up for Vote by Mail'
+          } (<a target='_blank' rel='noopener noreferrer' href='https://www.vote.org/am-i-registered-to-vote/'>Unsure if you are registered?</a>)
         </p>
         <AddressInput fields={fields} setField={setField}/>
         <RoundedButton
@@ -83,9 +93,11 @@ export const RawAddressForm: React.FC<{rawState: string, zip?: string}> = ({rawS
           data-testid='submit'
           style={{flexGrow: 0}}
           disabled={fetchingData}
-        >
-          Find my election official
-        </RoundedButton>
+        >{
+          addressC2a === 'FindOfficial'
+            ? 'Find my election official'
+            : 'Go to signup form'
+        }</RoundedButton>
       </AppForm>
     </StatusReport>
     <AddressModal isOpen={open} setOpen={setOpen}/>
